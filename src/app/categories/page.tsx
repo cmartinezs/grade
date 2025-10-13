@@ -54,7 +54,7 @@ export default function CategoriesPage() {
   const totalQuestions = sampleCategories.reduce((sum, cat) => sum + cat.questionCount, 0);
 
   return (
-    <>
+    <PageWrapper>
       <NavigationBar />
       
       <Container className="mt-4">
@@ -172,6 +172,6 @@ export default function CategoriesPage() {
           </Col>
         </Row>
       </Container>
-    </>
+    </PageWrapper>
   );
 }

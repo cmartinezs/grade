@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert, ProgressBar } from 'react-bootstrap';
 import Link from 'next/link';
 import NavigationBar from '@/components/NavigationBar';
+import PageWrapper from '@/components/PageWrapper';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -88,7 +89,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <>
+    <PageWrapper>
       <NavigationBar />
       
       <Container className="mt-5">
@@ -344,6 +345,6 @@ export default function RegisterPage() {
           </Col>
         </Row>
       </Container>
-    </>
+    </PageWrapper>
   );
 }
