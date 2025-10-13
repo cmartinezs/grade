@@ -594,7 +594,7 @@ export default function CreateQuestionModal({
         {!submitSuccess && (
           <>
             <Button variant="secondary" onClick={onHide} disabled={isSubmitting}>
-              Cancelar
+              ❌ Cancelar
             </Button>
             <Button
               variant="primary"
@@ -610,7 +610,7 @@ export default function CreateQuestionModal({
                   : ''
               }
             >
-              {isSubmitting ? 'Guardando...' : 'Guardar Pregunta'}
+              {isSubmitting ? '⏳ Guardando...' : '💾 Guardar Pregunta'}
             </Button>
           </>
         )}
