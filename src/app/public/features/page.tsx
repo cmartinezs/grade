@@ -1,10 +1,23 @@
 'use client'
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function PublicFeatures() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // Redirigir a dashboard si el usuario está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
   const features = [
     {
       icon: "📝",

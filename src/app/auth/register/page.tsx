@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Form, Button, Alert, ProgressBar, Row, Col } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLoading } from '@/contexts/LoadingContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterPage() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+  const { isLoading, setLoading, setLoadingMessage } = useLoading();
+
+  // Redirigir a dashboard si el usuario ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
   const [formData, setFormData] = useState({
     email: '',
     confirmEmail: '',
@@ -22,8 +34,6 @@ export default function RegisterPage() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success');
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const router = useRouter();
-  const { isLoading, setLoading, setLoadingMessage } = useLoading();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (e: any) => {

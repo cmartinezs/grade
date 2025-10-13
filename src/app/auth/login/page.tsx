@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Form, Button, Alert } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -16,8 +16,15 @@ export default function LoginPage() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success');
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const { isLoading } = useLoading();
+
+  // Redirigir a dashboard si el usuario ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

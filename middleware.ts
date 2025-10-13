@@ -7,20 +7,19 @@ const privateRoutes = [
   '/evaluation-management',
   '/profile',
   '/settings',
-  '/billing'
+  '/billing',
+  '/dashboard'
 ]
 
-// Lista de rutas públicas para usuarios no autenticados (para uso futuro)
-// const publicRoutes = [
-//   '/',
-//   '/about',
-//   '/features', 
-//   '/pricing',
-//   '/auth/login',
-//   '/auth/register',
-//   '/terms',
-//   '/privacy'
-// ]
+// Lista de rutas públicas (solo para usuarios NO autenticados)
+const publicOnlyRoutes = [
+  '/public',
+  '/public/about',
+  '/public/features', 
+  '/public/pricing',
+  '/auth/login',
+  '/auth/register'
+]
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -30,10 +29,10 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route)
   )
   
-  // Verificar si la ruta actual es pública (para uso futuro)
-  // const isPublicRoute = publicRoutes.some(route => 
-  //   pathname === route || pathname.startsWith(route)
-  // )
+  // Verificar si la ruta actual es pública (solo para usuarios NO autenticados)
+  const isPublicOnlyRoute = publicOnlyRoutes.some(route => 
+    pathname === route || pathname.startsWith(route)
+  )
   
   // Obtener información de autenticación desde las cookies o headers
   // Por ahora simulamos la verificación ya que usamos localStorage en el cliente
@@ -46,9 +45,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
   
-  // Si está autenticado y trata de acceder a login/register, redirigir al dashboard
-  if (isAuthenticated && (pathname === '/auth/login' || pathname === '/auth/register')) {
-    return NextResponse.redirect(new URL('/questions-bank', request.url))
+  // Si está autenticado y trata de acceder a rutas públicas, redirigir al dashboard
+  if (isAuthenticated && isPublicOnlyRoute) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+  
+  // Si está autenticado y accede a la raíz, redirigir al dashboard
+  if (isAuthenticated && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
   
   return NextResponse.next()
