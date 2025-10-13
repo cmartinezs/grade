@@ -5,6 +5,7 @@ import { Container, Row, Col, Card, Button, Badge, Accordion } from 'react-boots
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateTaxonomyModal from '@/components/CreateTaxonomyModal';
 import EditTaxonomyModal from '@/components/EditTaxonomyModal';
+import DeleteTaxonomyModal from '@/components/DeleteTaxonomyModal';
 import {
   getAllSubjects,
   getUnitsBySubject,
@@ -17,7 +18,9 @@ export default function TaxonomyPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editElement, setEditElement] = useState<{ type: TaxonomyType; id: string } | null>(null);
+  const [deleteElement, setDeleteElement] = useState<{ type: TaxonomyType; id: string } | null>(null);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -25,7 +28,7 @@ export default function TaxonomyPage() {
   }, []);
 
   const handleSuccess = () => {
-    // Refresh data after creation or edition
+    // Refresh data after creation, edition, or deletion
     setSubjects(getAllSubjects());
   };
 
@@ -37,6 +40,16 @@ export default function TaxonomyPage() {
   const handleEditModalHide = () => {
     setShowEditModal(false);
     setEditElement(null);
+  };
+
+  const handleDelete = (type: TaxonomyType, id: string) => {
+    setDeleteElement({ type, id });
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteModalHide = () => {
+    setShowDeleteModal(false);
+    setDeleteElement(null);
   };
 
   return (
@@ -64,7 +77,7 @@ export default function TaxonomyPage() {
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-start">
                   <div>
-                    <h6>📚 CU-BP-11 & CU-BP-12: Gestión de taxonomía curricular</h6>
+                    <h6>📚 CU-BP-11, 12 & 13: Gestión completa de taxonomía curricular</h6>
                     <p className="mb-2 small">
                       <strong>Jerarquía:</strong> Asignatura (nivel 1) → Unidad (nivel 2) → Tema (nivel 3)
                     </p>
@@ -72,11 +85,14 @@ export default function TaxonomyPage() {
                       <strong>Crear:</strong> Usa el botón &quot;➕ Crear Elemento&quot; para agregar nuevos elementos.
                     </p>
                     <p className="mb-2 small">
-                      <strong>Editar:</strong> Haz clic en &quot;✏️ Editar&quot; en cualquier elemento para modificarlo.
+                      <strong>Editar:</strong> Haz clic en &quot;✏️ Editar&quot; para modificar cualquier elemento.
+                    </p>
+                    <p className="mb-2 small">
+                      <strong>Eliminar:</strong> Haz clic en &quot;🗑️ Eliminar&quot; para inactivar elementos (eliminación lógica en cascada).
                     </p>
                     <p className="mb-0 small">
                       <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas. 
-                      Se mantiene integridad referencial al reasignar jerárquicamente.
+                      Se mantiene integridad referencial. La eliminación es lógica con análisis de impacto.
                     </p>
                     <p className="mb-0 small text-muted mt-2">
                       💾 Los datos se guardan automáticamente en localStorage con auditoría completa.
@@ -112,7 +128,12 @@ export default function TaxonomyPage() {
                 ) : (
                   <Accordion>
                     {subjects.map((subject) => (
-                      <TaxonomySubjectItem key={subject.subject_id} subject={subject} onEdit={handleEdit} />
+                      <TaxonomySubjectItem
+                        key={subject.subject_id}
+                        subject={subject}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                      />
                     ))}
                   </Accordion>
                 )}
@@ -138,6 +159,17 @@ export default function TaxonomyPage() {
             elementId={editElement.id}
           />
         )}
+
+        {/* Delete Modal */}
+        {deleteElement && (
+          <DeleteTaxonomyModal
+            show={showDeleteModal}
+            onHide={handleDeleteModalHide}
+            onSuccess={handleSuccess}
+            elementType={deleteElement.type}
+            elementId={deleteElement.id}
+          />
+        )}
       </Container>
     </ProtectedRoute>
   );
@@ -146,9 +178,11 @@ export default function TaxonomyPage() {
 function TaxonomySubjectItem({
   subject,
   onEdit,
+  onDelete,
 }: {
   subject: Subject;
   onEdit: (type: TaxonomyType, id: string) => void;
+  onDelete: (type: TaxonomyType, id: string) => void;
 }) {
   const units = getUnitsBySubject(subject.subject_id);
 
@@ -180,6 +214,25 @@ function TaxonomySubjectItem({
             >
               ✏️ Editar
             </span>
+            <span
+              className="btn btn-sm btn-outline-danger"
+              style={{ cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete('subject', subject.subject_id);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete('subject', subject.subject_id);
+                }
+              }}
+            >
+              🗑️ Eliminar
+            </span>
           </div>
         </div>
       </Accordion.Header>
@@ -189,7 +242,7 @@ function TaxonomySubjectItem({
         ) : (
           <Accordion>
             {units.map((unit) => (
-              <TaxonomyUnitItem key={unit.unit_id} unit={unit} onEdit={onEdit} />
+              <TaxonomyUnitItem key={unit.unit_id} unit={unit} onEdit={onEdit} onDelete={onDelete} />
             ))}
           </Accordion>
         )}
@@ -198,7 +251,15 @@ function TaxonomySubjectItem({
   );
 }
 
-function TaxonomyUnitItem({ unit, onEdit }: { unit: Unit; onEdit: (type: TaxonomyType, id: string) => void }) {
+function TaxonomyUnitItem({
+  unit,
+  onEdit,
+  onDelete,
+}: {
+  unit: Unit;
+  onEdit: (type: TaxonomyType, id: string) => void;
+  onDelete: (type: TaxonomyType, id: string) => void;
+}) {
   const topics = getTopicsByUnit(unit.unit_id);
 
   return (
@@ -227,6 +288,25 @@ function TaxonomyUnitItem({ unit, onEdit }: { unit: Unit; onEdit: (type: Taxonom
             >
               ✏️ Editar
             </span>
+            <span
+              className="btn btn-sm btn-outline-danger"
+              style={{ cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete('unit', unit.unit_id);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete('unit', unit.unit_id);
+                }
+              }}
+            >
+              🗑️ Eliminar
+            </span>
           </div>
         </div>
       </Accordion.Header>
@@ -236,7 +316,7 @@ function TaxonomyUnitItem({ unit, onEdit }: { unit: Unit; onEdit: (type: Taxonom
         ) : (
           <ul className="list-unstyled">
             {topics.map((topic) => (
-              <TaxonomyTopicItem key={topic.topic_id} topic={topic} onEdit={onEdit} />
+              <TaxonomyTopicItem key={topic.topic_id} topic={topic} onEdit={onEdit} onDelete={onDelete} />
             ))}
           </ul>
         )}
@@ -245,17 +325,26 @@ function TaxonomyUnitItem({ unit, onEdit }: { unit: Unit; onEdit: (type: Taxonom
   );
 }
 
-function TaxonomyTopicItem({ topic, onEdit }: { topic: Topic; onEdit: (type: TaxonomyType, id: string) => void }) {
+function TaxonomyTopicItem({
+  topic,
+  onEdit,
+  onDelete,
+}: {
+  topic: Topic;
+  onEdit: (type: TaxonomyType, id: string) => void;
+  onDelete: (type: TaxonomyType, id: string) => void;
+}) {
   return (
     <li className="d-flex justify-content-between align-items-center py-2 border-bottom">
       <span>{topic.name}</span>
-      <Button
-        size="sm"
-        variant="outline-secondary"
-        onClick={() => onEdit('topic', topic.topic_id)}
-      >
-        ✏️ Editar
-      </Button>
+      <div className="d-flex gap-2">
+        <Button size="sm" variant="outline-secondary" onClick={() => onEdit('topic', topic.topic_id)}>
+          ✏️ Editar
+        </Button>
+        <Button size="sm" variant="outline-danger" onClick={() => onDelete('topic', topic.topic_id)}>
+          🗑️ Eliminar
+        </Button>
+      </div>
     </li>
   );
 }

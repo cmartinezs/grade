@@ -13,6 +13,7 @@ import {
   UpdateSubjectInput,
   UpdateUnitInput,
   UpdateTopicInput,
+  DeleteImpactAnalysis,
   ValidationError,
 } from '@/types/taxonomy';
 
@@ -669,6 +670,302 @@ export function updateTopic(
   // RN-6: Las preguntas asociadas mantienen su clasificación actualizada
   // (Esto se implementará cuando tengamos el módulo de preguntas)
   return { success: true, data: updatedTopic };
+}
+
+/**
+ * CU-BP-13: Analyze impact of deleting a Subject
+ * Returns information about affected units, topics, and questions (future)
+ */
+export function analyzeSubjectDeleteImpact(subjectId: string): DeleteImpactAnalysis {
+  const subject = subjects.find((s) => s.subject_id === subjectId);
+  
+  if (!subject) {
+    return {
+      canDelete: false,
+      affectedUnits: 0,
+      affectedTopics: 0,
+      affectedQuestions: 0,
+      warnings: ['La asignatura no existe.'],
+    };
+  }
+
+  if (!subject.active || subject.deleted_at) {
+    return {
+      canDelete: false,
+      affectedUnits: 0,
+      affectedTopics: 0,
+      affectedQuestions: 0,
+      warnings: ['La asignatura ya está eliminada.'],
+    };
+  }
+
+  // Count affected units (active ones)
+  const affectedUnits = units.filter((u) => u.subject_fk === subjectId && u.active && !u.deleted_at);
+  
+  // Count affected topics (through affected units)
+  const affectedUnitIds = affectedUnits.map((u) => u.unit_id);
+  const affectedTopics = topics.filter(
+    (t) => affectedUnitIds.includes(t.unit_fk) && t.active && !t.deleted_at
+  );
+
+  const warnings: string[] = [];
+  if (affectedUnits.length > 0) {
+    warnings.push(`Se inactivarán ${affectedUnits.length} unidad(es) asociada(s).`);
+  }
+  if (affectedTopics.length > 0) {
+    warnings.push(`Se inactivarán ${affectedTopics.length} tema(s) asociado(s).`);
+  }
+  // RN-5: Future - questions will maintain reference but won't be accessible for new classifications
+  warnings.push('Las preguntas asociadas mantendrán su clasificación histórica pero no podrán clasificarse nuevas preguntas.');
+
+  return {
+    canDelete: true, // RN-1: Always logical deletion
+    affectedUnits: affectedUnits.length,
+    affectedTopics: affectedTopics.length,
+    affectedQuestions: 0, // Placeholder for future implementation
+    warnings,
+  };
+}
+
+/**
+ * CU-BP-13: Analyze impact of deleting a Unit
+ */
+export function analyzeUnitDeleteImpact(unitId: string): DeleteImpactAnalysis {
+  const unit = units.find((u) => u.unit_id === unitId);
+  
+  if (!unit) {
+    return {
+      canDelete: false,
+      affectedUnits: 0,
+      affectedTopics: 0,
+      affectedQuestions: 0,
+      warnings: ['La unidad no existe.'],
+    };
+  }
+
+  if (!unit.active || unit.deleted_at) {
+    return {
+      canDelete: false,
+      affectedUnits: 0,
+      affectedTopics: 0,
+      affectedQuestions: 0,
+      warnings: ['La unidad ya está eliminada.'],
+    };
+  }
+
+  // Count affected topics
+  const affectedTopics = topics.filter((t) => t.unit_fk === unitId && t.active && !t.deleted_at);
+
+  const warnings: string[] = [];
+  if (affectedTopics.length > 0) {
+    warnings.push(`Se inactivarán ${affectedTopics.length} tema(s) asociado(s).`);
+  }
+  warnings.push('Las preguntas asociadas mantendrán su clasificación histórica pero no podrán clasificarse nuevas preguntas.');
+
+  return {
+    canDelete: true,
+    affectedUnits: 0,
+    affectedTopics: affectedTopics.length,
+    affectedQuestions: 0, // Placeholder
+    warnings,
+  };
+}
+
+/**
+ * CU-BP-13: Analyze impact of deleting a Topic
+ */
+export function analyzeTopicDeleteImpact(topicId: string): DeleteImpactAnalysis {
+  const topic = topics.find((t) => t.topic_id === topicId);
+  
+  if (!topic) {
+    return {
+      canDelete: false,
+      affectedUnits: 0,
+      affectedTopics: 0,
+      affectedQuestions: 0,
+      warnings: ['El tema no existe.'],
+    };
+  }
+
+  if (!topic.active || topic.deleted_at) {
+    return {
+      canDelete: false,
+      affectedUnits: 0,
+      affectedTopics: 0,
+      affectedQuestions: 0,
+      warnings: ['El tema ya está eliminado.'],
+    };
+  }
+
+  const warnings: string[] = [
+    'Las preguntas asociadas mantendrán su clasificación histórica pero no podrán clasificarse nuevas preguntas con este tema.',
+  ];
+
+  return {
+    canDelete: true,
+    affectedUnits: 0,
+    affectedTopics: 0,
+    affectedQuestions: 0, // Placeholder
+    warnings,
+  };
+}
+
+/**
+ * CU-BP-13: Delete Subject with cascade (logical deletion)
+ * RN-2: Always logical deletion (active = FALSE, deleted_at, deleted_by)
+ * RN-3: Cascade to units and topics
+ * RN-6: Register audit with user
+ */
+export function deleteSubject(
+  subjectId: string,
+  userId: string
+): { success: boolean; errors?: ValidationError[] } {
+  const analysis = analyzeSubjectDeleteImpact(subjectId);
+  
+  if (!analysis.canDelete) {
+    return { success: false, errors: [{ field: 'general', message: analysis.warnings.join(' ') }] };
+  }
+
+  const subjectIndex = subjects.findIndex((s) => s.subject_id === subjectId);
+  if (subjectIndex === -1) {
+    return { success: false, errors: [{ field: 'general', message: 'Asignatura no encontrada.' }] };
+  }
+
+  const now = new Date();
+
+  // Mark subject as inactive (logical deletion)
+  subjects[subjectIndex] = {
+    ...subjects[subjectIndex],
+    active: false,
+    deleted_at: now,
+    deleted_by: userId,
+    updated_at: now,
+    updated_by: userId,
+  };
+
+  // RN-3: Cascade - mark all units of this subject as inactive
+  units.forEach((unit, index) => {
+    if (unit.subject_fk === subjectId && unit.active && !unit.deleted_at) {
+      units[index] = {
+        ...unit,
+        active: false,
+        deleted_at: now,
+        deleted_by: userId,
+        updated_at: now,
+        updated_by: userId,
+      };
+
+      // RN-3: Cascade - mark all topics of this unit as inactive
+      topics.forEach((topic, topicIndex) => {
+        if (topic.unit_fk === unit.unit_id && topic.active && !topic.deleted_at) {
+          topics[topicIndex] = {
+            ...topic,
+            active: false,
+            deleted_at: now,
+            deleted_by: userId,
+            updated_at: now,
+            updated_by: userId,
+          };
+        }
+      });
+    }
+  });
+
+  // Save changes
+  saveToStorage(STORAGE_KEYS.SUBJECTS, subjects);
+  saveToStorage(STORAGE_KEYS.UNITS, units);
+  saveToStorage(STORAGE_KEYS.TOPICS, topics);
+
+  return { success: true };
+}
+
+/**
+ * CU-BP-13: Delete Unit with cascade (logical deletion)
+ * RN-4: Cascade to topics
+ */
+export function deleteUnit(
+  unitId: string,
+  userId: string
+): { success: boolean; errors?: ValidationError[] } {
+  const analysis = analyzeUnitDeleteImpact(unitId);
+  
+  if (!analysis.canDelete) {
+    return { success: false, errors: [{ field: 'general', message: analysis.warnings.join(' ') }] };
+  }
+
+  const unitIndex = units.findIndex((u) => u.unit_id === unitId);
+  if (unitIndex === -1) {
+    return { success: false, errors: [{ field: 'general', message: 'Unidad no encontrada.' }] };
+  }
+
+  const now = new Date();
+
+  // Mark unit as inactive
+  units[unitIndex] = {
+    ...units[unitIndex],
+    active: false,
+    deleted_at: now,
+    deleted_by: userId,
+    updated_at: now,
+    updated_by: userId,
+  };
+
+  // RN-4: Cascade - mark all topics of this unit as inactive
+  topics.forEach((topic, index) => {
+    if (topic.unit_fk === unitId && topic.active && !topic.deleted_at) {
+      topics[index] = {
+        ...topic,
+        active: false,
+        deleted_at: now,
+        deleted_by: userId,
+        updated_at: now,
+        updated_by: userId,
+      };
+    }
+  });
+
+  // Save changes
+  saveToStorage(STORAGE_KEYS.UNITS, units);
+  saveToStorage(STORAGE_KEYS.TOPICS, topics);
+
+  return { success: true };
+}
+
+/**
+ * CU-BP-13: Delete Topic (logical deletion)
+ * RN-5: Questions maintain reference but can't classify new questions
+ */
+export function deleteTopic(
+  topicId: string,
+  userId: string
+): { success: boolean; errors?: ValidationError[] } {
+  const analysis = analyzeTopicDeleteImpact(topicId);
+  
+  if (!analysis.canDelete) {
+    return { success: false, errors: [{ field: 'general', message: analysis.warnings.join(' ') }] };
+  }
+
+  const topicIndex = topics.findIndex((t) => t.topic_id === topicId);
+  if (topicIndex === -1) {
+    return { success: false, errors: [{ field: 'general', message: 'Tema no encontrado.' }] };
+  }
+
+  const now = new Date();
+
+  // Mark topic as inactive
+  topics[topicIndex] = {
+    ...topics[topicIndex],
+    active: false,
+    deleted_at: now,
+    deleted_by: userId,
+    updated_at: now,
+    updated_by: userId,
+  };
+
+  // Save changes
+  saveToStorage(STORAGE_KEYS.TOPICS, topics);
+
+  return { success: true };
 }
 
 /**

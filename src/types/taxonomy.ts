@@ -81,6 +81,17 @@ export interface UpdateTopicInput {
 
 export type UpdateTaxonomyInput = UpdateSubjectInput | UpdateUnitInput | UpdateTopicInput;
 
+/**
+ * CU-BP-13: Eliminar elemento de taxonomía curricular
+ */
+export interface DeleteImpactAnalysis {
+  canDelete: boolean;
+  affectedUnits: number;
+  affectedTopics: number;
+  affectedQuestions: number; // Preparado para futuro
+  warnings: string[];
+}
+
 export interface ValidationError {
   field: string;
   message: string;
