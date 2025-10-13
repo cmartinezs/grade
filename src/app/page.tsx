@@ -118,7 +118,7 @@ export default function Home() {
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-4">
                 <div className="text-primary mb-3">
-                  <span style={{ fontSize: '3rem' }}>🏗️</span>
+                  <span className="feature-icon">🏗️</span>
                 </div>
                 <h5 className="fw-bold">Creación Inteligente</h5>
                 <p className="text-muted mb-0">
@@ -133,7 +133,7 @@ export default function Home() {
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-4">
                 <div className="text-success mb-3">
-                  <span style={{ fontSize: '3rem' }}>📊</span>
+                  <span className="feature-icon">📊</span>
                 </div>
                 <h5 className="fw-bold">Analytics Avanzado</h5>
                 <p className="text-muted mb-0">
@@ -147,8 +147,8 @@ export default function Home() {
           <Col md={6} lg={4}>
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-4">
-                <div className="text-info mb-3">
-                  <span style={{ fontSize: '3rem' }}>🚀</span>
+                <div className="text-primary mb-3">
+                  <span className="feature-icon">�</span>
                 </div>
                 <h5 className="fw-bold">Automatización Total</h5>
                 <p className="text-muted mb-0">
@@ -162,8 +162,8 @@ export default function Home() {
           <Col md={6} lg={4}>
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-4">
-                <div className="text-warning mb-3">
-                  <span style={{ fontSize: '3rem' }}>👥</span>
+                <div className="text-primary mb-3">
+                  <span className="feature-icon">👥</span>
                 </div>
                 <h5 className="fw-bold">Colaboración Fluida</h5>
                 <p className="text-muted mb-0">
@@ -177,8 +177,8 @@ export default function Home() {
           <Col md={6} lg={4}>
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-4">
-                <div className="text-danger mb-3">
-                  <span style={{ fontSize: '3rem' }}>🔒</span>
+                <div className="text-primary mb-3">
+                  <span className="feature-icon">�</span>
                 </div>
                 <h5 className="fw-bold">Seguridad Garantizada</h5>
                 <p className="text-muted mb-0">
@@ -192,8 +192,8 @@ export default function Home() {
           <Col md={6} lg={4}>
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-4">
-                <div className="text-purple mb-3">
-                  <span style={{ fontSize: '3rem' }}>⚡</span>
+                <div className="text-primary mb-3">
+                  <span className="feature-icon">🔒</span>
                 </div>
                 <h5 className="fw-bold">Rapidez Extrema</h5>
                 <p className="text-muted mb-0">
@@ -312,20 +312,14 @@ export default function Home() {
       </Container>
 
       {/* CTA Section */}
-      <div 
-        className="position-relative" 
-        style={{ 
-          background: 'linear-gradient(135deg, #4c63d2 0%, #5a3d84 100%)',
-          color: 'white'
-        }}
-      >
+      <div className="position-relative cta-section text-white">
         <Container className="py-5 text-center position-relative">
           <Row className="justify-content-center">
             <Col lg={8}>
-              <h2 className="display-4 fw-bold mb-4 text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+              <h2 className="display-4 fw-bold mb-4 text-white cta-title">
                 ¿Listo para transformar tus evaluaciones?
               </h2>
-              <p className="lead mb-4 text-white" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+              <p className="lead mb-4 text-white cta-text">
                 Únete a cientos de docentes que ya están revolucionando 
                 la educación con GRADE. Comienza gratis hoy mismo.
               </p>
@@ -356,7 +350,7 @@ export default function Home() {
                 </LoadingLink>
               )}
               <div className="mt-4">
-                <small className="text-white" style={{ opacity: 0.9, textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+                <small className="text-white cta-small-text">
                   ✅ Sin compromiso • ✅ Cancelación en cualquier momento • ✅ Soporte 24/7
                 </small>
               </div>
