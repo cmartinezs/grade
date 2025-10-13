@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 
-export default function FeaturesPage() {
+export default function PublicFeatures() {
   const features = [
     {
       icon: "📝",

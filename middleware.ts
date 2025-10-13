@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 // Lista de rutas privadas que requieren autenticación
 const privateRoutes = [
-  '/questions',
+  '/questions-bank',
   '/categories', 
-  '/evaluations',
+  '/evaluation-management',
   '/profile',
   '/settings',
   '/billing'
@@ -48,7 +48,7 @@ export function middleware(request: NextRequest) {
   
   // Si está autenticado y trata de acceder a login/register, redirigir al dashboard
   if (isAuthenticated && (pathname === '/auth/login' || pathname === '/auth/register')) {
-    return NextResponse.redirect(new URL('/questions', request.url))
+    return NextResponse.redirect(new URL('/questions-bank', request.url))
   }
   
   return NextResponse.next()

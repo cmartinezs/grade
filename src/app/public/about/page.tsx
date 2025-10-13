@@ -4,7 +4,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 
-export default function AboutPage() {
+export default function PublicAbout() {
   return (
     <PageWrapper>
       <NavigationBar />

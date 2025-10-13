@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth();
   }, [setLoading, setLoadingMessage]);
 
-  const login = async (email: string, _password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
       setLoadingMessage('Iniciando sesión...');
@@ -79,7 +79,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Simular llamada a API
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Usuario demo para testing
+  // Usuario demo para testing (usamos la contraseña recibida si fuera necesario en el futuro)
+  void password
+  // Usuario demo para testing
       const mockUser: User = {
         id: '1',
         firstName: 'Demo',

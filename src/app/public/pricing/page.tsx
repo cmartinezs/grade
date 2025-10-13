@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Button, Badge, ListGroup } from 'react-boots
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 
-export default function PricingPage() {
+export default function PublicPricing() {
   const plans = [
     {
       name: "Básico",

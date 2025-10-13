@@ -37,13 +37,13 @@ export default function NavigationBar() {
             {/* Enlaces públicos */}
             {!isAuthenticated && (
               <>
-                <Nav.Link as={LoadingLink} href="/about" loadingMessage="Cargando información...">
+                <Nav.Link as={LoadingLink} href="/public/about" loadingMessage="Cargando información...">
                   ℹ️ Acerca de
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/features" loadingMessage="Cargando características...">
+                <Nav.Link as={LoadingLink} href="/public/features" loadingMessage="Cargando características...">
                   ✨ Características
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/pricing" loadingMessage="Cargando precios...">
+                <Nav.Link as={LoadingLink} href="/public/pricing" loadingMessage="Cargando precios...">
                   💰 Precios
                 </Nav.Link>
               </>
@@ -53,14 +53,14 @@ export default function NavigationBar() {
             {isAuthenticated && (
               <>
                 <NavDropdown title="❓ Preguntas" id="questions-dropdown">
-                  <NavDropdown.Item as={Link} href="/questions">
+                  <NavDropdown.Item as={Link} href="/questions-bank">
                     📋 Ver Todas
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} href="/questions/create">
+                  <NavDropdown.Item as={Link} href="/questions-bank/create">
                     ➕ Crear Nueva
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} href="/questions/import">
+                  <NavDropdown.Item as={Link} href="/questions-bank/import">
                     📥 Importar Preguntas
                   </NavDropdown.Item>
                 </NavDropdown>
@@ -70,10 +70,10 @@ export default function NavigationBar() {
                 </Nav.Link>
                 
                 <NavDropdown title="📊 Evaluaciones" id="evaluations-dropdown">
-                  <NavDropdown.Item as={Link} href="/evaluations">
+                  <NavDropdown.Item as={Link} href="/evaluation-management">
                     📝 Mis Evaluaciones
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} href="/evaluations/create">
+                  <NavDropdown.Item as={Link} href="/evaluation-management/create">
                     ➕ Crear Evaluación
                   </NavDropdown.Item>
                 </NavDropdown>

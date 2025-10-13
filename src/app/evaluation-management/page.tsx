@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function EvaluationsPage() {
+export default function EvaluationManagementPage() {
   return (
     <ProtectedRoute>
       <PageWrapper>
