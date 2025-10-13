@@ -55,7 +55,7 @@ export default function NavigationBar() {
             {isAuthenticated && (
               <>
                 <NavDropdown title="📊 Dashboard" id="dashboard-dropdown">
-                  <NavDropdown.Item as={Link} href="/questions-bank">
+                  <NavDropdown.Item as={Link} href="/dashboard">
                     Ir al Dashboard
                   </NavDropdown.Item>
                 </NavDropdown>
