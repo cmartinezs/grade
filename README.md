@@ -1,15 +1,17 @@
-# 📚 Grade Question Bank - Web App
+# 🎓 GRADE - Web App
 
-Una aplicación web moderna para la gestión de bancos de preguntas académicas, desarrollada con **Next.js**, **React** y **React Bootstrap**.
+Una aplicación web integral para la gestión educacional, desarrollada con **Next.js**, **React** y **React Bootstrap**.
 
-## 🚀 Características
+## 🌟 Características Principales
 
-- ✅ **Gestión de Preguntas**: Crea, edita y organiza preguntas de diferentes tipos
-- 🏷️ **Sistema de Categorías**: Organiza preguntas por materias y temas
-- 📝 **Múltiples Tipos**: Opción múltiple, verdadero/falso, respuesta corta
-- 🔍 **Búsqueda y Filtros**: Encuentra preguntas rápidamente
-- 📊 **Estadísticas**: Visualiza métricas del banco de preguntas
-- 📱 **Responsive**: Funciona perfectamente en dispositivos móviles y desktop
+GRADE es una plataforma educacional completa que integra múltiples funcionalidades:
+
+- 📚 **Banco de Preguntas**: Gestión avanzada de preguntas y evaluaciones
+- 📊 **Analytics**: Estadísticas y reportes de rendimiento académico
+- 👥 **Gestión de Usuarios**: Sistema de perfiles para docentes y estudiantes
+- 🏛️ **Multi-institucional**: Soporte para múltiples instituciones educacionales
+- 🔐 **Autenticación**: Sistema seguro de login y registro
+- 📱 **Responsive**: Optimizado para todos los dispositivos
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -24,8 +26,8 @@ Una aplicación web moderna para la gestión de bancos de preguntas académicas,
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/tuusuario/grade-question-bank-web-app.git
-   cd grade-question-bank-web-app
+   git clone https://github.com/wanku-cl/grade-web-app.git
+   cd grade-web-app
    ```
 
 2. **Instalar dependencias:**
@@ -45,101 +47,137 @@ Una aplicación web moderna para la gestión de bancos de preguntas académicas,
 
 ```
 src/
-├── app/                    # App Router de Next.js
-│   ├── categories/         # Página de categorías
-│   ├── questions/          # Página de preguntas
-│   ├── globals.css         # Estilos globales
-│   ├── layout.tsx          # Layout principal
-│   └── page.tsx           # Página de inicio
+├── app/                     # App Router de Next.js
+│   ├── auth/               # Páginas de autenticación
+│   │   ├── login/          # Login de usuarios
+│   │   └── register/       # Registro de usuarios
+│   ├── questions/          # Módulo de preguntas
+│   ├── categories/         # Gestión de categorías
+│   ├── evaluations/        # Sistema de evaluaciones
+│   ├── profile/           # Perfil de usuario
+│   ├── settings/          # Configuraciones
+│   ├── globals.css        # Estilos globales
+│   ├── layout.tsx         # Layout principal
+│   └── page.tsx          # Landing page
 ├── components/            # Componentes reutilizables
-│   └── NavigationBar.tsx  # Barra de navegación
-public/                    # Archivos estáticos
-├── favicon.ico
-└── ...
+│   ├── NavigationBar.tsx # Barra de navegación
+│   └── ProtectedRoute.tsx # Protección de rutas
+├── contexts/              # Context APIs
+│   ├── AuthContext.tsx   # Contexto de autenticación
+│   └── LoadingContext.tsx # Contexto de loading
+└── middleware.ts          # Middleware de Next.js
 ```
 
-## 🎯 Funcionalidades Principales
+## 🎯 Módulos y Funcionalidades
 
-### 🏠 Página Principal
-- Dashboard con estadísticas generales
-- Cards de características principales
-- Navegación intuitiva
+### 🏠 Landing Page
+- Página de bienvenida profesional
+- Información de características
+- Call-to-action para registro
 
-### ❓ Gestión de Preguntas
-- Vista de todas las preguntas
-- Filtros por categoría y dificultad
-- Búsqueda en tiempo real
-- Edición y eliminación de preguntas
+### 🔐 Sistema de Autenticación
+- Login y registro de usuarios
+- Protección de rutas privadas
+- Gestión de sesiones con cookies
+
+### 📚 Banco de Preguntas
+- Creación y edición de preguntas
+- Múltiples tipos: opción múltiple, verdadero/falso, etc.
+- Sistema de categorización
 
 ### 🏷️ Gestión de Categorías
-- Vista en grid de todas las categorías
+- Organización por materias y temas
 - Estadísticas por categoría
-- Creación y edición de categorías
+- Gestión visual con tarjetas
+
+### 📝 Sistema de Evaluaciones
+- Creación de evaluaciones personalizadas
+- Asignación de preguntas por categoría
+- Configuración de parámetros de evaluación
+
+### 👤 Perfil de Usuario
+- Gestión de datos personales
+- Historial de actividades
+- Preferencias de configuración
 
 ## 🚀 Scripts Disponibles
 
-- `npm run dev` - Ejecuta el servidor de desarrollo
+- `npm run dev` - Ejecuta el servidor de desarrollo con Turbopack
 - `npm run build` - Construye la aplicación para producción
 - `npm run start` - Ejecuta la aplicación en modo producción
 - `npm run lint` - Ejecuta el linter ESLint
 
 ## 🔧 Configuración
 
-### Bootstrap
-Bootstrap se configura automáticamente importando:
-- `bootstrap/dist/css/bootstrap.min.css` en el layout
-- Componentes de React Bootstrap en las páginas
+### Autenticación
+El sistema utiliza:
+- LocalStorage para persistencia del estado
+- Cookies para compatibilidad con middleware
+- Context API para gestión global del estado
 
-### TypeScript
-El proyecto está completamente tipado con TypeScript. La configuración se encuentra en `tsconfig.json`.
+### Loading States
+Sistema global de loading con:
+- Overlay de carga con blur de fondo
+- Mensajes personalizables
+- Integración con navegación
 
-## 🎨 Personalización
-
-### Estilos
-Los estilos personalizados se definen en `src/app/globals.css`:
+### Estilos Personalizados
 ```css
 :root {
   --primary-color: #0d6efd;
   --secondary-color: #6c757d;
-  /* Más variables... */
+  --success-color: #198754;
+  --danger-color: #dc3545;
 }
 ```
 
-### Componentes
-Todos los componentes utilizan React Bootstrap para mantener consistencia visual.
+## 📱 Diseño Responsive
 
-## 📱 Responsive Design
+Optimizado para:
+- 📱 **Móviles** (< 768px): Navegación colapsable y layouts verticales
+- 📟 **Tablets** (768px - 992px): Grids adaptativos  
+- 💻 **Desktop** (> 992px): Experiencia completa de escritorio
 
-La aplicación está optimizada para:
-- 📱 Móviles (< 768px)
-- 📟 Tablets (768px - 992px)  
-- 💻 Desktop (> 992px)
+## 🛡️ Seguridad
 
-## 🔮 Próximas Funcionalidades
+- Protección de rutas del lado cliente y servidor
+- Validación de autenticación en middleware
+- Gestión segura de tokens y cookies
+- Sanitización de datos de entrada
 
-- [ ] Autenticación de usuarios
-- [ ] Base de datos persistente
-- [ ] API REST para gestión de datos
-- [ ] Exportar evaluaciones a PDF
-- [ ] Sistema de permisos y roles
-- [ ] Importar preguntas desde CSV/Excel
+## 🔮 Roadmap
+
+### Próximas Funcionalidades
+- [ ] Base de datos PostgreSQL/MySQL
+- [ ] API REST completa
+- [ ] Sistema de roles y permisos
+- [ ] Reportes avanzados con gráficos
+- [ ] Exportación a PDF/Excel
+- [ ] Integración con LMS existentes
+- [ ] Análisis de IA para recomendaciones
+
+### Módulos Futuros
+- [ ] **Calendario Académico**: Programación de evaluaciones
+- [ ] **Mensajería**: Comunicación entre docentes y estudiantes  
+- [ ] **Biblioteca Digital**: Repositorio de recursos educativos
+- [ ] **Gamificación**: Sistema de puntos y logros
 
 ## 🤝 Contribución
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
+2. Crea una rama para tu feature (`git checkout -b feature/ModuloIncreible`)
+3. Commit tus cambios (`git commit -m 'Agrega ModuloIncreible'`)
+4. Push a la rama (`git push origin feature/ModuloIncreible`)
 5. Abre un Pull Request
 
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-## 👨‍💻 Autor
+## 🏢 Sobre WANKU
 
-Creado con ❤️ por [Tu Nombre]
+GRADE es desarrollado por **WANKU**, una empresa chilena especializada en soluciones tecnológicas para el sector educacional.
 
 ---
 
-⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!
+⭐ **¡Transforma la educación con GRADEREADME.md* ⭐
