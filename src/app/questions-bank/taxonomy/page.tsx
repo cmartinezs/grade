@@ -79,17 +79,71 @@ export default function TaxonomyPage() {
               Gestiona la estructura jerárquica: Asignaturas → Unidades → Temas
             </p>
           </Col>
-          <Col xs="auto">
-            <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-              ➕ Crear Elemento
-            </Button>
+        </Row>
+
+        {/* Collapsible Info Card */}
+        <Row className="mb-3">
+          <Col>
+            <Accordion>
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>
+                  <small>
+                    <strong>ℹ️ Información y ayuda</strong>
+                  </small>
+                </Accordion.Header>
+                <Accordion.Body>
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6>📚 CU-BP-11, 12 & 13: Gestión completa de taxonomía curricular</h6>
+                      <p className="mb-2 small">
+                        <strong>Jerarquía:</strong> Asignatura (nivel 1) → Unidad (nivel 2) → Tema (nivel 3)
+                      </p>
+                      <p className="mb-2 small">
+                        <strong>Crear:</strong> Usa el botón &quot;➕ Crear Elemento&quot; para agregar nuevos elementos.
+                      </p>
+                      <p className="mb-2 small">
+                        <strong>Editar:</strong> Haz clic en &quot;✏️ Editar&quot; para modificar cualquier elemento.
+                      </p>
+                      <p className="mb-2 small">
+                        <strong>Eliminar:</strong> Haz clic en &quot;🗑️ Eliminar&quot; para inactivar elementos (eliminación lógica en cascada).
+                      </p>
+                      <p className="mb-2 small">
+                        <strong>Buscar:</strong> Usa el buscador para filtrar por asignatura, unidad o tema.
+                      </p>
+                      <p className="mb-0 small">
+                        <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas. 
+                        Se mantiene integridad referencial. La eliminación es lógica con análisis de impacto.
+                      </p>
+                      <p className="mb-0 small text-muted mt-2">
+                        💾 Los datos se guardan automáticamente en localStorage con auditoría completa.
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline-danger"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            '¿Estás seguro de resetear todos los datos? Esta acción no se puede deshacer.'
+                          )
+                        ) {
+                          clearAllTaxonomyData();
+                        }
+                      }}
+                    >
+                      🔄 Resetear Datos
+                    </Button>
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
           </Col>
         </Row>
 
         {/* Search Bar */}
         <Row className="mb-3">
           <Col>
-            <InputGroup>
+            <InputGroup size="lg">
               <InputGroup.Text>
                 <span>🔍</span>
               </InputGroup.Text>
@@ -106,57 +160,12 @@ export default function TaxonomyPage() {
               )}
             </InputGroup>
             {searchTerm && (
-              <small className="text-muted">
+              <small className="text-muted d-block mt-1">
                 {subjects.length === 0
-                  ? 'No se encontraron resultados'
-                  : `${subjects.length} asignatura(s) encontrada(s)`}
+                  ? '❌ No se encontraron resultados'
+                  : `✓ ${subjects.length} asignatura(s) encontrada(s)`}
               </small>
             )}
-          </Col>
-        </Row>
-
-        {/* Info Card */}
-        <Row className="mb-4">
-          <Col>
-            <Card bg="light">
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <h6>📚 CU-BP-11, 12 & 13: Gestión completa de taxonomía curricular</h6>
-                    <p className="mb-2 small">
-                      <strong>Jerarquía:</strong> Asignatura (nivel 1) → Unidad (nivel 2) → Tema (nivel 3)
-                    </p>
-                    <p className="mb-2 small">
-                      <strong>Crear:</strong> Usa el botón &quot;➕ Crear Elemento&quot; para agregar nuevos elementos.
-                    </p>
-                    <p className="mb-2 small">
-                      <strong>Editar:</strong> Haz clic en &quot;✏️ Editar&quot; para modificar cualquier elemento.
-                    </p>
-                    <p className="mb-2 small">
-                      <strong>Eliminar:</strong> Haz clic en &quot;🗑️ Eliminar&quot; para inactivar elementos (eliminación lógica en cascada).
-                    </p>
-                    <p className="mb-0 small">
-                      <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas. 
-                      Se mantiene integridad referencial. La eliminación es lógica con análisis de impacto.
-                    </p>
-                    <p className="mb-0 small text-muted mt-2">
-                      💾 Los datos se guardan automáticamente en localStorage con auditoría completa.
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline-danger"
-                    onClick={() => {
-                      if (window.confirm('¿Estás seguro de resetear todos los datos? Esta acción no se puede deshacer.')) {
-                        clearAllTaxonomyData();
-                      }
-                    }}
-                  >
-                    🔄 Resetear Datos
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
           </Col>
         </Row>
 
@@ -164,8 +173,11 @@ export default function TaxonomyPage() {
         <Row>
           <Col>
             <Card>
-              <Card.Header>
+              <Card.Header className="d-flex justify-content-between align-items-center">
                 <strong>Catálogo Jerárquico</strong>
+                <Button variant="primary" size="sm" onClick={() => setShowCreateModal(true)}>
+                  ➕ Crear Elemento
+                </Button>
               </Card.Header>
               <Card.Body>
                 {subjects.length === 0 ? (
