@@ -3,7 +3,6 @@
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
-import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -98,7 +97,6 @@ export default function Home() {
           </Col>
         </Row>
       </Container>
-      <Footer />
     </PageWrapper>
   );
 }

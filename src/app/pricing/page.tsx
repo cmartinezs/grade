@@ -2,6 +2,7 @@
 
 import { Container, Row, Col, Card, Button, Badge, ListGroup } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
+import PageWrapper from '@/components/PageWrapper';
 
 export default function PricingPage() {
   const plans = [
@@ -89,7 +90,7 @@ export default function PricingPage() {
   ];
 
   return (
-    <>
+    <PageWrapper>
       <NavigationBar />
       
       <Container className="mt-5">
@@ -257,6 +258,6 @@ export default function PricingPage() {
           </Col>
         </Row>
       </Container>
-    </>
+    </PageWrapper>
   );
 }

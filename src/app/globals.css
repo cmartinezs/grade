@@ -82,3 +82,19 @@ footer a:hover {
     flex: 0 0 60% !important;
   }
 }
+
+/* Page layout with sticky footer */
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1 0 auto;
+}
+
+/* Ensure footer sticks to bottom */
+footer {
+  flex-shrink: 0;
+}

@@ -1,6 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react';
+import Footer from './Footer';
 
 interface PageWrapperProps {
   children: ReactNode;
@@ -8,10 +9,11 @@ interface PageWrapperProps {
 
 export default function PageWrapper({ children }: PageWrapperProps) {
   return (
-    <div className="d-flex flex-column" style={{ minHeight: 'calc(100vh - 80px)' }}>
-      <div className="flex-grow-1">
+    <div className="page-container">
+      <div className="page-content">
         {children}
       </div>
+      <Footer />
     </div>
   );
 }

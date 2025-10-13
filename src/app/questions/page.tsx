@@ -2,6 +2,7 @@
 
 import { Container, Row, Col, Card, Button, Badge, Form, InputGroup } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
+import PageWrapper from '@/components/PageWrapper';
 
 // Datos de ejemplo
 const sampleQuestions = [
@@ -35,7 +36,7 @@ const sampleQuestions = [
 
 export default function QuestionsPage() {
   return (
-    <>
+    <PageWrapper>
       <NavigationBar />
       
       <Container className="mt-4">
@@ -171,6 +172,6 @@ export default function QuestionsPage() {
           </Col>
         </Row>
       </Container>
-    </>
+    </PageWrapper>
   );
 }
