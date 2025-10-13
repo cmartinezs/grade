@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   const currentYear: number = new Date().getFullYear();
-  const startYear: number = 2005;
+  const startYear: number = 2025;
   
   // Mostrar rango de años solo si el año actual es diferente al inicial
   const yearRange: string = currentYear > startYear ? `${startYear} - ${currentYear}` : startYear.toString();
