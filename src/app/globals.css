@@ -49,6 +49,29 @@ footer a:hover {
   max-width: 400px;
 }
 
+/* Register page styles */
+.register-container {
+  min-height: 100vh;
+}
+
+.register-form-container {
+  flex: 1 1 100%;
+  background-color: #ffffff;
+  padding: 1rem;
+  min-height: 60vh;
+}
+
+.register-form-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+@media (min-width: 768px) {
+  .register-form-container {
+    padding: 1.5rem;
+  }
+}
+
 .promo-section {
   flex: 1 1 60%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -75,11 +98,15 @@ footer a:hover {
 
 @media (min-width: 992px) {
   .login-form-container {
-    flex: 0 0 40% !important;
+    flex: 0 0 50% !important;
+  }
+  
+  .register-form-container {
+    flex: 0 0 50% !important;
   }
   
   .promo-section {
-    flex: 0 0 60% !important;
+    flex: 0 0 50% !important;
   }
 }
 
