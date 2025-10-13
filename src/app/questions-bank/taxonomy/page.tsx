@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Badge, Accordion } from 'react-bootstrap';
+import { useState, useEffect, useCallback } from 'react';
+import { Container, Row, Col, Card, Button, Badge, Accordion, Form, InputGroup } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateTaxonomyModal from '@/components/CreateTaxonomyModal';
 import EditTaxonomyModal from '@/components/EditTaxonomyModal';
@@ -10,26 +10,42 @@ import {
   getAllSubjects,
   getUnitsBySubject,
   getTopicsByUnit,
+  searchTaxonomy,
+  searchUnitsBySubject,
+  searchTopicsByUnit,
   clearAllTaxonomyData,
 } from '@/lib/taxonomyStore';
 import { Subject, Unit, Topic, TaxonomyType } from '@/types/taxonomy';
 
 export default function TaxonomyPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editElement, setEditElement] = useState<{ type: TaxonomyType; id: string } | null>(null);
   const [deleteElement, setDeleteElement] = useState<{ type: TaxonomyType; id: string } | null>(null);
 
+  const loadData = useCallback(() => {
+    if (searchTerm.trim() === '') {
+      setSubjects(getAllSubjects());
+    } else {
+      setSubjects(searchTaxonomy(searchTerm));
+    }
+  }, [searchTerm]);
+
   // Load data from localStorage on mount
   useEffect(() => {
-    setSubjects(getAllSubjects());
-  }, []);
+    loadData();
+  }, [loadData]);
 
   const handleSuccess = () => {
     // Refresh data after creation, edition, or deletion
-    setSubjects(getAllSubjects());
+    loadData();
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
   };
 
   const handleEdit = (type: TaxonomyType, id: string) => {
@@ -67,6 +83,35 @@ export default function TaxonomyPage() {
             <Button variant="primary" onClick={() => setShowCreateModal(true)}>
               ➕ Crear Elemento
             </Button>
+          </Col>
+        </Row>
+
+        {/* Search Bar */}
+        <Row className="mb-3">
+          <Col>
+            <InputGroup>
+              <InputGroup.Text>
+                <span>🔍</span>
+              </InputGroup.Text>
+              <Form.Control
+                type="text"
+                placeholder="Buscar por asignatura, unidad o tema..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <Button variant="outline-secondary" onClick={handleClearSearch}>
+                  ✕ Limpiar
+                </Button>
+              )}
+            </InputGroup>
+            {searchTerm && (
+              <small className="text-muted">
+                {subjects.length === 0
+                  ? 'No se encontraron resultados'
+                  : `${subjects.length} asignatura(s) encontrada(s)`}
+              </small>
+            )}
           </Col>
         </Row>
 
@@ -133,6 +178,7 @@ export default function TaxonomyPage() {
                         subject={subject}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        searchTerm={searchTerm}
                       />
                     ))}
                   </Accordion>
@@ -179,12 +225,14 @@ function TaxonomySubjectItem({
   subject,
   onEdit,
   onDelete,
+  searchTerm,
 }: {
   subject: Subject;
   onEdit: (type: TaxonomyType, id: string) => void;
   onDelete: (type: TaxonomyType, id: string) => void;
+  searchTerm: string;
 }) {
-  const units = getUnitsBySubject(subject.subject_id);
+  const units = searchTerm ? searchUnitsBySubject(subject.subject_id, searchTerm) : getUnitsBySubject(subject.subject_id);
 
   return (
     <Accordion.Item eventKey={subject.subject_id}>
@@ -242,7 +290,13 @@ function TaxonomySubjectItem({
         ) : (
           <Accordion>
             {units.map((unit) => (
-              <TaxonomyUnitItem key={unit.unit_id} unit={unit} onEdit={onEdit} onDelete={onDelete} />
+              <TaxonomyUnitItem
+                key={unit.unit_id}
+                unit={unit}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                searchTerm={searchTerm}
+              />
             ))}
           </Accordion>
         )}
@@ -255,12 +309,14 @@ function TaxonomyUnitItem({
   unit,
   onEdit,
   onDelete,
+  searchTerm,
 }: {
   unit: Unit;
   onEdit: (type: TaxonomyType, id: string) => void;
   onDelete: (type: TaxonomyType, id: string) => void;
+  searchTerm: string;
 }) {
-  const topics = getTopicsByUnit(unit.unit_id);
+  const topics = searchTerm ? searchTopicsByUnit(unit.unit_id, searchTerm) : getTopicsByUnit(unit.unit_id);
 
   return (
     <Accordion.Item eventKey={unit.unit_id}>

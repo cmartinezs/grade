@@ -218,6 +218,109 @@ export function getTopicById(topicId: string): Topic | undefined {
   return topics.find((t) => t.topic_id === topicId && t.active && !t.deleted_at);
 }
 
+/**
+ * Search taxonomy elements by term (searches in subjects, units, and topics)
+ * Returns filtered subjects with their matching units and topics
+ */
+export function searchTaxonomy(searchTerm: string): Subject[] {
+  if (!searchTerm || searchTerm.trim() === '') {
+    return getAllSubjects();
+  }
+
+  const term = searchTerm.toLowerCase().trim();
+  const matchedSubjects = new Set<string>();
+  const matchedUnits = new Set<string>();
+  const matchedTopics = new Set<string>();
+
+  // Search in subjects (name and code)
+  subjects.forEach((subject) => {
+    if (subject.active && !subject.deleted_at) {
+      if (
+        subject.name.toLowerCase().includes(term) ||
+        subject.code.toLowerCase().includes(term)
+      ) {
+        matchedSubjects.add(subject.subject_id);
+      }
+    }
+  });
+
+  // Search in units (name)
+  units.forEach((unit) => {
+    if (unit.active && !unit.deleted_at) {
+      if (unit.name.toLowerCase().includes(term)) {
+        matchedUnits.add(unit.unit_id);
+        matchedSubjects.add(unit.subject_fk); // Include parent subject
+      }
+    }
+  });
+
+  // Search in topics (name)
+  topics.forEach((topic) => {
+    if (topic.active && !topic.deleted_at) {
+      if (topic.name.toLowerCase().includes(term)) {
+        matchedTopics.add(topic.topic_id);
+        const parentUnit = units.find((u) => u.unit_id === topic.unit_fk);
+        if (parentUnit) {
+          matchedUnits.add(parentUnit.unit_id);
+          matchedSubjects.add(parentUnit.subject_fk); // Include parent subject
+        }
+      }
+    }
+  });
+
+  // Return only matched subjects
+  return subjects.filter((s) => matchedSubjects.has(s.subject_id) && s.active && !s.deleted_at);
+}
+
+/**
+ * Get filtered units by subject and search term
+ */
+export function searchUnitsBySubject(subjectId: string, searchTerm: string): Unit[] {
+  const allUnits = getUnitsBySubject(subjectId);
+  
+  if (!searchTerm || searchTerm.trim() === '') {
+    return allUnits;
+  }
+
+  const term = searchTerm.toLowerCase().trim();
+  const matchedUnits = new Set<string>();
+
+  // Include units that match directly
+  allUnits.forEach((unit) => {
+    if (unit.name.toLowerCase().includes(term)) {
+      matchedUnits.add(unit.unit_id);
+    }
+  });
+
+  // Include units that have matching topics
+  topics.forEach((topic) => {
+    if (topic.active && !topic.deleted_at) {
+      if (topic.name.toLowerCase().includes(term)) {
+        const parentUnit = allUnits.find((u) => u.unit_id === topic.unit_fk);
+        if (parentUnit) {
+          matchedUnits.add(parentUnit.unit_id);
+        }
+      }
+    }
+  });
+
+  return allUnits.filter((u) => matchedUnits.has(u.unit_id));
+}
+
+/**
+ * Get filtered topics by unit and search term
+ */
+export function searchTopicsByUnit(unitId: string, searchTerm: string): Topic[] {
+  const allTopics = getTopicsByUnit(unitId);
+  
+  if (!searchTerm || searchTerm.trim() === '') {
+    return allTopics;
+  }
+
+  const term = searchTerm.toLowerCase().trim();
+  return allTopics.filter((topic) => topic.name.toLowerCase().includes(term));
+}
+
 // ===== VALIDATIONS (Business Rules) =====
 
 /**
