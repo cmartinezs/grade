@@ -31,3 +31,54 @@ footer {
 footer a:hover {
   text-decoration: underline !important;
 }
+
+/* Login page styles */
+.login-container {
+  min-height: 100vh;
+}
+
+.login-form-container {
+  flex: 1 1 100%;
+  background-color: #ffffff;
+  padding: 2rem;
+  min-height: 60vh;
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.promo-section {
+  flex: 1 1 60%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  min-height: 40vh;
+}
+
+.promo-content {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.promo-text {
+  max-width: 400px;
+}
+
+.auth-footer-mobile {
+  font-size: 0.65rem;
+}
+
+.auth-footer-desktop {
+  font-size: 0.75rem;
+}
+
+@media (min-width: 992px) {
+  .login-form-container {
+    flex: 0 0 40% !important;
+  }
+  
+  .promo-section {
+    flex: 0 0 60% !important;
+  }
+}

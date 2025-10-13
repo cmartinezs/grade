@@ -2,10 +2,11 @@
 
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
+import PageWrapper from '@/components/PageWrapper';
 
 export default function AboutPage() {
   return (
-    <>
+    <PageWrapper>
       <NavigationBar />
       
       <Container className="mt-5">
@@ -140,6 +141,6 @@ export default function AboutPage() {
           </Col>
         </Row>
       </Container>
-    </>
+    </PageWrapper>
   );
 }
