@@ -36,7 +36,7 @@ export default function QuestionsBankPage() {
     if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
     if (filterSubject) filters.subject_fk = filterSubject;
 
-    const results = questionStore.searchQuestions(searchText, filters);
+    const results = questionStore.searchQuestionsGrouped(searchText, filters);
     setQuestions(results);
   }, [searchText, filterType, filterDifficulty, filterSubject]);
 
@@ -51,7 +51,7 @@ export default function QuestionsBankPage() {
     if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
     if (filterSubject) filters.subject_fk = filterSubject;
 
-    const results = questionStore.searchQuestions(searchText, filters);
+    const results = questionStore.searchQuestionsGrouped(searchText, filters);
     setQuestions(results);
   };
 
@@ -242,6 +242,22 @@ export default function QuestionsBankPage() {
                           <Badge bg={getDifficultyColor(question.difficulty_fk)} className="me-2">
                             {difficultyLevels.find(d => d.difficulty_id === question.difficulty_fk)?.name}
                           </Badge>
+                          {(() => {
+                            const versionCount = questionStore.getQuestionVersionHistory(question.question_id).length;
+                            if (versionCount > 1) {
+                              return (
+                                <Badge bg="info" className="me-2">
+                                  🔄 v{question.version} ({versionCount} versiones)
+                                </Badge>
+                              );
+                            } else {
+                              return (
+                                <Badge bg="secondary" className="me-2">
+                                  v{question.version}
+                                </Badge>
+                              );
+                            }
+                          })()}
                           {question.subject_name && (
                             <Badge bg="light" text="dark" className="me-2">
                               📚 {question.subject_name}
@@ -269,11 +285,11 @@ export default function QuestionsBankPage() {
                           </div>
                         )}
                         <div className="mt-2 small text-muted">
-                          <span>ID: {question.question_id}</span>
-                          <span className="ms-3">Versión: {question.version}</span>
+                          <span>ID: {question.original_version_fk || question.question_id}</span>
+                          <span className="ms-3">Última versión: v{question.version}</span>
                           <span className="ms-3">Autor: {question.author_fk}</span>
                           <span className="ms-3">
-                            Creado: {new Date(question.created_at).toLocaleDateString()}
+                            Actualizado: {new Date(question.updated_at).toLocaleDateString()}
                           </span>
                         </div>
                       </Col>

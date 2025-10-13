@@ -750,6 +750,77 @@ class QuestionStore {
     return history.length > 0 ? history[0] : null;
   }
 
+  // Group questions by version families (returns only latest versions)
+  getQuestionsGroupedByVersion(): QuestionWithDetails[] {
+    const questions = this.loadQuestions();
+    const versionRoots = new Set<string>();
+    const latestVersions: QuestionWithDetails[] = [];
+
+    // Find all version roots
+    questions.forEach(q => {
+      const root = q.original_version_fk || q.question_id;
+      versionRoots.add(root);
+    });
+
+    // For each root, get the latest version
+    versionRoots.forEach(rootId => {
+      const versions = questions.filter(q => 
+        q.question_id === rootId || q.original_version_fk === rootId
+      ).sort((a, b) => b.version - a.version);
+
+      if (versions.length > 0) {
+        const latestVersion = this.getQuestionWithDetails(versions[0].question_id);
+        if (latestVersion) {
+          latestVersions.push(latestVersion);
+        }
+      }
+    });
+
+    return latestVersions;
+  }
+
+  // Search questions grouped by version (returns only latest versions that match filters)
+  searchQuestionsGrouped(
+    searchTerm: string = '',
+    filters: {
+      type?: QuestionType;
+      difficulty_fk?: DifficultyLevel;
+      subject_fk?: string;
+      unit_fk?: string;
+      topic_fk?: string;
+    } = {}
+  ): QuestionWithDetails[] {
+    // First, apply filters to get matching questions
+    const allQuestions = this.searchQuestions(searchTerm, filters);
+    const versionRootsMap = new Map<string, string[]>(); // root -> [question_ids]
+
+    // Group all matching questions by their version root
+    allQuestions.forEach(q => {
+      const root = q.original_version_fk || q.question_id;
+      if (!versionRootsMap.has(root)) {
+        versionRootsMap.set(root, []);
+      }
+      versionRootsMap.get(root)!.push(q.question_id);
+    });
+
+    // For each root, get the latest version
+    const groupedResults: QuestionWithDetails[] = [];
+    versionRootsMap.forEach((questionIds, rootId) => {
+      // Get all versions for this root (not just the ones that match filters)
+      const allVersions = this.getQuestionVersionHistory(rootId);
+      
+      // Get the latest version (highest version number)
+      if (allVersions.length > 0) {
+        groupedResults.push(allVersions[0]); // Already sorted by version DESC
+      }
+    });
+
+    // Sort by updated_at descending (most recently updated first)
+    return groupedResults.sort((a, b) => 
+      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    );
+  }
+
   // Get difficulty levels
   getDifficultyLevels(): Difficulty[] {
     return DIFFICULTY_LEVELS.filter(d => d.active);

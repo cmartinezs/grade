@@ -86,17 +86,20 @@ export default function ViewQuestionModal({
       <Modal.Body>
         {/* Version warning */}
         {!isLatestVersion && (
-          <Alert variant="warning">
-            <strong>⚠️ Atención:</strong> Esta no es la versión más reciente de la pregunta.
-            Existe una versión v{versionHistory[0].version} más actualizada.
+          <Alert variant="warning" className="d-flex justify-content-between align-items-center">
+            <div>
+              <strong>⚠️ Atención:</strong> Esta no es la versión más reciente de la pregunta.
+              <br />
+              <small>Existe una versión v{versionHistory[0].version} más actualizada.</small>
+            </div>
             <Button
-              variant="link"
+              variant="warning"
               size="sm"
               onClick={() => {
                 setQuestion(versionHistory[0]);
               }}
             >
-              Ver versión más reciente
+              📄 Ver Última Versión
             </Button>
           </Alert>
         )}
@@ -240,7 +243,8 @@ export default function ViewQuestionModal({
         <Button variant="secondary" onClick={onHide}>
           ❌ Cerrar
         </Button>
-        {onEdit && (
+        {/* Only show Edit and Create Version buttons for the latest version */}
+        {isLatestVersion && onEdit && (
           <Button
             variant="warning"
             onClick={() => {
@@ -251,7 +255,7 @@ export default function ViewQuestionModal({
             ✏️ Editar
           </Button>
         )}
-        {onCreateVersion && (
+        {isLatestVersion && onCreateVersion && (
           <Button
             variant="success"
             onClick={() => {
