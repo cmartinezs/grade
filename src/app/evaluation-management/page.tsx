@@ -1,17 +1,12 @@
 "use client"
 
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import NavigationBar from '@/components/NavigationBar';
-import PageWrapper from '@/components/PageWrapper';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 export default function EvaluationManagementPage() {
   return (
     <ProtectedRoute>
-      <PageWrapper>
-        <NavigationBar />
-        
-        <Container className="mt-4">
+      <Container className="mt-4">
           <Row>
             <Col>
               <h1>Mis Evaluaciones</h1>
@@ -27,7 +22,6 @@ export default function EvaluationManagementPage() {
             </Col>
           </Row>
         </Container>
-      </PageWrapper>
     </ProtectedRoute>
   );
 }

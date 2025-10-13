@@ -1,8 +1,6 @@
 "use client"
 
 import { Container, Row, Col, Card, Button, Badge, Form, InputGroup } from 'react-bootstrap';
-import NavigationBar from '@/components/NavigationBar';
-import PageWrapper from '@/components/PageWrapper';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Datos de ejemplo
@@ -21,9 +19,6 @@ const sampleQuestions = [
 export default function QuestionsBankPage() {
   return (
     <ProtectedRoute>
-      <PageWrapper>
-        <NavigationBar />
-      
       <Container className="mt-4">
         {/* Header */}
         <Row className="mb-4">
@@ -80,7 +75,6 @@ export default function QuestionsBankPage() {
           ))}
         </Row>
       </Container>
-    </PageWrapper>
     </ProtectedRoute>
   );
 }
