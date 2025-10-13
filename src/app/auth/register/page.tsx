@@ -273,6 +273,47 @@ export default function RegisterPage() {
           </Col>
         </Row>
 
+        {/* Beneficios de crear cuenta */}
+        <Row className="mt-4">
+          <Col>
+            <Card className="bg-primary text-white">
+              <Card.Body className="text-center py-4">
+                <h4>¿Por qué crear una cuenta?</h4>
+                <Row className="mt-3">
+                  <Col md={3}>
+                    <div>
+                      <span className="display-6">☁️</span>
+                      <h6 className="mt-2">Sincronización</h6>
+                      <small>Accede a tus preguntas desde cualquier dispositivo</small>
+                    </div>
+                  </Col>
+                  <Col md={3}>
+                    <div>
+                      <span className="display-6">👥</span>
+                      <h6 className="mt-2">Colaboración</h6>
+                      <small>Trabaja en equipo con otros profesores</small>
+                    </div>
+                  </Col>
+                  <Col md={3}>
+                    <div>
+                      <span className="display-6">🔒</span>
+                      <h6 className="mt-2">Seguridad</h6>
+                      <small>Tus datos protegidos con cifrado avanzado</small>
+                    </div>
+                  </Col>
+                  <Col md={3}>
+                    <div>
+                      <span className="display-6">📊</span>
+                      <h6 className="mt-2">Estadísticas</h6>
+                      <small>Reportes detallados de uso y rendimiento</small>
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
         {/* Plan incluido */}
         <Row className="mt-4">
           <Col>

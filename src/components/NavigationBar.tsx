@@ -25,20 +25,20 @@ export default function NavigationBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} href="/">
-              Inicio
+              🏠 Inicio
             </Nav.Link>
             
             {/* Enlaces públicos */}
             {!isAuthenticated && (
               <>
                 <Nav.Link as={Link} href="/about">
-                  Acerca de
+                  ℹ️ Acerca de
                 </Nav.Link>
                 <Nav.Link as={Link} href="/features">
-                  Características
+                  ✨ Características
                 </Nav.Link>
                 <Nav.Link as={Link} href="/pricing">
-                  Precios
+                  💰 Precios
                 </Nav.Link>
               </>
             )}
@@ -46,29 +46,29 @@ export default function NavigationBar() {
             {/* Enlaces privados - Solo para usuarios autenticados */}
             {isAuthenticated && (
               <>
-                <NavDropdown title="Preguntas" id="questions-dropdown">
+                <NavDropdown title="❓ Preguntas" id="questions-dropdown">
                   <NavDropdown.Item as={Link} href="/questions">
-                    Ver Todas
+                    📋 Ver Todas
                   </NavDropdown.Item>
                   <NavDropdown.Item as={Link} href="/questions/create">
-                    Crear Nueva
+                    ➕ Crear Nueva
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} href="/questions/import">
-                    Importar Preguntas
+                    📥 Importar Preguntas
                   </NavDropdown.Item>
                 </NavDropdown>
                 
                 <Nav.Link as={Link} href="/categories">
-                  Categorías
+                  🏷️ Categorías
                 </Nav.Link>
                 
-                <NavDropdown title="Evaluaciones" id="evaluations-dropdown">
+                <NavDropdown title="📊 Evaluaciones" id="evaluations-dropdown">
                   <NavDropdown.Item as={Link} href="/evaluations">
-                    Mis Evaluaciones
+                    📝 Mis Evaluaciones
                   </NavDropdown.Item>
                   <NavDropdown.Item as={Link} href="/evaluations/create">
-                    Crear Evaluación
+                    ➕ Crear Evaluación
                   </NavDropdown.Item>
                 </NavDropdown>
               </>
@@ -80,10 +80,10 @@ export default function NavigationBar() {
               // Botones para usuarios no autenticados
               <>
                 <Nav.Link as={Link} href="/auth/login">
-                  Iniciar Sesión
+                  🔑 Iniciar Sesión
                 </Nav.Link>
                 <Link href="/auth/register" className="btn btn-outline-light btn-sm ms-2">
-                  Registrarse
+                  🚀 Registrarse
                 </Link>
               </>
             ) : (
@@ -100,23 +100,23 @@ export default function NavigationBar() {
                   {user?.institution && (
                     <>
                       <br />
-                      <small className="text-muted">{user.institution}</small>
+                      <small className="text-muted">🏫 {user.institution}</small>
                     </>
                   )}
                 </NavDropdown.Header>
                 <NavDropdown.Divider />
                 <NavDropdown.Item as={Link} href="/profile">
-                  Mi Perfil
+                  👤 Mi Perfil
                 </NavDropdown.Item>
                 <NavDropdown.Item as={Link} href="/settings">
-                  Configuración
+                  ⚙️ Configuración
                 </NavDropdown.Item>
                 <NavDropdown.Item as={Link} href="/billing">
-                  Facturación
+                  💳 Facturación
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={handleLogout}>
-                  Cerrar Sesión
+                  🚪 Cerrar Sesión
                 </NavDropdown.Item>
               </NavDropdown>
             )}

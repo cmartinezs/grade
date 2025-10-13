@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from '@/contexts/AuthContext';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: "Grade Question Bank - Web App",
@@ -15,9 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>
+      <body className="d-flex flex-column min-vh-100">
         <AuthProvider>
-          {children}
+          <main className="flex-grow-1">
+            {children}
+          </main>
+          <Footer />
         </AuthProvider>
       </body>
     </html>

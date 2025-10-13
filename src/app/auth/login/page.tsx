@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import NavigationBar from '@/components/NavigationBar';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
@@ -55,12 +54,20 @@ export default function LoginPage() {
   };
 
   return (
-    <>
-      <NavigationBar />
-      
-      <Container className="mt-5">
+    <div className="d-flex align-items-center justify-content-center py-5" style={{ backgroundColor: '#f8f9fa', minHeight: 'calc(100vh - 120px)' }}>
+      <Container>
         <Row className="justify-content-center">
           <Col md={6} lg={4}>
+            {/* Logo y enlace de vuelta */}
+            <div className="text-center mb-4">
+              <Link href="/" className="text-decoration-none">
+                <h1 className="text-primary">📚 Grade Question Bank</h1>
+              </Link>
+              <Link href="/" className="text-decoration-none text-muted">
+                <small>← Volver al inicio</small>
+              </Link>
+            </div>
+            
             <Card className="shadow">
               <Card.Body className="p-5">
                 <div className="text-center mb-4">
@@ -151,48 +158,7 @@ export default function LoginPage() {
             </Card>
           </Col>
         </Row>
-
-        {/* Beneficios del login */}
-        <Row className="mt-5">
-          <Col>
-            <Card className="bg-primary text-white">
-              <Card.Body className="text-center py-4">
-                <h4>¿Por qué crear una cuenta?</h4>
-                <Row className="mt-3">
-                  <Col md={3}>
-                    <div>
-                      <i className="bi bi-cloud-upload display-6"></i>
-                      <h6 className="mt-2">Sincronización</h6>
-                      <small>Accede a tus preguntas desde cualquier dispositivo</small>
-                    </div>
-                  </Col>
-                  <Col md={3}>
-                    <div>
-                      <i className="bi bi-people display-6"></i>
-                      <h6 className="mt-2">Colaboración</h6>
-                      <small>Trabaja en equipo con otros profesores</small>
-                    </div>
-                  </Col>
-                  <Col md={3}>
-                    <div>
-                      <i className="bi bi-shield-check display-6"></i>
-                      <h6 className="mt-2">Seguridad</h6>
-                      <small>Tus datos protegidos con cifrado avanzado</small>
-                    </div>
-                  </Col>
-                  <Col md={3}>
-                    <div>
-                      <i className="bi bi-graph-up display-6"></i>
-                      <h6 className="mt-2">Estadísticas</h6>
-                      <small>Reportes detallados de uso y rendimiento</small>
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
       </Container>
-    </>
+    </div>
   );
 }

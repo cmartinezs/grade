@@ -96,21 +96,6 @@ export default function Home() {
           </Col>
         </Row>
       </Container>
-
-      {/* Footer */}
-      <footer className="bg-dark text-white mt-5 py-4">
-        <Container>
-          <Row>
-            <Col md={6}>
-              <h5>Grade Question Bank</h5>
-              <p>Sistema de gestión de banco de preguntas para evaluaciones académicas.</p>
-            </Col>
-            <Col md={6} className="text-end">
-              <p>&copy; 2025 Grade Question Bank. Todos los derechos reservados.</p>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
     </>
   );
 }
