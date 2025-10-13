@@ -6,17 +6,19 @@ const qbMenu = [
   { 
     label: 'Banco de Preguntas', 
     icon: '📚',
-    href: '/questions-bank' 
-  },
-  { 
-    label: 'Crear Pregunta', 
-    icon: '➕',
-    href: '/questions-bank/create' 
-  },
-  { 
-    label: 'Importar', 
-    icon: '📥',
-    href: '/questions-bank/import' 
+    href: '/questions-bank',
+    children: [
+      { 
+        label: 'Crear Pregunta', 
+        icon: '➕',
+        href: '/questions-bank/create' 
+      },
+      { 
+        label: 'Importar', 
+        icon: '📥',
+        href: '/questions-bank/import' 
+      },
+    ]
   },
   { 
     label: 'Taxonomía Curricular', 
