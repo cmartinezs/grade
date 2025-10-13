@@ -267,8 +267,26 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">{getErrorForField('unit_fk')}</Form.Control.Feedback>
                 {formData.subject_fk && units.filter((u) => u.subject_fk === formData.subject_fk).length === 0 && (
-                  <Form.Text className="text-warning">
-                    ⚠️ No hay unidades disponibles para esta asignatura. Crea una primero.
+                  <Form.Text className="text-warning d-block mt-2">
+                    ⚠️ No hay unidades disponibles para esta asignatura.{' '}
+                    <a
+                      href="#"
+                      className="text-primary fw-bold"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Switch to Unit form with subject already selected
+                        setTaxonomyType('unit');
+                        setFormData({
+                          ...formData,
+                          name: '',
+                          code: '',
+                          unit_fk: '',
+                        });
+                        setErrors([]);
+                      }}
+                    >
+                      Crear una unidad ahora →
+                    </a>
                   </Form.Text>
                 )}
               </Form.Group>
