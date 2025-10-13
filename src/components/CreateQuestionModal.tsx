@@ -336,7 +336,7 @@ export default function CreateQuestionModal({
               onRemoveOption={handleRemoveOption}
               getErrorsForField={getErrorsForField}
               disabled={isSubmitting}
-              showDifficultyAsRadio={true}
+              showDifficultyAsRadio={false}
             />
 
             {/* Development question note - ESPECÍFICO DE CREATE */}

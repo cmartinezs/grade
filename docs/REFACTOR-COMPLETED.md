@@ -48,6 +48,19 @@ Se completó exitosamente la refactorización de los modales de preguntas, elimi
 - ❌ Removida carga manual de taxonomía
 - ❌ Removidas variables no usadas: `hasNoUnits`, `hasNoTopics`, `selectedSubjectData`, `selectedUnitData`
 - ❌ Removidos ~320 líneas de renderizado de campos
+
+### 4. ✅ Refactorizado: `/src/components/EditQuestionModal.tsx`
+**Antes:** 585 líneas  
+**Después:** 382 líneas  
+**Reducción:** -203 líneas (-35%)
+
+**Cambios:**
+- ❌ Removidos imports no usados: `Card`, `Row`, `Col`, `getAllSubjects`
+- ❌ Removida carga manual de taxonomía
+- ❌ Removidas variables no usadas: `hasNoUnits`, `hasNoTopics`, `subjects`, `units`, `topics`, `difficultyLevels`
+- ❌ Removidos ~280 líneas de renderizado de campos
+- ✅ Agregado `<QuestionFormFields />` con props configuradas
+- ✅ Mantenida lógica específica: alerta de versión, carga de pregunta original, lógica de `isLoadingQuestion`
 - ✅ Agregado `<QuestionFormFields />` con props configuradas
 - ✅ Mantenida lógica específica: detección de duplicados, nota sobre preguntas de desarrollo
 
@@ -60,18 +73,19 @@ Se completó exitosamente la refactorización de los modales de preguntas, elimi
 
 | Métrica | Antes | Después | Reducción |
 |---------|-------|---------|-----------|
-| **Líneas totales** | ~1,253 líneas | ~767 líneas | **-486 líneas (-39%)** |
+| **Líneas totales** | 1,838 líneas | 1,149 líneas | **-689 líneas (-37%)** |
 | **CloneQuestionModal** | 632 | 395 | -237 (-37%) |
 | **CreateQuestionModal** | 621 | 372 | -249 (-40%) |
-| **Código duplicado** | ~600 líneas × 2 | 0 | **-100%** |
+| **EditQuestionModal** | 585 | 382 | -203 (-35%) |
+| **Código duplicado** | ~600 líneas × 3 | 0 | **-100%** |
 
 ### Mantenibilidad
 
 | Aspecto | Antes | Después | Mejora |
 |---------|-------|---------|--------|
-| **Archivos a editar** | 2-3 | 1 | **-67%** |
+| **Archivos a editar** | 3 | 1 | **-67%** |
 | **Consistencia UI** | Variable | Garantizada | **✅ 100%** |
-| **Tests necesarios** | ~12 | ~6 | **-50%** |
+| **Tests necesarios** | ~18 | ~6 | **-67%** |
 | **Bugs potenciales** | Alto riesgo | Bajo riesgo | **✅** |
 
 ## Estructura del Componente Reutilizable

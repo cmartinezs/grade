@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert, Badge, Row, Col, Card } from 'react-bootstrap';
+import { Modal, Button, Form, Alert, Badge } from 'react-bootstrap';
 import {
   QuestionType,
   DifficultyLevel,
@@ -11,8 +11,9 @@ import {
   QuestionWithDetails,
 } from '@/types/question';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { getAllSubjects, getAllUnits, getAllTopics } from '@/lib/taxonomyStore';
+import { getAllTopics, getAllUnits } from '@/lib/taxonomyStore';
 import { useAuth } from '@/contexts/AuthContext';
+import QuestionFormFields from '@/components/QuestionFormFields';
 
 interface EditQuestionModalProps {
   show: boolean;
@@ -49,21 +50,6 @@ export default function EditQuestionModal({
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [newQuestionId, setNewQuestionId] = useState('');
   const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
-
-  // Load taxonomy data
-  const subjects = getAllSubjects().filter(s => s.active && !s.deleted_at);
-  const units = selectedSubject
-    ? getAllUnits().filter(u => u.subject_fk === selectedSubject && u.active && !u.deleted_at)
-    : [];
-  const topics = selectedUnit
-    ? getAllTopics().filter(t => t.unit_fk === selectedUnit && t.active && !t.deleted_at)
-    : [];
-
-  // Check for missing taxonomy levels
-  const hasNoUnits = selectedSubject && units.length === 0;
-  const hasNoTopics = selectedUnit && topics.length === 0;
-
-  const difficultyLevels = questionStore.getDifficultyLevels();
 
   // Load question data when modal opens
   useEffect(() => {
@@ -209,6 +195,10 @@ export default function EditQuestionModal({
     setOptions(newOptions);
   };
 
+  const getErrorsForField = (field: string): QuestionValidationError[] => {
+    return validationErrors.filter(err => err.field === field);
+  };
+
   const handleSubmit = async () => {
     if (!user) {
       alert('Usuario no autenticado');
@@ -331,225 +321,40 @@ export default function EditQuestionModal({
               </Alert>
             )}
 
-            {/* Question Type */}
-            <Form.Group className="mb-3">
-              <Form.Label>Tipo de Pregunta *</Form.Label>
-              <Form.Select
-                value={questionType}
-                onChange={(e) => setQuestionType(e.target.value as QuestionType)}
-                disabled={isSubmitting}
-              >
-                {Object.values(QUESTION_TYPE_RULES).map((rule) => (
-                  <option key={rule.type} value={rule.type}>
-                    {rule.name}
-                  </option>
-                ))}
-              </Form.Select>
-              <Form.Text className="text-muted">
-                {QUESTION_TYPE_RULES[questionType].description}
-              </Form.Text>
-            </Form.Group>
-
-            {/* Question Statement */}
-            <Form.Group className="mb-3">
-              <Form.Label>Enunciado de la Pregunta *</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={4}
-                value={enunciado}
-                onChange={(e) => setEnunciado(e.target.value)}
-                placeholder="Escribe el texto de la pregunta..."
-                disabled={isSubmitting}
-              />
-            </Form.Group>
-
-            {/* Taxonomy Selection */}
-            <Card className="mb-3">
-              <Card.Header>
-                <strong>Taxonomía (Tema) *</strong>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md={4}>
-                    <Form.Group className="mb-2">
-                      <Form.Label>Asignatura</Form.Label>
-                      <Form.Select
-                        value={selectedSubject}
-                        onChange={(e) => {
-                          setSelectedSubject(e.target.value);
-                          // Reset children only on manual change (not during load)
-                          if (!isLoadingQuestion) {
-                            setSelectedUnit('');
-                            setSelectedTopic('');
-                          }
-                        }}
-                        disabled={isSubmitting}
-                      >
-                        <option value="">Seleccione...</option>
-                        {subjects.map((subject) => (
-                          <option key={subject.subject_id} value={subject.subject_id}>
-                            {subject.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={4}>
-                    <Form.Group className="mb-2">
-                      <Form.Label>Unidad</Form.Label>
-                      <Form.Select
-                        value={selectedUnit}
-                        onChange={(e) => {
-                          setSelectedUnit(e.target.value);
-                          // Reset children only on manual change (not during load)
-                          if (!isLoadingQuestion) {
-                            setSelectedTopic('');
-                          }
-                        }}
-                        disabled={!selectedSubject || isSubmitting || !!hasNoUnits}
-                      >
-                        <option value="">Seleccionar...</option>
-                        {units.map((unit) => (
-                          <option key={unit.unit_id} value={unit.unit_id}>
-                            {unit.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={4}>
-                    <Form.Group className="mb-2">
-                      <Form.Label>Tema *</Form.Label>
-                      <Form.Select
-                        value={selectedTopic}
-                        onChange={(e) => setSelectedTopic(e.target.value)}
-                        disabled={!selectedUnit || isSubmitting || !!hasNoTopics}
-                      >
-                        <option value="">Seleccione...</option>
-                        {topics.map((topic) => (
-                          <option key={topic.topic_id} value={topic.topic_id}>
-                            {topic.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Warning: No units for selected subject */}
-                {hasNoUnits && selectedSubject && (
-                  <Alert variant="warning" className="mb-0 mt-2">
-                    <div className="d-flex align-items-start">
-                      <span className="me-2">⚠️</span>
-                      <div>
-                        <strong>La asignatura seleccionada no tiene unidades.</strong>
-                        <p className="mb-0 mt-1 small">
-                          Debes crear al menos una unidad en <strong>Gestión de Taxonomías</strong> antes de poder seleccionar un tema.
-                        </p>
-                      </div>
-                    </div>
-                  </Alert>
-                )}
-
-                {/* Warning: No topics for selected unit */}
-                {hasNoTopics && selectedUnit && !hasNoUnits && (
-                  <Alert variant="warning" className="mb-0 mt-2">
-                    <div className="d-flex align-items-start">
-                      <span className="me-2">⚠️</span>
-                      <div>
-                        <strong>La unidad seleccionada no tiene temas.</strong>
-                        <p className="mb-0 mt-1 small">
-                          Debes crear al menos un tema en <strong>Gestión de Taxonomías</strong> antes de continuar.
-                        </p>
-                      </div>
-                    </div>
-                  </Alert>
-                )}
-              </Card.Body>
-            </Card>
-
-            {/* Difficulty */}
-            <Form.Group className="mb-3">
-              <Form.Label>Dificultad *</Form.Label>
-              <div className="d-flex gap-2">
-                {difficultyLevels.map((level) => (
-                  <Form.Check
-                    key={level.difficulty_id}
-                    type="radio"
-                    id={`difficulty-${level.difficulty_id}`}
-                    label={level.name}
-                    name="difficulty"
-                    value={level.difficulty_id}
-                    checked={difficulty === level.difficulty_id}
-                    onChange={(e) => setDifficulty(e.target.value as DifficultyLevel)}
-                    disabled={isSubmitting}
-                  />
-                ))}
-              </div>
-            </Form.Group>
-
-            {/* Options (if not desarrollo) */}
-            {questionType !== 'desarrollo' && (
-              <Card>
-                <Card.Header className="d-flex justify-content-between align-items-center">
-                  <strong>Alternativas *</strong>
-                  <Badge bg="info">
-                    {QUESTION_TYPE_RULES[questionType].exactlyOneCorrect
-                      ? 'Solo una correcta'
-                      : 'Al menos una correcta'}
-                  </Badge>
-                </Card.Header>
-                <Card.Body>
-                  {options.map((option, index) => (
-                    <div key={index} className="mb-3 p-3 border rounded">
-                      <div className="d-flex align-items-start gap-2">
-                        <Form.Check
-                          type="checkbox"
-                          checked={option.is_correct}
-                          onChange={(e) => handleOptionCorrectChange(index, e.target.checked)}
-                          disabled={isSubmitting}
-                          label=""
-                          title="Marcar como correcta"
-                        />
-                        <div className="flex-grow-1">
-                          <Form.Control
-                            type="text"
-                            value={option.text}
-                            onChange={(e) => handleOptionTextChange(index, e.target.value)}
-                            placeholder={`Alternativa ${index + 1}`}
-                            disabled={isSubmitting || (questionType === 'verdadero_falso')}
-                          />
-                        </div>
-                        {questionType !== 'verdadero_falso' &&
-                          options.length > QUESTION_TYPE_RULES[questionType].minOptions && (
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => removeOption(index)}
-                              disabled={isSubmitting}
-                            >
-                              ❌
-                            </Button>
-                          )}
-                      </div>
-                    </div>
-                  ))}
-
-                  {questionType !== 'verdadero_falso' && (
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={addOption}
-                      disabled={isSubmitting}
-                    >
-                      ➕ Agregar Alternativa
-                    </Button>
-                  )}
-                </Card.Body>
-              </Card>
-            )}
+            {/* Common Question Form Fields */}
+            <QuestionFormFields
+              questionType={questionType}
+              onQuestionTypeChange={setQuestionType}
+              enunciado={enunciado}
+              onEnunciadoChange={setEnunciado}
+              selectedSubject={selectedSubject}
+              selectedUnit={selectedUnit}
+              selectedTopic={selectedTopic}
+              onSubjectChange={(val) => {
+                setSelectedSubject(val);
+                if (!isLoadingQuestion) {
+                  setSelectedUnit('');
+                  setSelectedTopic('');
+                }
+              }}
+              onUnitChange={(val) => {
+                setSelectedUnit(val);
+                if (!isLoadingQuestion) {
+                  setSelectedTopic('');
+                }
+              }}
+              onTopicChange={setSelectedTopic}
+              difficulty={difficulty}
+              onDifficultyChange={setDifficulty}
+              options={options}
+              onOptionTextChange={handleOptionTextChange}
+              onOptionCorrectChange={handleOptionCorrectChange}
+              onAddOption={addOption}
+              onRemoveOption={removeOption}
+              getErrorsForField={getErrorsForField}
+              disabled={isSubmitting}
+              showDifficultyAsRadio={false}
+            />
           </Form>
         )}
       </Modal.Body>
@@ -563,16 +368,8 @@ export default function EditQuestionModal({
             <Button
               variant="primary"
               onClick={handleSubmit}
-              disabled={isSubmitting || hasNoUnits || hasNoTopics || !selectedTopic}
-              title={
-                hasNoUnits
-                  ? 'La asignatura seleccionada no tiene unidades.'
-                  : hasNoTopics
-                  ? 'La unidad seleccionada no tiene temas.'
-                  : !selectedTopic
-                  ? 'Debes seleccionar un tema para continuar'
-                  : ''
-              }
+              disabled={isSubmitting || !selectedTopic}
+              title={!selectedTopic ? 'Debes seleccionar un tema para continuar' : ''}
             >
               {isSubmitting ? '⏳ Guardando...' : mode === 'version' ? '💾 Crear Nueva Versión' : '💾 Guardar Cambios'}
             </Button>
