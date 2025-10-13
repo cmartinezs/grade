@@ -63,19 +63,19 @@ export default function PublicHome() {
               <div className="d-flex gap-3 flex-wrap">
                 {!isAuthenticated ? (
                   <>
-                    <LoadingLink href="/auth/register" className="btn btn-warning btn-lg px-4" loadingMessage="Preparando registro...">
+                    <LoadingLink href="/auth/register" className="btn btn-warning btn-lg px-4" loadingMessage="Preparando registro..." showSpinner={false}>
                       🚀 Comenzar Gratis
                     </LoadingLink>
-                    <LoadingLink href="/public/features" className="btn btn-outline-light btn-lg px-4" loadingMessage="Cargando características...">
+                    <LoadingLink href="/public/features" className="btn btn-outline-light btn-lg px-4" loadingMessage="Cargando características..." showSpinner={false}>
                       📋 Ver Características
                     </LoadingLink>
                   </>
                 ) : (
                   <>
-                    <LoadingLink href="/questions-bank" className="btn btn-warning btn-lg px-4" loadingMessage="Accediendo al dashboard...">
+                    <LoadingLink href="/questions-bank" className="btn btn-warning btn-lg px-4" loadingMessage="Accediendo al dashboard..." showSpinner={false}>
                       📚 Ir al Dashboard
                     </LoadingLink>
-                    <LoadingLink href="/questions-bank/create" className="btn btn-outline-light btn-lg px-4" loadingMessage="Cargando editor...">
+                    <LoadingLink href="/questions-bank/create" className="btn btn-outline-light btn-lg px-4" loadingMessage="Cargando editor..." showSpinner={false}>
                       ➕ Crear Pregunta
                     </LoadingLink>
                   </>
@@ -185,8 +185,8 @@ export default function PublicHome() {
             <Col className="text-center">
               <h4 className="mb-3">¿Listo para mejorar tus evaluaciones?</h4>
               <div className="d-flex justify-content-center gap-3">
-                <LoadingLink href="/auth/register" className="btn btn-warning btn-lg" loadingMessage="Preparando registro...">🚀 Crear cuenta</LoadingLink>
-                <LoadingLink href="/public/features" className="btn btn-outline-secondary btn-lg" loadingMessage="Cargando características...">📋 Ver características</LoadingLink>
+                <LoadingLink href="/auth/register" className="btn btn-warning btn-lg" loadingMessage="Preparando registro..." showSpinner={false}>🚀 Crear cuenta</LoadingLink>
+                <LoadingLink href="/public/features" className="btn btn-outline-secondary btn-lg" loadingMessage="Cargando características..." showSpinner={false}>📋 Ver características</LoadingLink>
               </div>
             </Col>
           </Row>

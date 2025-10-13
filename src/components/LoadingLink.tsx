@@ -10,6 +10,7 @@ interface LoadingLinkProps {
   loadingMessage?: string;
   className?: string;
   onClick?: () => void;
+  showSpinner?: boolean;
 }
 
 export default function LoadingLink({ 
@@ -18,12 +19,13 @@ export default function LoadingLink({
   loadingMessage = 'Navegando...', 
   className = '',
   onClick
+  , showSpinner = true
 }: LoadingLinkProps) {
   const { setLoading, setLoadingMessage } = useLoading();
 
   const handleClick = () => {
     // Solo mostrar loading para navegación entre páginas diferentes
-    if (window.location.pathname !== href) {
+    if (showSpinner && window.location.pathname !== href) {
       setLoading(true);
       setLoadingMessage(loadingMessage);
       

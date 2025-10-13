@@ -30,51 +30,45 @@ export default function NavigationBar() {
         
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={LoadingLink} href="/" loadingMessage="Cargando inicio...">
-              🏠 Inicio
-            </Nav.Link>
+            {!isAuthenticated && (
+              <Nav.Link as={LoadingLink} href="/" loadingMessage="Cargando inicio..." showSpinner={false}>
+                🏠 Inicio
+              </Nav.Link>
+            )}
             
             {/* Enlaces públicos */}
             {!isAuthenticated && (
               <>
-                <Nav.Link as={LoadingLink} href="/public/about" loadingMessage="Cargando información...">
+                <Nav.Link as={LoadingLink} href="/public/about" loadingMessage="Cargando información..." showSpinner={false}>
                   ℹ️ Acerca de
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/public/features" loadingMessage="Cargando características...">
+                <Nav.Link as={LoadingLink} href="/public/features" loadingMessage="Cargando características..." showSpinner={false}>
                   ✨ Características
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/public/pricing" loadingMessage="Cargando precios...">
+                <Nav.Link as={LoadingLink} href="/public/pricing" loadingMessage="Cargando precios..." showSpinner={false}>
                   💰 Precios
                 </Nav.Link>
               </>
             )}
             
-            {/* Enlaces privados - Solo para usuarios autenticados */}
+            {/* Enlaces privados - Solo tres menús cuando autenticado */}
             {isAuthenticated && (
               <>
-                <NavDropdown title="❓ Preguntas" id="questions-dropdown">
+                <NavDropdown title="📊 Dashboard" id="dashboard-dropdown">
                   <NavDropdown.Item as={Link} href="/questions-bank">
-                    📋 Ver Todas
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} href="/questions-bank/create">
-                    ➕ Crear Nueva
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} href="/questions-bank/import">
-                    📥 Importar Preguntas
+                    Ir al Dashboard
                   </NavDropdown.Item>
                 </NavDropdown>
-                
-                <Nav.Link as={LoadingLink} href="/categories" loadingMessage="Cargando categorías...">
-                  🏷️ Categorías
-                </Nav.Link>
-                
-                <NavDropdown title="📊 Evaluaciones" id="evaluations-dropdown">
-                  <NavDropdown.Item as={Link} href="/evaluation-management">
-                    📝 Mis Evaluaciones
+
+                <NavDropdown title="📚 Question Bank" id="questionbank-dropdown">
+                  <NavDropdown.Item as={Link} href="/questions-bank">
+                    Banco de Preguntas
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} href="/evaluation-management/create">
-                    ➕ Crear Evaluación
+                </NavDropdown>
+
+                <NavDropdown title="📝 Evaluation Management" id="evaluation-dropdown">
+                  <NavDropdown.Item as={Link} href="/evaluation-management">
+                    Gestión de Evaluaciones
                   </NavDropdown.Item>
                 </NavDropdown>
               </>
@@ -85,10 +79,10 @@ export default function NavigationBar() {
                         {!isAuthenticated ? (
               // Botones para usuarios no autenticados
               <>
-                <LoadingLink href="/auth/login" className="btn btn-light btn-sm" loadingMessage="Cargando login...">
+                <LoadingLink href="/auth/login" className="btn btn-light btn-sm" loadingMessage="Cargando login..." showSpinner={false}>
                   🔑 Iniciar Sesión
                 </LoadingLink>
-                <LoadingLink href="/auth/register" className="btn btn-outline-light btn-sm ms-2" loadingMessage="Cargando registro...">
+                <LoadingLink href="/auth/register" className="btn btn-outline-light btn-sm ms-2" loadingMessage="Cargando registro..." showSpinner={false}>
                   🚀 Registrarse
                 </LoadingLink>
               </>
