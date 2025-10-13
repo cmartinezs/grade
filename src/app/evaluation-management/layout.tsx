@@ -3,9 +3,27 @@ import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 
 const evalMenu = [
-  { label: 'Mis Evaluaciones', href: '/evaluation-management' },
-  { label: 'Crear Evaluación', href: '/evaluation-management/create' },
-  { label: 'Resultados', href: '/evaluation-management/results' },
+  { 
+    label: 'Mis Evaluaciones', 
+    icon: '📝',
+    href: '/evaluation-management' 
+  },
+  { 
+    label: 'Crear Evaluación', 
+    icon: '➕',
+    href: '/evaluation-management/create' 
+  },
+  { 
+    label: 'Resultados', 
+    icon: '📊',
+    children: [
+      { 
+        label: 'Ver Resultados', 
+        icon: '📈',
+        href: '/evaluation-management/results' 
+      },
+    ]
+  },
 ];
 
 export default function EvaluationLayout({ children }: { children: React.ReactNode }) {

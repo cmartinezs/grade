@@ -3,9 +3,21 @@ import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 
 const dashboardMenu = [
-  { label: 'Resumen', href: '/dashboard' },
-  { label: 'Reportes', href: '/dashboard/reports' },
-  { label: 'Configuración', href: '/dashboard/settings' },
+  { 
+    label: 'Resumen', 
+    icon: '📊',
+    href: '/dashboard' 
+  },
+  { 
+    label: 'Reportes', 
+    icon: '📈',
+    href: '/dashboard/reports' 
+  },
+  { 
+    label: 'Configuración', 
+    icon: '⚙️',
+    href: '/dashboard/settings' 
+  },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
