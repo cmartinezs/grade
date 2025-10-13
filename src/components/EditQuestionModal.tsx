@@ -270,7 +270,7 @@ export default function EditQuestionModal({
         <Modal.Title>{getModalTitle()}</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+      <Modal.Body className="modal-body-scrollable">
         {submitSuccess ? (
           <Alert variant="success">
             <Alert.Heading>

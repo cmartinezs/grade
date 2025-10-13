@@ -256,7 +256,7 @@ export default function CreateQuestionModal({
         </Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      <Modal.Body className="modal-body-scrollable">
         {submitSuccess ? (
           <Alert variant="success">
             <Alert.Heading>¡Pregunta creada exitosamente!</Alert.Heading>

@@ -113,46 +113,58 @@ export default function QuestionFormFields({
   return (
     <>
       {/* Question Type */}
-      <Form.Group className="mb-3">
-        <Form.Label>Tipo de Pregunta *</Form.Label>
-        <Form.Select
-          value={questionType}
-          onChange={(e) => onQuestionTypeChange(e.target.value as QuestionType)}
-          isInvalid={getErrorsForField('type').length > 0}
-          disabled={disabled}
-        >
-          {Object.values(QUESTION_TYPE_RULES).map((rule) => (
-            <option key={rule.type} value={rule.type}>
-              {rule.name}
-            </option>
-          ))}
-        </Form.Select>
-        <Form.Text className="text-muted">{rules.description}</Form.Text>
-        {getErrorsForField('type').map((err, i) => (
-          <Form.Control.Feedback key={i} type="invalid" style={{ display: 'block' }}>
-            {err.message}
-          </Form.Control.Feedback>
-        ))}
-      </Form.Group>
+      <Card className="mb-3">
+        <Card.Header>
+          <strong>Tipo de Pregunta *</strong>
+        </Card.Header>
+        <Card.Body>
+          <Form.Group>
+            <Form.Select
+              value={questionType}
+              onChange={(e) => onQuestionTypeChange(e.target.value as QuestionType)}
+              isInvalid={getErrorsForField('type').length > 0}
+              disabled={disabled}
+            >
+              {Object.values(QUESTION_TYPE_RULES).map((rule) => (
+                <option key={rule.type} value={rule.type}>
+                  {rule.name}
+                </option>
+              ))}
+            </Form.Select>
+            <Form.Text className="text-muted">{rules.description}</Form.Text>
+            {getErrorsForField('type').map((err, i) => (
+              <Form.Control.Feedback key={i} type="invalid" style={{ display: 'block' }}>
+                {err.message}
+              </Form.Control.Feedback>
+            ))}
+          </Form.Group>
+        </Card.Body>
+      </Card>
 
       {/* Question Statement */}
-      <Form.Group className="mb-3">
-        <Form.Label>Enunciado de la Pregunta *</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={4}
-          value={enunciado}
-          onChange={(e) => onEnunciadoChange(e.target.value)}
-          placeholder="Escribe el texto de la pregunta..."
-          isInvalid={getErrorsForField('enunciado').length > 0}
-          disabled={disabled}
-        />
-        {getErrorsForField('enunciado').map((err, i) => (
-          <Form.Control.Feedback key={i} type="invalid">
-            {err.message}
-          </Form.Control.Feedback>
-        ))}
-      </Form.Group>
+      <Card className="mb-3">
+        <Card.Header>
+          <strong>Enunciado de la Pregunta *</strong>
+        </Card.Header>
+        <Card.Body>
+          <Form.Group>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              value={enunciado}
+              onChange={(e) => onEnunciadoChange(e.target.value)}
+              placeholder="Escribe el texto de la pregunta..."
+              isInvalid={getErrorsForField('enunciado').length > 0}
+              disabled={disabled}
+            />
+            {getErrorsForField('enunciado').map((err, i) => (
+              <Form.Control.Feedback key={i} type="invalid">
+                {err.message}
+              </Form.Control.Feedback>
+            ))}
+          </Form.Group>
+        </Card.Body>
+      </Card>
 
       {/* Taxonomy Selection */}
       <Card className="mb-3">
@@ -265,44 +277,50 @@ export default function QuestionFormFields({
       </Card>
 
       {/* Difficulty */}
-      <Form.Group className="mb-3">
-        <Form.Label>Dificultad *</Form.Label>
-        {showDifficultyAsRadio ? (
-          <div className="d-flex gap-2">
-            {difficultyLevels.map((level) => (
-              <Form.Check
-                key={level.difficulty_id}
-                type="radio"
-                id={`difficulty-${level.difficulty_id}`}
-                label={level.name}
-                name="difficulty"
-                value={level.difficulty_id}
-                checked={difficulty === level.difficulty_id}
+      <Card className="mb-3">
+        <Card.Header>
+          <strong>Dificultad *</strong>
+        </Card.Header>
+        <Card.Body>
+          <Form.Group>
+            {showDifficultyAsRadio ? (
+              <div className="d-flex gap-2">
+                {difficultyLevels.map((level) => (
+                  <Form.Check
+                    key={level.difficulty_id}
+                    type="radio"
+                    id={`difficulty-${level.difficulty_id}`}
+                    label={level.name}
+                    name="difficulty"
+                    value={level.difficulty_id}
+                    checked={difficulty === level.difficulty_id}
+                    onChange={(e) => onDifficultyChange(e.target.value as DifficultyLevel)}
+                    disabled={disabled}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Form.Select
+                value={difficulty}
                 onChange={(e) => onDifficultyChange(e.target.value as DifficultyLevel)}
+                isInvalid={getErrorsForField('difficulty_fk').length > 0}
                 disabled={disabled}
-              />
+              >
+                {difficultyLevels.map((level) => (
+                  <option key={level.difficulty_id} value={level.difficulty_id}>
+                    {level.name}
+                  </option>
+                ))}
+              </Form.Select>
+            )}
+            {getErrorsForField('difficulty_fk').map((err, i) => (
+              <div key={i} className="text-danger small mt-1">
+                {err.message}
+              </div>
             ))}
-          </div>
-        ) : (
-          <Form.Select
-            value={difficulty}
-            onChange={(e) => onDifficultyChange(e.target.value as DifficultyLevel)}
-            isInvalid={getErrorsForField('difficulty_fk').length > 0}
-            disabled={disabled}
-          >
-            {difficultyLevels.map((level) => (
-              <option key={level.difficulty_id} value={level.difficulty_id}>
-                {level.name}
-              </option>
-            ))}
-          </Form.Select>
-        )}
-        {getErrorsForField('difficulty_fk').map((err, i) => (
-          <div key={i} className="text-danger small mt-1">
-            {err.message}
-          </div>
-        ))}
-      </Form.Group>
+          </Form.Group>
+        </Card.Body>
+      </Card>
 
       {/* Options (if not desarrollo) */}
       {questionType !== 'desarrollo' && (
@@ -341,6 +359,7 @@ export default function QuestionFormFields({
                         placeholder={`Texto de la opción ${option.position}`}
                         isInvalid={getErrorsForField(`options[${index}].text`).length > 0}
                         disabled={disabled}
+                        readOnly={questionType === 'verdadero_falso'}
                       />
                       {getErrorsForField(`options[${index}].text`).map((err, i) => (
                         <Form.Control.Feedback key={i} type="invalid">

@@ -273,7 +273,7 @@ export default function CloneQuestionModal({
         </Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      <Modal.Body className="modal-body-scrollable">
         {isLoadingQuestion ? (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
