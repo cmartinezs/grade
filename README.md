@@ -80,10 +80,30 @@ src/
 - Protección de rutas privadas
 - Gestión de sesiones con cookies
 
-### 📚 Banco de Preguntas
-- Creación y edición de preguntas
-- Múltiples tipos: opción múltiple, verdadero/falso, etc.
-- Sistema de categorización
+### 📚 Banco de Preguntas ✨ **NUEVO**
+**CU-BP-01: Crear ítem nuevo** - Implementación completa con:
+- ✅ Creación de preguntas con 4 tipos:
+  - Verdadero/Falso (2 opciones, 1 correcta)
+  - Selección Única (múltiples opciones, 1 correcta)
+  - Selección Múltiple (múltiples opciones, 1+ correctas)
+  - Desarrollo (respuesta abierta)
+- ✅ Validación exhaustiva según reglas de negocio
+- ✅ Detección automática de duplicados potenciales
+- ✅ Selector jerárquico de taxonomía (Asignatura → Unidad → Tema)
+- ✅ Niveles de dificultad (Bajo, Medio, Alto)
+- ✅ Búsqueda textual y filtros combinables
+- ✅ Trazabilidad completa (autor, fecha, versión)
+- ✅ Almacenamiento en localStorage
+- 📖 [Guía de Usuario](./docs/CU-BP-01-USER-GUIDE.md)
+- 🔧 [Documentación Técnica](./docs/CU-BP-01-IMPLEMENTATION.md)
+
+### 🏛️ Gestión de Taxonomías **CU-BP-11**
+- Estructura jerárquica: Asignatura → Unidad → Tema
+- CRUD completo con validaciones
+- Análisis de impacto para eliminación
+- Búsqueda y filtrado multinivel
+- Prevención de duplicados
+- Almacenamiento en localStorage
 
 ### 🏷️ Gestión de Categorías
 - Organización por materias y temas
