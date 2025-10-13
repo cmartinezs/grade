@@ -25,25 +25,7 @@ export default function PublicFeatures() {
       category: "Búsqueda"
     },
     {
-      icon: "📊",
-      title: "Generación Automática de Exámenes",
-      description: "Crea evaluaciones basadas en criterios específicos y balance de dificultad",
-      category: "Evaluaciones"
-    },
-    {
-      icon: "📈",
-      title: "Estadísticas y Analytics",
-      description: "Reportes detallados de uso, rendimiento y análisis de preguntas",
-      category: "Analytics"
-    },
-    {
-      icon: "👥",
-      title: "Colaboración en Equipo",
-      description: "Trabajo colaborativo entre profesores, revisión por pares y permisos granulares",
-      category: "Colaboración"
-    },
-    {
-      icon: "📤",
+      icon: "",
       title: "Importación/Exportación",
       description: "Soporta múltiples formatos: Excel, CSV, QTI, Word y más",
       category: "Integración"
@@ -53,12 +35,6 @@ export default function PublicFeatures() {
       title: "Seguridad y Backup",
       description: "Cifrado de datos, backups automáticos y control de acceso robusto",
       category: "Seguridad"
-    },
-    {
-      icon: "📱",
-      title: "Acceso Multiplataforma",
-      description: "Funciona perfectamente en computadoras, tablets y móviles",
-      category: "Accesibilidad"
     },
     {
       icon: "⚡",
@@ -80,7 +56,7 @@ export default function PublicFeatures() {
     }
   ];
 
-  const categories = [...new Set(features.map(f => f.category))];
+  
 
   return (
     <PageWrapper>
@@ -99,62 +75,68 @@ export default function PublicFeatures() {
           </Col>
         </Row>
 
-        {/* Características por Categoría */}
-        {categories.map(category => (
-          <div key={category} className="mb-5">
-            <h3 className="mb-4">
-              <Badge bg="primary" className="me-2">{category}</Badge>
-            </h3>
-            
-            <Row>
-              {features
-                .filter(feature => feature.category === category)
-                .map((feature, index) => (
-                  <Col key={index} md={6} lg={4} className="mb-4">
-                    <Card className="h-100 shadow-sm border-0">
-                      <Card.Body>
-                        <div className="text-center mb-3">
-                          <span style={{ fontSize: '3rem' }}>{feature.icon}</span>
-                        </div>
-                        <Card.Title className="h5 text-center">
-                          {feature.title}
-                        </Card.Title>
-                        <Card.Text className="text-muted text-center">
-                          {feature.description}
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-            </Row>
-          </div>
-        ))}
+        {/* Características: grilla única con badge de categoría */}
+        <Row className="g-4">
+          {features.map((feature, index) => (
+            <Col key={index} md={6} lg={4}>
+              <Card className="h-100 shadow-sm border-0 position-relative">
+                <Badge bg="secondary" className="position-absolute" style={{ top: '0.5rem', right: '0.5rem' }}>{feature.category}</Badge>
+                <Card.Body className="pt-4 text-center">
+                  <div className="mb-3" style={{ fontSize: '2.5rem' }}>{feature.icon}</div>
+                  <Card.Title className="h5">{feature.title}</Card.Title>
+                  <Card.Text className="text-muted">{feature.description}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
 
-        {/* Próximamente */}
+        {/* Próximamente (mejor contraste) */}
         <Row className="mt-5">
           <Col>
-            <Card className="bg-gradient" style={{ background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)' }}>
-              <Card.Body className="text-white text-center py-5">
+            <Card className="border-0 shadow-sm">
+              <Card.Body className="text-dark text-center py-5" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)' }}>
                 <h3>🚀 Próximamente</h3>
-                <p className="lead">
+                <p className="lead text-muted">
                   Estamos trabajando en funcionalidades aún más avanzadas
                 </p>
                 <Row className="mt-4">
-                  <Col md={3}>
+                  <Col md={4} className="mb-3">
                     <h5>🤖 IA Generativa</h5>
-                    <p>Generación automática de preguntas usando inteligencia artificial</p>
+                    <p className="text-muted">Generación automática de preguntas usando inteligencia artificial</p>
                   </Col>
-                  <Col md={3}>
+                  <Col md={4} className="mb-3">
                     <h5>📊 Dashboard Avanzado</h5>
-                    <p>Métricas en tiempo real y visualizaciones interactivas</p>
+                    <p className="text-muted">Métricas en tiempo real y visualizaciones interactivas</p>
                   </Col>
-                  <Col md={3}>
+                  <Col md={4} className="mb-3">
                     <h5>🔌 API Completa</h5>
-                    <p>Integración con sistemas LMS y plataformas educativas</p>
+                    <p className="text-muted">Integración con sistemas LMS y plataformas educativas</p>
                   </Col>
-                  <Col md={3}>
+
+                  <Col md={4} className="mb-3">
                     <h5>📚 Biblioteca Pública</h5>
-                    <p>Compartir y acceder a preguntas de la comunidad educativa</p>
+                    <p className="text-muted">Compartir y acceder a preguntas de la comunidad educativa</p>
+                  </Col>
+                  <Col md={4} className="mb-3">
+                    <h5>📊 Generación Automática de Exámenes</h5>
+                    <p className="text-muted">Crea evaluaciones basadas en criterios y balance de dificultad</p>
+                  </Col>
+                  <Col md={4} className="mb-3">
+                    <h5>📈 Estadísticas y Analytics</h5>
+                    <p className="text-muted">Reportes detallados de uso, rendimiento y análisis de preguntas</p>
+                  </Col>
+                  <Col md={4} className="mb-3">
+                    <h5>👥 Colaboración en Equipo</h5>
+                    <p className="text-muted">Trabajo colaborativo entre profesores, revisión por pares y permisos granulares</p>
+                  </Col>
+                  <Col md={4} className="mb-3">
+                    <h5>📱 Acceso Multiplataforma</h5>
+                    <p className="text-muted">Funciona perfectamente en computadoras, tablets y móviles</p>
+                  </Col>
+                  <Col md={4} className="mb-3">
+                    <h5>🎨 Editor Rich Text</h5>
+                    <p className="text-muted">Formato de texto rico con soporte para fórmulas e imágenes</p>
                   </Col>
                 </Row>
               </Card.Body>
