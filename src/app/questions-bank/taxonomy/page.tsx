@@ -4,17 +4,20 @@ import { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Accordion } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateTaxonomyModal from '@/components/CreateTaxonomyModal';
+import EditTaxonomyModal from '@/components/EditTaxonomyModal';
 import {
   getAllSubjects,
   getUnitsBySubject,
   getTopicsByUnit,
   clearAllTaxonomyData,
 } from '@/lib/taxonomyStore';
-import { Subject, Unit, Topic } from '@/types/taxonomy';
+import { Subject, Unit, Topic, TaxonomyType } from '@/types/taxonomy';
 
 export default function TaxonomyPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editElement, setEditElement] = useState<{ type: TaxonomyType; id: string } | null>(null);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -22,8 +25,18 @@ export default function TaxonomyPage() {
   }, []);
 
   const handleSuccess = () => {
-    // Refresh data after creation
+    // Refresh data after creation or edition
     setSubjects(getAllSubjects());
+  };
+
+  const handleEdit = (type: TaxonomyType, id: string) => {
+    setEditElement({ type, id });
+    setShowEditModal(true);
+  };
+
+  const handleEditModalHide = () => {
+    setShowEditModal(false);
+    setEditElement(null);
   };
 
   return (
@@ -51,15 +64,22 @@ export default function TaxonomyPage() {
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-start">
                   <div>
-                    <h6>📚 CU-BP-11: Crear elemento de taxonomía curricular</h6>
+                    <h6>📚 CU-BP-11 & CU-BP-12: Gestión de taxonomía curricular</h6>
                     <p className="mb-2 small">
                       <strong>Jerarquía:</strong> Asignatura (nivel 1) → Unidad (nivel 2) → Tema (nivel 3)
                     </p>
+                    <p className="mb-2 small">
+                      <strong>Crear:</strong> Usa el botón &quot;➕ Crear Elemento&quot; para agregar nuevos elementos.
+                    </p>
+                    <p className="mb-2 small">
+                      <strong>Editar:</strong> Haz clic en &quot;✏️ Editar&quot; en cualquier elemento para modificarlo.
+                    </p>
                     <p className="mb-0 small">
-                      <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas.
+                      <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas. 
+                      Se mantiene integridad referencial al reasignar jerárquicamente.
                     </p>
                     <p className="mb-0 small text-muted mt-2">
-                      💾 Los datos se guardan automáticamente en localStorage
+                      💾 Los datos se guardan automáticamente en localStorage con auditoría completa.
                     </p>
                   </div>
                   <Button
@@ -92,7 +112,7 @@ export default function TaxonomyPage() {
                 ) : (
                   <Accordion>
                     {subjects.map((subject) => (
-                      <TaxonomySubjectItem key={subject.subject_id} subject={subject} />
+                      <TaxonomySubjectItem key={subject.subject_id} subject={subject} onEdit={handleEdit} />
                     ))}
                   </Accordion>
                 )}
@@ -107,22 +127,51 @@ export default function TaxonomyPage() {
           onHide={() => setShowCreateModal(false)}
           onSuccess={handleSuccess}
         />
+
+        {/* Edit Modal */}
+        {editElement && (
+          <EditTaxonomyModal
+            show={showEditModal}
+            onHide={handleEditModalHide}
+            onSuccess={handleSuccess}
+            elementType={editElement.type}
+            elementId={editElement.id}
+          />
+        )}
       </Container>
     </ProtectedRoute>
   );
 }
 
-function TaxonomySubjectItem({ subject }: { subject: Subject }) {
+function TaxonomySubjectItem({
+  subject,
+  onEdit,
+}: {
+  subject: Subject;
+  onEdit: (type: TaxonomyType, id: string) => void;
+}) {
   const units = getUnitsBySubject(subject.subject_id);
 
   return (
     <Accordion.Item eventKey={subject.subject_id}>
       <Accordion.Header>
-        <div className="d-flex justify-content-between w-100 pe-3">
+        <div className="d-flex justify-content-between align-items-center w-100 pe-3">
           <span>
             <strong>{subject.name}</strong> <Badge bg="secondary">{subject.code}</Badge>
           </span>
-          <Badge bg="primary">{units.length} unidad(es)</Badge>
+          <div className="d-flex gap-2 align-items-center">
+            <Badge bg="primary">{units.length} unidad(es)</Badge>
+            <Button
+              size="sm"
+              variant="outline-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit('subject', subject.subject_id);
+              }}
+            >
+              ✏️ Editar
+            </Button>
+          </div>
         </div>
       </Accordion.Header>
       <Accordion.Body>
@@ -131,7 +180,7 @@ function TaxonomySubjectItem({ subject }: { subject: Subject }) {
         ) : (
           <Accordion>
             {units.map((unit) => (
-              <TaxonomyUnitItem key={unit.unit_id} unit={unit} />
+              <TaxonomyUnitItem key={unit.unit_id} unit={unit} onEdit={onEdit} />
             ))}
           </Accordion>
         )}
@@ -140,24 +189,36 @@ function TaxonomySubjectItem({ subject }: { subject: Subject }) {
   );
 }
 
-function TaxonomyUnitItem({ unit }: { unit: Unit }) {
+function TaxonomyUnitItem({ unit, onEdit }: { unit: Unit; onEdit: (type: TaxonomyType, id: string) => void }) {
   const topics = getTopicsByUnit(unit.unit_id);
 
   return (
     <Accordion.Item eventKey={unit.unit_id}>
       <Accordion.Header>
-        <div className="d-flex justify-content-between w-100 pe-3">
+        <div className="d-flex justify-content-between align-items-center w-100 pe-3">
           <span>{unit.name}</span>
-          <Badge bg="info">{topics.length} tema(s)</Badge>
+          <div className="d-flex gap-2 align-items-center">
+            <Badge bg="info">{topics.length} tema(s)</Badge>
+            <Button
+              size="sm"
+              variant="outline-info"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit('unit', unit.unit_id);
+              }}
+            >
+              ✏️ Editar
+            </Button>
+          </div>
         </div>
       </Accordion.Header>
       <Accordion.Body>
         {topics.length === 0 ? (
           <p className="text-muted mb-0">No hay temas en esta unidad.</p>
         ) : (
-          <ul>
+          <ul className="list-unstyled">
             {topics.map((topic) => (
-              <TaxonomyTopicItem key={topic.topic_id} topic={topic} />
+              <TaxonomyTopicItem key={topic.topic_id} topic={topic} onEdit={onEdit} />
             ))}
           </ul>
         )}
@@ -166,6 +227,17 @@ function TaxonomyUnitItem({ unit }: { unit: Unit }) {
   );
 }
 
-function TaxonomyTopicItem({ topic }: { topic: Topic }) {
-  return <li>{topic.name}</li>;
+function TaxonomyTopicItem({ topic, onEdit }: { topic: Topic; onEdit: (type: TaxonomyType, id: string) => void }) {
+  return (
+    <li className="d-flex justify-content-between align-items-center py-2 border-bottom">
+      <span>{topic.name}</span>
+      <Button
+        size="sm"
+        variant="outline-secondary"
+        onClick={() => onEdit('topic', topic.topic_id)}
+      >
+        ✏️ Editar
+      </Button>
+    </li>
+  );
 }

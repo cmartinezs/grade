@@ -61,6 +61,26 @@ export interface CreateTopicInput {
 
 export type CreateTaxonomyInput = CreateSubjectInput | CreateUnitInput | CreateTopicInput;
 
+/**
+ * CU-BP-12: Editar elemento de taxonomía curricular
+ */
+export interface UpdateSubjectInput {
+  name: string;
+  code: string;
+}
+
+export interface UpdateUnitInput {
+  name: string;
+  subject_fk: string; // Permite reasignar a otra asignatura
+}
+
+export interface UpdateTopicInput {
+  name: string;
+  unit_fk: string; // Permite reasignar a otra unidad
+}
+
+export type UpdateTaxonomyInput = UpdateSubjectInput | UpdateUnitInput | UpdateTopicInput;
+
 export interface ValidationError {
   field: string;
   message: string;

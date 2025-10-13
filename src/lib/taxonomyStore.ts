@@ -10,6 +10,9 @@ import {
   CreateSubjectInput,
   CreateUnitInput,
   CreateTopicInput,
+  UpdateSubjectInput,
+  UpdateUnitInput,
+  UpdateTopicInput,
   ValidationError,
 } from '@/types/taxonomy';
 
@@ -199,6 +202,21 @@ export function getTopicsByUnit(unitId: string): Topic[] {
   return topics.filter((t) => t.unit_fk === unitId && t.active && !t.deleted_at);
 }
 
+/**
+ * CU-BP-12: Get individual elements by ID
+ */
+export function getSubjectById(subjectId: string): Subject | undefined {
+  return subjects.find((s) => s.subject_id === subjectId && s.active && !s.deleted_at);
+}
+
+export function getUnitById(unitId: string): Unit | undefined {
+  return units.find((u) => u.unit_id === unitId && u.active && !u.deleted_at);
+}
+
+export function getTopicById(topicId: string): Topic | undefined {
+  return topics.find((t) => t.topic_id === topicId && t.active && !t.deleted_at);
+}
+
 // ===== VALIDATIONS (Business Rules) =====
 
 /**
@@ -306,6 +324,158 @@ function validateTopic(input: CreateTopicInput): ValidationError[] {
   return errors;
 }
 
+/**
+ * CU-BP-12: Validation for updating Subject
+ * RN-1: Asignaturas deben tener nombres únicos globalmente y códigos únicos.
+ * A5: Elemento inactivo no se puede editar
+ */
+function validateUpdateSubject(subjectId: string, input: UpdateSubjectInput): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  // A5: Elemento inactivo
+  const existingSubject = subjects.find((s) => s.subject_id === subjectId);
+  if (!existingSubject) {
+    errors.push({ field: 'general', message: 'La asignatura no existe.' });
+    return errors;
+  }
+  if (!existingSubject.active || existingSubject.deleted_at) {
+    errors.push({ field: 'general', message: 'No se pueden editar elementos inactivos.' });
+    return errors;
+  }
+
+  if (!input.name.trim()) {
+    errors.push({ field: 'name', message: 'El nombre es obligatorio.' });
+  }
+
+  if (!input.code.trim()) {
+    errors.push({ field: 'code', message: 'El código es obligatorio.' });
+  }
+
+  // A1: Nombre duplicado (excepto la misma asignatura)
+  const nameDuplicate = subjects.find(
+    (s) =>
+      s.subject_id !== subjectId &&
+      s.name.toLowerCase() === input.name.trim().toLowerCase() &&
+      s.active &&
+      !s.deleted_at
+  );
+  if (nameDuplicate) {
+    errors.push({ field: 'name', message: 'Ya existe otra asignatura con este nombre.' });
+  }
+
+  // A2: Código duplicado (excepto la misma asignatura)
+  const codeDuplicate = subjects.find(
+    (s) =>
+      s.subject_id !== subjectId &&
+      s.code.toLowerCase() === input.code.trim().toLowerCase() &&
+      s.active &&
+      !s.deleted_at
+  );
+  if (codeDuplicate) {
+    errors.push({ field: 'code', message: 'Ya existe otra asignatura con este código.' });
+  }
+
+  return errors;
+}
+
+/**
+ * CU-BP-12: Validation for updating Unit
+ * RN-2: Unidades deben tener nombres únicos dentro de cada asignatura.
+ */
+function validateUpdateUnit(unitId: string, input: UpdateUnitInput): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  // A5: Elemento inactivo
+  const existingUnit = units.find((u) => u.unit_id === unitId);
+  if (!existingUnit) {
+    errors.push({ field: 'general', message: 'La unidad no existe.' });
+    return errors;
+  }
+  if (!existingUnit.active || existingUnit.deleted_at) {
+    errors.push({ field: 'general', message: 'No se pueden editar elementos inactivos.' });
+    return errors;
+  }
+
+  if (!input.name.trim()) {
+    errors.push({ field: 'name', message: 'El nombre es obligatorio.' });
+  }
+
+  if (!input.subject_fk.trim()) {
+    errors.push({ field: 'subject_fk', message: 'Debe seleccionar una asignatura.' });
+  }
+
+  // A3: Elemento padre inexistente o inactivo
+  const parentSubject = subjects.find(
+    (s) => s.subject_id === input.subject_fk && s.active && !s.deleted_at
+  );
+  if (!parentSubject) {
+    errors.push({ field: 'subject_fk', message: 'La asignatura seleccionada no existe o no está activa.' });
+  }
+
+  // A1: Nombre duplicado dentro de la asignatura (excepto la misma unidad)
+  const nameDuplicate = units.find(
+    (u) =>
+      u.unit_id !== unitId &&
+      u.subject_fk === input.subject_fk &&
+      u.name.toLowerCase() === input.name.trim().toLowerCase() &&
+      u.active &&
+      !u.deleted_at
+  );
+  if (nameDuplicate) {
+    errors.push({ field: 'name', message: 'Ya existe otra unidad con este nombre en la asignatura seleccionada.' });
+  }
+
+  return errors;
+}
+
+/**
+ * CU-BP-12: Validation for updating Topic
+ * RN-3: Temas deben tener nombres únicos dentro de cada unidad.
+ */
+function validateUpdateTopic(topicId: string, input: UpdateTopicInput): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  // A5: Elemento inactivo
+  const existingTopic = topics.find((t) => t.topic_id === topicId);
+  if (!existingTopic) {
+    errors.push({ field: 'general', message: 'El tema no existe.' });
+    return errors;
+  }
+  if (!existingTopic.active || existingTopic.deleted_at) {
+    errors.push({ field: 'general', message: 'No se pueden editar elementos inactivos.' });
+    return errors;
+  }
+
+  if (!input.name.trim()) {
+    errors.push({ field: 'name', message: 'El nombre es obligatorio.' });
+  }
+
+  if (!input.unit_fk.trim()) {
+    errors.push({ field: 'unit_fk', message: 'Debe seleccionar una unidad.' });
+  }
+
+  // A3: Elemento padre inexistente o inactivo
+  const parentUnit = units.find((u) => u.unit_id === input.unit_fk && u.active && !u.deleted_at);
+  if (!parentUnit) {
+    errors.push({ field: 'unit_fk', message: 'La unidad seleccionada no existe o no está activa.' });
+  }
+
+  // A1: Nombre duplicado dentro de la unidad (excepto el mismo tema)
+  const nameDuplicate = topics.find(
+    (t) =>
+      t.topic_id !== topicId &&
+      t.unit_fk === input.unit_fk &&
+      t.name.toLowerCase() === input.name.trim().toLowerCase() &&
+      t.active &&
+      !t.deleted_at
+  );
+  if (nameDuplicate) {
+    errors.push({ field: 'name', message: 'Ya existe otro tema con este nombre en la unidad seleccionada.' });
+  }
+
+  return errors;
+}
+
 // ===== CRUD OPERATIONS =====
 
 /**
@@ -393,6 +563,112 @@ export function createTopic(input: CreateTopicInput, userId: string): { success:
   saveToStorage(STORAGE_KEYS.TOPICS, topics);
   saveCounters({ subject: subjectCounter, unit: unitCounter, topic: topicCounter });
   return { success: true, data: newTopic };
+}
+
+/**
+ * CU-BP-12: Update existing Subject (Asignatura)
+ * RN-4: Las modificaciones deben quedar registradas en auditoría
+ */
+export function updateSubject(
+  subjectId: string,
+  input: UpdateSubjectInput,
+  userId: string
+): { success: boolean; data?: Subject; errors?: ValidationError[] } {
+  const errors = validateUpdateSubject(subjectId, input);
+  if (errors.length > 0) {
+    return { success: false, errors };
+  }
+
+  const subjectIndex = subjects.findIndex((s) => s.subject_id === subjectId);
+  if (subjectIndex === -1) {
+    return { success: false, errors: [{ field: 'general', message: 'Asignatura no encontrada.' }] };
+  }
+
+  const now = new Date();
+  const updatedSubject: Subject = {
+    ...subjects[subjectIndex],
+    name: input.name.trim(),
+    code: input.code.trim().toUpperCase(),
+    updated_at: now,
+    updated_by: userId,
+  };
+
+  subjects[subjectIndex] = updatedSubject;
+  saveToStorage(STORAGE_KEYS.SUBJECTS, subjects);
+  return { success: true, data: updatedSubject };
+}
+
+/**
+ * CU-BP-12: Update existing Unit (Unidad)
+ * RN-4: Las modificaciones deben quedar registradas en auditoría
+ * RN-5: Al reasignar jerárquicamente, todos los elementos hijos se mantienen asociados
+ */
+export function updateUnit(
+  unitId: string,
+  input: UpdateUnitInput,
+  userId: string
+): { success: boolean; data?: Unit; errors?: ValidationError[] } {
+  const errors = validateUpdateUnit(unitId, input);
+  if (errors.length > 0) {
+    return { success: false, errors };
+  }
+
+  const unitIndex = units.findIndex((u) => u.unit_id === unitId);
+  if (unitIndex === -1) {
+    return { success: false, errors: [{ field: 'general', message: 'Unidad no encontrada.' }] };
+  }
+
+  const now = new Date();
+  const updatedUnit: Unit = {
+    ...units[unitIndex],
+    name: input.name.trim(),
+    subject_fk: input.subject_fk,
+    updated_at: now,
+    updated_by: userId,
+  };
+
+  units[unitIndex] = updatedUnit;
+  saveToStorage(STORAGE_KEYS.UNITS, units);
+  
+  // RN-5: Los temas (hijos) mantienen su relación con la unidad automáticamente
+  return { success: true, data: updatedUnit };
+}
+
+/**
+ * CU-BP-12: Update existing Topic (Tema)
+ * RN-4: Las modificaciones deben quedar registradas en auditoría
+ * RN-6: Las preguntas asociadas mantienen su clasificación actualizada automáticamente
+ */
+export function updateTopic(
+  topicId: string,
+  input: UpdateTopicInput,
+  userId: string
+): { success: boolean; data?: Topic; errors?: ValidationError[] } {
+  const errors = validateUpdateTopic(topicId, input);
+  if (errors.length > 0) {
+    return { success: false, errors };
+  }
+
+  const topicIndex = topics.findIndex((t) => t.topic_id === topicId);
+  if (topicIndex === -1) {
+    return { success: false, errors: [{ field: 'general', message: 'Tema no encontrado.' }] };
+  }
+
+  const now = new Date();
+  const updatedTopic: Topic = {
+    ...topics[topicIndex],
+    name: input.name.trim(),
+    unit_fk: input.unit_fk,
+    updated_at: now,
+    updated_by: userId,
+  };
+
+  topics[topicIndex] = updatedTopic;
+  saveToStorage(STORAGE_KEYS.TOPICS, topics);
+  
+  // RN-6: Las preguntas asociadas mantienen su clasificación actualizada
+  // (Esto se implementará cuando tengamos el módulo de preguntas)
+  return { success: true, data: updatedTopic };
 }
 
 /**
