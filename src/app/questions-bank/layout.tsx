@@ -6,6 +6,7 @@ const qbMenu = [
   { label: 'Banco de Preguntas', href: '/questions-bank' },
   { label: 'Crear Pregunta', href: '/questions-bank/create' },
   { label: 'Importar', href: '/questions-bank/import' },
+  { label: 'Taxonomía Curricular', href: '/questions-bank/taxonomy' },
 ];
 
 export default function QuestionsBankLayout({ children }: { children: React.ReactNode }) {
