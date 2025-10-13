@@ -312,14 +312,20 @@ export default function Home() {
       </Container>
 
       {/* CTA Section */}
-      <div className="bg-gradient" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-        <Container className="py-5 text-white text-center">
+      <div 
+        className="position-relative" 
+        style={{ 
+          background: 'linear-gradient(135deg, #4c63d2 0%, #5a3d84 100%)',
+          color: 'white'
+        }}
+      >
+        <Container className="py-5 text-center position-relative">
           <Row className="justify-content-center">
             <Col lg={8}>
-              <h2 className="display-4 fw-bold mb-4">
+              <h2 className="display-4 fw-bold mb-4 text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
                 ¿Listo para transformar tus evaluaciones?
               </h2>
-              <p className="lead mb-4">
+              <p className="lead mb-4 text-white" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                 Únete a cientos de docentes que ya están revolucionando 
                 la educación con GRADE. Comienza gratis hoy mismo.
               </p>
@@ -350,7 +356,7 @@ export default function Home() {
                 </LoadingLink>
               )}
               <div className="mt-4">
-                <small className="opacity-75">
+                <small className="text-white" style={{ opacity: 0.9, textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                   ✅ Sin compromiso • ✅ Cancelación en cualquier momento • ✅ Soporte 24/7
                 </small>
               </div>
