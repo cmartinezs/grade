@@ -4,12 +4,18 @@ import { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Form, InputGroup, Dropdown, ButtonGroup } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from '@/components/CreateQuestionModal';
+import ViewQuestionModal from '@/components/ViewQuestionModal';
+import EditQuestionModal from '@/components/EditQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { QuestionWithDetails, QuestionType, DifficultyLevel } from '@/types/question';
 import { getAllSubjects } from '@/lib/taxonomyStore';
 
 export default function QuestionsBankPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState<'edit' | 'version'>('version');
   const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState<QuestionType | ''>('');
@@ -50,6 +56,27 @@ export default function QuestionsBankPage() {
   };
 
   const handleCreateSuccess = () => {
+    loadQuestions();
+  };
+
+  const handleViewQuestion = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    setShowViewModal(true);
+  };
+
+  const handleCreateVersion = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    setEditMode('version');
+    setShowEditModal(true);
+  };
+
+  const handleEditQuestion = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    setEditMode('edit');
+    setShowEditModal(true);
+  };
+
+  const handleVersionSuccess = () => {
     loadQuestions();
   };
 
@@ -252,12 +279,21 @@ export default function QuestionsBankPage() {
                       </Col>
                       <Col md={3} className="text-end">
                         <Dropdown as={ButtonGroup}>
-                          <Button variant="outline-primary" size="sm">
-                            Ver Detalle
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={() => handleViewQuestion(question.question_id)}
+                          >
+                            👁️ Ver Detalle
                           </Button>
                           <Dropdown.Toggle split variant="outline-primary" size="sm" />
                           <Dropdown.Menu>
-                            <Dropdown.Item>✏️ Editar</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleCreateVersion(question.question_id)}>
+                              🔄 Crear Nueva Versión
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleEditQuestion(question.question_id)}>
+                              ✏️ Editar
+                            </Dropdown.Item>
                             <Dropdown.Item>📋 Duplicar</Dropdown.Item>
                             <Dropdown.Item>📊 Ver Estadísticas</Dropdown.Item>
                             <Dropdown.Divider />
@@ -283,6 +319,24 @@ export default function QuestionsBankPage() {
         initialEnunciado={searchText || undefined}
         initialDifficulty={filterDifficulty || undefined}
         initialSubject={filterSubject || undefined}
+      />
+
+      {/* View Question Modal */}
+      <ViewQuestionModal
+        show={showViewModal}
+        onHide={() => setShowViewModal(false)}
+        questionId={selectedQuestionId}
+        onCreateVersion={handleCreateVersion}
+        onEdit={handleEditQuestion}
+      />
+
+      {/* Edit/Version Question Modal */}
+      <EditQuestionModal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        onSuccess={handleVersionSuccess}
+        questionId={selectedQuestionId}
+        mode={editMode}
       />
     </ProtectedRoute>
   );

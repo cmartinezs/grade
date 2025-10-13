@@ -599,6 +599,157 @@ class QuestionStore {
     this.saveQuestions(questions);
   }
 
+  // Create new version of a question (CU-BP-02: RN-1 to RN-6)
+  async createQuestionVersion(
+    questionId: string,
+    currentUser: string,
+    modifications?: Partial<CreateQuestionInput>
+  ): Promise<Question> {
+    const questions = this.loadQuestions();
+    const options = this.loadOptions();
+    
+    // Find the original question
+    const originalQuestion = questions.find(q => q.question_id === questionId);
+    if (!originalQuestion) {
+      throw new Error('Pregunta no encontrada');
+    }
+
+    if (originalQuestion.deleted_at) {
+      throw new Error('No se puede versionar una pregunta eliminada');
+    }
+
+    // Get original question's options
+    const originalOptions = options.filter(opt => opt.question_fk === questionId)
+      .sort((a, b) => a.position - b.position);
+
+    // RN-5: Determine the version root (original_version_fk or current ID)
+    const versionRoot = originalQuestion.original_version_fk || originalQuestion.question_id;
+
+    // RN-5: Calculate new version number (find max version in lineage)
+    const sameLineage = questions.filter(q => 
+      q.question_id === versionRoot || q.original_version_fk === versionRoot
+    );
+    const maxVersion = Math.max(...sameLineage.map(q => q.version));
+    const newVersion = maxVersion + 1;
+
+    const now = new Date();
+
+    // RN-1, RN-4: Clone all data and create new version with new ID
+    const newQuestion: Question = {
+      question_id: this.generateId('question'), // RN-1: New unique ID
+      type: modifications?.type || originalQuestion.type, // RN-4: Can be modified
+      enunciado: modifications?.enunciado || originalQuestion.enunciado,
+      version: newVersion, // RN-5: Incremented version
+      active: true, // RN-3: New version is active
+      original_version_fk: versionRoot, // RN-2: Maintain version lineage
+      topic_fk: modifications?.topic_fk || originalQuestion.topic_fk, // RN-4: Can be modified
+      difficulty_fk: modifications?.difficulty_fk || originalQuestion.difficulty_fk, // RN-4: Can be modified
+      learning_outcome_fk: modifications?.learning_outcome_fk !== undefined 
+        ? modifications.learning_outcome_fk 
+        : originalQuestion.learning_outcome_fk,
+      author_fk: currentUser, // New version has new author
+      created_at: now, // New creation timestamp
+      updated_at: now,
+      updated_by: currentUser,
+      deleted_at: null,
+      deleted_by: null,
+    };
+
+    // Validate the new version
+    const validationInput: CreateQuestionInput = {
+      type: newQuestion.type,
+      enunciado: newQuestion.enunciado,
+      topic_fk: newQuestion.topic_fk,
+      difficulty_fk: newQuestion.difficulty_fk,
+      learning_outcome_fk: newQuestion.learning_outcome_fk,
+      options: modifications?.options || originalOptions.map(opt => ({
+        text: opt.text,
+        is_correct: opt.is_correct,
+        position: opt.position,
+        partial_score: opt.partial_score,
+      })),
+    };
+
+    const validationErrors = this.validateQuestion(validationInput);
+    if (validationErrors.length > 0) {
+      throw new Error(`Validation errors: ${validationErrors.map(e => `${e.field}: ${e.message}`).join(', ')}`);
+    }
+
+    // Save new question
+    questions.push(newQuestion);
+    this.saveQuestions(questions);
+
+    // Clone or create new options
+    if (newQuestion.type !== 'desarrollo') {
+      const newOptions = (modifications?.options || originalOptions.map(opt => ({
+        text: opt.text,
+        is_correct: opt.is_correct,
+        position: opt.position,
+        partial_score: opt.partial_score,
+      }))).map(optInput => {
+        const newOption: QuestionOption = {
+          question_option_id: this.generateId('option'),
+          question_fk: newQuestion.question_id,
+          text: optInput.text.trim(),
+          is_correct: optInput.is_correct,
+          position: optInput.position,
+          partial_score: optInput.partial_score || null,
+          created_at: now,
+          created_by: currentUser,
+          updated_at: now,
+          updated_by: currentUser,
+        };
+        return newOption;
+      });
+
+      options.push(...newOptions);
+      this.saveOptions(options);
+    }
+
+    // RN-3: Original version remains active (no modification to old version)
+    // RN-6: Evaluations maintain their reference to specific versions (handled by evaluation system)
+
+    return newQuestion;
+  }
+
+  // Get version history for a question
+  getQuestionVersionHistory(questionId: string): QuestionWithDetails[] {
+    const questions = this.loadQuestions();
+    const question = questions.find(q => q.question_id === questionId);
+    
+    if (!question) {
+      return [];
+    }
+
+    // Find the version root
+    const versionRoot = question.original_version_fk || question.question_id;
+
+    // Get all versions in the lineage
+    const allVersions = questions.filter(q => 
+      q.question_id === versionRoot || q.original_version_fk === versionRoot
+    );
+
+    // Sort by version number descending (newest first)
+    const sortedVersions = allVersions
+      .sort((a, b) => b.version - a.version)
+      .map(q => this.getQuestionWithDetails(q.question_id)!)
+      .filter(Boolean);
+
+    return sortedVersions;
+  }
+
+  // Check if a question has multiple versions
+  hasMultipleVersions(questionId: string): boolean {
+    const history = this.getQuestionVersionHistory(questionId);
+    return history.length > 1;
+  }
+
+  // Get the latest version of a question
+  getLatestVersion(questionId: string): QuestionWithDetails | null {
+    const history = this.getQuestionVersionHistory(questionId);
+    return history.length > 0 ? history[0] : null;
+  }
+
   // Get difficulty levels
   getDifficultyLevels(): Difficulty[] {
     return DIFFICULTY_LEVELS.filter(d => d.active);
