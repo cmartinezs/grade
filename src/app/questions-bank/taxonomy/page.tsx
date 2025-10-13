@@ -250,8 +250,10 @@ function TaxonomySubjectItem({
     <Accordion.Item eventKey={subject.subject_id}>
       <Accordion.Header>
         <div className="d-flex justify-content-between align-items-center w-100 pe-3">
-          <span>
-            <strong>{subject.name}</strong> <Badge bg="secondary">{subject.code}</Badge>
+          <span className="d-flex align-items-center gap-2">
+            <span style={{ fontSize: '1.2rem' }}>📚</span>
+            <strong>{subject.name}</strong> 
+            <Badge bg="secondary">{subject.code}</Badge>
           </span>
           <div className="d-flex gap-2 align-items-center">
             <Badge bg="primary">{units.length} unidad(es)</Badge>
@@ -334,7 +336,10 @@ function TaxonomyUnitItem({
     <Accordion.Item eventKey={unit.unit_id}>
       <Accordion.Header>
         <div className="d-flex justify-content-between align-items-center w-100 pe-3">
-          <span>{unit.name}</span>
+          <span className="d-flex align-items-center gap-2">
+            <span style={{ fontSize: '1.1rem' }}>📂</span>
+            <span>{unit.name}</span>
+          </span>
           <div className="d-flex gap-2 align-items-center">
             <Badge bg="info">{topics.length} tema(s)</Badge>
             <span
@@ -404,7 +409,10 @@ function TaxonomyTopicItem({
 }) {
   return (
     <li className="d-flex justify-content-between align-items-center py-2 border-bottom">
-      <span>{topic.name}</span>
+      <span className="d-flex align-items-center gap-2">
+        <span style={{ fontSize: '1rem' }}>📄</span>
+        <span>{topic.name}</span>
+      </span>
       <div className="d-flex gap-2">
         <Button size="sm" variant="outline-secondary" onClick={() => onEdit('topic', topic.topic_id)}>
           ✏️ Editar

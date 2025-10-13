@@ -110,11 +110,26 @@ export default function DeleteTaxonomyModal({
     }
   };
 
+  const getTaxonomyIcon = (type: TaxonomyType): string => {
+    switch (type) {
+      case 'subject':
+        return '📚';
+      case 'unit':
+        return '📂';
+      case 'topic':
+        return '📄';
+    }
+  };
+
   return (
     <Modal show={show} onHide={handleHide} size="lg">
       <Modal.Header closeButton className="bg-danger text-white">
         <Modal.Title>
-          🗑️ Eliminar {getTaxonomyLabel(elementType)}
+          <span className="d-flex align-items-center gap-2">
+            <span>🗑️</span>
+            <span>{getTaxonomyIcon(elementType)}</span>
+            <span>Eliminar {getTaxonomyLabel(elementType)}</span>
+          </span>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

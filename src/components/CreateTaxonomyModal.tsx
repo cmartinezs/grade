@@ -98,6 +98,17 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     }
   };
 
+  const getTaxonomyIcon = (type: TaxonomyType): string => {
+    switch (type) {
+      case 'subject':
+        return '📚';
+      case 'unit':
+        return '📂';
+      case 'topic':
+        return '📄';
+    }
+  };
+
   const getErrorForField = (field: string): string | null => {
     const error = errors.find((e) => e.field === field);
     return error ? error.message : null;
@@ -106,7 +117,12 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
   return (
     <Modal show={show} onHide={handleHide} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Crear Elemento de Taxonomía Curricular</Modal.Title>
+        <Modal.Title>
+          <span className="d-flex align-items-center gap-2">
+            <span style={{ fontSize: '1.3rem' }}>{getTaxonomyIcon(taxonomyType)}</span>
+            <span>Crear {getTaxonomyLabel(taxonomyType)}</span>
+          </span>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {/* Type Selector */}
@@ -118,20 +134,26 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
             <Button
               variant={taxonomyType === 'subject' ? 'primary' : 'outline-primary'}
               onClick={() => handleTypeChange('subject')}
+              className="d-flex align-items-center gap-2"
             >
-              Asignatura
+              <span style={{ fontSize: '1.2rem' }}>📚</span>
+              <span>Asignatura</span>
             </Button>
             <Button
               variant={taxonomyType === 'unit' ? 'primary' : 'outline-primary'}
               onClick={() => handleTypeChange('unit')}
+              className="d-flex align-items-center gap-2"
             >
-              Unidad
+              <span style={{ fontSize: '1.2rem' }}>📂</span>
+              <span>Unidad</span>
             </Button>
             <Button
               variant={taxonomyType === 'topic' ? 'primary' : 'outline-primary'}
               onClick={() => handleTypeChange('topic')}
+              className="d-flex align-items-center gap-2"
             >
-              Tema
+              <span style={{ fontSize: '1.2rem' }}>📄</span>
+              <span>Tema</span>
             </Button>
           </div>
         </Form.Group>

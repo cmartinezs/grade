@@ -137,6 +137,17 @@ export default function EditTaxonomyModal({
     }
   };
 
+  const getTaxonomyIcon = (type: TaxonomyType): string => {
+    switch (type) {
+      case 'subject':
+        return '📚';
+      case 'unit':
+        return '📂';
+      case 'topic':
+        return '📄';
+    }
+  };
+
   const getErrorForField = (field: string): string | null => {
     const error = errors.find((e) => e.field === field);
     return error ? error.message : null;
@@ -145,7 +156,12 @@ export default function EditTaxonomyModal({
   return (
     <Modal show={show} onHide={handleHide} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Editar {getTaxonomyLabel(elementType)}</Modal.Title>
+        <Modal.Title>
+          <span className="d-flex align-items-center gap-2">
+            <span style={{ fontSize: '1.3rem' }}>{getTaxonomyIcon(elementType)}</span>
+            <span>Editar {getTaxonomyLabel(elementType)}</span>
+          </span>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {loading ? (
