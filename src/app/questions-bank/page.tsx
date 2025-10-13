@@ -85,9 +85,13 @@ export default function QuestionsBankPage() {
             </p>
           </Col>
           <Col xs="auto">
-            <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+            <span
+              className="btn btn-sm btn-outline-success"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setShowCreateModal(true)}
+            >
               ➕ Nueva Pregunta
-            </Button>
+            </span>
           </Col>
         </Row>
 
@@ -187,9 +191,13 @@ export default function QuestionsBankPage() {
                   ? 'Intenta ajustar los filtros de búsqueda'
                   : 'Comienza creando tu primera pregunta'}
               </p>
-              <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+              <span
+                className="btn btn-sm btn-outline-success"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setShowCreateModal(true)}
+              >
                 ➕ Crear Primera Pregunta
-              </Button>
+              </span>
             </Card.Body>
           </Card>
         ) : (
@@ -271,6 +279,10 @@ export default function QuestionsBankPage() {
         show={showCreateModal}
         onHide={() => setShowCreateModal(false)}
         onSuccess={handleCreateSuccess}
+        initialType={filterType || undefined}
+        initialEnunciado={searchText || undefined}
+        initialDifficulty={filterDifficulty || undefined}
+        initialSubject={filterSubject || undefined}
       />
     </ProtectedRoute>
   );

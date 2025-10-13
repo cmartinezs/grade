@@ -23,18 +23,30 @@ interface CreateQuestionModalProps {
   show: boolean;
   onHide: () => void;
   onSuccess: () => void;
+  initialType?: QuestionType;
+  initialEnunciado?: string;
+  initialDifficulty?: DifficultyLevel;
+  initialSubject?: string;
 }
 
-export default function CreateQuestionModal({ show, onHide, onSuccess }: CreateQuestionModalProps) {
+export default function CreateQuestionModal({ 
+  show, 
+  onHide, 
+  onSuccess,
+  initialType,
+  initialEnunciado,
+  initialDifficulty,
+  initialSubject,
+}: CreateQuestionModalProps) {
   const { user } = useAuth();
   
   // Form state
-  const [questionType, setQuestionType] = useState<QuestionType>('seleccion_unica');
-  const [enunciado, setEnunciado] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
+  const [questionType, setQuestionType] = useState<QuestionType>(initialType || 'seleccion_unica');
+  const [enunciado, setEnunciado] = useState(initialEnunciado || '');
+  const [selectedSubject, setSelectedSubject] = useState(initialSubject || '');
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>('medio');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty || 'medio');
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([
     { text: '', is_correct: false, position: 1 },
     { text: '', is_correct: false, position: 2 },
@@ -65,12 +77,16 @@ export default function CreateQuestionModal({ show, onHide, onSuccess }: CreateQ
 
   const difficultyLevels = questionStore.getDifficultyLevels();
 
-  // Reset form when modal closes
+  // Initialize form with provided values when modal opens
   useEffect(() => {
-    if (!show) {
-      resetForm();
+    if (show) {
+      // Apply initial values when modal opens
+      if (initialType) setQuestionType(initialType);
+      if (initialEnunciado) setEnunciado(initialEnunciado);
+      if (initialDifficulty) setDifficulty(initialDifficulty);
+      if (initialSubject) setSelectedSubject(initialSubject);
     }
-  }, [show]);
+  }, [show, initialType, initialEnunciado, initialDifficulty, initialSubject]);
 
   // Update options when question type changes
   useEffect(() => {
@@ -103,12 +119,13 @@ export default function CreateQuestionModal({ show, onHide, onSuccess }: CreateQ
   }, [questionType]);
 
   const resetForm = () => {
-    setQuestionType('seleccion_unica');
-    setEnunciado('');
-    setSelectedSubject('');
+    // Reset to initial values if provided, otherwise use defaults
+    setQuestionType(initialType || 'seleccion_unica');
+    setEnunciado(initialEnunciado || '');
+    setSelectedSubject(initialSubject || '');
     setSelectedUnit('');
     setSelectedTopic('');
-    setDifficulty('medio');
+    setDifficulty(initialDifficulty || 'medio');
     setOptions([
       { text: '', is_correct: false, position: 1 },
       { text: '', is_correct: false, position: 2 },
@@ -119,6 +136,14 @@ export default function CreateQuestionModal({ show, onHide, onSuccess }: CreateQ
     setSubmitSuccess(false);
     setCreatedQuestionId('');
   };
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!show) {
+      resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show]);
 
   const handleAddOption = () => {
     setOptions([
