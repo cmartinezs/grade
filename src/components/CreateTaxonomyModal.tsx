@@ -228,27 +228,53 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
           {taxonomyType === 'topic' && (
             <>
               <Form.Group className="mb-3">
-                <Form.Label>Unidad Padre *</Form.Label>
+                <Form.Label>1. Asignatura *</Form.Label>
+                <Form.Select
+                  value={formData.subject_fk}
+                  onChange={(e) => {
+                    setFormData({ ...formData, subject_fk: e.target.value, unit_fk: '' });
+                  }}
+                  isInvalid={!!getErrorForField('subject_fk')}
+                >
+                  <option value="">-- Selecciona una asignatura --</option>
+                  {subjects.map((subject) => (
+                    <option key={subject.subject_id} value={subject.subject_id}>
+                      {subject.name} ({subject.code})
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">{getErrorForField('subject_fk')}</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>2. Unidad Padre *</Form.Label>
                 <Form.Select
                   value={formData.unit_fk}
                   onChange={(e) => setFormData({ ...formData, unit_fk: e.target.value })}
                   isInvalid={!!getErrorForField('unit_fk')}
+                  disabled={!formData.subject_fk}
                 >
-                  <option value="">-- Selecciona una unidad --</option>
-                  {units.map((unit) => {
-                    const parentSubject = subjects.find((s) => s.subject_id === unit.subject_fk);
-                    return (
+                  <option value="">
+                    {formData.subject_fk ? '-- Selecciona una unidad --' : '-- Primero selecciona una asignatura --'}
+                  </option>
+                  {units
+                    .filter((unit) => unit.subject_fk === formData.subject_fk)
+                    .map((unit) => (
                       <option key={unit.unit_id} value={unit.unit_id}>
-                        {unit.name} (de {parentSubject?.name || 'N/A'})
+                        {unit.name}
                       </option>
-                    );
-                  })}
+                    ))}
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">{getErrorForField('unit_fk')}</Form.Control.Feedback>
+                {formData.subject_fk && units.filter((u) => u.subject_fk === formData.subject_fk).length === 0 && (
+                  <Form.Text className="text-warning">
+                    ⚠️ No hay unidades disponibles para esta asignatura. Crea una primero.
+                  </Form.Text>
+                )}
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Nombre del Tema *</Form.Label>
+                <Form.Label>3. Nombre del Tema *</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Ej: Ecuaciones lineales"
