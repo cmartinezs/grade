@@ -3,14 +3,20 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLoading } from '@/contexts/LoadingContext';
+import LoadingLink from './LoadingLink';
 
 export default function NavigationBar() {
   const { user, isAuthenticated, logout } = useAuth();
+  const { setLoading, setLoadingMessage } = useLoading();
 
   const handleLogout = () => {
+    setLoading(true);
+    setLoadingMessage('Cerrando sesión...');
     logout();
-    // Redirigir a home o login si es necesario
-    window.location.href = '/';
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 1000);
   };
 
   return (
@@ -24,20 +30,20 @@ export default function NavigationBar() {
         
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} href="/">
+            <Nav.Link as={LoadingLink} href="/" loadingMessage="Cargando inicio...">
               🏠 Inicio
             </Nav.Link>
             
             {/* Enlaces públicos */}
             {!isAuthenticated && (
               <>
-                <Nav.Link as={Link} href="/about">
+                <Nav.Link as={LoadingLink} href="/about" loadingMessage="Cargando información...">
                   ℹ️ Acerca de
                 </Nav.Link>
-                <Nav.Link as={Link} href="/features">
+                <Nav.Link as={LoadingLink} href="/features" loadingMessage="Cargando características...">
                   ✨ Características
                 </Nav.Link>
-                <Nav.Link as={Link} href="/pricing">
+                <Nav.Link as={LoadingLink} href="/pricing" loadingMessage="Cargando precios...">
                   💰 Precios
                 </Nav.Link>
               </>
@@ -59,7 +65,7 @@ export default function NavigationBar() {
                   </NavDropdown.Item>
                 </NavDropdown>
                 
-                <Nav.Link as={Link} href="/categories">
+                <Nav.Link as={LoadingLink} href="/categories" loadingMessage="Cargando categorías...">
                   🏷️ Categorías
                 </Nav.Link>
                 
@@ -76,15 +82,15 @@ export default function NavigationBar() {
           </Nav>
           
           <Nav>
-            {!isAuthenticated ? (
+                        {!isAuthenticated ? (
               // Botones para usuarios no autenticados
               <>
-                <Nav.Link as={Link} href="/auth/login">
+                <LoadingLink href="/auth/login" className="btn btn-light btn-sm" loadingMessage="Cargando login...">
                   🔑 Iniciar Sesión
-                </Nav.Link>
-                <Link href="/auth/register" className="btn btn-outline-light btn-sm ms-2">
+                </LoadingLink>
+                <LoadingLink href="/auth/register" className="btn btn-outline-light btn-sm ms-2" loadingMessage="Cargando registro...">
                   🚀 Registrarse
-                </Link>
+                </LoadingLink>
               </>
             ) : (
               // Menú para usuarios autenticados

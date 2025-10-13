@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useLoading } from './LoadingContext';
 
 // Tipos
 interface User {
@@ -15,7 +16,6 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
   logout: () => void;
@@ -45,33 +45,39 @@ export const useAuth = () => {
 // Provider
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { setLoading, setLoadingMessage } = useLoading();
 
   // Simulamos verificar si hay un usuario autenticado al cargar
   useEffect(() => {
     const checkAuth = () => {
+      setLoading(true);
+      setLoadingMessage('Verificando autenticación...');
+      
       try {
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
           setUser(JSON.parse(savedUser));
+          // Reestablecer cookie si hay usuario guardado
+          document.cookie = 'authenticated=true; path=/; max-age=86400';
         }
       } catch (error) {
         console.error('Error loading user from localStorage:', error);
         localStorage.removeItem('user');
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [setLoading, setLoadingMessage]);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, _password: string): Promise<boolean> => {
     try {
-      setIsLoading(true);
+      setLoading(true);
+      setLoadingMessage('Iniciando sesión...');
       
       // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Usuario demo para testing
       const mockUser: User = {
@@ -86,21 +92,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(mockUser);
       localStorage.setItem('user', JSON.stringify(mockUser));
       
+      // Establecer cookie para el middleware
+      document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
+      
       return true;
     } catch (error) {
       console.error('Login error:', error);
       return false;
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const register = async (userData: RegisterData): Promise<boolean> => {
     try {
-      setIsLoading(true);
+      setLoading(true);
+      setLoadingMessage('Creando cuenta...');
       
       // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       const newUser: User = {
         id: Date.now().toString(),
@@ -114,24 +124,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
       
+      // Establecer cookie para el middleware
+      document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
+      
       return true;
     } catch (error) {
       console.error('Register error:', error);
       return false;
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    
+    // Limpiar cookie del middleware
+    document.cookie = 'authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
   };
 
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
-    isLoading,
     login,
     register,
     logout

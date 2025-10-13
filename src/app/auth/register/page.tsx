@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, Form, Button, Alert, ProgressBar, Row, Col } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useLoading } from '@/contexts/LoadingContext';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -11,25 +12,38 @@ export default function RegisterPage() {
     confirmEmail: '',
     password: '',
     confirmPassword: '',
-    role: '',
+    roles: {
+      docente: true,
+      coordinador: true
+    },
     acceptTerms: false
   });
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success');
-  const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const router = useRouter();
+  const { isLoading, setLoading, setLoadingMessage } = useLoading();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (e: any) => {
     const { name, value, type } = e.target;
     const checked = e.target.checked;
     
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
+    if (name === 'docente' || name === 'coordinador') {
+      setFormData({
+        ...formData,
+        roles: {
+          ...formData.roles,
+          [name]: checked
+        }
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      });
+    }
 
     // Calcular fuerza de contraseña
     if (name === 'password') {
@@ -76,6 +90,13 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!formData.roles.docente && !formData.roles.coordinador) {
+      setAlertType('danger');
+      setAlertMessage('Debes seleccionar al menos un rol');
+      setShowAlert(true);
+      return;
+    }
+
     if (!formData.acceptTerms) {
       setAlertType('danger');
       setAlertMessage('Debes aceptar los términos y condiciones');
@@ -83,15 +104,19 @@ export default function RegisterPage() {
       return;
     }
 
-    setIsLoading(true);
+    setLoading(true);
+    setLoadingMessage('Creando tu cuenta...');
     
     try {
       // Simular delay de registro
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       setAlertType('success');
       setAlertMessage('¡Registro exitoso! Redirigiendo al login...');
       setShowAlert(true);
+      
+      // Cambiar mensaje de loading
+      setLoadingMessage('Redirigiendo...');
       
       // Redirigir al login después de un breve delay
       setTimeout(() => {
@@ -104,7 +129,7 @@ export default function RegisterPage() {
       setAlertMessage('Error del servidor. Inténtalo más tarde.');
       setShowAlert(true);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -167,23 +192,34 @@ export default function RegisterPage() {
                   </Col>
                 </Row>
 
-                {/* Fila 2: Rol */}
+                {/* Fila 2: Roles */}
                 <Form.Group className="mb-3">
-                  <Form.Label>Rol *</Form.Label>
-                  <Form.Select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">¿Cuál es tu rol principal?</option>
-                    <option value="teacher">Profesor</option>
-                    <option value="coordinator">Coordinador Académico</option>
-                    <option value="director">Director/Jefe de UTP</option>
-                    <option value="admin">Administrador Educacional</option>
-                    <option value="student">Estudiante</option>
-                    <option value="other">Otro</option>
-                  </Form.Select>
+                  <Form.Label>Rol(es) *</Form.Label>
+                  <div className="mt-2">
+                    <Row>
+                      <Col md={6}>
+                        <Form.Check
+                          type="checkbox"
+                          name="docente"
+                          id="docente"
+                          label="Docente"
+                          checked={formData.roles.docente}
+                          onChange={handleChange}
+                        />
+                      </Col>
+                      <Col md={6}>
+                        <Form.Check
+                          type="checkbox"
+                          name="coordinador"
+                          id="coordinador"
+                          label="Coordinador"
+                          checked={formData.roles.coordinador}
+                          onChange={handleChange}
+                        />
+                      </Col>
+                    </Row>
+                    <small className="text-muted">Puedes seleccionar ambos roles si aplica</small>
+                  </div>
                 </Form.Group>
 
                 {/* Fila 3: Contraseñas */}

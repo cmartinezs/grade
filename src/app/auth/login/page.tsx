@@ -5,6 +5,7 @@ import { Card, Form, Button, Alert } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLoading } from '@/contexts/LoadingContext';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -15,7 +16,8 @@ export default function LoginPage() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success');
   const router = useRouter();
-  const { login, isLoading } = useAuth();
+  const { login } = useAuth();
+  const { isLoading } = useLoading();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

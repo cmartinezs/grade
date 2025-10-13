@@ -3,6 +3,7 @@
 import { Container, Row, Col, Card, Button, Badge, Form, InputGroup } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Datos de ejemplo
 const sampleCategories = [
@@ -54,8 +55,9 @@ export default function CategoriesPage() {
   const totalQuestions = sampleCategories.reduce((sum, cat) => sum + cat.questionCount, 0);
 
   return (
-    <PageWrapper>
-      <NavigationBar />
+    <ProtectedRoute>
+      <PageWrapper>
+        <NavigationBar />
       
       <Container className="mt-4">
         {/* Header */}
@@ -173,5 +175,6 @@ export default function CategoriesPage() {
         </Row>
       </Container>
     </PageWrapper>
+    </ProtectedRoute>
   );
 }
