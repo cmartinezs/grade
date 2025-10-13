@@ -161,16 +161,25 @@ function TaxonomySubjectItem({
           </span>
           <div className="d-flex gap-2 align-items-center">
             <Badge bg="primary">{units.length} unidad(es)</Badge>
-            <Button
-              size="sm"
-              variant="outline-primary"
+            <span
+              className="btn btn-sm btn-outline-primary"
+              style={{ cursor: 'pointer' }}
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit('subject', subject.subject_id);
               }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit('subject', subject.subject_id);
+                }
+              }}
             >
               ✏️ Editar
-            </Button>
+            </span>
           </div>
         </div>
       </Accordion.Header>
@@ -199,16 +208,25 @@ function TaxonomyUnitItem({ unit, onEdit }: { unit: Unit; onEdit: (type: Taxonom
           <span>{unit.name}</span>
           <div className="d-flex gap-2 align-items-center">
             <Badge bg="info">{topics.length} tema(s)</Badge>
-            <Button
-              size="sm"
-              variant="outline-info"
+            <span
+              className="btn btn-sm btn-outline-info"
+              style={{ cursor: 'pointer' }}
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit('unit', unit.unit_id);
               }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit('unit', unit.unit_id);
+                }
+              }}
             >
               ✏️ Editar
-            </Button>
+            </span>
           </div>
         </div>
       </Accordion.Header>
