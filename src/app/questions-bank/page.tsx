@@ -6,6 +6,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from '@/components/CreateQuestionModal';
 import ViewQuestionModal from '@/components/ViewQuestionModal';
 import EditQuestionModal from '@/components/EditQuestionModal';
+import CloneQuestionModal from '@/components/CloneQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { QuestionWithDetails, QuestionType, DifficultyLevel } from '@/types/question';
 import { getAllSubjects } from '@/lib/taxonomyStore';
@@ -14,6 +15,7 @@ export default function QuestionsBankPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showCloneModal, setShowCloneModal] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState<'edit' | 'version'>('version');
   const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
@@ -76,7 +78,16 @@ export default function QuestionsBankPage() {
     setShowEditModal(true);
   };
 
+  const handleCloneQuestion = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    setShowCloneModal(true);
+  };
+
   const handleVersionSuccess = () => {
+    loadQuestions();
+  };
+
+  const handleCloneSuccess = () => {
     loadQuestions();
   };
 
@@ -310,7 +321,9 @@ export default function QuestionsBankPage() {
                             <Dropdown.Item onClick={() => handleEditQuestion(question.question_id)}>
                               ✏️ Editar
                             </Dropdown.Item>
-                            <Dropdown.Item>📋 Duplicar</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleCloneQuestion(question.question_id)}>
+                              📋 Clonar Pregunta
+                            </Dropdown.Item>
                             <Dropdown.Item>📊 Ver Estadísticas</Dropdown.Item>
                             <Dropdown.Divider />
                             <Dropdown.Item className="text-danger">🗑️ Eliminar</Dropdown.Item>
@@ -353,6 +366,14 @@ export default function QuestionsBankPage() {
         onSuccess={handleVersionSuccess}
         questionId={selectedQuestionId}
         mode={editMode}
+      />
+
+      {/* Clone Question Modal */}
+      <CloneQuestionModal
+        show={showCloneModal}
+        onHide={() => setShowCloneModal(false)}
+        onSuccess={handleCloneSuccess}
+        questionId={selectedQuestionId}
       />
     </ProtectedRoute>
   );

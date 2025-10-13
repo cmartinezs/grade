@@ -750,6 +750,111 @@ class QuestionStore {
     return history.length > 0 ? history[0] : null;
   }
 
+  // Clone a question (CU-BP-03: RN-1 to RN-6)
+  async cloneQuestion(
+    questionId: string,
+    currentUser: string,
+    modifications?: Partial<CreateQuestionInput>
+  ): Promise<Question> {
+    const questions = this.loadQuestions();
+    const options = this.loadOptions();
+    
+    // Find the source question
+    const sourceQuestion = questions.find(q => q.question_id === questionId);
+    if (!sourceQuestion) {
+      throw new Error('Pregunta no encontrada');
+    }
+
+    if (sourceQuestion.deleted_at) {
+      throw new Error('No se puede clonar una pregunta eliminada');
+    }
+
+    // Get source question's options
+    const sourceOptions = options.filter(opt => opt.question_fk === questionId)
+      .sort((a, b) => a.position - b.position);
+
+    const now = new Date();
+
+    // RN-1, RN-2: Create completely independent item with new unique ID
+    // RN-3: Clone starts with version 1
+    // RN-4: No relationship to original (original_version_fk = NULL)
+    const clonedQuestion: Question = {
+      question_id: this.generateId('question'), // RN-2: New unique ID
+      type: modifications?.type || sourceQuestion.type, // RN-4: Can be modified
+      enunciado: modifications?.enunciado || sourceQuestion.enunciado,
+      version: 1, // RN-3: Clone starts with version 1
+      active: true, // RN-1: Clone is marked as active
+      original_version_fk: null, // RN-4: No reference to original
+      topic_fk: modifications?.topic_fk || sourceQuestion.topic_fk, // RN-4: Can be modified
+      difficulty_fk: modifications?.difficulty_fk || sourceQuestion.difficulty_fk, // RN-4: Can be modified
+      learning_outcome_fk: modifications?.learning_outcome_fk !== undefined 
+        ? modifications.learning_outcome_fk 
+        : sourceQuestion.learning_outcome_fk,
+      author_fk: currentUser, // RN-5: Author is the user who clones, not original author
+      created_at: now, // RN-5: Traceability - creation timestamp
+      updated_at: now,
+      updated_by: currentUser,
+      deleted_at: null,
+      deleted_by: null,
+    };
+
+    // Validate the cloned question
+    const validationInput: CreateQuestionInput = {
+      type: clonedQuestion.type,
+      enunciado: clonedQuestion.enunciado,
+      topic_fk: clonedQuestion.topic_fk,
+      difficulty_fk: clonedQuestion.difficulty_fk,
+      learning_outcome_fk: clonedQuestion.learning_outcome_fk,
+      options: modifications?.options || sourceOptions.map(opt => ({
+        text: opt.text,
+        is_correct: opt.is_correct,
+        position: opt.position,
+        partial_score: opt.partial_score,
+      })),
+    };
+
+    const validationErrors = this.validateQuestion(validationInput);
+    if (validationErrors.length > 0) {
+      throw new Error(`Validation errors: ${validationErrors.map(e => `${e.field}: ${e.message}`).join(', ')}`);
+    }
+
+    // Save cloned question
+    questions.push(clonedQuestion);
+    this.saveQuestions(questions);
+
+    // Clone options with new IDs
+    if (clonedQuestion.type !== 'desarrollo') {
+      const newOptions = (modifications?.options || sourceOptions.map(opt => ({
+        text: opt.text,
+        is_correct: opt.is_correct,
+        position: opt.position,
+        partial_score: opt.partial_score,
+      }))).map(optInput => {
+        const newOption: QuestionOption = {
+          question_option_id: this.generateId('option'),
+          question_fk: clonedQuestion.question_id,
+          text: optInput.text.trim(),
+          is_correct: optInput.is_correct,
+          position: optInput.position,
+          partial_score: optInput.partial_score || null,
+          created_at: now,
+          created_by: currentUser,
+          updated_at: now,
+          updated_by: currentUser,
+        };
+        return newOption;
+      });
+
+      options.push(...newOptions);
+      this.saveOptions(options);
+    }
+
+    // RN-6: No formal link between original and clone (could be logged in audit)
+    // For audit purposes, we could log this action but it's not required by the system
+
+    return clonedQuestion;
+  }
+
   // Group questions by version families (returns only latest versions)
   getQuestionsGroupedByVersion(): QuestionWithDetails[] {
     const questions = this.loadQuestions();
