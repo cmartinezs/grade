@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert, Badge, Row, Col, Card } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import {
   QuestionType,
   DifficultyLevel,
@@ -16,8 +16,8 @@ import {
   DuplicateDetectionResult,
 } from '@/types/question';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { getAllSubjects, getAllUnits, getAllTopics } from '@/lib/taxonomyStore';
 import { useAuth } from '@/contexts/AuthContext';
+import QuestionFormFields from './QuestionFormFields';
 
 interface CreateQuestionModalProps {
   show: boolean;
@@ -59,23 +59,6 @@ export default function CreateQuestionModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [createdQuestionId, setCreatedQuestionId] = useState('');
-
-  // Load taxonomy data
-  const subjects = getAllSubjects().filter(s => s.active && !s.deleted_at);
-  const units = selectedSubject 
-    ? getAllUnits().filter(u => u.subject_fk === selectedSubject && u.active && !u.deleted_at)
-    : [];
-  const topics = selectedUnit
-    ? getAllTopics().filter(t => t.unit_fk === selectedUnit && t.active && !t.deleted_at)
-    : [];
-
-  // Check for missing taxonomy levels
-  const selectedSubjectData = subjects.find(s => s.subject_id === selectedSubject);
-  const selectedUnitData = units.find(u => u.unit_id === selectedUnit);
-  const hasNoUnits = selectedSubject && units.length === 0;
-  const hasNoTopics = selectedUnit && topics.length === 0;
-
-  const difficultyLevels = questionStore.getDifficultyLevels();
 
   // Initialize form with provided values when modal opens
   useEffect(() => {
@@ -265,9 +248,6 @@ export default function CreateQuestionModal({
     return validationErrors.filter(e => e.field === field);
   };
 
-  const hasErrors = validationErrors.length > 0;
-  const rules = QUESTION_TYPE_RULES[questionType];
-
   return (
     <Modal show={show} onHide={onHide} size="lg" backdrop="static">
       <Modal.Header closeButton>
@@ -297,7 +277,7 @@ export default function CreateQuestionModal({
         ) : (
           <Form>
             {/* General errors */}
-            {hasErrors && getErrorsForField('general').length > 0 && (
+            {getErrorsForField('general').length > 0 && (
               <Alert variant="danger">
                 {getErrorsForField('general').map((err, i) => (
                   <div key={i}>{err.message}</div>
@@ -305,7 +285,7 @@ export default function CreateQuestionModal({
               </Alert>
             )}
 
-            {/* Duplicate warning */}
+            {/* Duplicate warning - ESPECÍFICO DE CREATE */}
             {showDuplicateWarning && duplicateWarning && (
               <Alert variant="warning">
                 <Alert.Heading>⚠️ Posible Duplicado Detectado</Alert.Heading>
@@ -328,258 +308,38 @@ export default function CreateQuestionModal({
               </Alert>
             )}
 
-            {/* Question Type */}
-            <Form.Group className="mb-3">
-              <Form.Label>Tipo de Pregunta *</Form.Label>
-              <Form.Select
-                value={questionType}
-                onChange={(e) => setQuestionType(e.target.value as QuestionType)}
-                isInvalid={getErrorsForField('type').length > 0}
-              >
-                {Object.values(QUESTION_TYPE_RULES).map((rule) => (
-                  <option key={rule.type} value={rule.type}>
-                    {rule.name}
-                  </option>
-                ))}
-              </Form.Select>
-              <Form.Text className="text-muted">{rules.description}</Form.Text>
-              {getErrorsForField('type').map((err, i) => (
-                <Form.Control.Feedback key={i} type="invalid" style={{ display: 'block' }}>
-                  {err.message}
-                </Form.Control.Feedback>
-              ))}
-            </Form.Group>
+            {/* Campos comunes del formulario de preguntas */}
+            <QuestionFormFields
+              questionType={questionType}
+              onQuestionTypeChange={setQuestionType}
+              enunciado={enunciado}
+              onEnunciadoChange={setEnunciado}
+              selectedSubject={selectedSubject}
+              selectedUnit={selectedUnit}
+              selectedTopic={selectedTopic}
+              onSubjectChange={(value) => {
+                setSelectedSubject(value);
+                setSelectedUnit('');
+                setSelectedTopic('');
+              }}
+              onUnitChange={(value) => {
+                setSelectedUnit(value);
+                setSelectedTopic('');
+              }}
+              onTopicChange={setSelectedTopic}
+              difficulty={difficulty}
+              onDifficultyChange={setDifficulty}
+              options={options}
+              onOptionTextChange={handleOptionTextChange}
+              onOptionCorrectChange={handleOptionCorrectChange}
+              onAddOption={handleAddOption}
+              onRemoveOption={handleRemoveOption}
+              getErrorsForField={getErrorsForField}
+              disabled={isSubmitting}
+              showDifficultyAsRadio={true}
+            />
 
-            {/* Question Statement */}
-            <Form.Group className="mb-3">
-              <Form.Label>Enunciado de la Pregunta *</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={4}
-                value={enunciado}
-                onChange={(e) => setEnunciado(e.target.value)}
-                placeholder="Escribe el texto de la pregunta..."
-                isInvalid={getErrorsForField('enunciado').length > 0}
-              />
-              {getErrorsForField('enunciado').map((err, i) => (
-                <Form.Control.Feedback key={i} type="invalid">
-                  {err.message}
-                </Form.Control.Feedback>
-              ))}
-            </Form.Group>
-
-            {/* Taxonomy Selection */}
-            <Card className="mb-3">
-              <Card.Header>
-                <strong>Taxonomía (Tema) *</strong>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md={4}>
-                    <Form.Group className="mb-2">
-                      <Form.Label>Asignatura</Form.Label>
-                      <Form.Select
-                        value={selectedSubject}
-                        onChange={(e) => {
-                          setSelectedSubject(e.target.value);
-                          setSelectedUnit('');
-                          setSelectedTopic('');
-                        }}
-                      >
-                        <option value="">Seleccione...</option>
-                        {subjects.map((s) => (
-                          <option key={s.subject_id} value={s.subject_id}>
-                            {s.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group className="mb-2">
-                      <Form.Label>Unidad</Form.Label>
-                      <Form.Select
-                        value={selectedUnit}
-                        onChange={(e) => {
-                          setSelectedUnit(e.target.value);
-                          setSelectedTopic('');
-                        }}
-                        disabled={!selectedSubject}
-                      >
-                        <option value="">Seleccione...</option>
-                        {units.map((u) => (
-                          <option key={u.unit_id} value={u.unit_id}>
-                            {u.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group className="mb-2">
-                      <Form.Label>Tema *</Form.Label>
-                      <Form.Select
-                        value={selectedTopic}
-                        onChange={(e) => setSelectedTopic(e.target.value)}
-                        disabled={!selectedUnit}
-                        isInvalid={getErrorsForField('topic_fk').length > 0}
-                      >
-                        <option value="">Seleccione...</option>
-                        {topics.map((t) => (
-                          <option key={t.topic_id} value={t.topic_id}>
-                            {t.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                      {getErrorsForField('topic_fk').map((err, i) => (
-                        <Form.Control.Feedback key={i} type="invalid">
-                          {err.message}
-                        </Form.Control.Feedback>
-                      ))}
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Warning: No units for selected subject */}
-                {hasNoUnits && (
-                  <Alert variant="warning" className="mb-0 mt-2">
-                    <div className="d-flex align-items-start">
-                      <span className="me-2">⚠️</span>
-                      <div>
-                        <strong>La asignatura &ldquo;{selectedSubjectData?.name}&rdquo; no tiene unidades.</strong>
-                        <p className="mb-0 mt-1 small">
-                          Para poder crear una pregunta, primero debes crear al menos una unidad para esta asignatura.
-                          Ve a <strong>Gestión de Taxonomías</strong> para agregar unidades.
-                        </p>
-                      </div>
-                    </div>
-                  </Alert>
-                )}
-
-                {/* Warning: No topics for selected unit */}
-                {hasNoTopics && (
-                  <Alert variant="warning" className="mb-0 mt-2">
-                    <div className="d-flex align-items-start">
-                      <span className="me-2">⚠️</span>
-                      <div>
-                        <strong>La unidad &ldquo;{selectedUnitData?.name}&rdquo; no tiene temas.</strong>
-                        <p className="mb-0 mt-1 small">
-                          Para poder crear una pregunta, primero debes crear al menos un tema para esta unidad.
-                          Ve a <strong>Gestión de Taxonomías</strong> para agregar temas.
-                        </p>
-                      </div>
-                    </div>
-                  </Alert>
-                )}
-              </Card.Body>
-            </Card>
-
-            {/* Difficulty */}
-            <Form.Group className="mb-3">
-              <Form.Label>Dificultad *</Form.Label>
-              <div className="d-flex gap-2">
-                {difficultyLevels.map((level) => (
-                  <Form.Check
-                    key={level.difficulty_id}
-                    type="radio"
-                    id={`difficulty-${level.difficulty_id}`}
-                    label={level.name}
-                    name="difficulty"
-                    value={level.difficulty_id}
-                    checked={difficulty === level.difficulty_id}
-                    onChange={(e) => setDifficulty(e.target.value as DifficultyLevel)}
-                  />
-                ))}
-              </div>
-              {getErrorsForField('difficulty_fk').map((err, i) => (
-                <div key={i} className="text-danger small mt-1">
-                  {err.message}
-                </div>
-              ))}
-            </Form.Group>
-
-            {/* Options (for non-desarrollo questions) */}
-            {questionType !== 'desarrollo' && (
-              <Card>
-                <Card.Header className="d-flex justify-content-between align-items-center">
-                  <strong>Alternativas *</strong>
-                  <Badge bg="info">
-                    {rules.minOptions === rules.maxOptions
-                      ? `Exactamente ${rules.minOptions} opciones`
-                      : `Mínimo ${rules.minOptions} opciones`}
-                  </Badge>
-                </Card.Header>
-                <Card.Body>
-                  {getErrorsForField('options').length > 0 && (
-                    <Alert variant="danger" className="mb-3">
-                      {getErrorsForField('options').map((err, i) => (
-                        <div key={i}>{err.message}</div>
-                      ))}
-                    </Alert>
-                  )}
-
-                  {options.map((option, index) => (
-                    <Row key={index} className="mb-2 align-items-center">
-                      <Col xs={1}>
-                        <Form.Check
-                          type={rules.exactlyOneCorrect ? 'radio' : 'checkbox'}
-                          name="correct-option"
-                          checked={option.is_correct}
-                          onChange={(e) => handleOptionCorrectChange(index, e.target.checked)}
-                          label=""
-                        />
-                      </Col>
-                      <Col>
-                        <Form.Control
-                          type="text"
-                          placeholder={`Opción ${index + 1}`}
-                          value={option.text}
-                          onChange={(e) => handleOptionTextChange(index, e.target.value)}
-                          disabled={questionType === 'verdadero_falso'}
-                          isInvalid={getErrorsForField(`options[${index}].text`).length > 0}
-                        />
-                        {getErrorsForField(`options[${index}].text`).map((err, i) => (
-                          <Form.Control.Feedback key={i} type="invalid">
-                            {err.message}
-                          </Form.Control.Feedback>
-                        ))}
-                      </Col>
-                      {questionType !== 'verdadero_falso' && options.length > rules.minOptions && (
-                        <Col xs="auto">
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={() => handleRemoveOption(index)}
-                          >
-                            ✕
-                          </Button>
-                        </Col>
-                      )}
-                    </Row>
-                  ))}
-
-                  {questionType !== 'verdadero_falso' && 
-                   (!rules.maxOptions || options.length < rules.maxOptions) && (
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={handleAddOption}
-                      className="mt-2"
-                    >
-                      + Agregar Opción
-                    </Button>
-                  )}
-
-                  <Form.Text className="d-block mt-2 text-muted">
-                    {rules.exactlyOneCorrect
-                      ? '☝️ Marca la opción correcta'
-                      : '✅ Marca una o más opciones correctas'}
-                  </Form.Text>
-                </Card.Body>
-              </Card>
-            )}
-
-            {/* Development question note */}
+            {/* Development question note - ESPECÍFICO DE CREATE */}
             {questionType === 'desarrollo' && (
               <Alert variant="info">
                 <strong>Nota:</strong> Las preguntas de desarrollo no requieren alternativas predefinidas.
@@ -599,13 +359,9 @@ export default function CreateQuestionModal({
             <Button
               variant="primary"
               onClick={() => handleSubmit(false)}
-              disabled={isSubmitting || showDuplicateWarning || hasNoUnits || hasNoTopics || !selectedTopic}
+              disabled={isSubmitting || showDuplicateWarning || !selectedTopic}
               title={
-                hasNoUnits 
-                  ? 'La asignatura seleccionada no tiene unidades. Crea una primero en Gestión de Taxonomías.'
-                  : hasNoTopics
-                  ? 'La unidad seleccionada no tiene temas. Crea uno primero en Gestión de Taxonomías.'
-                  : !selectedTopic
+                !selectedTopic
                   ? 'Debes seleccionar un tema para continuar'
                   : ''
               }
