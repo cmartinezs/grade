@@ -175,9 +175,13 @@ export default function TaxonomyPage() {
             <Card>
               <Card.Header className="d-flex justify-content-between align-items-center">
                 <strong>Catálogo Jerárquico</strong>
-                <Button variant="primary" size="sm" onClick={() => setShowCreateModal(true)}>
+                <span
+                  className="btn btn-sm btn-outline-success"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setShowCreateModal(true)}
+                >
                   ➕ Crear Elemento
-                </Button>
+                </span>
               </Card.Header>
               <Card.Body>
                 {subjects.length === 0 ? (

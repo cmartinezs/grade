@@ -330,7 +330,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
 
           <div className="d-flex justify-content-end gap-2 mt-4">
             <Button variant="secondary" onClick={handleHide}>
-              Cancelar
+              ❌ Cancelar
             </Button>
             <Button variant="primary" type="submit">
               💾 Guardar {getTaxonomyLabel(taxonomyType)}

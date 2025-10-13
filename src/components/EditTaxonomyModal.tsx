@@ -319,7 +319,7 @@ export default function EditTaxonomyModal({
 
               <div className="d-flex justify-content-end gap-2 mt-4">
                 <Button variant="secondary" onClick={handleHide}>
-                  Cancelar
+                  ❌ Cancelar
                 </Button>
                 <Button variant="primary" type="submit">
                   💾 Actualizar {getTaxonomyLabel(elementType)}

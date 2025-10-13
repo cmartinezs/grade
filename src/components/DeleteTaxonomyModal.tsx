@@ -220,7 +220,7 @@ export default function DeleteTaxonomyModal({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleHide}>
-          Cancelar
+          ❌ Cancelar
         </Button>
         {impact && impact.canDelete && (
           <Button variant="danger" onClick={handleConfirmDelete}>
