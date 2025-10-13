@@ -13,8 +13,16 @@ import {
   ValidationError,
 } from '@/types/taxonomy';
 
-// Mock data storage (in-memory)
-const subjects: Subject[] = [
+// LocalStorage keys
+const STORAGE_KEYS = {
+  SUBJECTS: 'taxonomy_subjects',
+  UNITS: 'taxonomy_units',
+  TOPICS: 'taxonomy_topics',
+  COUNTERS: 'taxonomy_counters',
+};
+
+// Default data for initial load
+const DEFAULT_SUBJECTS: Subject[] = [
   {
     subject_id: 'sub-1',
     name: 'Matemáticas',
@@ -41,7 +49,7 @@ const subjects: Subject[] = [
   },
 ];
 
-const units: Unit[] = [
+const DEFAULT_UNITS: Unit[] = [
   {
     unit_id: 'unit-1',
     name: 'Álgebra Básica',
@@ -68,7 +76,7 @@ const units: Unit[] = [
   },
 ];
 
-const topics: Topic[] = [
+const DEFAULT_TOPICS: Topic[] = [
   {
     topic_id: 'topic-1',
     name: 'Ecuaciones lineales',
@@ -95,10 +103,79 @@ const topics: Topic[] = [
   },
 ];
 
-// ID generators
-let subjectCounter = 3;
-let unitCounter = 3;
-let topicCounter = 3;
+// Helper to parse dates when loading from localStorage
+function reviveDates<T extends { created_at: Date; updated_at: Date; deleted_at: Date | null }>(obj: Record<string, unknown>): T {
+  return {
+    ...obj,
+    created_at: new Date(obj.created_at as string),
+    updated_at: new Date(obj.updated_at as string),
+    deleted_at: obj.deleted_at ? new Date(obj.deleted_at as string) : null,
+  } as T;
+}
+
+// Load data from localStorage or use defaults
+function loadFromStorage<T>(key: string, defaults: T[]): T[] {
+  if (typeof window === 'undefined') return defaults; // SSR guard
+  
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.map(reviveDates);
+    }
+  } catch (error) {
+    console.error(`Error loading ${key} from localStorage:`, error);
+  }
+  return defaults;
+}
+
+// Save data to localStorage
+function saveToStorage<T>(key: string, data: T[]): void {
+  if (typeof window === 'undefined') return; // SSR guard
+  
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error(`Error saving ${key} to localStorage:`, error);
+  }
+}
+
+// Load counters from localStorage
+function loadCounters(): { subject: number; unit: number; topic: number } {
+  if (typeof window === 'undefined') return { subject: 3, unit: 3, topic: 3 };
+  
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.COUNTERS);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (error) {
+    console.error('Error loading counters from localStorage:', error);
+  }
+  return { subject: 3, unit: 3, topic: 3 };
+}
+
+// Save counters to localStorage
+function saveCounters(counters: { subject: number; unit: number; topic: number }): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(STORAGE_KEYS.COUNTERS, JSON.stringify(counters));
+  } catch (error) {
+    console.error('Error saving counters to localStorage:', error);
+  }
+}
+
+// Initialize data from localStorage
+const subjects: Subject[] = loadFromStorage(STORAGE_KEYS.SUBJECTS, DEFAULT_SUBJECTS);
+const units: Unit[] = loadFromStorage(STORAGE_KEYS.UNITS, DEFAULT_UNITS);
+const topics: Topic[] = loadFromStorage(STORAGE_KEYS.TOPICS, DEFAULT_TOPICS);
+
+// Initialize counters
+const counters = loadCounters();
+let subjectCounter = counters.subject;
+let unitCounter = counters.unit;
+let topicCounter = counters.topic;
 
 // ===== GETTERS =====
 
@@ -255,6 +332,8 @@ export function createSubject(input: CreateSubjectInput, userId: string): { succ
   };
 
   subjects.push(newSubject);
+  saveToStorage(STORAGE_KEYS.SUBJECTS, subjects);
+  saveCounters({ subject: subjectCounter, unit: unitCounter, topic: topicCounter });
   return { success: true, data: newSubject };
 }
 
@@ -282,6 +361,8 @@ export function createUnit(input: CreateUnitInput, userId: string): { success: b
   };
 
   units.push(newUnit);
+  saveToStorage(STORAGE_KEYS.UNITS, units);
+  saveCounters({ subject: subjectCounter, unit: unitCounter, topic: topicCounter });
   return { success: true, data: newUnit };
 }
 
@@ -309,5 +390,22 @@ export function createTopic(input: CreateTopicInput, userId: string): { success:
   };
 
   topics.push(newTopic);
+  saveToStorage(STORAGE_KEYS.TOPICS, topics);
+  saveCounters({ subject: subjectCounter, unit: unitCounter, topic: topicCounter });
   return { success: true, data: newTopic };
+}
+
+/**
+ * Clear all taxonomy data from localStorage (for testing/reset)
+ */
+export function clearAllTaxonomyData(): void {
+  if (typeof window === 'undefined') return;
+  
+  localStorage.removeItem(STORAGE_KEYS.SUBJECTS);
+  localStorage.removeItem(STORAGE_KEYS.UNITS);
+  localStorage.removeItem(STORAGE_KEYS.TOPICS);
+  localStorage.removeItem(STORAGE_KEYS.COUNTERS);
+  
+  // Reload the page to reinitialize with defaults
+  window.location.reload();
 }

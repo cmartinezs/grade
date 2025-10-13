@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Accordion } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateTaxonomyModal from '@/components/CreateTaxonomyModal';
@@ -8,12 +8,18 @@ import {
   getAllSubjects,
   getUnitsBySubject,
   getTopicsByUnit,
+  clearAllTaxonomyData,
 } from '@/lib/taxonomyStore';
 import { Subject, Unit, Topic } from '@/types/taxonomy';
 
 export default function TaxonomyPage() {
-  const [subjects, setSubjects] = useState<Subject[]>(getAllSubjects());
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Load data from localStorage on mount
+  useEffect(() => {
+    setSubjects(getAllSubjects());
+  }, []);
 
   const handleSuccess = () => {
     // Refresh data after creation
@@ -43,13 +49,31 @@ export default function TaxonomyPage() {
           <Col>
             <Card bg="light">
               <Card.Body>
-                <h6>📚 CU-BP-11: Crear elemento de taxonomía curricular</h6>
-                <p className="mb-2 small">
-                  <strong>Jerarquía:</strong> Asignatura (nivel 1) → Unidad (nivel 2) → Tema (nivel 3)
-                </p>
-                <p className="mb-0 small">
-                  <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas.
-                </p>
+                <div className="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h6>📚 CU-BP-11: Crear elemento de taxonomía curricular</h6>
+                    <p className="mb-2 small">
+                      <strong>Jerarquía:</strong> Asignatura (nivel 1) → Unidad (nivel 2) → Tema (nivel 3)
+                    </p>
+                    <p className="mb-0 small">
+                      <strong>Reglas:</strong> Nombres únicos por nivel, códigos únicos para asignaturas.
+                    </p>
+                    <p className="mb-0 small text-muted mt-2">
+                      💾 Los datos se guardan automáticamente en localStorage
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline-danger"
+                    onClick={() => {
+                      if (window.confirm('¿Estás seguro de resetear todos los datos? Esta acción no se puede deshacer.')) {
+                        clearAllTaxonomyData();
+                      }
+                    }}
+                  >
+                    🔄 Resetear Datos
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>

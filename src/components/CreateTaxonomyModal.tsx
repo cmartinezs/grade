@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import {
   createSubject,
@@ -9,7 +9,7 @@ import {
   getAllSubjects,
   getAllUnits,
 } from '@/lib/taxonomyStore';
-import { TaxonomyType, ValidationError } from '@/types/taxonomy';
+import { TaxonomyType, ValidationError, Subject, Unit } from '@/types/taxonomy';
 
 interface CreateTaxonomyModalProps {
   show: boolean;
@@ -27,9 +27,16 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
   });
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
 
-  const subjects = getAllSubjects();
-  const units = getAllUnits();
+  // Load subjects and units when modal opens
+  useEffect(() => {
+    if (show) {
+      setSubjects(getAllSubjects());
+      setUnits(getAllUnits());
+    }
+  }, [show]);
 
   // Reset form when modal is closed or opened
   const resetForm = () => {
