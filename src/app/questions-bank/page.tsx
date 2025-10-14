@@ -110,20 +110,18 @@ export default function QuestionsBankPage() {
     setShowRetireModal(true);
   };
 
-  const handleConfirmRetire = async (reason?: string) => {
+  const handleConfirmRetire = async (reason?: string): Promise<void> => {
     if (!selectedQuestionId) return;
 
     setIsRetiring(true);
     try {
       await questionStore.retireQuestion(selectedQuestionId, 'current-user@example.com', reason);
-      setShowRetireModal(false);
-      setSelectedQuestionId(null);
       loadQuestions();
-      alert('Pregunta retirada exitosamente');
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error al retirar pregunta: ${error.message}`);
       }
+      throw error;
     } finally {
       setIsRetiring(false);
     }
@@ -134,20 +132,18 @@ export default function QuestionsBankPage() {
     setShowReactivateModal(true);
   };
 
-  const handleConfirmReactivate = async (reason?: string) => {
+  const handleConfirmReactivate = async (reason?: string): Promise<void> => {
     if (!selectedQuestionId) return;
 
     setIsReactivating(true);
     try {
       await questionStore.reactivateQuestion(selectedQuestionId, 'current-user@example.com', reason);
-      setShowReactivateModal(false);
-      setSelectedQuestionId(null);
       loadQuestions();
-      alert('Pregunta reactivada exitosamente');
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error al reactivar pregunta: ${error.message}`);
       }
+      throw error;
     } finally {
       setIsReactivating(false);
     }
@@ -406,21 +402,21 @@ export default function QuestionsBankPage() {
                             </Dropdown.Item>
                             <Dropdown.Item>📊 Ver Estadísticas</Dropdown.Item>
                             <Dropdown.Divider />
-                            <Dropdown.Item 
-                              className="text-warning"
-                              onClick={() => handleRetireQuestion(question.question_id)}
-                              disabled={!question.active}
-                            >
-                              ⚠️ Retirar Pregunta
-                            </Dropdown.Item>
-                            <Dropdown.Item 
-                              className="text-success"
-                              onClick={() => handleReactivateQuestion(question.question_id)}
-                              disabled={question.active}
-                            >
-                              ✅ Reactivar Pregunta
-                            </Dropdown.Item>
-                            <Dropdown.Item className="text-danger">🗑️ Eliminar</Dropdown.Item>
+                            {question.active ? (
+                              <Dropdown.Item 
+                                className="text-warning"
+                                onClick={() => handleRetireQuestion(question.question_id)}
+                              >
+                                ⚠️ Retirar Pregunta
+                              </Dropdown.Item>
+                            ) : (
+                              <Dropdown.Item 
+                                className="text-success"
+                                onClick={() => handleReactivateQuestion(question.question_id)}
+                              >
+                                ✅ Reactivar Pregunta
+                              </Dropdown.Item>
+                            )}
                           </Dropdown.Menu>
                         </Dropdown>
                       </Col>
