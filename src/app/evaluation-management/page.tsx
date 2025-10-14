@@ -16,7 +16,7 @@ export default function EvaluationManagementPage() {
                 <Card.Body>
                   <h5>📝 Evaluaciones Recientes</h5>
                   <p>Aquí verás todas tus evaluaciones creadas y podrás administrarlas.</p>
-                  <Button variant="primary">➕ Crear Nueva Evaluación</Button>
+                  <Button variant="outline-primary">➕ Crear Nueva Evaluación</Button>
                 </Card.Body>
               </Card>
             </Col>

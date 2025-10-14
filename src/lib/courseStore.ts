@@ -8,10 +8,62 @@ import { Course, CreateCourseInput, CourseValidationError } from '@/types/course
 const COURSES_STORAGE_KEY = 'evaluation_management_courses';
 const COURSE_COUNTER_KEY = 'evaluation_management_course_counter';
 
+// Default courses for initialization
+const DEFAULT_COURSES: Omit<Course, 'course_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by' | 'deleted_at' | 'deleted_by'>[] = [
+  // Enseñanza Básica
+  { name: '1° Básico A', code: '1B-A', level: '1° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '1° Básico B', code: '1B-B', level: '1° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '2° Básico A', code: '2B-A', level: '2° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '3° Básico A', code: '3B-A', level: '3° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '4° Básico A', code: '4B-A', level: '4° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '5° Básico A', code: '5B-A', level: '5° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '5° Básico B', code: '5B-B', level: '5° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '6° Básico A', code: '6B-A', level: '6° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '7° Básico A', code: '7B-A', level: '7° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '8° Básico A', code: '8B-A', level: '8° Básico', institution: 'Colegio Ejemplo', active: true },
+  
+  // Enseñanza Media
+  { name: '1° Medio A', code: '1M-A', level: '1° Medio', institution: 'Colegio Ejemplo', active: true },
+  { name: '1° Medio B', code: '1M-B', level: '1° Medio', institution: 'Colegio Ejemplo', active: true },
+  { name: '2° Medio A', code: '2M-A', level: '2° Medio', institution: 'Colegio Ejemplo', active: true },
+  { name: '3° Medio A', code: '3M-A', level: '3° Medio', institution: 'Colegio Ejemplo', active: true },
+  { name: '4° Medio A', code: '4M-A', level: '4° Medio', institution: 'Colegio Ejemplo', active: true },
+];
+
 class CourseStore {
+  // Initialize with default courses if empty
+  private initializeDefaultCourses(): void {
+    if (typeof window === 'undefined') return;
+    
+    const stored = localStorage.getItem(COURSES_STORAGE_KEY);
+    if (stored) return; // Already initialized
+    
+    const currentDate = new Date();
+    const systemUser = 'system';
+    
+    const courses: Course[] = DEFAULT_COURSES.map((course, index) => ({
+      ...course,
+      course_id: `c-${index + 1}`,
+      created_at: currentDate,
+      created_by: systemUser,
+      updated_at: currentDate,
+      updated_by: systemUser,
+      deleted_at: null,
+      deleted_by: null,
+    }));
+    
+    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
+    localStorage.setItem(COURSE_COUNTER_KEY, DEFAULT_COURSES.length.toString());
+    
+    console.log(`[CURSO] ${DEFAULT_COURSES.length} cursos de base inicializados`);
+  }
+
   // Load courses from localStorage
   private loadCourses(): Course[] {
     if (typeof window === 'undefined') return [];
+    
+    // Initialize default courses if needed
+    this.initializeDefaultCourses();
     
     const stored = localStorage.getItem(COURSES_STORAGE_KEY);
     if (!stored) return [];
@@ -67,6 +119,13 @@ class CourseStore {
       });
     }
 
+    if (!input.institution || input.institution.trim() === '') {
+      errors.push({
+        field: 'institution',
+        message: 'La institución es obligatoria'
+      });
+    }
+
     // RN-1: Validate unique code (CU-GE-01: A1 - Curso duplicado)
     if (input.code) {
       const normalizedCode = input.code.trim().toUpperCase();
@@ -105,6 +164,7 @@ class CourseStore {
       name: input.name.trim(),
       code: input.code.trim().toUpperCase(),
       level: input.level.trim(),
+      institution: input.institution.trim(),
       active,
       created_at: new Date(),
       created_by: currentUser,
@@ -149,6 +209,87 @@ class CourseStore {
       c.code.toUpperCase() === normalizedCode &&
       c.course_id !== excludeCourseId
     );
+  }
+
+  // Get paginated courses with filters
+  getPaginatedCourses(
+    page: number,
+    pageSize: number,
+    filters: {
+      searchText?: string;
+      level?: string;
+      institution?: string;
+      includeInactive?: boolean;
+    } = {}
+  ): {
+    courses: Course[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  } {
+    let courses = this.loadCourses();
+
+    // Apply filters
+    const { searchText, level, institution, includeInactive = true } = filters;
+
+    // Filter by deleted
+    courses = courses.filter(c => !c.deleted_at);
+
+    // Filter by active/inactive
+    if (!includeInactive) {
+      courses = courses.filter(c => c.active);
+    }
+
+    // Filter by search text
+    if (searchText && searchText.trim()) {
+      const searchLower = searchText.toLowerCase();
+      courses = courses.filter(c =>
+        c.name.toLowerCase().includes(searchLower) ||
+        c.code.toLowerCase().includes(searchLower) ||
+        c.institution.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Filter by level
+    if (level) {
+      courses = courses.filter(c => c.level === level);
+    }
+
+    // Filter by institution
+    if (institution) {
+      courses = courses.filter(c => c.institution === institution);
+    }
+
+    // Sort by level and name
+    courses.sort((a, b) => {
+      const levelCompare = a.level.localeCompare(b.level);
+      if (levelCompare !== 0) return levelCompare;
+      return a.name.localeCompare(b.name);
+    });
+
+    // Get total before pagination
+    const total = courses.length;
+    const totalPages = Math.ceil(total / pageSize);
+
+    // Apply pagination
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedCourses = courses.slice(startIndex, endIndex);
+
+    return {
+      courses: paginatedCourses,
+      total,
+      page,
+      pageSize,
+      totalPages
+    };
+  }
+
+  // Get unique institutions (for filter dropdown)
+  getInstitutions(): string[] {
+    const courses = this.loadCourses().filter(c => !c.deleted_at);
+    return Array.from(new Set(courses.map(c => c.institution))).sort();
   }
 }
 

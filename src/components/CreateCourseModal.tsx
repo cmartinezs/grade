@@ -24,6 +24,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [level, setLevel] = useState('');
+  const [institution, setInstitution] = useState('');
   const [active, setActive] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -34,6 +35,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
     setName('');
     setCode('');
     setLevel('');
+    setInstitution('');
     setActive(true);
     setValidationErrors([]);
     setSubmitSuccess(false);
@@ -61,6 +63,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
           name: name.trim(),
           code: code.trim(),
           level: level.trim(),
+          institution: institution.trim(),
           active
         },
         user?.email || 'anonymous'
@@ -136,7 +139,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ej: Matemáticas, Lenguaje y Comunicación, Historia, etc."
+                placeholder="Ej: 5° Básico A, 1° Medio B, 8° Básico C"
                 disabled={isSubmitting}
                 isInvalid={getErrorsForField('name').length > 0}
               />
@@ -156,7 +159,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                placeholder="Ej: MAT-101, LEN-201, HIS-301"
+                placeholder="Ej: 5B-A, 1M-B, 8B-C"
                 disabled={isSubmitting}
                 isInvalid={getErrorsForField('code').length > 0}
               />
@@ -189,6 +192,26 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
                 ))}
               </Form.Select>
               {getErrorsForField('level').map((err, idx) => (
+                <Form.Control.Feedback key={idx} type="invalid">
+                  {err.message}
+                </Form.Control.Feedback>
+              ))}
+            </Form.Group>
+
+            {/* Institution */}
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Institución <span className="text-danger">*</span>
+              </Form.Label>
+              <Form.Control
+                type="text"
+                value={institution}
+                onChange={(e) => setInstitution(e.target.value)}
+                placeholder="Ej: Colegio San José, Liceo A-1, etc."
+                disabled={isSubmitting}
+                isInvalid={getErrorsForField('institution').length > 0}
+              />
+              {getErrorsForField('institution').map((err, idx) => (
                 <Form.Control.Feedback key={idx} type="invalid">
                   {err.message}
                 </Form.Control.Feedback>
