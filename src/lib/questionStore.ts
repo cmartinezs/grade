@@ -990,7 +990,12 @@ class QuestionStore {
       
       // Get the latest version (highest version number)
       if (allVersions.length > 0) {
-        groupedResults.push(allVersions[0]); // Already sorted by version DESC
+        const latestVersion = allVersions[0]; // Already sorted by version DESC
+        
+        // Apply includeInactive filter to the latest version
+        if (filters.includeInactive || latestVersion.active) {
+          groupedResults.push(latestVersion);
+        }
       }
     });
 

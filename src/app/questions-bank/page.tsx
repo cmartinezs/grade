@@ -317,15 +317,10 @@ export default function QuestionsBankPage() {
                   <Card.Body>
                     <Row>
                       <Col md={9}>
-                        <div className="mb-2">
+                        <div className="d-flex align-items-center mb-2">
                           <Badge bg={getTypeColor(question.type)} className="me-2">
                             {QUESTION_TYPE_RULES[question.type].name}
                           </Badge>
-                          {!question.active && (
-                            <Badge bg="warning" text="dark" className="me-2">
-                              ⚠️ INACTIVA
-                            </Badge>
-                          )}
                           <Badge bg={getDifficultyColor(question.difficulty_fk)} className="me-2">
                             {difficultyLevels.find(d => d.difficulty_id === question.difficulty_fk)?.name}
                           </Badge>
@@ -334,53 +329,48 @@ export default function QuestionsBankPage() {
                             if (versionCount > 1) {
                               return (
                                 <Badge bg="info" className="me-2">
-                                  🔄 v{question.version} ({versionCount} versiones)
-                                </Badge>
-                              );
-                            } else {
-                              return (
-                                <Badge bg="secondary" className="me-2">
-                                  v{question.version}
+                                  v{question.version} ({versionCount})
                                 </Badge>
                               );
                             }
                           })()}
-                          {question.subject_name && (
-                            <Badge bg="light" text="dark" className="me-2">
-                              📚 {question.subject_name}
-                            </Badge>
-                          )}
-                          {question.unit_name && (
-                            <Badge bg="light" text="dark" className="me-2">
-                              📖 {question.unit_name}
-                            </Badge>
-                          )}
                           {question.topic_name && (
-                            <Badge bg="light" text="dark">
-                              📝 {question.topic_name}
-                            </Badge>
+                            <span className="badge bg-light text-dark">
+                              {question.topic_name}
+                            </span>
                           )}
                         </div>
-                        <Card.Title className="h5 mb-3">{question.enunciado}</Card.Title>
-                        {question.options.length > 0 && (
-                          <div className="small text-muted">
-                            {question.options.map((opt) => (
-                              <div key={opt.question_option_id} className="mb-1">
-                                {opt.is_correct ? '✅' : '❌'} {opt.position}. {opt.text}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <div className="mt-2 small text-muted">
-                          <span>ID: {question.original_version_fk || question.question_id}</span>
-                          <span className="ms-3">Última versión: v{question.version}</span>
-                          <span className="ms-3">Autor: {question.author_fk}</span>
-                          <span className="ms-3">
-                            Actualizado: {new Date(question.updated_at).toLocaleDateString()}
+                        
+                        <Card.Title className="h6 mb-2">
+                          {question.enunciado.length > 150 
+                            ? `${question.enunciado.substring(0, 150)}...` 
+                            : question.enunciado}
+                        </Card.Title>
+                        
+                        <div className="small text-muted">
+                          {question.options.length > 0 && (
+                            <span className="me-3">
+                              📝 {question.options.length} {question.options.length === 1 ? 'alternativa' : 'alternativas'}
+                            </span>
+                          )}
+                          <span className="me-3">
+                            🕒 {new Date(question.updated_at).toLocaleDateString()}
+                          </span>
+                          <span className="text-muted" style={{ fontSize: '0.75rem' }}>
+                            ID: {question.question_id.substring(0, 8)}...
                           </span>
                         </div>
                       </Col>
-                      <Col md={3} className="text-end" style={{ position: 'relative', zIndex: 2 }}>
+                      <Col md={3} className="text-end d-flex align-items-start justify-content-end gap-2" style={{ position: 'relative', zIndex: 2 }}>
+                        {!question.active && (
+                          <span 
+                            className="text-warning" 
+                            style={{ fontSize: '1.5rem', lineHeight: 1 }}
+                            title="Pregunta inactiva"
+                          >
+                            ⚠️
+                          </span>
+                        )}
                         <Dropdown as={ButtonGroup}>
                           <Button
                             variant="outline-primary"
