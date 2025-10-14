@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Table, Form, InputGroup, Pagination } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateCourseModal from '@/components/CreateCourseModal';
+import EditCourseModal from '@/components/EditCourseModal';
 import { courseStore } from '@/lib/courseStore';
 import { Course } from '@/types/course';
 
@@ -11,6 +12,8 @@ const PAGE_SIZE = 10;
 
 export default function CoursesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -40,6 +43,23 @@ export default function CoursesPage() {
   const handleCreateSuccess = () => {
     setCurrentPage(1);
     // Trigger reload by changing a dependency
+  };
+
+  const handleEditCourse = (courseId: string) => {
+    setSelectedCourseId(courseId);
+    setShowEditModal(true);
+  };
+
+  const handleEditSuccess = () => {
+    // Reload current page
+    const result = courseStore.getPaginatedCourses(currentPage, PAGE_SIZE, {
+      searchText,
+      includeInactive: true
+    });
+
+    setCourses(result.courses);
+    setTotalCourses(result.total);
+    setTotalPages(result.totalPages);
   };
 
   const handlePageChange = (page: number) => {
@@ -163,8 +183,12 @@ export default function CoursesPage() {
                         {new Date(course.created_at).toLocaleDateString()}
                       </td>
                       <td className="text-end">
-                        <Button variant="outline-primary" size="sm">
-                          Ver Detalle
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm"
+                          onClick={() => handleEditCourse(course.course_id)}
+                        >
+                          ✏️ Editar
                         </Button>
                       </td>
                     </tr>
@@ -234,6 +258,14 @@ export default function CoursesPage() {
         show={showCreateModal}
         onHide={() => setShowCreateModal(false)}
         onSuccess={handleCreateSuccess}
+      />
+
+      {/* Edit Course Modal */}
+      <EditCourseModal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        onSuccess={handleEditSuccess}
+        courseId={selectedCourseId}
       />
     </ProtectedRoute>
   );

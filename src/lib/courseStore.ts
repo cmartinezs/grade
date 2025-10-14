@@ -1,9 +1,10 @@
 /**
  * CU-GE-01: Crear curso
+ * CU-GE-02: Editar curso
  * Course management store
  */
 
-import { Course, CreateCourseInput, CourseValidationError } from '@/types/course';
+import { Course, CreateCourseInput, EditCourseInput, CourseValidationError } from '@/types/course';
 
 const COURSES_STORAGE_KEY = 'evaluation_management_courses';
 const COURSE_COUNTER_KEY = 'evaluation_management_course_counter';
@@ -209,6 +210,122 @@ class CourseStore {
       c.code.toUpperCase() === normalizedCode &&
       c.course_id !== excludeCourseId
     );
+  }
+
+  // Update course (CU-GE-02)
+  async updateCourse(
+    courseId: string,
+    input: EditCourseInput,
+    currentUser: string
+  ): Promise<Course> {
+    const courses = this.loadCourses();
+    const courseIndex = courses.findIndex(c => c.course_id === courseId && !c.deleted_at);
+
+    // A1: Curso inexistente
+    if (courseIndex === -1) {
+      throw new Error('El curso no existe o ha sido eliminado');
+    }
+
+    const existingCourse = courses[courseIndex];
+
+    // Validate input (A2: Datos inválidos)
+    const validationErrors = this.validateEditCourseInput(input, courses, courseId);
+    if (validationErrors.length > 0) {
+      const errorMessages = validationErrors.map(e => `${e.field}: ${e.message}`).join(', ');
+      throw new Error(`Validation errors: ${errorMessages}`);
+    }
+
+    // RN-1: No se puede cambiar el código si tiene evaluaciones asociadas
+    // TODO: Cuando se implemente el módulo de evaluaciones, validar aquí
+    // Por ahora permitimos cambiar el código con advertencia en el log
+    if (existingCourse.code !== input.code.trim().toUpperCase()) {
+      console.warn(`[CURSO] Cambiando código del curso ${courseId}: ${existingCourse.code} -> ${input.code}`);
+      // En el futuro: if (hasAssociatedEvaluations(courseId)) throw new Error(...)
+    }
+
+    // RN-2: Registrar en historial de auditoría
+    const updatedCourse: Course = {
+      ...existingCourse,
+      name: input.name.trim(),
+      code: input.code.trim().toUpperCase(),
+      level: input.level.trim(),
+      institution: input.institution.trim(),
+      active: input.active,
+      updated_at: new Date(),
+      updated_by: currentUser,
+    };
+
+    courses[courseIndex] = updatedCourse;
+    this.saveCourses(courses);
+
+    console.log(`[CURSO] Curso ${courseId} editado por ${currentUser}`, {
+      changes: {
+        name: existingCourse.name !== updatedCourse.name ? `${existingCourse.name} -> ${updatedCourse.name}` : null,
+        code: existingCourse.code !== updatedCourse.code ? `${existingCourse.code} -> ${updatedCourse.code}` : null,
+        level: existingCourse.level !== updatedCourse.level ? `${existingCourse.level} -> ${updatedCourse.level}` : null,
+        institution: existingCourse.institution !== updatedCourse.institution ? `${existingCourse.institution} -> ${updatedCourse.institution}` : null,
+        active: existingCourse.active !== updatedCourse.active ? `${existingCourse.active} -> ${updatedCourse.active}` : null,
+      }
+    });
+
+    return updatedCourse;
+  }
+
+  // Validate edit course input (CU-GE-02: A2 - Datos inválidos)
+  private validateEditCourseInput(
+    input: EditCourseInput,
+    existingCourses: Course[],
+    courseId: string
+  ): CourseValidationError[] {
+    const errors: CourseValidationError[] = [];
+
+    // Validate required fields
+    if (!input.name || input.name.trim() === '') {
+      errors.push({
+        field: 'name',
+        message: 'El nombre del curso es obligatorio'
+      });
+    }
+
+    if (!input.code || input.code.trim() === '') {
+      errors.push({
+        field: 'code',
+        message: 'El código del curso es obligatorio'
+      });
+    }
+
+    if (!input.level || input.level.trim() === '') {
+      errors.push({
+        field: 'level',
+        message: 'El nivel del curso es obligatorio'
+      });
+    }
+
+    if (!input.institution || input.institution.trim() === '') {
+      errors.push({
+        field: 'institution',
+        message: 'La institución es obligatoria'
+      });
+    }
+
+    // Validate unique code (excluding current course)
+    if (input.code) {
+      const normalizedCode = input.code.trim().toUpperCase();
+      const duplicate = existingCourses.find(
+        c => !c.deleted_at && 
+        c.code.toUpperCase() === normalizedCode &&
+        c.course_id !== courseId
+      );
+      
+      if (duplicate) {
+        errors.push({
+          field: 'code',
+          message: `Ya existe otro curso con el código "${input.code}"`
+        });
+      }
+    }
+
+    return errors;
   }
 
   // Get paginated courses with filters

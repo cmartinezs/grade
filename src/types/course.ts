@@ -28,6 +28,15 @@ export interface CreateCourseInput {
   active?: boolean; // Optional, defaults to true per RN-2
 }
 
+// Input types for editing course (CU-GE-02)
+export interface EditCourseInput {
+  name: string;
+  code: string;
+  level: string;
+  institution: string;
+  active: boolean;
+}
+
 // Validation error type
 export interface CourseValidationError {
   field: string;
