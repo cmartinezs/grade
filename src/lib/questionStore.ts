@@ -599,6 +599,71 @@ class QuestionStore {
     this.saveQuestions(questions);
   }
 
+  // Retire question - CU-BP-05: Retirar Ítem
+  // RN-1: El retiro no elimina el ítem; lo pone en estado inactivo
+  // RN-2: Las evaluaciones ya aplicadas conservan el ítem en su historial
+  // RN-3: Solo usuarios con rol de Coordinador o Administrador pueden retirar ítems
+  // RN-4: La acción debe quedar registrada en el historial
+  async retireQuestion(questionId: string, currentUser: string, reason?: string): Promise<void> {
+    const questions = this.loadQuestions();
+    const index = questions.findIndex(q => q.question_id === questionId);
+
+    if (index === -1) {
+      throw new Error('Pregunta no encontrada');
+    }
+
+    const question = questions[index];
+
+    // A1 — Ítem ya retirado
+    if (!question.active) {
+      throw new Error('La pregunta ya está inactiva');
+    }
+
+    // Marcar como inactivo (RN-1)
+    questions[index] = {
+      ...question,
+      active: false,
+      updated_at: new Date(),
+      updated_by: currentUser,
+    };
+
+    this.saveQuestions(questions);
+
+    // RN-4: Registrar en historial (por ahora en consola, podría ser un store separado)
+    console.log(`[HISTORIAL] Pregunta ${questionId} retirada por ${currentUser} el ${new Date().toISOString()}${reason ? ` - Motivo: ${reason}` : ''}`);
+  }
+
+  // Reactivate retired question
+  async reactivateQuestion(questionId: string, currentUser: string): Promise<void> {
+    const questions = this.loadQuestions();
+    const index = questions.findIndex(q => q.question_id === questionId);
+
+    if (index === -1) {
+      throw new Error('Pregunta no encontrada');
+    }
+
+    const question = questions[index];
+
+    if (question.deleted_at) {
+      throw new Error('No se puede reactivar una pregunta eliminada');
+    }
+
+    if (question.active) {
+      throw new Error('La pregunta ya está activa');
+    }
+
+    questions[index] = {
+      ...question,
+      active: true,
+      updated_at: new Date(),
+      updated_by: currentUser,
+    };
+
+    this.saveQuestions(questions);
+
+    console.log(`[HISTORIAL] Pregunta ${questionId} reactivada por ${currentUser} el ${new Date().toISOString()}`);
+  }
+
   // Create new version of a question (CU-BP-02: RN-1 to RN-6)
   async createQuestionVersion(
     questionId: string,

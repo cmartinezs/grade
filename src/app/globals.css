@@ -112,18 +112,41 @@ footer a:hover {
 
 /* Page layout with sticky footer */
 .page-container {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .page-content {
-  flex: 1 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Ensure footer sticks to bottom */
 footer {
   flex-shrink: 0;
+}
+
+/* Sidebar layout container */
+.sidebar-layout-container {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar-layout-sidebar {
+  width: 280px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebar-layout-main {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f8f9fa;
 }
 
 /* Landing page styles */

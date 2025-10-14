@@ -104,59 +104,56 @@ function SidebarMenuItem({
   );
 }
 
-export default function SidebarLayout({ children, items }: SidebarLayoutProps) {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const SidebarContent = (
-    <div className="p-3">
-      <style jsx global>{`
-        .hover-bg-light:hover {
-          background-color: #f8f9fa !important;
-        }
-        .transition-all {
-          transition: all 0.2s ease-in-out;
-        }
-      `}</style>
-      <nav>
-        {items.map((item, idx) => (
-          <SidebarMenuItem key={idx} item={item} onNavigate={handleClose} />
-        ))}
-      </nav>
-    </div>
-  );
+export default function SidebarLayout({ items, children }: SidebarLayoutProps) {
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   return (
-    <div className="d-flex">
-      {/* Toggle button visible on small screens */}
-      <div className="d-md-none p-2 border-bottom w-100 bg-white">
-        <Button variant="outline-primary" size="sm" onClick={handleShow}>
+    <div className="sidebar-layout-container">
+      {/* Mobile menu button - only visible on small screens */}
+      <div className="d-lg-none p-3">
+        <Button
+          variant="outline-secondary"
+          onClick={() => setShowOffcanvas(true)}
+        >
           ☰ Menú
         </Button>
       </div>
 
-      {/* Offcanvas for small screens (hidden on md+) */}
-      <div className="d-md-none">
-        <Offcanvas show={show} onHide={handleClose} placement="start">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>
-              <strong>Menú de Navegación</strong>
-            </Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body className="p-0">{SidebarContent}</Offcanvas.Body>
-        </Offcanvas>
-      </div>
-
-      {/* Fixed sidebar for md+ */}
-      <aside
-        className="bg-white border-end d-none d-md-block shadow-sm"
-        style={{ width: 280, minHeight: '100vh', position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}
-      >
-        {SidebarContent}
+      {/* Desktop sidebar - hidden on small screens */}
+      <aside className="sidebar-layout-sidebar d-none d-lg-block bg-white border-end">
+        <div className="p-3">
+          <h5 className="mb-3">Navegación</h5>
+          {items.map((item, idx) => (
+            <SidebarMenuItem
+              key={idx}
+              item={item}
+            />
+          ))}
+        </div>
       </aside>
 
-      <main className="flex-grow-1" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+      {/* Mobile offcanvas */}
+      <Offcanvas
+        show={showOffcanvas}
+        onHide={() => setShowOffcanvas(false)}
+        placement="start"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Navegación</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {items.map((item, idx) => (
+            <SidebarMenuItem
+              key={idx}
+              item={item}
+              onNavigate={() => setShowOffcanvas(false)}
+            />
+          ))}
+        </Offcanvas.Body>
+      </Offcanvas>
+
+      {/* Main content */}
+      <main className="sidebar-layout-main">
         {children}
       </main>
     </div>

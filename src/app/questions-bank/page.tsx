@@ -7,6 +7,7 @@ import CreateQuestionModal from '@/components/CreateQuestionModal';
 import ViewQuestionModal from '@/components/ViewQuestionModal';
 import EditQuestionModal from '@/components/EditQuestionModal';
 import CloneQuestionModal from '@/components/CloneQuestionModal';
+import RetireQuestionModal from '@/components/RetireQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { QuestionWithDetails, QuestionType, DifficultyLevel } from '@/types/question';
 import { getAllSubjects } from '@/lib/taxonomyStore';
@@ -16,13 +17,16 @@ export default function QuestionsBankPage() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCloneModal, setShowCloneModal] = useState(false);
+  const [showRetireModal, setShowRetireModal] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState<'edit' | 'version'>('version');
+  const [isRetiring, setIsRetiring] = useState(false);
   const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState<QuestionType | ''>('');
   const [filterDifficulty, setFilterDifficulty] = useState<DifficultyLevel | ''>('');
   const [filterSubject, setFilterSubject] = useState('');
+  const [showInactive, setShowInactive] = useState(true);
 
   const subjects = getAllSubjects().filter(s => s.active && !s.deleted_at);
   const difficultyLevels = questionStore.getDifficultyLevels();
@@ -38,9 +42,15 @@ export default function QuestionsBankPage() {
     if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
     if (filterSubject) filters.subject_fk = filterSubject;
 
-    const results = questionStore.searchQuestionsGrouped(searchText, filters);
+    let results = questionStore.searchQuestionsGrouped(searchText, filters);
+    
+    // Filter out inactive questions if showInactive is false
+    if (!showInactive) {
+      results = results.filter(q => q.active);
+    }
+    
     setQuestions(results);
-  }, [searchText, filterType, filterDifficulty, filterSubject]);
+  }, [searchText, filterType, filterDifficulty, filterSubject, showInactive]);
 
   const loadQuestions = () => {
     const filters: {
@@ -89,6 +99,30 @@ export default function QuestionsBankPage() {
 
   const handleCloneSuccess = () => {
     loadQuestions();
+  };
+
+  const handleRetireQuestion = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    setShowRetireModal(true);
+  };
+
+  const handleConfirmRetire = async (reason?: string) => {
+    if (!selectedQuestionId) return;
+
+    setIsRetiring(true);
+    try {
+      await questionStore.retireQuestion(selectedQuestionId, 'current-user@example.com', reason);
+      setShowRetireModal(false);
+      setSelectedQuestionId(null);
+      loadQuestions();
+      alert('Pregunta retirada exitosamente');
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error al retirar pregunta: ${error.message}`);
+      }
+    } finally {
+      setIsRetiring(false);
+    }
   };
 
   const getTypeColor = (type: QuestionType) => {
@@ -201,6 +235,19 @@ export default function QuestionsBankPage() {
                   </Form.Select>
                 </Form.Group>
               </Col>
+            </Row>
+            <Row className="mt-2">
+              <Col>
+                <Form.Check
+                  type="checkbox"
+                  id="show-inactive"
+                  label="Mostrar preguntas inactivas"
+                  checked={showInactive}
+                  onChange={(e) => setShowInactive(e.target.checked)}
+                />
+              </Col>
+            </Row>
+            <Row className="mt-3">
               <Col md={1}>
                 <Button
                   variant="outline-secondary"
@@ -242,7 +289,7 @@ export default function QuestionsBankPage() {
           <Row>
             {questions.map((question) => (
               <Col key={question.question_id} xs={12} className="mb-3">
-                <Card>
+                <Card className={!question.active ? 'border-warning' : ''} style={!question.active ? { opacity: 0.7, backgroundColor: '#fff3cd' } : {}}>
                   <Card.Body>
                     <Row>
                       <Col md={9}>
@@ -250,6 +297,11 @@ export default function QuestionsBankPage() {
                           <Badge bg={getTypeColor(question.type)} className="me-2">
                             {QUESTION_TYPE_RULES[question.type].name}
                           </Badge>
+                          {!question.active && (
+                            <Badge bg="warning" text="dark" className="me-2">
+                              ⚠️ INACTIVA
+                            </Badge>
+                          )}
                           <Badge bg={getDifficultyColor(question.difficulty_fk)} className="me-2">
                             {difficultyLevels.find(d => d.difficulty_id === question.difficulty_fk)?.name}
                           </Badge>
@@ -326,6 +378,13 @@ export default function QuestionsBankPage() {
                             </Dropdown.Item>
                             <Dropdown.Item>📊 Ver Estadísticas</Dropdown.Item>
                             <Dropdown.Divider />
+                            <Dropdown.Item 
+                              className="text-warning"
+                              onClick={() => handleRetireQuestion(question.question_id)}
+                              disabled={!question.active}
+                            >
+                              ⚠️ Retirar Pregunta
+                            </Dropdown.Item>
                             <Dropdown.Item className="text-danger">🗑️ Eliminar</Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
@@ -374,6 +433,15 @@ export default function QuestionsBankPage() {
         onHide={() => setShowCloneModal(false)}
         onSuccess={handleCloneSuccess}
         questionId={selectedQuestionId}
+      />
+
+      {/* Retire Question Modal */}
+      <RetireQuestionModal
+        show={showRetireModal}
+        onHide={() => setShowRetireModal(false)}
+        onConfirm={handleConfirmRetire}
+        question={selectedQuestionId ? questionStore.getQuestionWithDetails(selectedQuestionId) : null}
+        isSubmitting={isRetiring}
       />
     </ProtectedRoute>
   );
