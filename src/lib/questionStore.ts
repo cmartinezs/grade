@@ -442,8 +442,9 @@ class QuestionStore {
     difficulty_fk?: DifficultyLevel;
     subject_fk?: string;
     unit_fk?: string;
+    includeInactive?: boolean;
   }): QuestionWithDetails[] {
-    let results = this.getAllQuestionsWithDetails();
+    let results = this.getAllQuestionsWithDetails(filters?.includeInactive || false);
 
     // Text search
     if (searchText?.trim()) {
@@ -634,24 +635,29 @@ class QuestionStore {
   }
 
   // Reactivate retired question
-  async reactivateQuestion(questionId: string, currentUser: string): Promise<void> {
+  // Reactivate a retired question (CU-BP-06: RN-1 to RN-3)
+  async reactivateQuestion(questionId: string, currentUser: string, reason?: string): Promise<void> {
     const questions = this.loadQuestions();
     const index = questions.findIndex(q => q.question_id === questionId);
 
+    // Validate question exists
     if (index === -1) {
       throw new Error('Pregunta no encontrada');
     }
 
     const question = questions[index];
 
+    // A3: Cannot reactivate deleted questions
     if (question.deleted_at) {
       throw new Error('No se puede reactivar una pregunta eliminada');
     }
 
+    // A1: Validate question is actually inactive
     if (question.active) {
       throw new Error('La pregunta ya está activa');
     }
 
+    // RN-1: Reactivate the question (set active = true without altering history or visible version)
     questions[index] = {
       ...question,
       active: true,
@@ -661,7 +667,9 @@ class QuestionStore {
 
     this.saveQuestions(questions);
 
-    console.log(`[HISTORIAL] Pregunta ${questionId} reactivada por ${currentUser} el ${new Date().toISOString()}`);
+    // RN-3: Register action with traceability (user, date/time, and optional reason)
+    const reasonLog = reason ? ` - Motivo: ${reason}` : '';
+    console.log(`[HISTORIAL] Pregunta ${questionId} reactivada por ${currentUser} el ${new Date().toISOString()}${reasonLog}`);
   }
 
   // Create new version of a question (CU-BP-02: RN-1 to RN-6)
@@ -958,6 +966,7 @@ class QuestionStore {
       subject_fk?: string;
       unit_fk?: string;
       topic_fk?: string;
+      includeInactive?: boolean;
     } = {}
   ): QuestionWithDetails[] {
     // First, apply filters to get matching questions

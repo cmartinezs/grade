@@ -8,6 +8,7 @@ import ViewQuestionModal from '@/components/ViewQuestionModal';
 import EditQuestionModal from '@/components/EditQuestionModal';
 import CloneQuestionModal from '@/components/CloneQuestionModal';
 import RetireQuestionModal from '@/components/RetireQuestionModal';
+import ReactivateQuestionModal from '@/components/ReactivateQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { QuestionWithDetails, QuestionType, DifficultyLevel } from '@/types/question';
 import { getAllSubjects } from '@/lib/taxonomyStore';
@@ -18,9 +19,11 @@ export default function QuestionsBankPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCloneModal, setShowCloneModal] = useState(false);
   const [showRetireModal, setShowRetireModal] = useState(false);
+  const [showReactivateModal, setShowReactivateModal] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState<'edit' | 'version'>('version');
   const [isRetiring, setIsRetiring] = useState(false);
+  const [isReactivating, setIsReactivating] = useState(false);
   const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState<QuestionType | ''>('');
@@ -36,18 +39,16 @@ export default function QuestionsBankPage() {
       type?: QuestionType;
       difficulty_fk?: DifficultyLevel;
       subject_fk?: string;
-    } = {};
+      includeInactive?: boolean;
+    } = {
+      includeInactive: showInactive
+    };
     
     if (filterType) filters.type = filterType;
     if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
     if (filterSubject) filters.subject_fk = filterSubject;
 
-    let results = questionStore.searchQuestionsGrouped(searchText, filters);
-    
-    // Filter out inactive questions if showInactive is false
-    if (!showInactive) {
-      results = results.filter(q => q.active);
-    }
+    const results = questionStore.searchQuestionsGrouped(searchText, filters);
     
     setQuestions(results);
   }, [searchText, filterType, filterDifficulty, filterSubject, showInactive]);
@@ -57,7 +58,10 @@ export default function QuestionsBankPage() {
       type?: QuestionType;
       difficulty_fk?: DifficultyLevel;
       subject_fk?: string;
-    } = {};
+      includeInactive?: boolean;
+    } = {
+      includeInactive: showInactive
+    };
     
     if (filterType) filters.type = filterType;
     if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
@@ -122,6 +126,30 @@ export default function QuestionsBankPage() {
       }
     } finally {
       setIsRetiring(false);
+    }
+  };
+
+  const handleReactivateQuestion = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    setShowReactivateModal(true);
+  };
+
+  const handleConfirmReactivate = async (reason?: string) => {
+    if (!selectedQuestionId) return;
+
+    setIsReactivating(true);
+    try {
+      await questionStore.reactivateQuestion(selectedQuestionId, 'current-user@example.com', reason);
+      setShowReactivateModal(false);
+      setSelectedQuestionId(null);
+      loadQuestions();
+      alert('Pregunta reactivada exitosamente');
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error al reactivar pregunta: ${error.message}`);
+      }
+    } finally {
+      setIsReactivating(false);
     }
   };
 
@@ -385,6 +413,13 @@ export default function QuestionsBankPage() {
                             >
                               ⚠️ Retirar Pregunta
                             </Dropdown.Item>
+                            <Dropdown.Item 
+                              className="text-success"
+                              onClick={() => handleReactivateQuestion(question.question_id)}
+                              disabled={question.active}
+                            >
+                              ✅ Reactivar Pregunta
+                            </Dropdown.Item>
                             <Dropdown.Item className="text-danger">🗑️ Eliminar</Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
@@ -442,6 +477,15 @@ export default function QuestionsBankPage() {
         onConfirm={handleConfirmRetire}
         question={selectedQuestionId ? questionStore.getQuestionWithDetails(selectedQuestionId) : null}
         isSubmitting={isRetiring}
+      />
+
+      {/* Reactivate Question Modal */}
+      <ReactivateQuestionModal
+        show={showReactivateModal}
+        onHide={() => setShowReactivateModal(false)}
+        onConfirm={handleConfirmReactivate}
+        question={selectedQuestionId ? questionStore.getQuestionWithDetails(selectedQuestionId) : null}
+        isSubmitting={isReactivating}
       />
     </ProtectedRoute>
   );

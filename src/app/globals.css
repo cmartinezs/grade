@@ -176,3 +176,13 @@ footer {
   max-height: 70vh;
   overflow-y: auto;
 }
+
+/* Question cards - Dropdown menu fix */
+.dropdown-menu {
+  z-index: 1050 !important;
+}
+
+.card {
+  overflow: visible !important;
+}
+
