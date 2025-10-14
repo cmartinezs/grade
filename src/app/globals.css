@@ -178,11 +178,24 @@ footer {
 }
 
 /* Question cards - Dropdown menu fix */
+.card {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* When dropdown is shown, elevate the entire card */
+.card:has(.dropdown.show) {
+  z-index: 1000;
+}
+
 .dropdown-menu {
   z-index: 1050 !important;
 }
 
-.card {
-  overflow: visible !important;
+/* Inactive question card - just warning background */
+.card-inactive {
+  background-color: #fff3cd !important;
+  border-color: #ffc107 !important;
 }
 

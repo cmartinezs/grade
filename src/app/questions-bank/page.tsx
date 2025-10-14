@@ -317,7 +317,7 @@ export default function QuestionsBankPage() {
           <Row>
             {questions.map((question) => (
               <Col key={question.question_id} xs={12} className="mb-3">
-                <Card className={!question.active ? 'border-warning' : ''} style={!question.active ? { opacity: 0.7, backgroundColor: '#fff3cd' } : {}}>
+                <Card className={!question.active ? 'card-inactive' : ''}>
                   <Card.Body>
                     <Row>
                       <Col md={9}>
@@ -384,7 +384,7 @@ export default function QuestionsBankPage() {
                           </span>
                         </div>
                       </Col>
-                      <Col md={3} className="text-end">
+                      <Col md={3} className="text-end" style={{ position: 'relative', zIndex: 2 }}>
                         <Dropdown as={ButtonGroup}>
                           <Button
                             variant="outline-primary"
@@ -394,7 +394,7 @@ export default function QuestionsBankPage() {
                             👁️ Ver Detalle
                           </Button>
                           <Dropdown.Toggle split variant="outline-primary" size="sm" />
-                          <Dropdown.Menu>
+                          <Dropdown.Menu style={{ position: 'absolute', zIndex: 1055 }}>
                             <Dropdown.Item onClick={() => handleCreateVersion(question.question_id)}>
                               🔄 Crear Nueva Versión
                             </Dropdown.Item>
