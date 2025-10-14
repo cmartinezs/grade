@@ -1,6 +1,7 @@
 import SidebarLayout from '@/components/SidebarLayout';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
+import Footer from '@/components/Footer';
 
 const evalMenu = [
   { 
@@ -50,6 +51,7 @@ export default function EvaluationLayout({ children }: { children: React.ReactNo
       <SidebarLayout items={evalMenu}>
         <div className="p-4">{children}</div>
       </SidebarLayout>
+      <Footer />
     </PageWrapper>
   );
 }

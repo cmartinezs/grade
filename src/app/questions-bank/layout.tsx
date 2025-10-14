@@ -1,6 +1,7 @@
 import SidebarLayout from '@/components/SidebarLayout';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
+import Footer from '@/components/Footer';
 
 const qbMenu = [
   { 
@@ -44,6 +45,7 @@ export default function QuestionsBankLayout({ children }: { children: React.Reac
       <SidebarLayout items={qbMenu}>
         <div className="p-4">{children}</div>
       </SidebarLayout>
+      <Footer />
     </PageWrapper>
   );
 }

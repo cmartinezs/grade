@@ -19,10 +19,10 @@ export default function PublicAbout() {
   }, [isAuthenticated, router]);
 
   return (
-    <PageWrapper>
+    <PageWrapper isPublic={true}>
       <NavigationBar />
       
-      <Container className="mt-5">
+      <Container className="my-5">
         {/* Hero Section */}
         <Row className="mb-5">
           <Col>

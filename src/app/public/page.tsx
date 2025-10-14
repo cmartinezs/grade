@@ -53,7 +53,7 @@ export default function PublicHome() {
   ];
 
   return (
-    <PageWrapper>
+    <PageWrapper isPublic={true}>
       <NavigationBar />
 
       {/* Hero */}

@@ -103,7 +103,7 @@ export default function PublicPricing() {
   ];
 
   return (
-    <PageWrapper>
+    <PageWrapper isPublic={true}>
       <NavigationBar />
       
       <Container className="mt-5">

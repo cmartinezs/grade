@@ -72,7 +72,7 @@ export default function PublicFeatures() {
   
 
   return (
-    <PageWrapper>
+    <PageWrapper isPublic={true}>
       <NavigationBar />
       
       <Container className="mt-5">
