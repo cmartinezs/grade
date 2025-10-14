@@ -27,13 +27,15 @@ function SidebarMenuItem({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
-
+  
   const hasChildren = item.children && item.children.length > 0;
   const isActive = item.href === pathname;
   const hasActiveChild = item.children?.some(
     (child) => child.href === pathname || child.children?.some((subChild) => subChild.href === pathname)
   );
+  
+  // Only open by default if this item or any of its children are active
+  const [isOpen, setIsOpen] = useState(isActive || hasActiveChild);
 
   const handleClick = (e: React.MouseEvent) => {
     if (hasChildren && !item.href) {

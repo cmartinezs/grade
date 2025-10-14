@@ -4,14 +4,31 @@ import PageWrapper from '@/components/PageWrapper';
 
 const evalMenu = [
   { 
-    label: 'Mis Evaluaciones', 
+    label: 'Evaluaciones', 
     icon: '📝',
-    href: '/evaluation-management' 
+    children: [
+      { 
+        label: 'Mis Evaluaciones', 
+        icon: '�',
+        href: '/evaluation-management' 
+      },
+      { 
+        label: 'Crear Evaluación', 
+        icon: '➕',
+        href: '/evaluation-management/create' 
+      },
+    ]
   },
   { 
-    label: 'Crear Evaluación', 
-    icon: '➕',
-    href: '/evaluation-management/create' 
+    label: 'Gestión Académica', 
+    icon: '🎓',
+    children: [
+      { 
+        label: 'Cursos', 
+        icon: '📚',
+        href: '/evaluation-management/courses' 
+      },
+    ]
   },
   { 
     label: 'Resultados', 

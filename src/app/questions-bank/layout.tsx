@@ -6,8 +6,12 @@ const qbMenu = [
   { 
     label: 'Banco de Preguntas', 
     icon: '📚',
-    href: '/questions-bank',
     children: [
+      { 
+        label: 'Lista de Preguntas', 
+        icon: '📋',
+        href: '/questions-bank' 
+      },
       { 
         label: 'Crear Pregunta', 
         icon: '➕',
