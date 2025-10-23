@@ -70,6 +70,32 @@ Normalización y alineación de la estructura de menús en Dashboard y Evaluatio
 
 ---
 
+### [v03: Refactorización de Barra de Navegación Principal (Navbar Elegante)](./03-navbar-elegant/README.md)
+
+**Estado:** ✅ Completado  
+**Fecha:** 23 Octubre 2025  
+**Build:** ✅ Exitoso (0 errores TS)
+
+Refactorización de la barra de navegación principal para mejorar la experiencia visual y funcionalidad. Eliminación de desplegar innecesarios, implementación de diseño horizontal elegante, mejor legibilidad y adaptación al español.
+
+**Incluye:**
+- Eliminación de desplegar innecesarios en funcionalidades principales
+- Enlaces directos horizontales con mejor legibilidad
+- Diseño elegante con gradiente y sombras
+- Navbar height aumentada a 70px
+- Textos en blanco puro con mejor contraste
+- Estados visuales mejorados (hover/active)
+- Responsive design completo
+- Nomenclatura 100% en español
+- 1 componente refactorizado + 1 nuevo archivo CSS
+
+**Archivos:**
+- `README.md` - Resumen ejecutivo y guía visual
+- `DESIGN.md` - Detalles de diseño (próximamente)
+- `EXAMPLES.md` - Ejemplos de uso (próximamente)
+
+---
+
 ## 🗂️ Estructura de Directorios
 
 ```
@@ -87,6 +113,11 @@ docs/changes/
 ├── 02-menu-alignment/
 │   ├── README.md              ✅ Resumen ejecutivo
 │   └── COMPARATIVES.md        📝 Próximamente
+│
+├── 03-navbar-elegant/
+│   ├── README.md              ✅ Resumen ejecutivo
+│   ├── DESIGN.md              📝 Próximamente
+│   └── EXAMPLES.md            📝 Próximamente
 │
 └── INDEX.md                   ✅ Este archivo
 ```
@@ -141,7 +172,6 @@ Testing:         📝 En desarrollo
 
 ## 🚀 Próximos Cambios Planeados
 
-- **v03:** Sistema de Notificaciones
 - **v04:** Autenticación Mejorada
 - **v05:** Testing Framework
 - **v06:** Reportes Avanzados

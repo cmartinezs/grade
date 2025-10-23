@@ -45,6 +45,7 @@ docs/changes/
 ├── 00-taxonomy-refactor/     # Refactorización Taxonomía
 ├── 01-sidebar-generic/       # SidebarLayout Genérico
 ├── 02-menu-alignment/        # Alineación de Menús
+├── 03-navbar-elegant/        # Navbar Elegante
 └── INDEX.md                  # Índice de cambios
 ```
 
@@ -106,7 +107,8 @@ grade-web-app/
         ├── INDEX.md                   ← Índice de cambios
         ├── 00-taxonomy-refactor/
         ├── 01-sidebar-generic/
-        └── 02-menu-alignment/
+        ├── 02-menu-alignment/
+        └── 03-navbar-elegant/
 ```
 
 ---
