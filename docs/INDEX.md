@@ -97,6 +97,10 @@ grade-web-app/
 │
 └── docs/
     ├── INDEX.md                       ← Este archivo
+    ├── DOCUMENTATION_REORGANIZATION.md ← Resumen de reorganización
+    │
+    ├── archived/                      ← Archivos históricos
+    │   └── README.md                  ← Índice de archivos archivados
     │
     └── changes/                       ← Documentación detallada
         ├── INDEX.md                   ← Índice de cambios
