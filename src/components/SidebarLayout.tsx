@@ -10,11 +10,13 @@ interface SidebarItem {
   href?: string;
   icon?: string;
   children?: SidebarItem[];
+  isSection?: boolean;  // Para secciones/grupos
 }
 
 interface SidebarLayoutProps {
   children: ReactNode;
   items: SidebarItem[];
+  sidebarTitle?: string;  // Título del sidebar
 }
 
 function SidebarMenuItem({
@@ -34,7 +36,7 @@ function SidebarMenuItem({
     (child) => child.href === pathname || child.children?.some((subChild) => subChild.href === pathname)
   );
   
-  // Only open by default if this item or any of its children are active
+  // Solo abrir por defecto si este item o alguno de sus hijos está activo
   const [isOpen, setIsOpen] = useState(isActive || hasActiveChild);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -46,26 +48,40 @@ function SidebarMenuItem({
     }
   };
 
-  const baseClasses = 'd-flex align-items-center justify-content-between text-decoration-none rounded px-3 py-2 mb-1 transition-all';
-  const levelPadding = level > 0 ? `ps-${3 + level * 2}` : '';
+  // Si es una sección (grupo), mostrarlo diferente
+  if (item.isSection && hasChildren) {
+    return (
+      <div className="sidebar-section">
+        <div className="sidebar-section-label">{item.label}</div>
+        <div className="sidebar-section-items">
+          {item.children?.map((child, idx) => (
+            <SidebarMenuItem key={idx} item={child} level={0} onNavigate={onNavigate} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const baseClasses = 'd-flex align-items-center justify-content-between text-decoration-none sidebar-menu-item';
+  const levelPadding = level > 0 ? 'sidebar-menu-item-nested' : '';
   
   let stateClasses = '';
   if (isActive) {
-    stateClasses = 'bg-primary text-white fw-semibold';
+    stateClasses = 'sidebar-menu-item-active';
   } else if (hasActiveChild) {
-    stateClasses = 'bg-light text-primary fw-semibold';
+    stateClasses = 'sidebar-menu-item-parent-active';
   } else {
-    stateClasses = 'text-dark hover-bg-light';
+    stateClasses = 'sidebar-menu-item-default';
   }
 
   const ItemContent = (
     <>
-      <span className="d-flex align-items-center gap-2">
-        {item.icon && <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>}
-        <span style={{ fontSize: level > 0 ? '0.9rem' : '0.95rem' }}>{item.label}</span>
+      <span className="sidebar-menu-item-content">
+        {item.icon && <span className="sidebar-menu-icon">{item.icon}</span>}
+        <span className="sidebar-menu-label">{item.label}</span>
       </span>
       {hasChildren && (
-        <span style={{ fontSize: '0.8rem', transition: 'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+        <span className={`sidebar-menu-arrow ${isOpen ? 'open' : ''}`}>
           ▶
         </span>
       )}
@@ -79,15 +95,13 @@ function SidebarMenuItem({
           href={item.href}
           className={`${baseClasses} ${levelPadding} ${stateClasses}`}
           onClick={handleClick}
-          style={{ cursor: 'pointer' }}
         >
           {ItemContent}
         </Link>
       ) : (
         <div
-          className={`${baseClasses} ${levelPadding} ${stateClasses}`}
+          className={`${baseClasses} ${levelPadding} ${stateClasses} ${hasChildren ? 'cursor-pointer' : ''}`}
           onClick={handleClick}
-          style={{ cursor: hasChildren ? 'pointer' : 'default' }}
         >
           {ItemContent}
         </div>
@@ -95,7 +109,7 @@ function SidebarMenuItem({
 
       {hasChildren && (
         <Collapse in={isOpen}>
-          <div>
+          <div className="sidebar-submenu">
             {item.children?.map((child, idx) => (
               <SidebarMenuItem key={idx} item={child} level={level + 1} onNavigate={onNavigate} />
             ))}
@@ -106,7 +120,7 @@ function SidebarMenuItem({
   );
 }
 
-export default function SidebarLayout({ items, children }: SidebarLayoutProps) {
+export default function SidebarLayout({ items, children, sidebarTitle }: SidebarLayoutProps) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   return (
@@ -122,15 +136,22 @@ export default function SidebarLayout({ items, children }: SidebarLayoutProps) {
       </div>
 
       {/* Desktop sidebar - hidden on small screens */}
-      <aside className="sidebar-layout-sidebar d-none d-lg-block bg-white border-end">
-        <div className="p-3">
-          <h5 className="mb-3">Navegación</h5>
+      <aside className="sidebar-layout-sidebar d-none d-lg-block">
+        <div className="sidebar-header">
+          <h5 className="sidebar-header-title">
+            {sidebarTitle || 'Navegación'}
+          </h5>
+        </div>
+        <nav className="sidebar-nav">
           {items.map((item, idx) => (
             <SidebarMenuItem
               key={idx}
               item={item}
             />
           ))}
+        </nav>
+        <div className="sidebar-footer">
+          <small className="text-muted">Versión 2.0</small>
         </div>
       </aside>
 
@@ -141,7 +162,7 @@ export default function SidebarLayout({ items, children }: SidebarLayoutProps) {
         placement="start"
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Navegación</Offcanvas.Title>
+          <Offcanvas.Title>{sidebarTitle || 'Navegación'}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           {items.map((item, idx) => (

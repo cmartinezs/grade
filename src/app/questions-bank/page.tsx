@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Badge, Form, InputGroup, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { Row, Col, Card, Button, Badge, Form, InputGroup, Dropdown, ButtonGroup } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from '@/components/CreateQuestionModal';
 import ViewQuestionModal from '@/components/ViewQuestionModal';
@@ -170,26 +170,14 @@ export default function QuestionsBankPage() {
 
   return (
     <ProtectedRoute>
-      <Container className="mt-4">
-        {/* Header */}
-        <Row className="mb-4">
-          <Col>
-            <h1>Banco de Preguntas</h1>
-            <p className="text-muted">
-              Gestiona todas tus preguntas desde aquí
-              <Badge bg="secondary" className="ms-2">{questions.length} preguntas</Badge>
-            </p>
-          </Col>
-          <Col xs="auto">
-            <span
-              className="btn btn-sm btn-outline-success"
-              style={{ cursor: 'pointer' }}
-              onClick={() => setShowCreateModal(true)}
-            >
-              ➕ Nueva Pregunta
-            </span>
-          </Col>
-        </Row>
+      <div className="p-4">
+        <div className="mb-4">
+          <h2 className="mb-3">Banco de Preguntas</h2>
+          <p className="text-muted">
+            Gestiona todas tus preguntas desde aquí
+            <Badge bg="secondary" className="ms-2">{questions.length} preguntas</Badge>
+          </p>
+        </div>
 
         {/* Filtros */}
         <Card className="mb-4">
@@ -417,7 +405,7 @@ export default function QuestionsBankPage() {
             ))}
           </Row>
         )}
-      </Container>
+      </div>
 
       {/* Create Question Modal */}
       <CreateQuestionModal

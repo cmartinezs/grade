@@ -5,11 +5,11 @@ import Footer from '@/components/Footer';
 
 const qbMenu = [
   { 
-    label: 'Banco de Preguntas', 
-    icon: '📚',
+    label: 'GESTIÓN', 
+    isSection: true,
     children: [
       { 
-        label: 'Lista de Preguntas', 
+        label: 'Listar Preguntas', 
         icon: '📋',
         href: '/questions-bank' 
       },
@@ -19,20 +19,30 @@ const qbMenu = [
         href: '/questions-bank/create' 
       },
       { 
-        label: 'Importar', 
+        label: 'Importar Preguntas', 
         icon: '📥',
         href: '/questions-bank/import' 
+      },
+      { 
+        label: 'Estadísticas', 
+        icon: '📊',
+        href: '/questions-bank/statistics' 
       },
     ]
   },
   { 
-    label: 'Taxonomía Curricular', 
-    icon: '🏷️',
+    label: 'HERRAMIENTAS', 
+    isSection: true,
     children: [
       { 
-        label: 'Ver Taxonomías', 
-        icon: '📋',
+        label: 'Taxonomía', 
+        icon: '📂',
         href: '/questions-bank/taxonomy' 
+      },
+      { 
+        label: 'Configuración', 
+        icon: '⚙️',
+        href: '/questions-bank/settings' 
       },
     ]
   },
@@ -42,7 +52,7 @@ export default function QuestionsBankLayout({ children }: { children: React.Reac
   return (
     <PageWrapper>
       <NavigationBar />
-      <SidebarLayout items={qbMenu}>
+      <SidebarLayout items={qbMenu} sidebarTitle="Banco de Preguntas">
         <div className="p-4">{children}</div>
       </SidebarLayout>
       <Footer />
