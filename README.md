@@ -1,103 +1,311 @@
 # 🎓 GRADE - Web App
 
-Una aplicación web integral para la gestión educacional, desarrollada con **Next.js**, **React** y **React Bootstrap**.
+**Plataforma educacional integral para la gestión de evaluaciones, preguntas y recursos académicos.**
+
+Desarrollada con **Next.js 15.5.4**, **React 19**, **TypeScript 5+** y **React Bootstrap**.
+
+---
+
+## 🚀 Inicio Rápido
+
+### Requisitos Previos
+- **Node.js 18+** 
+- **npm 9+** o **yarn 4+**
+- **Git**
+
+### Instalación y Ejecución
+
+```bash
+# 1. Clonar repositorio
+git clone https://github.com/wanku-cl/grade-web-app.git
+cd grade-web-app
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Ejecutar en desarrollo
+npm run dev
+
+# 4. Abrir en navegador
+# Visita http://localhost:3000
+```
+
+### Comandos Disponibles
+
+```bash
+npm run dev        # Iniciar servidor de desarrollo (Turbopack)
+npm run build      # Compilar para producción
+npm run start      # Iniciar servidor producción
+npm run lint       # Ejecutar linter (ESLint)
+npm run type-check # Verificar tipos TypeScript
+```
+
+---
 
 ## 🌟 Características Principales
 
-GRADE es una plataforma educacional completa que integra múltiples funcionalidades:
+GRADE es una plataforma educacional completa que integra:
 
-- 📚 **Banco de Preguntas**: Gestión avanzada de preguntas y evaluaciones
-- 📊 **Analytics**: Estadísticas y reportes de rendimiento académico
-- 👥 **Gestión de Usuarios**: Sistema de perfiles para docentes y estudiantes
-- 🏛️ **Multi-institucional**: Soporte para múltiples instituciones educacionales
-- 🔐 **Autenticación**: Sistema seguro de login y registro
-- 📱 **Responsive**: Optimizado para todos los dispositivos
+| Feature | Descripción |
+|---------|-------------|
+| 📚 **Banco de Preguntas** | Gestión avanzada, categorización, importación CSV |
+| 📊 **Evaluaciones** | Crear, asignar y calificar evaluaciones |
+| � **Analytics** | Reportes y estadísticas de rendimiento |
+| 👥 **Gestión de Usuarios** | Perfiles para docentes y estudiantes |
+| 🏛️ **Multi-institucional** | Soporte para múltiples instituciones |
+| 🔐 **Autenticación** | Login seguro y registro de usuarios |
+| 📱 **Responsive Design** | Optimizado para todos los dispositivos |
 
-## 🛠️ Tecnologías Utilizadas
+---
 
-- **Framework**: [Next.js 15.5.4](https://nextjs.org/) con App Router
-- **Frontend**: [React 19.1.0](https://reactjs.org/)
-- **UI Library**: [React Bootstrap 2.9.1](https://react-bootstrap.github.io/)
-- **Estilos**: [Bootstrap 5.3.2](https://getbootstrap.com/)
-- **Lenguaje**: [TypeScript](https://www.typescriptlang.org/)
-- **Linting**: [ESLint](https://eslint.org/)
+## 🛠️ Tech Stack
 
-## 📦 Instalación
+| Tecnología | Versión | Descripción |
+|-----------|---------|-------------|
+| **Next.js** | 15.5.4 | Framework React con SSR/SSG |
+| **React** | 19.1.0 | Librería UI |
+| **TypeScript** | 5+ | Lenguaje tipado |
+| **React Bootstrap** | 2.9.1 | Componentes Bootstrap |
+| **Bootstrap** | 5.3.2 | Framework CSS |
+| **ESLint** | Latest | Linting de código |
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/wanku-cl/grade-web-app.git
-   cd grade-web-app
-   ```
-
-2. **Instalar dependencias:**
-   ```bash
-   npm install
-   ```
-
-3. **Ejecutar en modo desarrollo:**
-   ```bash
-   npm run dev
-   ```
-
-4. **Abrir en el navegador:**
-   Visita [http://localhost:3000](http://localhost:3000)
+---
 
 ## 📁 Estructura del Proyecto
 
 ```
-src/
-├── app/                     # App Router de Next.js
-│   ├── auth/               # Páginas de autenticación
-│   │   ├── login/          # Login de usuarios
-│   │   └── register/       # Registro de usuarios
-│   ├── questions/          # Módulo de preguntas
-│   ├── categories/         # Gestión de categorías
-│   ├── evaluations/        # Sistema de evaluaciones
-│   ├── profile/           # Perfil de usuario
-│   ├── settings/          # Configuraciones
-│   ├── globals.css        # Estilos globales
-│   ├── layout.tsx         # Layout principal
-│   └── page.tsx          # Landing page
-├── components/            # Componentes reutilizables
-│   ├── NavigationBar.tsx # Barra de navegación
-│   └── ProtectedRoute.tsx # Protección de rutas
-├── contexts/              # Context APIs
-│   ├── AuthContext.tsx   # Contexto de autenticación
-│   └── LoadingContext.tsx # Contexto de loading
-└── middleware.ts          # Middleware de Next.js
+grade-web-app/
+├── src/
+│   ├── app/                    # App Router de Next.js
+│   │   ├── auth/              # Autenticación (login, register)
+│   │   ├── dashboard/         # Panel de control
+│   │   ├── evaluation-management/  # Gestión de evaluaciones
+│   │   ├── questions-bank/    # Banco de preguntas
+│   │   ├── profile/           # Perfil de usuario
+│   │   ├── settings/          # Configuraciones
+│   │   ├── public/            # Landing page pública
+│   │   ├── globals.css        # Estilos globales
+│   │   ├── layout.tsx         # Layout raíz
+│   │   └── page.tsx           # Landing page
+│   │
+│   ├── components/            # Componentes reutilizables
+│   │   ├── SidebarLayout.tsx  # Sidebar genérico
+│   │   ├── NavigationBar.tsx  # Barra de navegación
+│   │   ├── ProtectedRoute.tsx # Protección de rutas
+│   │   └── ...
+│   │
+│   ├── contexts/              # Context APIs
+│   │   ├── AuthContext.tsx    # Contexto de autenticación
+│   │   └── LoadingContext.tsx # Contexto de loading
+│   │
+│   ├── lib/                   # Utilidades y helpers
+│   │   ├── courseStore.ts
+│   │   ├── questionStore.ts
+│   │   └── taxonomyStore.ts
+│   │
+│   └── types/                 # TypeScript types
+│       ├── course.ts
+│       ├── question.ts
+│       └── taxonomy.ts
+│
+├── docs/                      # Documentación
+│   ├── changes/              # Cambios técnicos por versión
+│   │   ├── 00-taxonomy-refactor/
+│   │   ├── 01-sidebar-generic/
+│   │   └── ...
+│   └── ...
+│
+├── public/                    # Archivos estáticos
+├── eslint.config.mjs          # Configuración ESLint
+├── next.config.ts             # Configuración Next.js
+├── tsconfig.json              # Configuración TypeScript
+├── package.json               # Dependencias y scripts
+├── middleware.ts              # Middleware de Next.js
+├── README.md                  # Este archivo
+├── CHANGELOG.md               # Cambios funcionales
+├── CHANGELOG_TECHNICAL.md     # Cambios técnicos
+└── .gitignore
 ```
 
-## 🎯 Módulos y Funcionalidades
+---
 
-### 🏠 Landing Page
-- Página de bienvenida profesional
-- Información de características
-- Call-to-action para registro
+## 🗂️ Rutas y Módulos Principales
 
-### 🔐 Sistema de Autenticación
-- Login y registro de usuarios
-- Protección de rutas privadas
-- Gestión de sesiones con cookies
+### Rutas Públicas
+- `/` - Landing page
+- `/public/*` - Páginas públicas (about, features, pricing)
+- `/auth/login` - Iniciar sesión
+- `/auth/register` - Registro de usuarios
 
-### 📚 Banco de Preguntas ✨ **NUEVO**
-**CU-BP-01: Crear ítem nuevo** - Implementación completa con:
-- ✅ Creación de preguntas con 4 tipos:
-  - Verdadero/Falso (2 opciones, 1 correcta)
-  - Selección Única (múltiples opciones, 1 correcta)
-  - Selección Múltiple (múltiples opciones, 1+ correctas)
-  - Desarrollo (respuesta abierta)
-- ✅ Validación exhaustiva según reglas de negocio
-- ✅ Detección automática de duplicados potenciales
-- ✅ Selector jerárquico de taxonomía (Asignatura → Unidad → Tema)
-- ✅ Niveles de dificultad (Bajo, Medio, Alto)
-- ✅ Búsqueda textual y filtros combinables
-- ✅ Trazabilidad completa (autor, fecha, versión)
-- ✅ Almacenamiento en localStorage
-- 📖 [Guía de Usuario](./docs/CU-BP-01-USER-GUIDE.md)
-- 🔧 [Documentación Técnica](./docs/CU-BP-01-IMPLEMENTATION.md)
+### Rutas Protegidas
+- `/dashboard` - Panel de control principal
+- `/questions-bank/*` - Banco de preguntas
+- `/evaluation-management/*` - Gestión de evaluaciones
+- `/profile` - Perfil del usuario
+- `/settings` - Configuraciones
 
-### 🏛️ Gestión de Taxonomías **CU-BP-11**
+---
+
+## 📚 Módulos Principales
+
+### 📚 Banco de Preguntas (`/questions-bank`)
+Sistema completo para gestionar preguntas de evaluaciones:
+- **Listar Preguntas**: Vista principal con filtros
+- **Crear Pregunta**: Formulario completo con 4 tipos
+- **Importar Preguntas**: Carga masiva via CSV
+- **Taxonomía**: Gestión de clasificación (Asignatura → Unidad → Tema)
+- **Estadísticas**: Análisis de uso y desempeño
+- **Configuración**: Ajustes del módulo
+
+### 📊 Gestión de Evaluaciones (`/evaluation-management`)
+Creación y administración de evaluaciones:
+- **Mis Evaluaciones**: Lista de evaluaciones creadas
+- **Crear Evaluación**: Asignar preguntas a evaluaciones
+- **Cursos**: Gestión de cursos académicos
+- **Resultados**: Ver resultados de estudiantes
+
+### � Dashboard (`/dashboard`)
+Panel de control personalizado:
+- **Resumen**: Estadísticas generales
+- **Reportes**: Análisis detallados
+- **Configuración**: Ajustes del panel
+
+---
+
+## 🔐 Autenticación y Seguridad
+
+- Sistema de **login/registro** seguro
+- **Protección de rutas** privadas con `ProtectedRoute`
+- **Gestión de sesiones** con cookies
+- **Middleware** de autenticación
+- Contexto `AuthContext` para estado global
+
+---
+
+## 🎨 Componentes Genéricos
+
+### SidebarLayout
+Componente reutilizable para navegación lateral:
+- Menús configurables por sección
+- Soporte para items anidados
+- Detección automática de rutas activas
+- Responsive (Offcanvas en móvil)
+
+**Uso:**
+```tsx
+<SidebarLayout items={menu} sidebarTitle="Mi Sección">
+  {children}
+</SidebarLayout>
+```
+
+### NavigationBar
+Barra de navegación superior con branding y opciones de usuario.
+
+### ProtectedRoute
+HOC para proteger rutas privadas que requieren autenticación.
+
+---
+
+## 📖 Documentación Adicional
+
+- **[CHANGELOG.md](./CHANGELOG.md)** - Cambios funcionales (user-facing)
+- **[CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md)** - Cambios técnicos resumidos
+- **[docs/changes/](./docs/changes/)** - Documentación detallada por cambio técnico
+  - Cada cambio tiene su propio directorio con archivos técnicos
+  - Formato: `XX-<change-name>/<archivos>.md`
+  - Ejemplo: `00-taxonomy-refactor/ARCHITECTURE.md`, `TESTING.md`, etc.
+
+---
+
+## 💡 Desarrollo
+
+### Agregar una Nueva Sección
+
+1. Crear carpeta en `src/app/nueva-seccion/`
+2. Crear `layout.tsx` con configuración de menú
+3. Crear `page.tsx` como punto de entrada
+4. Usar `SidebarLayout` para navegación consistente
+5. Documentar cambios en `CHANGELOG.md` y técnico
+
+### Agregar un Nuevo Componente
+
+1. Crear archivo en `src/components/MiComponente.tsx`
+2. Documentar props y uso
+3. Si es genérico/reutilizable, crear stories o ejemplos
+4. Registrar en archivo índice si corresponde
+
+### Tipos y Interfaces
+
+Todos los tipos deben estar en `src/types/`:
+- `course.ts` - Tipos relacionados con cursos
+- `question.ts` - Tipos de preguntas
+- `taxonomy.ts` - Tipos de taxonomía
+
+---
+
+## 🧪 Testing
+
+Actualmente en desarrollo. Ver:
+- Documentación técnica en `docs/changes/XX-*/TESTING.md`
+- Ejemplos en módulos específicos
+
+---
+
+## 🤝 Contribuciones
+
+Al contribuir, por favor:
+
+1. Crear rama feature: `git checkout -b feature/AmazingFeature`
+2. Commit cambios: `git commit -m 'Add AmazingFeature'`
+3. Push a rama: `git push origin feature/AmazingFeature`
+4. Abrir Pull Request
+
+**Importante:** Actualizar `CHANGELOG.md` y `CHANGELOG_TECHNICAL.md` con cada PR.
+
+---
+
+## 📝 Notas para Desarrolladores
+
+### Build y Compilación
+- Usamos **Turbopack** para compilación rápida (~2.7s)
+- Verificar tipos con `npm run type-check` antes de commit
+- 0 errores TypeScript es requerido
+
+### Estilos
+- CSS global en `src/app/globals.css`
+- Componentes específicos pueden tener `.css` local
+- Usar **React Bootstrap** para componentes UI
+
+### Estado
+- `AuthContext` para autenticación global
+- `LoadingContext` para estados de carga
+- `localStorage` para datos persistentes (preguntas, cursos)
+
+### Convenciones
+- Componentes en PascalCase: `MiComponente.tsx`
+- Funciones utilitarias en camelCase: `miUtilidad.ts`
+- Tipos con `I` o sin prefijo: `Question`, `IQuestion`
+- Archivos CSS local: `MiComponente.css` junto a componente
+
+---
+
+## � Soporte
+
+Para dudas o problemas:
+1. Revisar documentación en `docs/changes/`
+2. Buscar en issues existentes
+3. Crear nuevo issue con contexto
+
+---
+
+## 📄 Licencia
+
+Proyecto desarrollado por **Wanku CL**. Todos los derechos reservados.
+
+---
+
+**Última actualización:** 23 de Octubre de 2025  
+**Versión:** 1.0.0
 - Estructura jerárquica: Asignatura → Unidad → Tema
 - CRUD completo con validaciones
 - Análisis de impacto para eliminación
