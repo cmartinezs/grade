@@ -5,12 +5,12 @@ import Footer from '@/components/Footer';
 
 const evalMenu = [
   { 
-    label: 'Evaluaciones', 
-    icon: '📝',
+    label: 'EVALUACIONES', 
+    isSection: true,
     children: [
       { 
         label: 'Mis Evaluaciones', 
-        icon: '�',
+        icon: '📝',
         href: '/evaluation-management' 
       },
       { 
@@ -21,8 +21,8 @@ const evalMenu = [
     ]
   },
   { 
-    label: 'Gestión Académica', 
-    icon: '🎓',
+    label: 'GESTIÓN ACADÉMICA', 
+    isSection: true,
     children: [
       { 
         label: 'Cursos', 
@@ -32,8 +32,8 @@ const evalMenu = [
     ]
   },
   { 
-    label: 'Resultados', 
-    icon: '📊',
+    label: 'RESULTADOS', 
+    isSection: true,
     children: [
       { 
         label: 'Ver Resultados', 
@@ -48,7 +48,7 @@ export default function EvaluationLayout({ children }: { children: React.ReactNo
   return (
     <PageWrapper>
       <NavigationBar />
-      <SidebarLayout items={evalMenu}>
+      <SidebarLayout items={evalMenu} sidebarTitle="Gestión de Evaluaciones">
         <div className="p-4">{children}</div>
       </SidebarLayout>
       <Footer />

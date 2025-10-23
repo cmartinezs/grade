@@ -4,19 +4,31 @@ import PageWrapper from '@/components/PageWrapper';
 
 const dashboardMenu = [
   { 
-    label: 'Resumen', 
-    icon: '📊',
-    href: '/dashboard' 
+    label: 'PRINCIPAL', 
+    isSection: true,
+    children: [
+      { 
+        label: 'Resumen', 
+        icon: '📊',
+        href: '/dashboard' 
+      },
+      { 
+        label: 'Reportes', 
+        icon: '📈',
+        href: '/dashboard/reports' 
+      },
+    ]
   },
   { 
-    label: 'Reportes', 
-    icon: '📈',
-    href: '/dashboard/reports' 
-  },
-  { 
-    label: 'Configuración', 
-    icon: '⚙️',
-    href: '/dashboard/settings' 
+    label: 'CONFIGURACIÓN', 
+    isSection: true,
+    children: [
+      { 
+        label: 'Configuración', 
+        icon: '⚙️',
+        href: '/dashboard/settings' 
+      },
+    ]
   },
 ];
 
@@ -24,7 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <PageWrapper>
       <NavigationBar />
-      <SidebarLayout items={dashboardMenu}>
+      <SidebarLayout items={dashboardMenu} sidebarTitle="Panel de Control">
         <div className="p-4">{children}</div>
       </SidebarLayout>
     </PageWrapper>
