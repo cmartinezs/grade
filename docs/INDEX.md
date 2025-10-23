@@ -24,7 +24,7 @@ Bienvenido a la documentación de **GRADE Web App**. Aquí encontrarás toda la 
 - Mejoras de UX
 - Compatibilidad
 
-### 🔧 [CHANGELOG_TECHNICAL.md](../CHANGELOG_TECHNICAL.md)
+### 🔧 [CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md)
 **Para:** Developers  
 **Contiene:**
 - Resumen técnico de cambios
@@ -60,24 +60,24 @@ docs/changes/
 
 ### 👤 Nuevo Developer
 
-1. **Empieza aquí:** [README.md](../README.md)
+1. **Empieza aquí:** [../README.md](../README.md)
 2. **Aprende estructura:** Sección "Estructura del Proyecto"
 3. **Revisa tech stack:** Sección "Tech Stack"
 4. **Ejecuta local:** Sección "Inicio Rápido"
-5. **Entiende cambios:** [CHANGELOG_TECHNICAL.md](../CHANGELOG_TECHNICAL.md)
+5. **Entiende cambios:** [./CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md)
 
 ### 🏗️ Architect / Tech Lead
 
-1. **Visión general:** [CHANGELOG_TECHNICAL.md](../CHANGELOG_TECHNICAL.md)
-2. **Cambios técnicos:** [docs/changes/INDEX.md](./changes/INDEX.md)
-3. **Decisiones arquitectónicas:** Cada `README.md` en `docs/changes/XX-*/`
-4. **Code patterns:** Código en `src/`
+1. **Visión general:** [./CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md)
+2. **Cambios técnicos:** [./changes/INDEX.md](./changes/INDEX.md)
+3. **Decisiones arquitectónicas:** Cada `README.md` en `changes/XX-*/`
+4. **Code patterns:** Código en `../src/`
 
 ### 👨‍💼 Project Manager / Product Owner
 
-1. **Características:** [CHANGELOG.md](../CHANGELOG.md)
-2. **Progreso:** [CHANGELOG_TECHNICAL.md](../CHANGELOG_TECHNICAL.md) - "Resumen de Cambios"
-3. **Roadmap:** [CHANGELOG_TECHNICAL.md](../CHANGELOG_TECHNICAL.md) - "Próximos Cambios"
+1. **Características:** [../CHANGELOG.md](../CHANGELOG.md)
+2. **Progreso:** [./CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md) - "Resumen de Cambios"
+3. **Roadmap:** [./CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md) - "Próximos Cambios"
 
 ### 📊 QA / Tester
 

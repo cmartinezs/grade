@@ -40,17 +40,17 @@ Este directorio contiene documentación histórica y de referencia que fue gener
 
 ## 🗂️ Estructura de Archivos Actualizada
 
-**Root Level (SOLO 3 archivos .md):**
+**Root Level (SOLO 2 archivos .md):**
 ```
 README.md                 ← Info general del proyecto
 CHANGELOG.md              ← Cambios funcionales
-CHANGELOG_TECHNICAL.md    ← Cambios técnicos resumidos
 ```
 
 **Documentación en `/docs/`:**
 ```
 docs/
 ├── INDEX.md                          ← Guía de navegación
+├── CHANGELOG_TECHNICAL.md            ← Cambios técnicos resumidos
 ├── archived/                         ← Archivos históricos (este directorio)
 │   └── README.md                     ← Este archivo
 └── changes/

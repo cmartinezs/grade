@@ -382,12 +382,11 @@ src/app/globals.css                            ✓ Sin cambios
 ```
 
 ---
-
 ## 🔗 Archivos Relacionados
 
 - `../01-sidebar-generic/` - Implementación de SidebarLayout
 - `../../README.md` - Documentación general
-- `../../CHANGELOG_TECHNICAL.md` - Cambios técnicos
+- `../CHANGELOG_TECHNICAL.md` - Cambios técnicos
 
 ---
 

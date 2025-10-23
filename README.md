@@ -123,7 +123,10 @@ grade-web-app/
 ├── middleware.ts              # Middleware de Next.js
 ├── README.md                  # Este archivo
 ├── CHANGELOG.md               # Cambios funcionales
-├── CHANGELOG_TECHNICAL.md     # Cambios técnicos
+├── docs/                      # Documentación centralizada
+│   ├── CHANGELOG_TECHNICAL.md # Cambios técnicos
+│   ├── INDEX.md               # Guía de navegación
+│   └── changes/               # Cambios técnicos detallados
 └── .gitignore
 ```
 
@@ -209,7 +212,8 @@ HOC para proteger rutas privadas que requieren autenticación.
 ## 📖 Documentación Adicional
 
 - **[CHANGELOG.md](./CHANGELOG.md)** - Cambios funcionales (user-facing)
-- **[CHANGELOG_TECHNICAL.md](./CHANGELOG_TECHNICAL.md)** - Cambios técnicos resumidos
+- **[docs/CHANGELOG_TECHNICAL.md](./docs/CHANGELOG_TECHNICAL.md)** - Cambios técnicos resumidos
+- **[docs/INDEX.md](./docs/INDEX.md)** - Guía de navegación por rol
 - **[docs/changes/](./docs/changes/)** - Documentación detallada por cambio técnico
   - Cada cambio tiene su propio directorio con archivos técnicos
   - Formato: `XX-<change-name>/<archivos>.md`
@@ -260,7 +264,7 @@ Al contribuir, por favor:
 3. Push a rama: `git push origin feature/AmazingFeature`
 4. Abrir Pull Request
 
-**Importante:** Actualizar `CHANGELOG.md` y `CHANGELOG_TECHNICAL.md` con cada PR.
+**Importante:** Actualizar `CHANGELOG.md` (cambios funcionales) y `docs/CHANGELOG_TECHNICAL.md` (cambios técnicos) con cada PR.
 
 ---
 
