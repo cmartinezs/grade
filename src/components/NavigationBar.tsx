@@ -84,34 +84,36 @@ export default function NavigationBar() {
             ) : (
               // Menú para usuarios autenticados
               <NavDropdown 
-                title={`👤 ${user?.firstName || 'Usuario'}`} 
+                title={
+                  <span className="user-menu-title">
+                    👤 <span className="user-name">{user?.firstName || 'Usuario'}</span>
+                  </span>
+                }
                 id="user-dropdown"
                 align="end"
                 className="user-dropdown"
               >
-                <NavDropdown.Header>
-                  <strong>{user?.firstName} {user?.lastName}</strong>
-                  <br />
-                  <small className="text-muted">{user?.email}</small>
-                  {user?.institution && (
-                    <>
-                      <br />
-                      <small className="text-muted">🏫 {user.institution}</small>
-                    </>
-                  )}
+                <NavDropdown.Header className="user-dropdown-header">
+                  <div className="user-info">
+                    <strong>{user?.firstName} {user?.lastName}</strong>
+                    <small>{user?.email}</small>
+                    {user?.institution && (
+                      <small className="institution">🏫 {user.institution}</small>
+                    )}
+                  </div>
                 </NavDropdown.Header>
                 <NavDropdown.Divider />
-                <NavDropdown.Item as={Link} href="/profile">
+                <NavDropdown.Item as={Link} href="/profile" className="dropdown-item-with-icon">
                   👤 Mi Perfil
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} href="/settings">
+                <NavDropdown.Item as={Link} href="/settings" className="dropdown-item-with-icon">
                   ⚙️ Configuración
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} href="/billing">
+                <NavDropdown.Item as={Link} href="/billing" className="dropdown-item-with-icon">
                   💳 Facturación
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout}>
+                <NavDropdown.Item onClick={handleLogout} className="dropdown-item-logout">
                   🚪 Cerrar Sesión
                 </NavDropdown.Item>
               </NavDropdown>
