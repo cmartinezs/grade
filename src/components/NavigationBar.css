@@ -14,10 +14,46 @@
   letter-spacing: 0.5px;
   color: #fff !important;
   transition: color 0.2s ease;
+  padding: 0.5rem 1rem !important;
 }
 
 .brand-logo:hover {
   color: #fff !important;
+}
+
+/* Brand Container with Icon and Text */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  font-size: 2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.brand-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.brand-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  font-size: 0.65rem;
+  font-weight: 300;
+  opacity: 0.9;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Navigation Links Container */
@@ -342,6 +378,10 @@
 @media (max-width: 991px) {
   .navbar-elegant {
     min-height: auto;
+  }
+
+  .brand-subtitle {
+    display: none;
   }
 
   .nav-link-item {

@@ -23,10 +23,13 @@ export default function NavigationBar() {
   return (
     <Navbar bg="primary" variant="dark" expand="lg" sticky="top" className="navbar-elegant">
       <Container>
-        <Navbar.Brand as={Link} href="/" className="brand-logo">📚
-          <div className="brand-content">
-            <div className="brand-title">GRADE</div>
-            <div className="brand-subtitle">Generación y Registro Automatizado De Evaluaciones</div>
+        <Navbar.Brand as={Link} href="/" className="brand-logo">
+          <div className="brand-container">
+            <div className="brand-icon">📚</div>
+            <div className="brand-content">
+              <div className="brand-title">GRADE</div>
+              <div className="brand-subtitle">Generación y Registro Automatizado De Evaluaciones</div>
+            </div>
           </div>
         </Navbar.Brand>
 
