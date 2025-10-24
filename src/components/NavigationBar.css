@@ -412,3 +412,35 @@
     border-left: none;
   }
 }
+
+/* Brand logo styling with subtitle */
+.brand-logo {
+    padding: 0.5rem 1rem !important;
+}
+
+.brand-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.brand-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    font-size: 0.65rem;
+    font-weight: bolder;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive: hide subtitle on small screens */
+@media (max-width: 768px) {
+    .brand-subtitle {
+        display: none;
+    }
+}

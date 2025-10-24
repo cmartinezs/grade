@@ -23,12 +23,15 @@ export default function NavigationBar() {
   return (
     <Navbar bg="primary" variant="dark" expand="lg" sticky="top" className="navbar-elegant">
       <Container>
-        <Navbar.Brand as={Link} href="/" className="brand-logo">
-          📚 Grade Question Bank
+        <Navbar.Brand as={Link} href="/" className="brand-logo">📚
+          <div className="brand-content">
+            <div className="brand-title">GRADE</div>
+            <div className="brand-subtitle">Generación y Registro Automatizado De Evaluaciones</div>
+          </div>
         </Navbar.Brand>
-        
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        
+
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto nav-links">
             {!isAuthenticated && (
@@ -36,7 +39,7 @@ export default function NavigationBar() {
                 🏠 Inicio
               </Nav.Link>
             )}
-            
+
             {/* Enlaces públicos - Solo cuando no autenticado */}
             {!isAuthenticated && (
               <>
@@ -51,7 +54,7 @@ export default function NavigationBar() {
                 </Nav.Link>
               </>
             )}
-            
+
             {/* Enlaces directos a funcionalidades - Sin desplegar */}
             {isAuthenticated && (
               <>
@@ -69,7 +72,7 @@ export default function NavigationBar() {
               </>
             )}
           </Nav>
-          
+
           <Nav>
             {!isAuthenticated ? (
               // Botones para usuarios no autenticados
@@ -83,7 +86,7 @@ export default function NavigationBar() {
               </div>
             ) : (
               // Menú para usuarios autenticados
-              <NavDropdown 
+              <NavDropdown
                 title={
                   <span className="user-menu-title">
                     👤 <span className="user-name">{user?.firstName || 'Usuario'}</span>
