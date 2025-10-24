@@ -1,25 +1,14 @@
 'use client'
-
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLoading } from '@/contexts/LoadingContext';
 import LoadingLink from './LoadingLink';
 import './NavigationBar.css';
-
 export default function NavigationBar() {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { setLoading, setLoadingMessage } = useLoading();
-
+  const { user, isAuthenticated, isInitializing, logout } = useAuth();
   const handleLogout = () => {
-    setLoading(true);
-    setLoadingMessage('Cerrando sesión...');
     logout();
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 1000);
   };
-
   return (
     <Navbar bg="primary" variant="dark" expand="lg" sticky="top" className="navbar-elegant">
       <Container>
@@ -32,19 +21,16 @@ export default function NavigationBar() {
             </div>
           </div>
         </Navbar.Brand>
-
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto nav-links">
-            {!isAuthenticated && (
+            {!isInitializing && !isAuthenticated && (
               <Nav.Link as={LoadingLink} href="/" loadingMessage="Cargando inicio..." showSpinner={false} className="nav-link-item">
                 🏠 Inicio
               </Nav.Link>
             )}
-
-            {/* Enlaces públicos - Solo cuando no autenticado */}
-            {!isAuthenticated && (
+            {/* Enlaces públicos - Solo cuando no autenticado y no inicializando */}
+            {!isInitializing && !isAuthenticated && (
               <>
                 <Nav.Link as={LoadingLink} href="/public/about" loadingMessage="Cargando información..." showSpinner={false} className="nav-link-item">
                   ℹ️ Acerca de
@@ -57,27 +43,23 @@ export default function NavigationBar() {
                 </Nav.Link>
               </>
             )}
-
             {/* Enlaces directos a funcionalidades - Sin desplegar */}
-            {isAuthenticated && (
+            {!isInitializing && isAuthenticated && (
               <>
                 <Nav.Link as={LoadingLink} href="/dashboard" loadingMessage="Cargando dashboard..." showSpinner={false} className="nav-link-item">
                   📊 Panel de Control
                 </Nav.Link>
-
                 <Nav.Link as={LoadingLink} href="/questions-bank" loadingMessage="Cargando banco de preguntas..." showSpinner={false} className="nav-link-item">
                   📚 Banco de Preguntas
                 </Nav.Link>
-
                 <Nav.Link as={LoadingLink} href="/evaluation-management" loadingMessage="Cargando gestión de evaluaciones..." showSpinner={false} className="nav-link-item">
                   📝 Evaluaciones
                 </Nav.Link>
               </>
             )}
           </Nav>
-
           <Nav>
-            {!isAuthenticated ? (
+            {!isInitializing && !isAuthenticated ? (
               // Botones para usuarios no autenticados
               <div className="auth-buttons">
                 <LoadingLink href="/auth/login" className="btn btn-light btn-sm" loadingMessage="Cargando login..." showSpinner={false}>
@@ -87,7 +69,7 @@ export default function NavigationBar() {
                   🚀 Registrarse
                 </LoadingLink>
               </div>
-            ) : (
+            ) : !isInitializing && isAuthenticated ? (
               // Menú para usuarios autenticados
               <NavDropdown
                 title={
@@ -123,7 +105,7 @@ export default function NavigationBar() {
                   🚪 Cerrar Sesión
                 </NavDropdown.Item>
               </NavDropdown>
-            )}
+            ) : null}
           </Nav>
         </Navbar.Collapse>
       </Container>

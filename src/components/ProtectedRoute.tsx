@@ -18,30 +18,30 @@ export default function ProtectedRoute({
   fallback,
   redirectTo = '/auth/login' 
 }: ProtectedRouteProps) {
-  const { isAuthenticated } = useAuth();
-  const { isLoading, setLoading, setLoadingMessage } = useLoading();
+  const { isAuthenticated, isInitializing } = useAuth();
+  const { setLoading, setLoadingMessage } = useLoading();
   const router = useRouter();
 
   useEffect(() => {
-    // Si estamos cargando la autenticación, no hacer nada aún
-    if (isLoading) return;
+    // Si estamos inicializando, no hacer nada aún
+    if (isInitializing) return;
 
-    // Si no está autenticado, redirigir después de un breve delay
+    // Si no está autenticado después de inicializar, redirigir
     if (!isAuthenticated) {
       setLoading(true);
       setLoadingMessage('Redirigiendo al login...');
       
       const timer = setTimeout(() => {
         router.push(redirectTo);
-      }, 1500);
+      }, 800);
 
       return () => clearTimeout(timer);
     }
-  }, [isAuthenticated, isLoading, router, redirectTo, setLoading, setLoadingMessage]);
+  }, [isAuthenticated, isInitializing, router, redirectTo, setLoading, setLoadingMessage]);
 
-  // Mientras carga la autenticación, mostrar loading
-  if (isLoading) {
-    return null; // El LoadingContext manejará la UI
+  // Mientras está inicializando, no mostrar nada (evita parpadeo)
+  if (isInitializing) {
+    return null;
   }
 
   // Si no está autenticado, mostrar fallback o mensaje por defecto
