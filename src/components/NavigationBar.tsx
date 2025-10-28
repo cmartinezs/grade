@@ -2,7 +2,6 @@
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import LoadingLink from './LoadingLink';
 import './NavigationBar.css';
 export default function NavigationBar() {
   const { user, isAuthenticated, isInitializing, logout } = useAuth();
@@ -25,20 +24,20 @@ export default function NavigationBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto nav-links">
             {!isInitializing && !isAuthenticated && (
-              <Nav.Link as={LoadingLink} href="/" loadingMessage="Cargando inicio..." showSpinner={false} className="nav-link-item">
+              <Nav.Link as={Link} href="/" className="nav-link-item">
                 🏠 Inicio
               </Nav.Link>
             )}
             {/* Enlaces públicos - Solo cuando no autenticado y no inicializando */}
             {!isInitializing && !isAuthenticated && (
               <>
-                <Nav.Link as={LoadingLink} href="/public/about" loadingMessage="Cargando información..." showSpinner={false} className="nav-link-item">
+                <Nav.Link as={Link} href="/public/about" className="nav-link-item">
                   ℹ️ Acerca de
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/public/features" loadingMessage="Cargando características..." showSpinner={false} className="nav-link-item">
+                <Nav.Link as={Link} href="/public/features" className="nav-link-item">
                   ✨ Características
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/public/pricing" loadingMessage="Cargando precios..." showSpinner={false} className="nav-link-item">
+                <Nav.Link as={Link} href="/public/pricing" className="nav-link-item">
                   💰 Precios
                 </Nav.Link>
               </>
@@ -46,13 +45,13 @@ export default function NavigationBar() {
             {/* Enlaces directos a funcionalidades - Sin desplegar */}
             {!isInitializing && isAuthenticated && (
               <>
-                <Nav.Link as={LoadingLink} href="/dashboard" loadingMessage="Cargando dashboard..." showSpinner={false} className="nav-link-item">
+                <Nav.Link as={Link} href="/dashboard" className="nav-link-item">
                   📊 Panel de Control
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/questions-bank" loadingMessage="Cargando banco de preguntas..." showSpinner={false} className="nav-link-item">
+                <Nav.Link as={Link} href="/questions-bank" className="nav-link-item">
                   📚 Banco de Preguntas
                 </Nav.Link>
-                <Nav.Link as={LoadingLink} href="/evaluation-management" loadingMessage="Cargando gestión de evaluaciones..." showSpinner={false} className="nav-link-item">
+                <Nav.Link as={Link} href="/evaluation-management" className="nav-link-item">
                   📝 Evaluaciones
                 </Nav.Link>
               </>
@@ -62,12 +61,12 @@ export default function NavigationBar() {
             {!isInitializing && !isAuthenticated ? (
               // Botones para usuarios no autenticados
               <div className="auth-buttons">
-                <LoadingLink href="/auth/login" className="btn btn-light btn-sm" loadingMessage="Cargando login..." showSpinner={false}>
+                <Link href="/auth/login" className="btn btn-light btn-sm">
                   🔑 Iniciar Sesión
-                </LoadingLink>
-                <LoadingLink href="/auth/register" className="btn btn-outline-light btn-sm ms-2" loadingMessage="Cargando registro..." showSpinner={false}>
+                </Link>
+                <Link href="/auth/register" className="btn btn-outline-light btn-sm ms-2">
                   🚀 Registrarse
-                </LoadingLink>
+                </Link>
               </div>
             ) : !isInitializing && isAuthenticated ? (
               // Menú para usuarios autenticados
