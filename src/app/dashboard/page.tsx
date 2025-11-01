@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { EntityStatsCard } from '@/components/EntityStatsCard';
 import { levelStore } from '@/lib/levelStore';
 import { courseStore } from '@/lib/courseStore';
 import { EducationalLevel } from '@/types/level';
@@ -92,33 +92,6 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const KPICard = ({ 
-    icon, 
-    label, 
-    value, 
-    color 
-  }: {
-    icon: string;
-    label: string;
-    value: number;
-    color: string;
-  }) => (
-    <Card className={`border-0 h-100`}>
-      <Card.Body className={`text-white d-flex align-items-center justify-content-between`} style={{
-        backgroundColor: color,
-        padding: '1.5rem'
-      }}>
-        <div>
-          <Card.Text className="mb-1 opacity-75 small">{label}</Card.Text>
-          <Card.Title className="mb-0 fs-2 fw-bold">{value}</Card.Title>
-        </div>
-        <div className="fs-1">{icon}</div>
-      </Card.Body>
-    </Card>
-  );
-
-  // Note: Pie charts used instead of progress bars for state visualization
-
   return (
     <Container fluid className="py-4">
       {/* Header */}
@@ -129,146 +102,57 @@ export default function DashboardPage() {
         </Col>
       </Row>
 
-      {/* Niveles Educacionales Card */}
+      {/* Niveles Educacionales & Cursos Cards */}
       <Row className="mb-4">
-        <Col lg={6}>
-          <Card className="shadow-sm border-0 h-100">
-            <Card.Header className="bg-primary text-white border-0">
-              <h5 className="mb-0">📊 Niveles Educacionales</h5>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                {/* Left: KPIs stacked */}
-                <Col xs={6}>
-                  <div className="mb-3">
-                    <KPICard
-                      icon="📚"
-                      label="Total"
-                      value={dashboardData.levels.total}
-                      color="#4A90E2"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <KPICard
-                      icon="✅"
-                      label="Activos"
-                      value={dashboardData.levels.active}
-                      color="#2ECC71"
-                    />
-                  </div>
-                </Col>
+        <EntityStatsCard
+          title="Niveles Educacionales"
+          icon="📊"
+          headerColor="#4A90E2"
+          stats={dashboardData.levels}
+          totalIcon="📚"
+          activeIcon="✅"
+          totalColor="#4A90E2"
+          activeColor="#2ECC71"
+        />
 
-                {/* Right: Pie Chart */}
-                <Col xs={6} className="d-flex align-items-center justify-content-center">
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: 'Activos', value: dashboardData.levels.active },
-                          { name: 'Inactivos', value: dashboardData.levels.inactive },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={70}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        <Cell fill="#2ECC71" />
-                        <Cell fill="#E8E8E8" />
-                      </Pie>
-                      <Tooltip formatter={(value) => `${value}`} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        {/* Cursos Card */}
-        <Col lg={6}>
-          <Card className="shadow-sm border-0 h-100">
-            <Card.Header className="bg-info text-white border-0">
-              <h5 className="mb-0">📚 Cursos</h5>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                {/* Left: KPIs stacked */}
-                <Col xs={6}>
-                  <div className="mb-3">
-                    <KPICard
-                      icon="📖"
-                      label="Total"
-                      value={dashboardData.courses.total}
-                      color="#17A2B8"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <KPICard
-                      icon="✅"
-                      label="Activos"
-                      value={dashboardData.courses.active}
-                      color="#2ECC71"
-                    />
-                  </div>
-                </Col>
-
-                {/* Right: Pie Chart */}
-                <Col xs={6} className="d-flex align-items-center justify-content-center">
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: 'Activos', value: dashboardData.courses.active },
-                          { name: 'Inactivos', value: dashboardData.courses.inactive },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={70}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        <Cell fill="#2ECC71" />
-                        <Cell fill="#E8E8E8" />
-                      </Pie>
-                      <Tooltip formatter={(value) => `${value}`} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </Col>
-              </Row>
-
-              {/* Distribution by Level */}
-              <div className="mt-4 pt-4 border-top">
-                <h6 className="fw-bold mb-3">Distribución por Nivel</h6>
-                <div className="space-y-2">
-                  {Object.entries(dashboardData.courses.byLevel)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 8)
-                    .map(([level, count]) => {
-                      const total = dashboardData.courses.total;
-                      const percentage = (count / total) * 100;
-                      return (
-                        <div key={level} className="mb-2">
-                          <div className="d-flex justify-content-between mb-1 small">
-                            <span className="text-truncate">{level}</span>
-                            <span className="text-muted fw-bold">{count}</span>
-                          </div>
-                          <div className="progress" style={{ height: '8px' }}>
-                            <div
-                              className="progress-bar"
-                              style={{ width: `${percentage}%`, backgroundColor: '#17A2B8' }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+        <EntityStatsCard
+          title="Cursos"
+          icon="📚"
+          headerColor="#17A2B8"
+          stats={dashboardData.courses}
+          totalIcon="📖"
+          activeIcon="✅"
+          totalColor="#17A2B8"
+          activeColor="#2ECC71"
+        >
+          {/* Distribution by Level - Only for Courses */}
+          <div className="mt-4 pt-4 border-top">
+            <h6 className="fw-bold mb-3">Distribución por Nivel</h6>
+            <div className="space-y-2">
+              {Object.entries(dashboardData.courses.byLevel)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8)
+                .map(([level, count]) => {
+                  const total = dashboardData.courses.total;
+                  const percentage = (count / total) * 100;
+                  return (
+                    <div key={level} className="mb-2">
+                      <div className="d-flex justify-content-between mb-1 small">
+                        <span className="text-truncate">{level}</span>
+                        <span className="text-muted fw-bold">{count}</span>
+                      </div>
+                      <div className="progress" style={{ height: '8px' }}>
+                        <div
+                          className="progress-bar"
+                          style={{ width: `${percentage}%`, backgroundColor: '#17A2B8' }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        </EntityStatsCard>
       </Row>
 
       {/* Coming Soon */}
