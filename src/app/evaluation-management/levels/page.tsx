@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
-  StatCard,
 } from '@/components/MasterDataTable';
 import { Badge } from 'react-bootstrap';
 import { levelStore } from '@/lib/levelStore';
@@ -143,19 +142,6 @@ export default function LevelsPage() {
     },
   ];
 
-  const statCards: StatCard[] = [
-    {
-      label: 'Total Niveles',
-      value: totalLevels,
-      icon: '📊',
-    },
-    {
-      label: 'Niveles Activos',
-      value: levels.filter((l) => l.isActive).length,
-      icon: '✅',
-    },
-  ];
-
   return (
     <MasterDataTable<EducationalLevel>
       items={levels}
@@ -175,7 +161,6 @@ export default function LevelsPage() {
       onCreateClick={() => router.push('/evaluation-management/levels/create')}
       createButtonLabel="Nuevo Nivel"
       createButtonIcon="➕"
-      statCards={statCards}
       emptyMessage="No hay niveles creados aún"
       emptyIcon="📭"
       emptyActionLabel="Crear Primer Nivel"
