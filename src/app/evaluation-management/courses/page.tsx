@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Container, Row, Col, Card, Button, Badge, Table, Form, InputGroup, Pagination } from 'react-bootstrap';
+import { Badge } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import MasterDataTable, {
+  ColumnConfig,
+  ActionButton,
+} from '@/components/MasterDataTable';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import EditCourseModal from '@/components/EditCourseModal';
 import { courseStore } from '@/lib/courseStore';
@@ -21,9 +25,11 @@ export default function CoursesPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load courses when page or search changes
   useEffect(() => {
+    setIsLoading(true);
     const result = courseStore.getPaginatedCourses(currentPage, PAGE_SIZE, {
       searchText,
       includeInactive: true
@@ -32,9 +38,10 @@ export default function CoursesPage() {
     setCourses(result.courses);
     setTotalCourses(result.total);
     setTotalPages(result.totalPages);
+    setIsLoading(false);
   }, [currentPage, searchText]);
 
-  // Reset to page 1 when search changes (but not on initial render)
+  // Reset to page 1 when search changes
   useEffect(() => {
     if (currentPage !== 1) {
       setCurrentPage(1);
@@ -44,11 +51,10 @@ export default function CoursesPage() {
 
   const handleCreateSuccess = () => {
     setCurrentPage(1);
-    // Trigger reload by changing a dependency
   };
 
-  const handleEditCourse = (courseId: string) => {
-    setSelectedCourseId(courseId);
+  const handleEditCourse = (course: Course) => {
+    setSelectedCourseId(course.course_id);
     setShowEditModal(true);
   };
 
@@ -64,205 +70,95 @@ export default function CoursesPage() {
     setTotalPages(result.totalPages);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const getLevelEditUrl = (levelName: string): string => {
     const level = levelStore.getLevelByName(levelName);
     return level ? `/evaluation-management/levels/edit?id=${level.id}` : '#';
   };
 
+  const columns: ColumnConfig<Course>[] = [
+    {
+      key: 'code',
+      label: 'Código',
+      render: (value) => <code className="text-primary">{String(value)}</code>,
+      width: '100px',
+    },
+    {
+      key: 'name',
+      label: 'Nombre',
+      render: (value) => <strong>{String(value)}</strong>,
+    },
+    {
+      key: 'level',
+      label: 'Nivel',
+      render: (value) => (
+        <Link href={getLevelEditUrl(String(value))} style={{ textDecoration: 'none' }}>
+          <Badge bg="info" role="button" className="cursor-pointer">
+            {String(value)}
+          </Badge>
+        </Link>
+      ),
+    },
+    {
+      key: 'institution',
+      label: 'Institución',
+      render: (value) => <span className="text-muted">{String(value)}</span>,
+    },
+    {
+      key: 'active',
+      label: 'Estado',
+      render: (value) => (
+        <Badge bg={value ? 'success' : 'secondary'}>
+          {value ? 'Activo' : 'Inactivo'}
+        </Badge>
+      ),
+      width: '100px',
+    },
+    {
+      key: 'created_at',
+      label: 'Fecha Creación',
+      render: (value) => {
+        if (!value) return <span className="text-muted small">-</span>;
+        const date = new Date(value as string | Date);
+        return <span className="text-muted small">{date.toLocaleDateString()}</span>;
+      },
+      width: '120px',
+    },
+  ];
+
+  const actions: ActionButton<Course>[] = [
+    {
+      icon: '✏️',
+      label: 'Editar',
+      onClick: handleEditCourse,
+      variant: 'outline-primary',
+      title: 'Editar curso',
+    },
+  ];
+
   return (
     <ProtectedRoute>
-      <Container className="mt-3">
-        {/* Header */}
-        <Row className="mb-3">
-          <Col>
-            <h1 className="mb-2">Gestión de Cursos</h1>
-            <p className="text-muted mb-0">
-              Administra el catálogo de cursos disponibles
-              <Badge bg="secondary" className="ms-2">
-                {totalCourses} curso{totalCourses !== 1 ? 's' : ''} total{totalCourses !== 1 ? 'es' : ''}
-                {totalCourses > PAGE_SIZE && ` (Página ${currentPage} de ${totalPages})`}
-              </Badge>
-            </p>
-          </Col>
-          <Col xs="auto">
-            <Button
-              variant="outline-success"
-              onClick={() => setShowCreateModal(true)}
-            >
-              ➕ Crear Curso
-            </Button>
-          </Col>
-        </Row>
-
-        {/* Courses List */}
-        {totalCourses === 0 && !searchText ? (
-          <Card>
-            <Card.Body className="text-center py-5">
-              <h4 className="text-muted">No hay cursos registrados</h4>
-              <p className="text-muted">
-                Comienza creando el primer curso del catálogo
-              </p>
-              <Button
-                variant="outline-success"
-                onClick={() => setShowCreateModal(true)}
-              >
-                ➕ Crear Primer Curso
-              </Button>
-            </Card.Body>
-          </Card>
-        ) : (
-          <>
-            <Card>
-              <Card.Header className="bg-light">
-                <Row className="align-items-center">
-                  <Col md={6}>
-                    <InputGroup>
-                      <InputGroup.Text>🔍</InputGroup.Text>
-                      <Form.Control
-                        type="text"
-                        placeholder="Buscar en todas las columnas..."
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                      />
-                      {searchText && (
-                        <Button
-                          variant="outline-secondary"
-                          onClick={() => setSearchText('')}
-                        >
-                          ✕
-                        </Button>
-                      )}
-                    </InputGroup>
-                  </Col>
-                  <Col md={6} className="text-end text-muted small">
-                    Mostrando {courses.length} de {totalCourses} cursos
-                  </Col>
-                </Row>
-              </Card.Header>
-              <Card.Body>
-                {courses.length === 0 ? (
-                  <div className="text-center py-5">
-                    <h5 className="text-muted">No se encontraron cursos</h5>
-                    <p className="text-muted">
-                      Intenta ajustar la búsqueda
-                    </p>
-                  </div>
-                ) : (
-                <Table responsive hover>
-                  <thead>
-                    <tr>
-                      <th>Código</th>
-                      <th>Nombre</th>
-                      <th>Nivel</th>
-                      <th>Institución</th>
-                      <th>Estado</th>
-                      <th>Fecha Creación</th>
-                      <th className="text-end">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((course: Course) => (
-                    <tr key={course.course_id}>
-                      <td>
-                        <code className="text-primary">{course.code}</code>
-                      </td>
-                      <td>
-                        <strong>{course.name}</strong>
-                      </td>
-                      <td>
-                        <Link href={getLevelEditUrl(course.level)} style={{ textDecoration: 'none' }}>
-                          <Badge bg="info" role="button" className="cursor-pointer">
-                            {course.level}
-                          </Badge>
-                        </Link>
-                      </td>
-                      <td className="text-muted">
-                        {course.institution}
-                      </td>
-                      <td>
-                        {course.active ? (
-                          <Badge bg="success">Activo</Badge>
-                        ) : (
-                          <Badge bg="secondary">Inactivo</Badge>
-                        )}
-                      </td>
-                      <td className="text-muted small">
-                        {new Date(course.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="text-end">
-                        <Button 
-                          variant="outline-primary" 
-                          size="sm"
-                          onClick={() => handleEditCourse(course.course_id)}
-                        >
-                          ✏️ Editar
-                        </Button>
-                      </td>
-                    </tr>
-                    ))}
-                  </tbody>
-                </Table>
-                )}
-              </Card.Body>
-            </Card>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="d-flex justify-content-center mt-2 mb-2">
-                <Pagination>
-                  <Pagination.First 
-                    onClick={() => handlePageChange(1)}
-                    disabled={currentPage === 1}
-                  />
-                  <Pagination.Prev 
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  />
-                  
-                  {/* Show page numbers */}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                    // Show first, last, current, and pages around current
-                    if (
-                      page === 1 ||
-                      page === totalPages ||
-                      (page >= currentPage - 1 && page <= currentPage + 1)
-                    ) {
-                      return (
-                        <Pagination.Item
-                          key={page}
-                          active={page === currentPage}
-                          onClick={() => handlePageChange(page)}
-                        >
-                          {page}
-                        </Pagination.Item>
-                      );
-                    } else if (
-                      page === currentPage - 2 ||
-                      page === currentPage + 2
-                    ) {
-                      return <Pagination.Ellipsis key={page} disabled />;
-                    }
-                    return null;
-                  })}
-                  
-                  <Pagination.Next 
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  />
-                  <Pagination.Last 
-                    onClick={() => handlePageChange(totalPages)}
-                    disabled={currentPage === totalPages}
-                  />
-                </Pagination>
-              </div>
-            )}
-          </>
-        )}
-      </Container>
+      <MasterDataTable<Course>
+        items={courses}
+        totalItems={totalCourses}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        isLoading={isLoading}
+        title="Gestión de Cursos"
+        description="Administra el catálogo de cursos disponibles"
+        icon="📚"
+        columns={columns}
+        actions={actions}
+        searchText={searchText}
+        onSearchChange={setSearchText}
+        onPageChange={setCurrentPage}
+        onCreateClick={() => setShowCreateModal(true)}
+        createButtonLabel="Crear Curso"
+        createButtonIcon="➕"
+        emptyMessage="No hay cursos registrados"
+        emptyIcon="📭"
+        emptyActionLabel="Crear Primer Curso"
+      />
 
       {/* Create Course Modal */}
       <CreateCourseModal

@@ -169,11 +169,21 @@ class LevelStore {
   getPaginatedLevels(
     page: number = 1,
     pageSize: number = 10,
-    options?: { includeInactive?: boolean }
+    options?: { includeInactive?: boolean; searchText?: string }
   ): { levels: EducationalLevel[]; total: number; totalPages: number } {
-    const allLevels = options?.includeInactive
+    let allLevels = options?.includeInactive
       ? this.getAllLevelsIncludeInactive()
       : this.getAllLevels();
+
+    // Apply search filter if provided
+    if (options?.searchText) {
+      const searchTerm = options.searchText.toLowerCase().trim();
+      allLevels = allLevels.filter(level =>
+        level.name.toLowerCase().includes(searchTerm) ||
+        level.code.toLowerCase().includes(searchTerm) ||
+        level.description.toLowerCase().includes(searchTerm)
+      );
+    }
 
     const total = allLevels.length;
     const totalPages = Math.ceil(total / pageSize);
