@@ -207,15 +207,13 @@ function EditLevelContent() {
 
                 {/* Estado Activo */}
                 <Form.Group className="mb-4">
-                  <Form.Check
-                    type="checkbox"
-                    id="isActive"
-                    name="isActive"
-                    label="Nivel Activo"
+                  <Form.Switch
                     checked={formData.isActive}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                    id="isActive"
+                    label="Nivel Activo"
                   />
-                  <Form.Text className="text-muted d-block mt-1">
+                  <Form.Text className="text-muted d-block mt-2">
                     Marca para activar el nivel
                   </Form.Text>
                 </Form.Group>

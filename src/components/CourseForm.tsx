@@ -251,16 +251,15 @@ export default function CourseForm({
       />
 
       {/* Active Status */}
-      <Form.Group className="mb-3">
-        <Form.Check
-          type="checkbox"
-          id="course-active"
-          label="Curso activo"
+      <Form.Group className="mb-4">
+        <Form.Switch
           checked={active}
           onChange={(e) => setActive(e.target.checked)}
+          id="course-active"
+          label="Curso Activo"
           disabled={isDisabled}
         />
-        <Form.Text className="text-muted">
+        <Form.Text className="text-muted d-block mt-2">
           Por defecto, los cursos nuevos se crean en estado activo.
         </Form.Text>
       </Form.Group>
