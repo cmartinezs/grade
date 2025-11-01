@@ -130,7 +130,26 @@ Reestructuración del brand del navbar con subtítulo y reorganización del íco
 
 ---
 
-```
+### [v06: Niveles Educacionales Jerárquicos](./06-hierarchical-levels/README.md)
+
+**Estado:** ✅ Completado  
+**Fecha:** 1 Noviembre 2025  
+**Build:** ✅ Exitoso (6.0s, 25 páginas, 0 errores TS)
+
+Implementación de estructura jerárquica para niveles educacionales introduciendo el concepto de "Categorías" (super niveles) que agrupan múltiples niveles específicos.
+
+**Incluye:**
+- Campo `category` en tipos de EducationalLevel
+- 6 funciones de utilidad para gestión jerárquica
+- Componente `LevelsByCategory` para visualización
+- Soporte para Enseñanza Básica, Enseñanza Media
+- Backwards compatible con niveles existentes
+
+**Archivos:**
+- `README.md` - Resumen ejecutivo y ejemplos
+- (Archivos técnicos próximamente)
+
+---
 ## 🗂️ Estructura de Directorios
 
 ```
@@ -160,6 +179,9 @@ docs/changes/
 │   └── TECHNICAL_NOTES.md     ✅ Notas técnicas
 │
 ├── 05-brand-subtitle/
+│   └── README.md              ✅ Resumen ejecutivo
+│
+├── 06-hierarchical-levels/    ✨ NUEVO
 │   └── README.md              ✅ Resumen ejecutivo
 │
 └── INDEX.md                   ✅ Este archivo
@@ -192,10 +214,12 @@ docs/changes/
 
 ## 📊 Resumen de Impacto
 
-| v00 | v01 | v02 | v03 | v04 | v05 |
-|-----|-----|-----|-----|-----|-----|
-| **Componentes:** 7 | **CSS:** 45+ | **Menús:** 3 | **Nav:** 1 | **Componentes:** 2 | **Brand:** 1 |
-| **Hooks:** 2 | **Rutas:** 4 | **Secciones:** 7 | **Height:** 70px | **Líneas:** -55% | **Subtítulo:** ✅ |
+| v00 | v01 | v02 | v03 | v04 | v05 | v06 |
+|-----|-----|-----|-----|-----|-----|-----|
+| **Componentes:** 7 | **CSS:** 45+ | **Menús:** 3 | **Nav:** 1 | **Componentes:** 2 | **Brand:** 1 | **Jerarquía:** ✅ |
+| **Hooks:** 2 | **Rutas:** 4 | **Secciones:** 7 | **Height:** 70px | **Líneas:** -55% | **Subtítulo:** ✅ | **Utilidades:** 6 |
+| **Tipos:** 5 | **Prop:** sidebarTitle | **Unificado:** 100% | **Hover:** Elegante | **Recharts:** Integrado | **Alineación:** ✅ | **Categorías:** 2 |
+| **Código:** -40% | **Reutilización:** +100% | **Consistencia:** 100% | **Contraste:** ✅ | **KPICard:** ✅ | **Responsive:** ✅ | **Componente:** ✅ |
 | **Tipos:** 5 | **Prop:** sidebarTitle | **Unificado:** 100% | **Hover:** Elegante | **Recharts:** Integrado | **Responsive:** ✅ |
 | **Código:** -40% | **Reutilización:** +100% | **Consistencia:** 100% | **Contraste:** ✅ | **KPICard:** ✅ | **Alineación:** ✅ |
 
@@ -215,9 +239,9 @@ Testing:         📝 En desarrollo
 
 ## 🚀 Próximos Cambios Planeados
 
-- **v06:** Autenticación Mejorada
-- **v07:** Testing Framework
-- **v08:** Reportes Avanzados
+- **v07:** Autenticación Mejorada
+- **v08:** Testing Framework
+- **v09:** Reportes Avanzados
 
 ---
 

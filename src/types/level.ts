@@ -1,48 +1,114 @@
 /**
  * Educational Levels Management
- * Types for managing educational levels (Niveles Educacionales)
+ * Types for managing educational levels as parametric entities with hierarchy
+ * 
+ * Niveles Educacionales y Categorías son entidades paramétricas
+ * con relación jerárquica padre-hijo
  */
 
-export interface EducationalLevel {
-  id: string;
-  name: string; // e.g., "1° Básico", "2° Medio", etc.
-  code: string; // e.g., "LEVEL_1B", "LEVEL_1M", etc.
+/**
+ * Educational Level Category (Super nivel)
+ * Ejemplo: "Enseñanza Básica", "Enseñanza Media"
+ */
+export interface LevelCategory {
+  id: number;
+  code: string; // Unique code: "CAT_BASIC", "CAT_MEDIA", etc.
+  name: string; // e.g., "Enseñanza Básica", "Enseñanza Media"
   description: string;
+  categoryId?: number | null; // Reference to parent category (if hierarchical)
+  isActive: boolean;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: Date;
+  updatedBy: string;
+  deletedAt: Date | null;
+  deletedBy: string | null;
+}
+
+/**
+ * Educational Level (Specific level within a category)
+ * Ejemplo: "1° Básico", "2° Medio"
+ */
+export interface EducationalLevel {
+  id: number;
+  code: string; // Unique code: "LEVEL_1B", "LEVEL_1M", etc.
+  name: string; // e.g., "1° Básico", "2° Medio", etc.
+  description: string;
+  categoryId: number; // Reference to parent LevelCategory
   courseCount?: number; // Number of courses at this level
   isActive: boolean;
   createdAt: Date;
+  createdBy: string;
   updatedAt: Date;
+  updatedBy: string;
+  deletedAt: Date | null;
+  deletedBy: string | null;
 }
 
-export interface CreateLevelInput {
-  name: string;
+/**
+ * Input for creating a Level Category
+ */
+export interface CreateLevelCategoryInput {
   code: string;
+  name: string;
   description: string;
+  categoryId?: number | null; // Optional parent category
   isActive?: boolean;
 }
 
-export interface EditLevelInput {
-  name: string;
+/**
+ * Input for editing a Level Category
+ */
+export interface EditLevelCategoryInput {
   code: string;
+  name: string;
   description: string;
+  categoryId?: number | null;
   isActive: boolean;
 }
 
-// Predefined educational levels in Chile
-export const CHILEAN_EDUCATION_LEVELS = [
-  // Enseñanza Básica
-  { name: '1° Básico', code: 'LEVEL_1B', category: 'Enseñanza Básica' },
-  { name: '2° Básico', code: 'LEVEL_2B', category: 'Enseñanza Básica' },
-  { name: '3° Básico', code: 'LEVEL_3B', category: 'Enseñanza Básica' },
-  { name: '4° Básico', code: 'LEVEL_4B', category: 'Enseñanza Básica' },
-  { name: '5° Básico', code: 'LEVEL_5B', category: 'Enseñanza Básica' },
-  { name: '6° Básico', code: 'LEVEL_6B', category: 'Enseñanza Básica' },
-  { name: '7° Básico', code: 'LEVEL_7B', category: 'Enseñanza Básica' },
-  { name: '8° Básico', code: 'LEVEL_8B', category: 'Enseñanza Básica' },
+/**
+ * Input for creating an Educational Level
+ */
+export interface CreateEducationalLevelInput {
+  code: string;
+  name: string;
+  description: string;
+  categoryId: number; // Required: parent category
+  isActive?: boolean;
+}
 
-  // Enseñanza Media
-  { name: '1° Medio', code: 'LEVEL_1M', category: 'Enseñanza Media' },
-  { name: '2° Medio', code: 'LEVEL_2M', category: 'Enseñanza Media' },
-  { name: '3° Medio', code: 'LEVEL_3M', category: 'Enseñanza Media' },
-  { name: '4° Medio', code: 'LEVEL_4M', category: 'Enseñanza Media' },
-];
+/**
+ * Input for editing an Educational Level
+ */
+export interface EditEducationalLevelInput {
+  code: string;
+  name: string;
+  description: string;
+  categoryId: number;
+  isActive: boolean;
+}
+
+/**
+ * Predefined Chilean education level categories
+ * Data loaded from: public/data/level-categories.json
+ * 
+ * Note: These are exported as empty arrays here for type reference.
+ * The actual data is loaded at runtime from JSON files via dataLoader.ts
+ */
+export const CHILEAN_LEVEL_CATEGORIES: LevelCategory[] = [];
+
+/**
+ * Predefined Chilean education levels
+ * Data loaded from: public/data/education-levels.json
+ * 
+ * Note: These are exported as empty arrays here for type reference.
+ * The actual data is loaded at runtime from JSON files via dataLoader.ts
+ */
+export const CHILEAN_EDUCATION_LEVELS: EducationalLevel[] = [];
+
+// Query result type for levels with their category information
+export interface EducationalLevelWithCategory extends EducationalLevel {
+  category?: LevelCategory; // Populated when joining with category
+}
+

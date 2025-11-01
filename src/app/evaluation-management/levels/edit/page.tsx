@@ -8,7 +8,11 @@ import { levelStore } from '@/lib/levelStore';
 function EditLevelContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const levelId = searchParams.get('id');
+  const levelIdParam = searchParams.get('id');
+  
+  // Parse and validate ID once
+  const levelIdNumber = levelIdParam ? parseInt(levelIdParam, 10) : null;
+  const isValidId = levelIdNumber !== null && !isNaN(levelIdNumber);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -21,13 +25,13 @@ function EditLevelContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!levelId) {
-      setError('ID de nivel no especificado');
+    if (!isValidId) {
+      setError('ID de nivel no válido');
       setLoading(false);
       return;
     }
 
-    const level = levelStore.getLevelById(levelId);
+    const level = levelStore.getLevelById(levelIdNumber);
     if (!level) {
       setError('Nivel no encontrado');
       setLoading(false);
@@ -41,7 +45,7 @@ function EditLevelContent() {
       isActive: level.isActive,
     });
     setLoading(false);
-  }, [levelId]);
+  }, [isValidId, levelIdNumber]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -57,8 +61,8 @@ function EditLevelContent() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!levelId) {
-      setError('ID de nivel no especificado');
+    if (!isValidId) {
+      setError('ID de nivel no válido');
       return;
     }
 
@@ -69,7 +73,7 @@ function EditLevelContent() {
     }
 
     try {
-      levelStore.updateLevel(levelId, {
+      levelStore.updateLevel(levelIdNumber, {
         name: formData.name,
         code: formData.code,
         description: formData.description,

@@ -227,7 +227,7 @@ export default function CourseForm({
       {/* Academic Level - Using AutocompleteSelect Component */}
       <AutocompleteSelect
         value={level}
-        onChange={setLevel}
+        onChange={(value) => setLevel(String(value))}
         options={levelOptions}
         label="Nivel Académico"
         required
@@ -240,7 +240,7 @@ export default function CourseForm({
       {/* Institution - Using AutocompleteSelect Component */}
       <AutocompleteSelect
         value={institution}
-        onChange={setInstitution}
+        onChange={(value) => setInstitution(String(value))}
         options={institutionOptions}
         label="Institución"
         required

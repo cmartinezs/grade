@@ -4,14 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 
 export interface AutocompleteOption {
-  id: string;
+  id: string | number;
   name: string;
   description?: string;
 }
 
 interface AutocompleteSelectProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string | number;
+  onChange: (value: string | number) => void;
   onBlur?: () => void;
   options: AutocompleteOption[];
   placeholder?: string;
@@ -42,7 +42,7 @@ export default function AutocompleteSelect({
 
   // Initialize input value when value prop changes
   useEffect(() => {
-    setInputValue(value);
+    setInputValue(String(value));
   }, [value]);
 
   // Initialize filtered options
@@ -53,6 +53,7 @@ export default function AutocompleteSelect({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
     setInputValue(inputVal);
+    // Pass as-is: string if user is typing, caller decides type
     onChange(inputVal);
 
     if (inputVal.trim()) {
@@ -69,7 +70,8 @@ export default function AutocompleteSelect({
 
   const handleSelectOption = (option: AutocompleteOption) => {
     setInputValue(option.name);
-    onChange(option.name);
+    // Pass the ID (number or string, as is)
+    onChange(option.id);
     setShowSuggestions(false);
   };
 
