@@ -140,7 +140,7 @@ const actions: ActionButton<MyType>[] = [
 
 ## 📚 Documentación
 
-Ver `MASTER_DATA_TABLE_GUIDE.md` para:
+Ver `docs/MASTER_DATA_TABLE.md` para:
 - Guía completa de uso
 - Ejemplos detallados
 - API reference
@@ -155,13 +155,14 @@ Ver `MASTER_DATA_TABLE_GUIDE.md` para:
 - ✅ Acciones dinámicas funcionando
 - ✅ Estados vacío/cargando implementados
 
-## 🚀 Próximo Commit
+## 🚀 Cambios Committeados
 
 Cambios a commitear:
 1. Nuevo: `src/components/MasterDataTable.tsx`
 2. Actualizado: `src/app/evaluation-management/levels/page.tsx`
 3. Actualizado: `src/app/evaluation-management/courses/page.tsx`
 4. Actualizado: `src/lib/levelStore.ts` (added searchText)
-5. Documentación: `MASTER_DATA_TABLE_GUIDE.md`
+5. Documentación: `docs/MASTER_DATA_TABLE.md`
+6. Resumen: `docs/CHANGES.md`
 
 **Message**: `feat: Create reusable MasterDataTable component and refactor list pages`

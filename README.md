@@ -6,7 +6,26 @@ Desarrollada con **Next.js 15.5.4**, **React 19**, **TypeScript 5+** y **React B
 
 ---
 
-## 🚀 Inicio Rápido
+## 📚 Documentación
+
+**Nueva estructura de documentación en `docs/`:**
+
+**↪️ [Empieza aquí →](./docs/README.md)**
+
+Documentación rápida:
+- **[QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)** - ⚡ Guía rápida (comandos, ejemplos, FAQ)
+- **[PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - 🗂️ Estructura del proyecto
+- **[TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - 🐛 Solución de problemas
+- **[MASTER_DATA_TABLE.md](./docs/MASTER_DATA_TABLE.md)** - 📊 Guía del componente principal
+- **[ARCHITECTURE_PATTERNS.md](./docs/ARCHITECTURE_PATTERNS.md)** - 🏗️ Patrones y mejores prácticas
+- **[CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - 👥 Guía de contribución
+- **[CHANGES.md](./docs/CHANGES.md)** - 📝 Resumen de cambios recientes
+
+Ver también: [PROJECT_STATUS.md](./PROJECT_STATUS.md) - Estado completo del proyecto
+
+---
+
+## �🚀 Inicio Rápido
 
 ### Requisitos Previos
 - **Node.js 18+** 
