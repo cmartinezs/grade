@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Container, Row, Col, Card, Button, Badge, Table, Form, InputGroup, Pagination } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import EditCourseModal from '@/components/EditCourseModal';
 import { courseStore } from '@/lib/courseStore';
+import { levelStore } from '@/lib/levelStore';
 import { Course } from '@/types/course';
 
 const PAGE_SIZE = 10;
@@ -64,6 +66,11 @@ export default function CoursesPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const getLevelEditUrl = (levelName: string): string => {
+    const level = levelStore.getLevelByName(levelName);
+    return level ? `/evaluation-management/levels/edit?id=${level.id}` : '#';
   };
 
   return (
@@ -167,7 +174,11 @@ export default function CoursesPage() {
                         <strong>{course.name}</strong>
                       </td>
                       <td>
-                        <Badge bg="info">{course.level}</Badge>
+                        <Link href={getLevelEditUrl(course.level)} style={{ textDecoration: 'none' }}>
+                          <Badge bg="info" role="button" className="cursor-pointer">
+                            {course.level}
+                          </Badge>
+                        </Link>
                       </td>
                       <td className="text-muted">
                         {course.institution}

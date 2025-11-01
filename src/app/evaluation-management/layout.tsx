@@ -32,6 +32,22 @@ const evalMenu = [
     ]
   },
   { 
+    label: 'GESTIÓN DE NIVELES', 
+    isSection: true,
+    children: [
+      { 
+        label: 'Listar Niveles', 
+        icon: '📊',
+        href: '/evaluation-management/levels' 
+      },
+      { 
+        label: 'Crear Nivel', 
+        icon: '➕',
+        href: '/evaluation-management/levels/create' 
+      },
+    ]
+  },
+  { 
     label: 'RESULTADOS', 
     isSection: true,
     children: [
