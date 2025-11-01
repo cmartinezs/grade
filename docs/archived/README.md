@@ -1,66 +1,72 @@
-# 📦 Archivos Archivados
+# 📦 Documentación Archivada
 
-Este directorio contiene documentación histórica y de referencia que fue generada durante el desarrollo pero que ahora está centralizada en la estructura principal de `docs/`.
+Esta carpeta contiene documentación histórica, referencias antiguas y archivos que han sido reemplazados por documentación más organizada en `/docs/changes/`.
 
----
+## � Archivos Incluidos
 
-## 📋 Archivos Archivados
+### Guías de Referencias Antiguas
+- **ARCHITECTURE_PATTERNS.md** - Patrones arquitectónicos (referencia histórica)
+- **PROJECT_STRUCTURE.md** - Estructura del proyecto (reemplazado por README.md raíz)
+- **TROUBLESHOOTING.md** - Solución de problemas (referencia histórica)
 
-### SIDEBAR_DESIGN_UPGRADE.md
-**Ubicación Original:** `/SIDEBAR_DESIGN_UPGRADE.md`  
-**Contenido:** Documentación sobre la mejora visual del SidebarLayout  
-**Referencia:** Ver `docs/changes/01-sidebar-generic/README.md`  
-**Estado:** Archivado (contenido integrado en documentación oficial)
+### Documentación de Componentes Antiguos
+- **MASTER_DATA_TABLE.md** - Guía del componente MasterDataTable (componente de referencia)
+- **SIDEBAR_*.md** - Documentación del SidebarLayout (reemplazado por `01-sidebar-generic/`)
+- **MENU_STRUCTURE_ALIGNMENT.md** - Alineación de menús (reemplazado por `02-menu-alignment/`)
 
-### SIDEBAR_GENERIC_IMPLEMENTATION.md
-**Ubicación Original:** `/SIDEBAR_GENERIC_IMPLEMENTATION.md`  
-**Contenido:** Implementación técnica del SidebarLayout genérico  
-**Referencia:** Ver `docs/changes/01-sidebar-generic/README.md`  
-**Estado:** Archivado (contenido integrado en documentación oficial)
+### Resúmenes de Cambios Duplicados
+- **CHANGES.md** - Duplicado de cambios (información en `CHANGELOG_TECHNICAL.md`)
+- **DOCUMENTATION_REORGANIZATION.md** - Resumen de reorganización antigua
 
-### SIDEBAR_IMPLEMENTATION.md
-**Ubicación Original:** `/SIDEBAR_IMPLEMENTATION.md`  
-**Contenido:** Implementación inicial del Sidebar Contextual  
-**Referencia:** Ver `docs/changes/01-sidebar-generic/README.md`  
-**Estado:** Archivado (versión anterior, obsoleta)
-
-### UX_DESIGN_ANALYSIS.md
-**Ubicación Original:** `/UX_DESIGN_ANALYSIS.md`  
-**Contenido:** Análisis de diseño UX para navegación  
-**Referencia:** Ver `docs/changes/01-sidebar-generic/README.md`  
-**Estado:** Archivado (análisis completado)
-
-### MENU_STRUCTURE_ALIGNMENT.md
-**Ubicación Original:** `/MENU_STRUCTURE_ALIGNMENT.md`  
-**Contenido:** Documentación sobre alineación de menús  
-**Referencia:** Ver `docs/changes/02-menu-alignment/README.md`  
-**Estado:** Archivado (contenido integrado en documentación oficial)
+### Documentación General Antigua
+- **OLD_README.md** - README antiguo
+- **UX_DESIGN_ANALYSIS.md** - Análisis de UX histórico
 
 ---
 
-## 🗂️ Estructura de Archivos Actualizada
+## 🎯 ¿Qué Buscar?
 
-**Root Level (SOLO 2 archivos .md):**
-```
-README.md                 ← Info general del proyecto
-CHANGELOG.md              ← Cambios funcionales
-```
+### Si necesitas información sobre...
 
-**Documentación en `/docs/`:**
-```
-docs/
-├── INDEX.md                          ← Guía de navegación
-├── CHANGELOG_TECHNICAL.md            ← Cambios técnicos resumidos
-├── archived/                         ← Archivos históricos (este directorio)
-│   └── README.md                     ← Este archivo
-└── changes/
-    ├── INDEX.md                      ← Índice de cambios
-    ├── 00-taxonomy-refactor/
-    ├── 01-sidebar-generic/
-    └── 02-menu-alignment/
-```
+**Patrones arquitectónicos:**
+→ `ARCHITECTURE_PATTERNS.md` (referencia histórica) o `docs/changes/*/README.md`
+
+**MasterDataTable:**
+→ `MASTER_DATA_TABLE.md` o `src/components/MasterDataTable.tsx` (código actual)
+
+**SidebarLayout:**
+→ `docs/changes/01-sidebar-generic/README.md`
+
+**Menús y alineación:**
+→ `docs/changes/02-menu-alignment/README.md`
+
+**Troubleshooting:**
+→ `TROUBLESHOOTING.md` (referencia histórica)
 
 ---
+
+## 🔄 Consultar Cambios Actuales
+
+Para cambios recientes y documentación actualizada, consulta:
+
+→ **[docs/changes/INDEX.md](../changes/INDEX.md)**
+
+Aquí encontrarás toda la documentación técnica organizada por cambio con versiones v00, v01, v02, etc.
+
+---
+
+## ⚠️ Nota de Limpieza
+
+Esta carpeta existe para mantener el historial de documentación. Los archivos aquí son principalmente **referencias históricas** y no deben utilizarse como fuente de verdad.
+
+Para información actual y precisa, siempre consulta:
+1. `docs/INDEX.md` - Punto de entrada
+2. `docs/changes/INDEX.md` - Documentación de cambios
+3. Código fuente en `src/`
+
+---
+
+**Última actualización:** 1 de Noviembre 2025
 
 ## 📌 Cómo Navegar
 

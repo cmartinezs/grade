@@ -6,7 +6,7 @@ Bienvenido a la documentación de **GRADE Web App**. Aquí encontrarás toda la 
 
 ## 📖 Documentación General
 
-### 🏠 [README.md](../README.md)
+### 🏠 [README.md](../README.md) - Root
 **Para:** Nuevos developers que clonan el proyecto  
 **Contiene:**
 - Información general del proyecto
@@ -16,7 +16,7 @@ Bienvenido a la documentación de **GRADE Web App**. Aquí encontrarás toda la 
 - Módulos principales
 - Comandos disponibles
 
-### 📋 [CHANGELOG.md](../CHANGELOG.md)
+### 📋 [CHANGELOG.md](../CHANGELOG.md) - Root
 **Para:** Usuarios finales y stakeholders  
 **Contiene:**
 - Cambios funcionales (user-facing)
@@ -31,7 +31,20 @@ Bienvenido a la documentación de **GRADE Web App**. Aquí encontrarás toda la 
 - Componentes nuevos/modificados
 - Cambios en estilos
 - Métricas de código
-- Rutas nuevas
+
+### ⚡ [QUICK_REFERENCE.md](./QUICK_REFERENCE.md)
+**Para:** Consulta rápida mientras trabajas  
+**Contiene:**
+- Comandos esenciales
+- Patrones comunes
+- Soluciones rápidas
+
+### 👥 [CONTRIBUTING.md](./CONTRIBUTING.md)
+**Para:** Developers que quieren contribuir  
+**Contiene:**
+- Guía de contribución
+- Estándares de código
+- Proceso de pull requests
 
 ---
 
@@ -92,23 +105,30 @@ docs/changes/
 
 ```
 grade-web-app/
-├── README.md                          ← Inicio aquí
-├── CHANGELOG.md                       ← Cambios funcionales
-├── CHANGELOG_TECHNICAL.md             ← Cambios técnicos (resumen)
+├── README.md                    ← Inicio aquí
+├── CHANGELOG.md                 ← Cambios funcionales (user-facing)
+├── CHANGELOG_TECHNICAL.md       ← Resumen técnico de cambios
 │
 └── docs/
-    ├── INDEX.md                       ← Este archivo
-    ├── DOCUMENTATION_REORGANIZATION.md ← Resumen de reorganización
+    ├── INDEX.md                 ← Este archivo (inicio de docs)
+    ├── QUICK_REFERENCE.md       ← Consulta rápida de comandos y patrones
+    ├── CONTRIBUTING.md          ← Guía de contribución
     │
-    ├── archived/                      ← Archivos históricos
-    │   └── README.md                  ← Índice de archivos archivados
+    ├── archived/                ← Documentación histórica y referencias
+    │   ├── ARCHITECTURE_PATTERNS.md
+    │   ├── MASTER_DATA_TABLE.md
+    │   ├── PROJECT_STRUCTURE.md
+    │   ├── TROUBLESHOOTING.md
+    │   └── ... (otros archivos históricos)
     │
-    └── changes/                       ← Documentación detallada
-        ├── INDEX.md                   ← Índice de cambios
+    └── changes/                 ← Documentación detallada de cambios
+        ├── INDEX.md             ← Índice de cambios
         ├── 00-taxonomy-refactor/
         ├── 01-sidebar-generic/
         ├── 02-menu-alignment/
-        └── 03-navbar-elegant/
+        ├── 03-navbar-elegant/
+        ├── 04-dashboard-refactor/
+        └── 05-brand-subtitle/
 ```
 
 ---
@@ -128,8 +148,13 @@ grade-web-app/
 
 ### 📈 Dashboard
 - **Ubicación:** `src/app/dashboard/`
-- **Layout:** `src/app/dashboard/layout.tsx`
-- **Cambio técnico:** [docs/changes/02-menu-alignment/](./changes/02-menu-alignment/)
+- **Componentes:** 
+  - `src/components/KPICard.tsx` - Tarjetas de métricas clave
+  - `src/components/EntityStatsCard.tsx` - Tarjetas de estadísticas con gráficos
+- **Documentación:** [docs/changes/04-dashboard-refactor/](./changes/04-dashboard-refactor/)
+  - [README.md](./changes/04-dashboard-refactor/README.md) - Resumen ejecutivo
+  - [REFACTOR.md](./changes/04-dashboard-refactor/REFACTOR.md) - Refactorización y estructura
+  - [TECHNICAL_NOTES.md](./changes/04-dashboard-refactor/TECHNICAL_NOTES.md) - Notas técnicas detalladas
 
 ### 🎨 Componentes Genéricos
 - **SidebarLayout:** `src/components/SidebarLayout.tsx`

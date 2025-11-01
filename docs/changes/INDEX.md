@@ -94,8 +94,43 @@ Refactorización de la barra de navegación principal para mejorar la experienci
 - `DESIGN.md` - Detalles de diseño (próximamente)
 - `EXAMPLES.md` - Ejemplos de uso (próximamente)
 
+### [v04: Refactorización del Dashboard con Componentes y Gráficos](./04-dashboard-refactor/README.md)
+
+**Estado:** ✅ Completado  
+**Fecha:** 1 Noviembre 2025  
+**Build:** ✅ Exitoso (4.6s, 25 páginas, 0 errores TS)
+
+Refactorización completa del Dashboard con extracción de componentes reutilizables (KPICard, EntityStatsCard) e implementación de gráficos pie charts con Recharts.
+
+**Incluye:**
+- 2 componentes nuevos reutilizables
+- Gráficos pie chart (donut style)
+- Estadísticas por entidad (total, activos, inactivos)
+- Reducción de código 55% (-183 líneas)
+- Librería Recharts integrada
+- Colores mejorados para contraste
+
+**Archivos:**
+- `README.md` - Resumen ejecutivo
+- `REFACTOR.md` - Detalles de refactorización
+- `TECHNICAL_NOTES.md` - Notas técnicas detalladas
+
 ---
 
+### [v05: Brand del Navbar con Subtítulo](./05-brand-subtitle/README.md)
+
+**Estado:** ✅ Completado  
+**Fecha:** Previo  
+**Build:** ✅ Sin errores
+
+Reestructuración del brand del navbar con subtítulo y reorganización del ícono.
+
+**Archivos:**
+- `README.md` - Resumen ejecutivo
+
+---
+
+```
 ## 🗂️ Estructura de Directorios
 
 ```
@@ -118,6 +153,14 @@ docs/changes/
 │   ├── README.md              ✅ Resumen ejecutivo
 │   ├── DESIGN.md              📝 Próximamente
 │   └── EXAMPLES.md            📝 Próximamente
+│
+├── 04-dashboard-refactor/
+│   ├── README.md              ✅ Resumen ejecutivo
+│   ├── REFACTOR.md            ✅ Detalle de refactorización
+│   └── TECHNICAL_NOTES.md     ✅ Notas técnicas
+│
+├── 05-brand-subtitle/
+│   └── README.md              ✅ Resumen ejecutivo
 │
 └── INDEX.md                   ✅ Este archivo
 ```
@@ -149,12 +192,12 @@ docs/changes/
 
 ## 📊 Resumen de Impacto
 
-| v00 | v01 | v02 |
-|-----|-----|-----|
-| **Componentes:** 7 | **CSS Classes:** 45+ | **Menús:** 3 |
-| **Hooks:** 2 | **Rutas:** 4 | **Secciones:** 7 |
-| **Tipos:** 5 | **Prop:** sidebarTitle | **Unificado:** 100% |
-| **Código:** -40% | **Reutilización:** +100% | **Consistencia:** 100% |
+| v00 | v01 | v02 | v03 | v04 | v05 |
+|-----|-----|-----|-----|-----|-----|
+| **Componentes:** 7 | **CSS:** 45+ | **Menús:** 3 | **Nav:** 1 | **Componentes:** 2 | **Brand:** 1 |
+| **Hooks:** 2 | **Rutas:** 4 | **Secciones:** 7 | **Height:** 70px | **Líneas:** -55% | **Subtítulo:** ✅ |
+| **Tipos:** 5 | **Prop:** sidebarTitle | **Unificado:** 100% | **Hover:** Elegante | **Recharts:** Integrado | **Responsive:** ✅ |
+| **Código:** -40% | **Reutilización:** +100% | **Consistencia:** 100% | **Contraste:** ✅ | **KPICard:** ✅ | **Alineación:** ✅ |
 
 ---
 
@@ -172,9 +215,9 @@ Testing:         📝 En desarrollo
 
 ## 🚀 Próximos Cambios Planeados
 
-- **v04:** Autenticación Mejorada
-- **v05:** Testing Framework
-- **v06:** Reportes Avanzados
+- **v06:** Autenticación Mejorada
+- **v07:** Testing Framework
+- **v08:** Reportes Avanzados
 
 ---
 
