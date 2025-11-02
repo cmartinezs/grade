@@ -56,7 +56,7 @@ export default function DeleteTaxonomyModal({
       } else {
         const topic = getTopicById(elementId);
         name = topic ? topic.name : 'Elemento desconocido';
-        setImpact(analyzeTopicDeleteImpact(elementId));
+        setImpact(analyzeTopicDeleteImpact());
       }
 
       setElementName(name);
@@ -72,30 +72,27 @@ export default function DeleteTaxonomyModal({
     onHide();
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!impact || !impact.canDelete) {
       return;
     }
 
-    const userId = 'admin@example.com'; // Mock user ID
+    try {
+      if (elementType === 'subject') {
+        await deleteSubject(elementId);
+      } else if (elementType === 'unit') {
+        await deleteUnit(elementId);
+      } else {
+        await deleteTopic(elementId);
+      }
 
-    let result;
-    if (elementType === 'subject') {
-      result = deleteSubject(elementId, userId);
-    } else if (elementType === 'unit') {
-      result = deleteUnit(elementId, userId);
-    } else {
-      result = deleteTopic(elementId, userId);
-    }
-
-    if (result.success) {
       setSuccessMessage(`✅ ${getTaxonomyLabel(elementType)} eliminado exitosamente`);
       setTimeout(() => {
         onSuccess();
         handleHide();
       }, 1500);
-    } else {
-      setErrorMessage(result.errors?.[0]?.message || 'Error al eliminar elemento');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Error al eliminar elemento');
     }
   };
 

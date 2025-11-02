@@ -1,0 +1,920 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Difficulty` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  difficulty_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Difficulty_Data!
+  ): Difficulty_KeyOutput! @fdc_generated(from: "Difficulty", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Outcome` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  outcome_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Outcome_Data!
+  ): Outcome_KeyOutput! @fdc_generated(from: "Outcome", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Question` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  question_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Question_Data!
+  ): Question_KeyOutput! @fdc_generated(from: "Question", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `QuestionOption` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  questionOption_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: QuestionOption_Data!
+  ): QuestionOption_KeyOutput! @fdc_generated(from: "QuestionOption", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `QuestionType` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  questionType_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: QuestionType_Data!
+  ): QuestionType_KeyOutput! @fdc_generated(from: "QuestionType", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Subject` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  subject_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Subject_Data!
+  ): Subject_KeyOutput! @fdc_generated(from: "Subject", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Topic` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  topic_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Topic_Data!
+  ): Topic_KeyOutput! @fdc_generated(from: "Topic", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Unit` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  unit_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Unit_Data!
+  ): Unit_KeyOutput! @fdc_generated(from: "Unit", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `User` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Difficulty` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  difficulty_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Difficulty_Data!]!
+  ): [Difficulty_KeyOutput!]! @fdc_generated(from: "Difficulty", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Outcome` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  outcome_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Outcome_Data!]!
+  ): [Outcome_KeyOutput!]! @fdc_generated(from: "Outcome", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Question` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  question_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Question_Data!]!
+  ): [Question_KeyOutput!]! @fdc_generated(from: "Question", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `QuestionOption` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  questionOption_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [QuestionOption_Data!]!
+  ): [QuestionOption_KeyOutput!]! @fdc_generated(from: "QuestionOption", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `QuestionType` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  questionType_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [QuestionType_Data!]!
+  ): [QuestionType_KeyOutput!]! @fdc_generated(from: "QuestionType", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Subject` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  subject_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Subject_Data!]!
+  ): [Subject_KeyOutput!]! @fdc_generated(from: "Subject", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Topic` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  topic_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Topic_Data!]!
+  ): [Topic_KeyOutput!]! @fdc_generated(from: "Topic", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Unit` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  unit_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Unit_Data!]!
+  ): [Unit_KeyOutput!]! @fdc_generated(from: "Unit", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `User` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Difficulty` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Difficulty`.
+  """
+  difficulty_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Difficulty_Data!
+  ): Difficulty_KeyOutput! @fdc_generated(from: "Difficulty", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Outcome` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Outcome`.
+  """
+  outcome_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Outcome_Data!
+  ): Outcome_KeyOutput! @fdc_generated(from: "Outcome", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Question` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Question`.
+  """
+  question_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Question_Data!
+  ): Question_KeyOutput! @fdc_generated(from: "Question", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `QuestionOption` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `QuestionOption`.
+  """
+  questionOption_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: QuestionOption_Data!
+  ): QuestionOption_KeyOutput! @fdc_generated(from: "QuestionOption", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `QuestionType` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `QuestionType`.
+  """
+  questionType_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: QuestionType_Data!
+  ): QuestionType_KeyOutput! @fdc_generated(from: "QuestionType", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Subject` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Subject`.
+  """
+  subject_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Subject_Data!
+  ): Subject_KeyOutput! @fdc_generated(from: "Subject", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Topic` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Topic`.
+  """
+  topic_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Topic_Data!
+  ): Topic_KeyOutput! @fdc_generated(from: "Topic", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Unit` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Unit`.
+  """
+  unit_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Unit_Data!
+  ): Unit_KeyOutput! @fdc_generated(from: "Unit", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `User` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Difficulty` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Difficulty`.
+  """
+  difficulty_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Difficulty_Data!]!
+  ): [Difficulty_KeyOutput!]! @fdc_generated(from: "Difficulty", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Outcome` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Outcome`.
+  """
+  outcome_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Outcome_Data!]!
+  ): [Outcome_KeyOutput!]! @fdc_generated(from: "Outcome", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Question` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Question`.
+  """
+  question_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Question_Data!]!
+  ): [Question_KeyOutput!]! @fdc_generated(from: "Question", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `QuestionOption` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `QuestionOption`.
+  """
+  questionOption_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [QuestionOption_Data!]!
+  ): [QuestionOption_KeyOutput!]! @fdc_generated(from: "QuestionOption", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `QuestionType` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `QuestionType`.
+  """
+  questionType_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [QuestionType_Data!]!
+  ): [QuestionType_KeyOutput!]! @fdc_generated(from: "QuestionType", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Subject` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Subject`.
+  """
+  subject_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Subject_Data!]!
+  ): [Subject_KeyOutput!]! @fdc_generated(from: "Subject", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Topic` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Topic`.
+  """
+  topic_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Topic_Data!]!
+  ): [Topic_KeyOutput!]! @fdc_generated(from: "Topic", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Unit` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Unit`.
+  """
+  unit_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Unit_Data!]!
+  ): [Unit_KeyOutput!]! @fdc_generated(from: "Unit", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `User` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Difficulty` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Difficulty` or `null` if not found.
+  """
+  difficulty_update(
+    """
+    The key used to identify the object.
+    """
+    key: Difficulty_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Difficulty_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Difficulty_Data!
+  ): Difficulty_KeyOutput @fdc_generated(from: "Difficulty", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Outcome` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Outcome` or `null` if not found.
+  """
+  outcome_update(
+    """
+    The key used to identify the object.
+    """
+    key: Outcome_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Outcome_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Outcome_Data!
+  ): Outcome_KeyOutput @fdc_generated(from: "Outcome", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Question` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Question` or `null` if not found.
+  """
+  question_update(
+    """
+    The key used to identify the object.
+    """
+    key: Question_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Question_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Question_Data!
+  ): Question_KeyOutput @fdc_generated(from: "Question", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `QuestionOption` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `QuestionOption` or `null` if not found.
+  """
+  questionOption_update(
+    """
+    The key used to identify the object.
+    """
+    key: QuestionOption_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: QuestionOption_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: QuestionOption_Data!
+  ): QuestionOption_KeyOutput @fdc_generated(from: "QuestionOption", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `QuestionType` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `QuestionType` or `null` if not found.
+  """
+  questionType_update(
+    """
+    The key used to identify the object.
+    """
+    key: QuestionType_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: QuestionType_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: QuestionType_Data!
+  ): QuestionType_KeyOutput @fdc_generated(from: "QuestionType", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Subject` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Subject` or `null` if not found.
+  """
+  subject_update(
+    """
+    The key used to identify the object.
+    """
+    key: Subject_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Subject_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Subject_Data!
+  ): Subject_KeyOutput @fdc_generated(from: "Subject", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Topic` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Topic` or `null` if not found.
+  """
+  topic_update(
+    """
+    The key used to identify the object.
+    """
+    key: Topic_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Topic_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Topic_Data!
+  ): Topic_KeyOutput @fdc_generated(from: "Topic", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Unit` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Unit` or `null` if not found.
+  """
+  unit_update(
+    """
+    The key used to identify the object.
+    """
+    key: Unit_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Unit_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Unit_Data!
+  ): Unit_KeyOutput @fdc_generated(from: "Unit", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `User` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `User` or `null` if not found.
+  """
+  user_update(
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: User_Data!
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Difficulty` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  difficulty_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Difficulty_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Difficulty_Data!
+  ): Int! @fdc_generated(from: "Difficulty", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Outcome` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  outcome_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Outcome_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Outcome_Data!
+  ): Int! @fdc_generated(from: "Outcome", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Question` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  question_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Question_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Question_Data!
+  ): Int! @fdc_generated(from: "Question", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `QuestionOption` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  questionOption_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: QuestionOption_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: QuestionOption_Data!
+  ): Int! @fdc_generated(from: "QuestionOption", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `QuestionType` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  questionType_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: QuestionType_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: QuestionType_Data!
+  ): Int! @fdc_generated(from: "QuestionType", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Subject` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  subject_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Subject_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Subject_Data!
+  ): Int! @fdc_generated(from: "Subject", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Topic` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  topic_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Topic_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Topic_Data!
+  ): Int! @fdc_generated(from: "Topic", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Unit` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  unit_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Unit_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Unit_Data!
+  ): Int! @fdc_generated(from: "Unit", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `User` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  user_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: User_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: User_Data!
+  ): Int! @fdc_generated(from: "User", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Difficulty` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  difficulty_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Difficulty_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Difficulty_FirstRow
+  ): Difficulty_KeyOutput @fdc_generated(from: "Difficulty", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Outcome` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  outcome_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Outcome_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Outcome_FirstRow
+  ): Outcome_KeyOutput @fdc_generated(from: "Outcome", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Question` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  question_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Question_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Question_FirstRow
+  ): Question_KeyOutput @fdc_generated(from: "Question", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `QuestionOption` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  questionOption_delete(
+    """
+    The key used to identify the object.
+    """
+    key: QuestionOption_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: QuestionOption_FirstRow
+  ): QuestionOption_KeyOutput @fdc_generated(from: "QuestionOption", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `QuestionType` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  questionType_delete(
+    """
+    The key used to identify the object.
+    """
+    key: QuestionType_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: QuestionType_FirstRow
+  ): QuestionType_KeyOutput @fdc_generated(from: "QuestionType", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Subject` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  subject_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Subject_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Subject_FirstRow
+  ): Subject_KeyOutput @fdc_generated(from: "Subject", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Topic` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  topic_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Topic_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Topic_FirstRow
+  ): Topic_KeyOutput @fdc_generated(from: "Topic", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Unit` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  unit_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Unit_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Unit_FirstRow
+  ): Unit_KeyOutput @fdc_generated(from: "Unit", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `User` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  user_delete(
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Difficulty` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  difficulty_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Difficulty_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Difficulty", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Outcome` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  outcome_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Outcome_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Outcome", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Question` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  question_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Question_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Question", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `QuestionOption` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  questionOption_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: QuestionOption_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionOption", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `QuestionType` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  questionType_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: QuestionType_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionType", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Subject` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  subject_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Subject_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Subject", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Topic` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  topic_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Topic_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Topic", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Unit` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  unit_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Unit_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Unit", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `User` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  user_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: User_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "User", purpose: DELETE_MULTIPLE)
+}

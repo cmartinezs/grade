@@ -1,0 +1,116 @@
+# ===================================================================
+# Query Examples for Grade Web App
+# Ejemplos de queries para el sistema de gestión de calificaciones
+# Enfocado en lectura de Asignaturas, Unidades y Temas
+# ===================================================================
+
+# ===================================================================
+# USUARIOS (Users)
+# ===================================================================
+
+# Obtener usuario por email
+query GetUserByEmail($email: String!) @auth(level: USER) {
+  users(where: {email: {eq: $email}}) {
+    userId
+    name
+    email
+    role
+    createdAt
+    updatedAt
+    updatedBy
+    deletedAt
+  }
+}
+
+# ===================================================================
+# ASIGNATURAS (Subjects)
+# ===================================================================
+
+# Listar todas las asignaturas
+query ListSubjects @auth(level: USER) {
+  subjects {
+    subjectId
+    name
+    code
+    active
+    createdAt
+  }
+}
+
+# Obtener una asignatura por ID
+query GetSubject($subjectId: UUID!) @auth(level: USER) {
+  subject(key: { subjectId: $subjectId }) {
+    subjectId
+    name
+    code
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# ===================================================================
+# UNIDADES (Units)
+# ===================================================================
+
+# Listar todas las unidades
+query ListUnits @auth(level: USER) {
+  units {
+    unitId
+    name
+    subjectId
+    active
+    createdAt
+  }
+}
+
+# Obtener una unidad por ID
+query GetUnit($unitId: UUID!) @auth(level: USER) {
+  unit(key: { unitId: $unitId }) {
+    unitId
+    name
+    subjectId
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# ===================================================================
+# TEMAS (Topics)
+# ===================================================================
+
+# Listar todos los temas
+query ListTopics @auth(level: USER) {
+  topics {
+    topicId
+    name
+    unitId
+    active
+    createdAt
+  }
+}
+
+# Obtener un tema por ID
+query GetTopic($topicId: UUID!) @auth(level: USER) {
+  topic(key: { topicId: $topicId }) {
+    topicId
+    name
+    unitId
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}

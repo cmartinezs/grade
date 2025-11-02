@@ -1,0 +1,249 @@
+# ===================================================================
+# Mutation Examples for Grade Web App
+# Ejemplos de mutaciones para el sistema de gestión de calificaciones
+# Enfocado en CRUD de Asignaturas, Unidades y Temas con Soft Delete
+# ===================================================================
+
+# ===================================================================
+# USUARIOS (Users)
+# ===================================================================
+
+# Crear un nuevo usuario
+mutation CreateUser(
+  $authId: String!
+  $name: String!
+  $email: String!
+  $role: String!
+) @auth(level: USER) {
+  user_insert(
+    data: {
+      authId: $authId
+      name: $name
+      email: $email
+      role: $role
+    }
+  )
+}
+
+# Actualizar un usuario
+mutation UpdateUser(
+  $userId: UUID!
+  $name: String
+  $email: String
+  $role: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  user_update(
+    key: { userId: $userId }
+    data: {
+      name: $name
+      email: $email
+      role: $role
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# ===================================================================
+# ASIGNATURAS (Subjects)
+# ===================================================================
+
+# Crear una nueva asignatura
+mutation CreateSubject(
+  $name: String!
+  $code: String!
+) @auth(level: USER) {
+  subject_insert(
+    data: {
+      name: $name
+      code: $code
+      active: true
+    }
+  )
+}
+
+# Actualizar una asignatura
+mutation UpdateSubject(
+  $subjectId: UUID!
+  $name: String
+  $code: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  subject_update(
+    key: { subjectId: $subjectId }
+    data: {
+      name: $name
+      code: $code
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar una asignatura (soft delete)
+mutation DeactivateSubject(
+  $subjectId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  subject_update(
+    key: { subjectId: $subjectId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar una asignatura (undo soft delete)
+mutation ReactivateSubject(
+  $subjectId: UUID!
+  $deletedBy: UUID!
+  ) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  subject_update(
+    key: { subjectId: $subjectId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# ===================================================================
+# UNIDADES (Units)
+# ===================================================================
+
+# Crear una nueva unidad dentro de una asignatura
+mutation CreateUnit(
+  $name: String!
+  $subjectId: UUID!
+) @auth(level: USER) {
+  unit_insert(
+    data: {
+      name: $name
+      subjectId: $subjectId
+      active: true
+    }
+  )
+}
+
+# Actualizar una unidad
+mutation UpdateUnit(
+  $unitId: UUID!
+  $name: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  unit_update(
+    key: { unitId: $unitId }
+    data: {
+      name: $name
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar una unidad (soft delete)
+# Nota: Verificar si hay temas asociados antes de desactivar
+mutation DeactivateUnit(
+  $unitId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  unit_update(
+    key: { unitId: $unitId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar una unidad (undo soft delete)
+mutation ReactivateUnit(
+  $unitId: UUID!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  unit_update(
+    key: { unitId: $unitId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# ===================================================================
+# TEMAS (Topics)
+# ===================================================================
+
+# Crear un nuevo tema dentro de una unidad
+mutation CreateTopic(
+  $name: String!
+  $unitId: UUID!
+) @auth(level: USER) {
+  topic_insert(
+    data: {
+      name: $name
+      unitId: $unitId
+      active: true
+    }
+  )
+}
+
+# Actualizar un tema
+mutation UpdateTopic(
+  $topicId: UUID!
+  $name: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  topic_update(
+    key: { topicId: $topicId }
+    data: {
+      name: $name
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar un tema (soft delete)
+# Nota: Verificar si hay preguntas asociadas antes de desactivar
+mutation DeactivateTopic(
+  $topicId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  topic_update(
+    key: { topicId: $topicId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar un tema (undo soft delete)
+mutation ReactivateTopic(
+  $topicId: UUID!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  topic_update(
+    key: { topicId: $topicId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}

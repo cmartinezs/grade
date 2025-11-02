@@ -1,0 +1,4 @@
+E1102 03:42:03.395942  270328 dev.go:82] Failed to load initial config from "/home/cmartinezs/Github/wanku-cl/grade-web-app/dataconnect": could not find dataconnect.yaml in `/home/cmartinezs/Github/wanku-cl/grade-web-app/dataconnect`
+I1102 03:42:03.396254  270328 dev.go:105] Listening on address (HTTP + gRPC): 127.0.0.1:9399
+I1102 03:42:03.396309  270328 dev.go:105] Listening on address (HTTP + gRPC): [::1]:9399
+E1102 03:42:03.396301  270328 watch.go:102] watchAllDir unable to walk dir `/home/cmartinezs/Github/wanku-cl/grade-web-app/dataconnect`: lstat /home/cmartinezs/Github/wanku-cl/grade-web-app/dataconnect: no such file or directory

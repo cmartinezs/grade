@@ -59,31 +59,32 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     setSuccessMessage(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors([]);
     setSuccessMessage(null);
 
-    const userId = 'admin@example.com'; // Mock user ID
+    try {
+      if (taxonomyType === 'subject') {
+        await createSubject(formData.name, formData.code);
+      } else if (taxonomyType === 'unit') {
+        await createUnit(formData.name, formData.subject_fk);
+      } else {
+        await createTopic(formData.name, formData.unit_fk);
+      }
 
-    let result;
-
-    if (taxonomyType === 'subject') {
-      result = createSubject({ name: formData.name, code: formData.code }, userId);
-    } else if (taxonomyType === 'unit') {
-      result = createUnit({ name: formData.name, subject_fk: formData.subject_fk }, userId);
-    } else {
-      result = createTopic({ name: formData.name, unit_fk: formData.unit_fk }, userId);
-    }
-
-    if (result.success) {
       setSuccessMessage(`✅ ${getTaxonomyLabel(taxonomyType)} creado exitosamente: "${formData.name}"`);
       setTimeout(() => {
         onSuccess();
         handleHide();
       }, 1500);
-    } else {
-      setErrors(result.errors || []);
+    } catch (error) {
+      setErrors([
+        {
+          field: 'general',
+          message: error instanceof Error ? error.message : 'Error desconocido'
+        }
+      ]);
     }
   };
 

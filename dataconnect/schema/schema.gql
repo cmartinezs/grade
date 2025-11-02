@@ -1,0 +1,254 @@
+# ===================================================================
+# Grade Web App - Data Connect Schema
+# Definición del esquema de datos para la aplicación de gestión de calificaciones
+# ===================================================================
+
+type User @table(name: "users", key: "userId") {
+  # Identificador único del usuario
+  userId: UUID! @col(name: "user_id") @default(expr: "uuidV4()")
+
+  # Identificador de firebase Auth
+  authId: String! @col(name: "firebase_auth_id")
+  
+  # Nombre del usuario
+  name: String!
+  
+  # Correo electrónico del usuario
+  email: String! @unique
+  
+  # Rol del usuario (Admin/Coordinator/Teacher)
+  role: String!
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type Subject @table(name: "subjects", key: "subjectId") {
+  # Identificador único de la asignatura
+  subjectId: UUID! @col(name: "subject_id") @default(expr: "uuidV4()")
+  
+  # Nombre de la asignatura
+  name: String!
+  
+  # Código de la asignatura
+  code: String!
+  
+  # Indica si la asignatura está activa
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario creador
+  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type Unit @table(name: "units", key: "unitId") {
+  # Identificador único de la unidad
+  unitId: UUID! @col(name: "unit_id") @default(expr: "uuidV4()")
+  
+  # Nombre de la unidad
+  name: String!
+  
+  # ID de la asignatura a la que pertenece
+  subjectId: UUID! @col(name: "subject_fk")
+  
+  # Indica si la unidad está activa
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario creador
+  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type Topic @table(name: "topics", key: "topicId") {
+  # Identificador único del tema
+  topicId: UUID! @col(name: "topic_id") @default(expr: "uuidV4()")
+  
+  # Nombre del tema
+  name: String!
+  
+  # ID de la unidad a la que pertenece
+  unitId: UUID! @col(name: "unit_fk")
+  
+  # Indica si el tema está activo
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario creador
+  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}type QuestionType @table(name: "question_types", key: "questionTypeId") {
+  # Identificador único del tipo de pregunta
+  questionTypeId: UUID! @col(name: "question_type_id") @default(expr: "uuidV4()")
+  
+  # Código del tipo (TF, SC, MC)
+  code: String!
+  
+  # Nombre del tipo de pregunta
+  name: String!
+}
+
+type Difficulty @table(name: "difficulties", key: "difficultyId") {
+  # Identificador único del nivel de dificultad
+  difficultyId: UUID! @col(name: "difficulty_id") @default(expr: "uuidV4()")
+  
+  # Nivel de dificultad (Easy/Medium/Hard)
+  level: String!
+  
+  # Peso o ponderador opcional
+  weight: Int
+}
+
+type Outcome @table(name: "outcomes", key: "outcomeId") {
+  # Identificador único del resultado de aprendizaje
+  outcomeId: UUID! @col(name: "outcome_id") @default(expr: "uuidV4()")
+  
+  # Código del resultado (ej. LO-SCI-5.2)
+  code: String!
+  
+  # Descripción del resultado de aprendizaje
+  description: String!
+  
+  # ID de la asignatura relacionada
+  subjectId: UUID @col(name: "subject_fk")
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at")
+  
+  # ID del usuario creador
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type Question @table(name: "questions", key: "questionId") {
+  # Identificador único de la pregunta
+  questionId: UUID! @col(name: "question_id") @default(expr: "uuidV4()")
+  
+  # Texto de la pregunta
+  text: String!
+  
+  # Indica si la pregunta está activa
+  active: Boolean! @default(value: true)
+  
+  # Número de versión de la pregunta
+  version: Int! @default(value: 1)
+  
+  # ID de la pregunta original (para versiones)
+  originalQuestionId: UUID @col(name: "original_question_fk")
+  
+  # ID del tema al que pertenece
+  topicId: UUID! @col(name: "topic_fk")
+  
+  # ID del nivel de dificultad
+  difficultyId: UUID! @col(name: "difficulty_fk")
+  
+  # ID del resultado de aprendizaje asociado
+  outcomeId: UUID @col(name: "outcome_fk")
+  
+  # ID del tipo de pregunta
+  questionTypeId: UUID! @col(name: "question_type_fk")
+  
+  # ID del usuario creador
+  userId: UUID! @col(name: "user_fk")
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type QuestionOption @table(name: "question_options", key: "questionOptionId") {
+  # Identificador único de la opción de pregunta
+  questionOptionId: UUID! @col(name: "question_option_id") @default(expr: "uuidV4()")
+  
+  # Texto de la opción
+  text: String!
+  
+  # Indica si esta es la opción correcta
+  isCorrect: Boolean! @col(name: "is_correct")
+  
+  # Posición de la opción (1..n)
+  position: Int!
+  
+  # Puntuación asociada a esta opción
+  score: Float
+  
+  # ID de la pregunta a la que pertenece
+  questionId: UUID! @col(name: "question_fk")
+}

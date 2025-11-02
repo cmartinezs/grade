@@ -13,7 +13,8 @@ export function useTaxonomyData() {
     if (searchTerm.trim() === '') {
       setSubjects(getAllSubjects());
     } else {
-      setSubjects(searchTaxonomy(searchTerm));
+      const results = searchTaxonomy(searchTerm);
+      setSubjects(results.subjects);
     }
   }, [searchTerm]);
 

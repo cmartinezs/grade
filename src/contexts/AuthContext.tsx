@@ -1,13 +1,13 @@
 'use client'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLoading } from './LoadingContext';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { getUserByEmail, createNewUser } from '@/lib/userDataConnect';
 
 // Tipos
 interface User {
@@ -17,7 +17,9 @@ interface User {
   email: string;
   role: string;
   institution?: string;
+  firebaseUid?: string;
 }
+
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -25,7 +27,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
+
 interface RegisterData {
   firstName: string;
   lastName: string;
@@ -34,8 +38,10 @@ interface RegisterData {
   institution?: string;
   role: string;
 }
+
 // Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 // Hook personalizado
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -44,11 +50,31 @@ export const useAuth = () => {
   }
   return context;
 };
+
 // Provider
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
   const { setLoading, setLoadingMessage } = useLoading();
+
+  // Restaurar usuario desde localStorage al cargar
+  useEffect(() => {
+    const restoreUserFromStorage = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+        }
+      } catch (error) {
+        console.error('Error restoring user from localStorage:', error);
+        localStorage.removeItem('user');
+      }
+    };
+
+    restoreUserFromStorage();
+  }, []);
+
   // Verificar si hay un usuario autenticado al cargar
   useEffect(() => {
     const checkAuth = () => {
@@ -56,28 +82,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
         try {
           if (firebaseUser) {
-            // Obtener datos adicionales del usuario desde Firestore
-            const userDocRef = doc(db, 'users', firebaseUser.uid);
-            const userDocSnap = await getDoc(userDocRef);
+            // Obtener datos del usuario desde Data Connect
+            const userData = await getUserByEmail(firebaseUser.email || '');
             
-            if (userDocSnap.exists()) {
-              const userData = userDocSnap.data();
+            if (userData) {
               const user: User = {
-                id: firebaseUser.uid,
-                firstName: userData.firstName || '',
-                lastName: userData.lastName || '',
-                email: firebaseUser.email || '',
-                role: userData.role || 'student',
-                institution: userData.institution
+                id: userData.userId,
+                firstName: userData.name.split(' ')[0] || '',
+                lastName: userData.name.split(' ').slice(1).join(' ') || '',
+                email: userData.email,
+                role: userData.role,
+                institution: undefined,
+                firebaseUid: firebaseUser.uid
               };
               setUser(user);
+              // Persistir en localStorage
               localStorage.setItem('user', JSON.stringify(user));
+              localStorage.setItem('authToken', await firebaseUser.getIdToken());
               document.cookie = 'authenticated=true; path=/; max-age=86400';
+            } else {
+              // Usuario en Firebase pero no en Data Connect
+              console.warn('User not found in Data Connect');
             }
           } else {
             // No hay usuario autenticado
             setUser(null);
             localStorage.removeItem('user');
+            localStorage.removeItem('authToken');
             document.cookie = 'authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
           }
         } catch (error) {
@@ -96,6 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (unsubscribe) unsubscribe();
     };
   }, []);
+  
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
@@ -105,27 +137,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
       
-      // Obtener datos adicionales del usuario desde Firestore
-      const userDocRef = doc(db, 'users', firebaseUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
+      // Obtener datos del usuario desde Data Connect
+      const userData = await getUserByEmail(firebaseUser.email || '');
       
-      if (!userDocSnap.exists()) {
-        console.error('User profile not found in Firestore');
+      if (!userData) {
+        console.error('User profile not found in Data Connect');
         return false;
       }
       
-      const userData = userDocSnap.data();
       const user: User = {
-        id: firebaseUser.uid,
-        firstName: userData.firstName || '',
-        lastName: userData.lastName || '',
-        email: firebaseUser.email || email,
-        role: userData.role || 'student',
-        institution: userData.institution
+        id: userData.userId,
+        firstName: userData.name.split(' ')[0] || '',
+        lastName: userData.name.split(' ').slice(1).join(' ') || '',
+        email: userData.email,
+        role: userData.role,
+        institution: undefined,
+        firebaseUid: firebaseUser.uid
       };
       
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('authToken', await firebaseUser.getIdToken());
       // Establecer cookie para el middleware
       document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
       return true;
@@ -150,30 +182,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       const firebaseUser = userCredential.user;
       
-      // Guardar datos adicionales en Firestore
-      const userDocRef = doc(db, 'users', firebaseUser.uid);
-      await setDoc(userDocRef, {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
+      // Guardar datos del usuario en Data Connect
+      const fullName = `${userData.firstName} ${userData.lastName}`;
+      const userDataConnectUser = await createNewUser({
+        name: fullName,
         email: userData.email,
-        role: userData.role,
-        institution: userData.institution || '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        role: userData.role
       });
+      
+      if (!userDataConnectUser) {
+        console.error('Failed to create user in Data Connect');
+        // Eliminar usuario de Firebase si falla Data Connect
+        await firebaseUser.delete();
+        return false;
+      }
       
       // Crear objeto de usuario local
       const user: User = {
-        id: firebaseUser.uid,
+        id: userDataConnectUser.userId,
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email,
         role: userData.role,
-        institution: userData.institution
+        institution: userData.institution,
+        firebaseUid: firebaseUser.uid
       };
       
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('authToken', await firebaseUser.getIdToken());
       // Establecer cookie para el middleware
       document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
       return true;
@@ -194,6 +231,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       setUser(null);
       localStorage.removeItem('user');
+      localStorage.removeItem('authToken');
       // Limpiar cookie del middleware
       document.cookie = 'authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       
@@ -207,13 +245,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
+
+  // Función para refrescar datos del usuario desde Data Connect
+  const refreshUser = async () => {
+    try {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userData = await getUserByEmail(currentUser.email || '');
+        
+        if (userData) {
+          const updatedUser: User = {
+            id: userData.userId,
+            firstName: userData.name.split(' ')[0] || '',
+            lastName: userData.name.split(' ').slice(1).join(' ') || '',
+            email: userData.email,
+            role: userData.role,
+            institution: undefined,
+            firebaseUid: currentUser.uid
+          };
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
     isInitializing,
     login,
     register,
-    logout
+    logout,
+    refreshUser
   };
   return (
     <AuthContext.Provider value={value}>

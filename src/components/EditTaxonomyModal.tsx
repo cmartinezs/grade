@@ -98,31 +98,34 @@ export default function EditTaxonomyModal({
     onHide();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors([]);
     setSuccessMessage(null);
 
     const userId = 'admin@example.com'; // Mock user ID
 
-    let result;
+    try {
+      if (elementType === 'subject') {
+        await updateSubject(elementId, { name: formData.name, code: formData.code }, userId);
+      } else if (elementType === 'unit') {
+        await updateUnit(elementId, { name: formData.name, subject_fk: formData.subject_fk }, userId);
+      } else {
+        await updateTopic(elementId, { name: formData.name, unit_fk: formData.unit_fk }, userId);
+      }
 
-    if (elementType === 'subject') {
-      result = updateSubject(elementId, { name: formData.name, code: formData.code }, userId);
-    } else if (elementType === 'unit') {
-      result = updateUnit(elementId, { name: formData.name, subject_fk: formData.subject_fk }, userId);
-    } else {
-      result = updateTopic(elementId, { name: formData.name, unit_fk: formData.unit_fk }, userId);
-    }
-
-    if (result.success) {
       setSuccessMessage(`✅ ${getTaxonomyLabel(elementType)} actualizado exitosamente: "${formData.name}"`);
       setTimeout(() => {
         onSuccess();
         handleHide();
       }, 1500);
-    } else {
-      setErrors(result.errors || []);
+    } catch (error) {
+      setErrors([
+        {
+          field: 'general',
+          message: error instanceof Error ? error.message : 'Error desconocido'
+        }
+      ]);
     }
   };
 
