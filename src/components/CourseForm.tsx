@@ -14,7 +14,7 @@ interface CourseFormProps {
   courseId?: string;
   onSubmitSuccess?: (courseId: string) => void;
   isSubmitting?: boolean;
-  onSubmit?: (data: { name: string; code: string; level: string; institution: string; active: boolean }) => Promise<void>;
+  onSubmit?: (data: { name: string; code: string; levelId: number; institution: string; active: boolean }) => Promise<void>;
 }
 
 export default function CourseForm({
@@ -27,7 +27,7 @@ export default function CourseForm({
   const { user } = useAuth();
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
-  const [level, setLevel] = useState('');
+  const [levelId, setLevelId] = useState(0);
   const [institution, setInstitution] = useState('');
   const [active, setActive] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +65,7 @@ export default function CourseForm({
           if (loadedCourse) {
             setName(loadedCourse.name);
             setCode(loadedCourse.code);
-            setLevel(loadedCourse.level);
+            setLevelId(loadedCourse.levelId);
             setInstitution(loadedCourse.institution);
             setActive(loadedCourse.active);
           }
@@ -82,7 +82,7 @@ export default function CourseForm({
     if (mode === 'create') {
       setName('');
       setCode('');
-      setLevel('');
+      setLevelId(0);
       setInstitution('');
       setActive(true);
     }
@@ -107,7 +107,7 @@ export default function CourseForm({
         await externalOnSubmit({
           name: name.trim(),
           code: code.trim(),
-          level: level.trim(),
+          levelId,
           institution: institution.trim(),
           active
         });
@@ -117,7 +117,7 @@ export default function CourseForm({
           {
             name: name.trim(),
             code: code.trim(),
-            level: level.trim(),
+            levelId,
             institution: institution.trim(),
             active
           },
@@ -135,7 +135,7 @@ export default function CourseForm({
           {
             name: name.trim(),
             code: code.trim(),
-            level: level.trim(),
+            levelId,
             institution: institution.trim(),
             active
           },
@@ -227,14 +227,14 @@ export default function CourseForm({
 
       {/* Academic Level - Using AutocompleteSelect Component */}
       <AutocompleteSelect
-        value={level}
-        onChange={(value) => setLevel(String(value))}
+        value={levelId}
+        onChange={(value) => setLevelId(typeof value === 'number' ? value : parseInt(String(value), 10))}
         options={levelOptions}
         label="Nivel Académico"
         required
         placeholder="Escribe para buscar o selecciona un nivel..."
-        isInvalid={getErrorsForField('level').length > 0}
-        errorMessage={getErrorsForField('level')[0]?.message}
+        isInvalid={getErrorsForField('levelId').length > 0}
+        errorMessage={getErrorsForField('levelId')[0]?.message}
         disabled={isDisabled}
       />
 

@@ -12,23 +12,23 @@ const COURSE_COUNTER_KEY = 'evaluation_management_course_counter';
 // Default courses for initialization
 const DEFAULT_COURSES: Omit<Course, 'course_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by' | 'deleted_at' | 'deleted_by'>[] = [
   // Enseñanza Básica
-  { name: '1° Básico A', code: '1B-A', level: '1° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '1° Básico B', code: '1B-B', level: '1° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '2° Básico A', code: '2B-A', level: '2° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '3° Básico A', code: '3B-A', level: '3° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '4° Básico A', code: '4B-A', level: '4° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '5° Básico A', code: '5B-A', level: '5° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '5° Básico B', code: '5B-B', level: '5° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '6° Básico A', code: '6B-A', level: '6° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '7° Básico A', code: '7B-A', level: '7° Básico', institution: 'Colegio Ejemplo', active: true },
-  { name: '8° Básico A', code: '8B-A', level: '8° Básico', institution: 'Colegio Ejemplo', active: true },
+  { name: '1° Básico A', code: '1B-A', levelId: 1, institution: 'Colegio Ejemplo', active: true },
+  { name: '1° Básico B', code: '1B-B', levelId: 1, institution: 'Colegio Ejemplo', active: true },
+  { name: '2° Básico A', code: '2B-A', levelId: 2, institution: 'Colegio Ejemplo', active: true },
+  { name: '3° Básico A', code: '3B-A', levelId: 3, institution: 'Colegio Ejemplo', active: true },
+  { name: '4° Básico A', code: '4B-A', levelId: 4, institution: 'Colegio Ejemplo', active: true },
+  { name: '5° Básico A', code: '5B-A', levelId: 5, institution: 'Colegio Ejemplo', active: true },
+  { name: '5° Básico B', code: '5B-B', levelId: 5, institution: 'Colegio Ejemplo', active: true },
+  { name: '6° Básico A', code: '6B-A', levelId: 6, institution: 'Colegio Ejemplo', active: true },
+  { name: '7° Básico A', code: '7B-A', levelId: 7, institution: 'Colegio Ejemplo', active: true },
+  { name: '8° Básico A', code: '8B-A', levelId: 8, institution: 'Colegio Ejemplo', active: true },
   
   // Enseñanza Media
-  { name: '1° Medio A', code: '1M-A', level: '1° Medio', institution: 'Colegio Ejemplo', active: true },
-  { name: '1° Medio B', code: '1M-B', level: '1° Medio', institution: 'Colegio Ejemplo', active: true },
-  { name: '2° Medio A', code: '2M-A', level: '2° Medio', institution: 'Colegio Ejemplo', active: true },
-  { name: '3° Medio A', code: '3M-A', level: '3° Medio', institution: 'Colegio Ejemplo', active: true },
-  { name: '4° Medio A', code: '4M-A', level: '4° Medio', institution: 'Colegio Ejemplo', active: true },
+  { name: '1° Medio A', code: '1M-A', levelId: 9, institution: 'Colegio Ejemplo', active: true },
+  { name: '1° Medio B', code: '1M-B', levelId: 9, institution: 'Colegio Ejemplo', active: true },
+  { name: '2° Medio A', code: '2M-A', levelId: 10, institution: 'Colegio Ejemplo', active: true },
+  { name: '3° Medio A', code: '3M-A', levelId: 11, institution: 'Colegio Ejemplo', active: true },
+  { name: '4° Medio A', code: '4M-A', levelId: 12, institution: 'Colegio Ejemplo', active: true },
 ];
 
 class CourseStore {
@@ -72,12 +72,18 @@ class CourseStore {
     const courses = JSON.parse(stored);
     return courses.map((c: Course) => ({
       ...c,
-      created_at: new Date(c.created_at),
-      updated_at: new Date(c.updated_at),
+      created_at: c.created_at ? new Date(c.created_at) : new Date(),
+      updated_at: c.updated_at ? new Date(c.updated_at) : new Date(),
       deleted_at: c.deleted_at ? new Date(c.deleted_at) : null,
     }));
   }
 
+  // Clear all courses (for cleanup/migration)
+  public clearAllCourses(): void {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(COURSES_STORAGE_KEY);
+    localStorage.removeItem(COURSE_COUNTER_KEY);
+  }
   // Save courses to localStorage
   private saveCourses(courses: Course[]): void {
     if (typeof window === 'undefined') return;
@@ -113,9 +119,9 @@ class CourseStore {
       });
     }
 
-    if (!input.level || input.level.trim() === '') {
+    if (!input.levelId || input.levelId <= 0) {
       errors.push({
-        field: 'level',
+        field: 'levelId',
         message: 'El nivel del curso es obligatorio'
       });
     }
@@ -164,7 +170,7 @@ class CourseStore {
       course_id: this.getNextCourseId(),
       name: input.name.trim(),
       code: input.code.trim().toUpperCase(),
-      level: input.level.trim(),
+      levelId: input.levelId,
       institution: input.institution.trim(),
       active,
       created_at: new Date(),
@@ -248,7 +254,7 @@ class CourseStore {
       ...existingCourse,
       name: input.name.trim(),
       code: input.code.trim().toUpperCase(),
-      level: input.level.trim(),
+      levelId: input.levelId,
       institution: input.institution.trim(),
       active: input.active,
       updated_at: new Date(),
@@ -262,7 +268,7 @@ class CourseStore {
       changes: {
         name: existingCourse.name !== updatedCourse.name ? `${existingCourse.name} -> ${updatedCourse.name}` : null,
         code: existingCourse.code !== updatedCourse.code ? `${existingCourse.code} -> ${updatedCourse.code}` : null,
-        level: existingCourse.level !== updatedCourse.level ? `${existingCourse.level} -> ${updatedCourse.level}` : null,
+        levelId: existingCourse.levelId !== updatedCourse.levelId ? `${existingCourse.levelId} -> ${updatedCourse.levelId}` : null,
         institution: existingCourse.institution !== updatedCourse.institution ? `${existingCourse.institution} -> ${updatedCourse.institution}` : null,
         active: existingCourse.active !== updatedCourse.active ? `${existingCourse.active} -> ${updatedCourse.active}` : null,
       }
@@ -294,9 +300,9 @@ class CourseStore {
       });
     }
 
-    if (!input.level || input.level.trim() === '') {
+    if (!input.levelId || input.levelId <= 0) {
       errors.push({
-        field: 'level',
+        field: 'levelId',
         message: 'El nivel del curso es obligatorio'
       });
     }
@@ -370,7 +376,7 @@ class CourseStore {
 
     // Filter by level
     if (level) {
-      courses = courses.filter(c => c.level === level);
+      courses = courses.filter(c => c.levelId === (typeof level === 'string' ? parseInt(level, 10) : level));
     }
 
     // Filter by institution
@@ -378,10 +384,9 @@ class CourseStore {
       courses = courses.filter(c => c.institution === institution);
     }
 
-    // Sort by level and name
+    // Sort by level ID and name
     courses.sort((a, b) => {
-      const levelCompare = a.level.localeCompare(b.level);
-      if (levelCompare !== 0) return levelCompare;
+      if (a.levelId !== b.levelId) return a.levelId - b.levelId;
       return a.name.localeCompare(b.name);
     });
 

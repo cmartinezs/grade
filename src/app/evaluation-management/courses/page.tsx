@@ -70,9 +70,14 @@ export default function CoursesPage() {
     setTotalPages(result.totalPages);
   };
 
-  const getLevelEditUrl = (levelName: string): string => {
-    const level = levelStore.getLevelByName(levelName);
+  const getLevelEditUrl = (levelId: number): string => {
+    const level = levelStore.getLevelById(levelId);
     return level ? `/evaluation-management/levels/edit?id=${level.id}` : '#';
+  };
+
+  const getLevelName = (levelId: number): string => {
+    const level = levelStore.getLevelById(levelId);
+    return level ? level.name : `Nivel ${levelId}`;
   };
 
   const columns: ColumnConfig<Course>[] = [
@@ -88,12 +93,12 @@ export default function CoursesPage() {
       render: (value) => <strong>{String(value)}</strong>,
     },
     {
-      key: 'level',
+      key: 'levelId',
       label: 'Nivel',
       render: (value) => (
-        <Link href={getLevelEditUrl(String(value))} style={{ textDecoration: 'none' }}>
+        <Link href={getLevelEditUrl(Number(value))} style={{ textDecoration: 'none' }}>
           <Badge bg="info" role="button" className="cursor-pointer">
-            {String(value)}
+            {getLevelName(Number(value))}
           </Badge>
         </Link>
       ),

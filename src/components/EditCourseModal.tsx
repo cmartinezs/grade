@@ -21,7 +21,7 @@ export default function EditCourseModal({ show, onHide, onSuccess, courseId }: E
     onHide();
   };
 
-  const handleSubmit = async (data: { name: string; code: string; level: string; institution: string; active: boolean }) => {
+  const handleSubmit = async (data: { name: string; code: string; levelId: number; institution: string; active: boolean }) => {
     if (!courseId) return;
 
     setIsSubmitting(true);

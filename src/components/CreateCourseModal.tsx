@@ -22,7 +22,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
     onHide();
   };
 
-  const handleSubmit = async (data: { name: string; code: string; level: string; institution: string; active: boolean }) => {
+  const handleSubmit = async (data: { name: string; code: string; levelId: number; institution: string; active: boolean }) => {
     setIsSubmitting(true);
     try {
       const newCourse = await courseStore.createCourse(

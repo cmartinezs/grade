@@ -62,10 +62,10 @@ export default function DashboardPage() {
       const inactiveCourses = courses.length - activeCourses;
 
       // Calculate courses by level
-      const coursesByLevel: Record<string, number> = {};
+      const coursesByLevel: Record<number, number> = {};
       courses.forEach((course) => {
-        const level = course.level || 'Sin nivel';
-        coursesByLevel[level] = (coursesByLevel[level] || 0) + 1;
+        const levelId = course.levelId;
+        coursesByLevel[levelId] = (coursesByLevel[levelId] || 0) + 1;
       });
 
       setDashboardData({
