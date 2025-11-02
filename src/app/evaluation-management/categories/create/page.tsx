@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
+import CategoryFormFields from '@/components/CategoryFormFields';
 
 export default function CreateCategoryPage() {
   const router = useRouter();
@@ -56,14 +57,7 @@ export default function CreateCategoryPage() {
   };
 
   return (
-    <Container className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1 className="mb-2">➕ Nueva Categoría de Nivel</h1>
-          <p className="text-muted">Crea una nueva categoría para clasificar niveles educacionales</p>
-        </Col>
-      </Row>
-
+    <Container fluid className="py-4">
       {submitted && (
         <Row className="mb-4">
           <Col>
@@ -85,83 +79,75 @@ export default function CreateCategoryPage() {
       )}
 
       <Row>
-        <Col lg={8} className="mx-auto">
-          <Card>
+        {/* Información a la izquierda */}
+        <Col lg={4} className="mb-4">
+          <Card className="h-100 border-primary border-2">
+            <Card.Header className="bg-primary text-white">
+              <h5 className="mb-0">ℹ️ Información</h5>
+            </Card.Header>
+            <Card.Body>
+              <p className="text-muted mb-4">
+                Las categorías permiten clasificar y organizar los niveles educacionales en grupos lógicos.
+              </p>
+              
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">📋 Datos Requeridos</h6>
+                <div className="small">
+                  <p className="mb-2">
+                    <strong>Nombre:</strong>
+                    <br />
+                    <span className="text-muted">Nombre descriptivo de la categoría</span>
+                  </p>
+                  <p>
+                    <strong>Código:</strong>
+                    <br />
+                    <span className="text-muted">Identificador único (ej: CAT_BASIC)</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">💡 Consejos</h6>
+                <ul className="small mb-0">
+                  <li>Usa códigos en mayúsculas con guiones</li>
+                  <li>Incluye una descripción clara</li>
+                  <li>Marca como activa al crear</li>
+                  <li>Agrupa niveles relacionados</li>
+                </ul>
+              </div>
+
+              <div className="alert alert-info small mb-0">
+                <strong>✨ Tip:</strong> Las categorías ayudan a mantener organizado el sistema de niveles
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* Formulario a la derecha */}
+        <Col lg={8}>
+          <Card className="border-primary border-2">
+            <Card.Header className="bg-primary text-white">
+              <h4 className="mb-0">➕ Nueva Categoría</h4>
+            </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
-                {/* Nombre */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Nombre de la Categoría <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Ej: Enseñanza Básica"
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Nombre descriptivo de la categoría
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Código */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Código de la Categoría <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="code"
-                    value={formData.code}
-                    onChange={handleChange}
-                    placeholder="Ej: CAT_BASIC"
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Código único para identificar la categoría (letras mayúsculas y guiones)
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Descripción */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Descripción</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    rows={3}
-                    value={formData.description}
-                    onChange={handleChange}
-                    placeholder="Describe la categoría..."
-                  />
-                  <Form.Text className="text-muted">
-                    Descripción detallada de la categoría
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Estado Activo */}
-                <Form.Group className="mb-4">
-                  <Form.Switch
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    id="isActive"
-                    label="Categoría Activa"
-                  />
-                  <Form.Text className="text-muted d-block mt-2">
-                    Marca para activar la categoría
-                  </Form.Text>
-                </Form.Group>
+                <CategoryFormFields
+                  formData={formData}
+                  onChange={handleChange}
+                  onSwitchChange={(isActive) =>
+                    setFormData({ ...formData, isActive })
+                  }
+                />
 
                 {/* Botones */}
                 <div className="d-flex gap-2">
-                  <Button variant="primary" type="submit">
+                  <Button variant="primary" type="submit" size="lg">
                     ✅ Crear Categoría
                   </Button>
                   <Button
                     variant="outline-secondary"
                     onClick={() => router.push('/evaluation-management/categories')}
+                    size="lg"
                   >
                     ❌ Cancelar
                   </Button>

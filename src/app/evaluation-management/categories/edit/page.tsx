@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
+import CategoryFormFields from '@/components/CategoryFormFields';
 
 function EditCategoryContent() {
   const router = useRouter();
@@ -127,14 +128,7 @@ function EditCategoryContent() {
   }
 
   return (
-    <Container className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1 className="mb-2">✏️ Editar Categoría</h1>
-          <p className="text-muted">Modifica los datos de la categoría: <strong>{formData.name}</strong></p>
-        </Col>
-      </Row>
-
+    <Container fluid className="py-4">
       {submitted && (
         <Row className="mb-4">
           <Col>
@@ -156,79 +150,74 @@ function EditCategoryContent() {
       )}
 
       <Row>
-        <Col lg={8} className="mx-auto">
-          <Card>
+        {/* Información a la izquierda */}
+        <Col lg={4} className="mb-4">
+          <Card className="h-100 border-primary border-2">
+            <Card.Header className="bg-primary text-white">
+              <h5 className="mb-0">ℹ️ Información</h5>
+            </Card.Header>
+            <Card.Body>
+              <p className="text-muted mb-4">
+                Edita los datos de la categoría <strong>{formData.name}</strong>
+              </p>
+              
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">📋 Datos Requeridos</h6>
+                <div className="small">
+                  <p className="mb-2">
+                    <strong>Nombre:</strong>
+                    <br />
+                    <span className="text-muted">Nombre descriptivo de la categoría</span>
+                  </p>
+                  <p>
+                    <strong>Código:</strong>
+                    <br />
+                    <span className="text-muted">Identificador único (ej: PRIM, SEC)</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">💡 Consejos</h6>
+                <ul className="small mb-0">
+                  <li>Mantén nombres claros y consistentes</li>
+                  <li>Los cambios se aplican inmediatamente</li>
+                  <li>Puedes desactivar la categoría si es necesario</li>
+                  <li>Los niveles asociados se mantienen intactos</li>
+                </ul>
+              </div>
+
+              <div className="alert alert-info small mb-0">
+                <strong>✨ Tip:</strong> Los cambios se guardan después de confirmar
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* Formulario a la derecha */}
+        <Col lg={8}>
+          <Card className="border-primary border-2">
+            <Card.Header className="bg-primary text-white">
+              <h4 className="mb-0">✏️ Editar Categoría</h4>
+            </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
-                {/* Nombre */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Nombre de la Categoría <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Nombre descriptivo de la categoría
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Código */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Código de la Categoría <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="code"
-                    value={formData.code}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Código único para identificar la categoría
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Descripción */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Descripción</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    rows={3}
-                    value={formData.description}
-                    onChange={handleChange}
-                  />
-                  <Form.Text className="text-muted">
-                    Descripción detallada de la categoría
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Estado Activo */}
-                <Form.Group className="mb-4">
-                  <Form.Switch
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    id="isActive"
-                    label="Categoría Activa"
-                  />
-                  <Form.Text className="text-muted d-block mt-2">
-                    Marca para activar la categoría
-                  </Form.Text>
-                </Form.Group>
+                <CategoryFormFields
+                  formData={formData}
+                  onChange={handleChange}
+                  onSwitchChange={(isActive) =>
+                    setFormData({ ...formData, isActive })
+                  }
+                />
 
                 {/* Botones */}
                 <div className="d-flex gap-2">
-                  <Button variant="primary" type="submit">
+                  <Button variant="primary" type="submit" size="lg">
                     ✅ Guardar Cambios
                   </Button>
                   <Button
                     variant="outline-secondary"
+                    size="lg"
                     onClick={() => router.push('/evaluation-management/categories')}
                   >
                     ❌ Cancelar

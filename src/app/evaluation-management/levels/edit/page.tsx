@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
+import LevelFormFields from '@/components/LevelFormFields';
 
 function EditLevelContent() {
   const router = useRouter();
@@ -127,14 +128,7 @@ function EditLevelContent() {
   }
 
   return (
-    <Container className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1 className="mb-2">✏️ Editar Nivel Educacional</h1>
-          <p className="text-muted">Modifica los datos del nivel: <strong>{formData.name}</strong></p>
-        </Col>
-      </Row>
-
+    <Container fluid className="py-4">
       {submitted && (
         <Row className="mb-4">
           <Col>
@@ -156,79 +150,75 @@ function EditLevelContent() {
       )}
 
       <Row>
-        <Col lg={8} className="mx-auto">
-          <Card>
+        {/* Información a la izquierda */}
+        <Col lg={4} className="mb-4">
+          <Card className="h-100 border-info border-2">
+            <Card.Header className="bg-info text-white">
+              <h5 className="mb-0">ℹ️ Información</h5>
+            </Card.Header>
+            <Card.Body>
+              <p className="text-muted mb-4">
+                Edita los datos del nivel <strong>{formData.name}</strong>
+              </p>
+              
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">📋 Datos Requeridos</h6>
+                <div className="small">
+                  <p className="mb-2">
+                    <strong>Nombre:</strong>
+                    <br />
+                    <span className="text-muted">Nombre del nivel (ej: 1° Básico)</span>
+                  </p>
+                  <p>
+                    <strong>Código:</strong>
+                    <br />
+                    <span className="text-muted">Identificador único (ej: LEVEL_1B)</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">💡 Consejos</h6>
+                <ul className="small mb-0">
+                  <li>Mantén la nomenclatura consistente</li>
+                  <li>Los cambios se aplican inmediatamente</li>
+                  <li>Puedes desactivar el nivel si es necesario</li>
+                  <li>Los cursos asociados se mantienen intactos</li>
+                </ul>
+              </div>
+
+              <div className="alert alert-info small mb-0">
+                <strong>✨ Tip:</strong> Los cambios se guardan después de confirmar
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* Formulario a la derecha */}
+        <Col lg={8}>
+          <Card className="border-info border-2">
+            <Card.Header className="bg-info text-white">
+              <h4 className="mb-0">✏️ Editar Nivel</h4>
+            </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
-                {/* Nombre */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Nombre del Nivel <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Nombre del nivel educacional
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Código */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Código del Nivel <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="code"
-                    value={formData.code}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Código único para identificar el nivel
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Descripción */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Descripción</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    rows={3}
-                    value={formData.description}
-                    onChange={handleChange}
-                  />
-                  <Form.Text className="text-muted">
-                    Descripción del nivel
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Estado Activo */}
-                <Form.Group className="mb-4">
-                  <Form.Switch
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    id="isActive"
-                    label="Nivel Activo"
-                  />
-                  <Form.Text className="text-muted d-block mt-2">
-                    Marca para activar el nivel
-                  </Form.Text>
-                </Form.Group>
+                <LevelFormFields
+                  formData={formData}
+                  onChange={handleChange}
+                  onSwitchChange={(isActive) =>
+                    setFormData({ ...formData, isActive })
+                  }
+                  showPredefined={false}
+                />
 
                 {/* Botones */}
                 <div className="d-flex gap-2">
-                  <Button variant="primary" type="submit">
+                  <Button variant="info" type="submit" size="lg">
                     ✅ Guardar Cambios
                   </Button>
                   <Button
                     variant="outline-secondary"
+                    size="lg"
                     onClick={() => router.push('/evaluation-management/levels')}
                   >
                     ❌ Cancelar

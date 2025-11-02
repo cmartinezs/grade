@@ -5,6 +5,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
 import { CHILEAN_EDUCATION_LEVELS } from '@/types/level';
+import LevelFormFields from '@/components/LevelFormFields';
 
 export default function CreateLevelPage() {
   const router = useRouter();
@@ -69,14 +70,7 @@ export default function CreateLevelPage() {
   };
 
   return (
-    <Container className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1 className="mb-2">➕ Crear Nuevo Nivel Educacional</h1>
-          <p className="text-muted">Completa el formulario para crear un nuevo nivel</p>
-        </Col>
-      </Row>
-
+    <Container fluid className="py-4">
       {submitted && (
         <Row className="mb-4">
           <Col>
@@ -98,131 +92,82 @@ export default function CreateLevelPage() {
       )}
 
       <Row>
-        <Col lg={8} className="mx-auto">
-          <Card>
+        {/* Información a la izquierda */}
+        <Col lg={4} className="mb-4">
+          <Card className="h-100 border-info border-2">
+            <Card.Header className="bg-info text-white">
+              <h5 className="mb-0">ℹ️ Información</h5>
+            </Card.Header>
+            <Card.Body>
+              <p className="text-muted mb-4">
+                Los niveles educacionales representan los diferentes años o etapas del sistema educativo chileno.
+              </p>
+              
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">📋 Datos Requeridos</h6>
+                <div className="small">
+                  <p className="mb-2">
+                    <strong>Nombre:</strong>
+                    <br />
+                    <span className="text-muted">Nombre del nivel (ej: 1° Básico)</span>
+                  </p>
+                  <p>
+                    <strong>Código:</strong>
+                    <br />
+                    <span className="text-muted">Identificador único (ej: LEVEL_1B)</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h6 className="fw-bold mb-2">💡 Consejos</h6>
+                <ul className="small mb-0">
+                  <li>Sigue la nomenclatura chilena</li>
+                  <li>Usa códigos consistentes</li>
+                  <li>Asigna a la categoría correcta</li>
+                  <li>Marca como activo al crear</li>
+                </ul>
+              </div>
+
+              <div className="alert alert-info small mb-0">
+                <strong>✨ Tip:</strong> Puedes seleccionar un nivel predefinido abajo
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* Formulario a la derecha */}
+        <Col lg={8}>
+          <Card className="border-info border-2">
+            <Card.Header className="bg-info text-white">
+              <h4 className="mb-0">➕ Nuevo Nivel</h4>
+            </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
-                {/* Selector de Niveles Predefinidos */}
-                <Form.Group className="mb-4 p-3 bg-light rounded">
-                  <Form.Label className="fw-bold mb-3">
-                    📚 Usar Nivel Predefinido (Chile)
-                  </Form.Label>
-                  <div className="d-flex flex-wrap gap-2">
-                    {CHILEAN_EDUCATION_LEVELS.map((level) => (
-                      <Button
-                        key={level.code}
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={() => handleSelectPredefined(level.name)}
-                        className="mb-2"
-                      >
-                        {level.name}
-                      </Button>
-                    ))}
-                  </div>
-                  <Form.Text className="text-muted d-block mt-2">
-                    Haz clic en un nivel para autocompletar el formulario
-                  </Form.Text>
-                </Form.Group>
-
-                <hr className="my-4" />
-
-                {/* Nombre */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Nombre del Nivel <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    placeholder="Ej: 1° Básico, 1° Medio, etc."
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Nombre descriptivo del nivel educacional
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Código */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">
-                    Código del Nivel <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="code"
-                    placeholder="Ej: LEVEL_1B, LEVEL_1M, etc."
-                    value={formData.code}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Form.Text className="text-muted">
-                    Código único para identificar el nivel (sin espacios)
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Descripción */}
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold">Descripción</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    rows={3}
-                    placeholder="Describe el propósito y características de este nivel"
-                    value={formData.description}
-                    onChange={handleChange}
-                  />
-                  <Form.Text className="text-muted">
-                    Descripción opcional del nivel
-                  </Form.Text>
-                </Form.Group>
-
-                {/* Estado Activo */}
-                <Form.Group className="mb-4">
-                  <Form.Switch
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    id="isActive"
-                    label="Nivel Activo"
-                  />
-                  <Form.Text className="text-muted d-block mt-2">
-                    Marca esta opción para activar el nivel inmediatamente
-                  </Form.Text>
-                </Form.Group>
+                <LevelFormFields
+                  formData={formData}
+                  onChange={handleChange}
+                  onSwitchChange={(isActive) =>
+                    setFormData({ ...formData, isActive })
+                  }
+                  onSelectPredefined={handleSelectPredefined}
+                  showPredefined={true}
+                />
 
                 {/* Botones */}
                 <div className="d-flex gap-2">
-                  <Button variant="primary" type="submit">
+                  <Button variant="info" type="submit" size="lg">
                     ✅ Crear Nivel
                   </Button>
                   <Button
                     variant="outline-secondary"
+                    size="lg"
                     onClick={() => router.push('/evaluation-management/levels')}
                   >
                     ❌ Cancelar
                   </Button>
                 </div>
               </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Info Box */}
-      <Row className="mt-4">
-        <Col lg={8} className="mx-auto">
-          <Card className="bg-light border-0">
-            <Card.Body>
-              <h6 className="mb-3">💡 Información:</h6>
-              <ul className="mb-0">
-                <li>Los niveles predefinidos corresponden al sistema educacional chileno</li>
-                <li>Usa códigos descriptivos y consistentes (Ej: LEVEL_1B, LEVEL_1M, etc.)</li>
-                <li>Los niveles activos estarán disponibles para asignar a cursos</li>
-                <li>Puedes editar o desactivar los niveles después de crearlos</li>
-                <li>Los niveles coinciden automáticamente con los cursos asignados</li>
-              </ul>
             </Card.Body>
           </Card>
         </Col>
