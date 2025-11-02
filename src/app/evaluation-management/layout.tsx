@@ -36,6 +36,11 @@ const evalMenu = [
     isSection: true,
     children: [
       { 
+        label: 'Categorías', 
+        icon: '🏷️',
+        href: '/evaluation-management/categories' 
+      },
+      { 
         label: 'Listar Niveles', 
         icon: '📊',
         href: '/evaluation-management/levels' 

@@ -87,14 +87,14 @@ export default function LevelsPage() {
 
   const columns: ColumnConfig<EducationalLevel>[] = [
     {
-      key: 'name',
-      label: 'Nombre',
-      render: (value) => <span className="fw-bold">{String(value)}</span>,
-    },
-    {
       key: 'code',
       label: 'Código',
       render: (value) => <code>{String(value)}</code>,
+    },
+    {
+      key: 'name',
+      label: 'Nombre',
+      render: (value) => <span className="fw-bold">{String(value)}</span>,
     },
     {
       key: 'description',
