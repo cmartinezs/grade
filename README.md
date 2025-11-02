@@ -61,6 +61,95 @@ npm run type-check # Verificar tipos TypeScript
 
 ---
 
+## 🔥 Despliegue en Firebase
+
+### Requisitos Previos
+- Cuenta de Firebase/Google activa
+- Firebase CLI instalado: `npm install -g firebase-tools`
+
+### Pasos de Despliegue
+
+#### 1. Autenticación con Firebase
+```bash
+firebase login
+```
+Esto abrirá el navegador para que inicies sesión con tu cuenta de Google.
+
+#### 2. Inicializar Firebase
+```bash
+firebase init
+```
+
+**Selecciona las opciones:**
+- ✅ **Hosting: Set up deployments for static web apps**
+- Elige un proyecto existente o crea uno nuevo
+- Public directory: **`.next`** (Next.js build output)
+- ⚠️ **IMPORTANTE:** Cuando pregunta si usar `next.config.js`, responde **No** (Firebase lo detecta automáticamente)
+
+#### 3. Habilitar Web Frameworks Experimentales (Crucial para Next.js)
+
+Edita `firebase.json` y modifica la sección `hosting`:
+
+```json
+{
+  "hosting": {
+    "public": ".next",
+    "webFrameworks": [
+      {
+        "framework": "next",
+        "version": "15"
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "trailingSlashBehavior": "ADD"
+  }
+}
+```
+
+O puedes usar el panel de Firebase Console para habilitar "Web Frameworks" en experimentales.
+
+#### 4. Build para Producción
+```bash
+npm run build
+```
+
+#### 5. Desplegar a Firebase
+```bash
+firebase deploy
+```
+
+Si todo sale bien, verás un mensaje como:
+```
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/tu-proyecto
+Hosting URL: https://tu-proyecto.web.app
+```
+
+### Despliegues Posteriores
+
+Para futuros despliegues, solo necesitas:
+```bash
+npm run build
+firebase deploy
+```
+
+### Troubleshooting
+
+| Problema | Solución |
+|----------|----------|
+| `Error: Failed to list Firebase projects` | Ejecuta `firebase login` nuevamente |
+| `Build artifacts not found in public directory` | Verifica que `firebase.json` tenga `"public": ".next"` |
+| Sitio muestra 404 en rutas dinámicas | Verifica que `webFrameworks` esté habilitado en `firebase.json` |
+| Cambios no se reflejan | Limpia cache y redeploya: `firebase deploy --force` |
+
+---
+
 ## 🌟 Características Principales
 
 GRADE es una plataforma educacional completa que integra:
