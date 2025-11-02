@@ -165,6 +165,8 @@ export default function CategoriesPage() {
       onPageChange={setCurrentPage}
       searchPlaceholder="Buscar por código, nombre..."
       onCreateClick={() => router.push('/evaluation-management/categories/create')}
+      createButtonLabel="Nueva Categoría"
+      createButtonIcon="➕"
       actions={actions}
     />
   );

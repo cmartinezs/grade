@@ -41,12 +41,17 @@ const evalMenu = [
         href: '/evaluation-management/categories' 
       },
       { 
+        label: 'Nueva Categoría', 
+        icon: '➕',
+        href: '/evaluation-management/categories/create' 
+      },
+      { 
         label: 'Listar Niveles', 
         icon: '📊',
         href: '/evaluation-management/levels' 
       },
       { 
-        label: 'Crear Nivel', 
+        label: 'Nuevo Nivel', 
         icon: '➕',
         href: '/evaluation-management/levels/create' 
       },
