@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
-import { CHILEAN_EDUCATION_LEVELS } from '@/types/level';
 import LevelFormFields from '@/components/LevelFormFields';
 
 export default function CreateLevelPage() {
@@ -13,6 +12,7 @@ export default function CreateLevelPage() {
     name: '',
     code: '',
     description: '',
+    categoryId: '' as number | '',
     isActive: true,
   });
   const [submitted, setSubmitted] = useState(false);
@@ -29,23 +29,11 @@ export default function CreateLevelPage() {
     setError('');
   };
 
-  const handleSelectPredefined = (levelName: string) => {
-    const predefined = CHILEAN_EDUCATION_LEVELS.find(l => l.name === levelName);
-    if (predefined) {
-      setFormData({
-        name: predefined.name,
-        code: predefined.code,
-        description: `Nivel educacional: ${predefined.name}`,
-        isActive: true,
-      });
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Validar campos obligatorios
-    if (!formData.name || !formData.code) {
+    if (!formData.name || !formData.code || !formData.categoryId) {
       setError('Por favor completa los campos obligatorios');
       return;
     }
@@ -55,6 +43,7 @@ export default function CreateLevelPage() {
         name: formData.name,
         code: formData.code,
         description: formData.description,
+        categoryId: Number(formData.categoryId),
         isActive: formData.isActive,
       });
 
@@ -107,6 +96,11 @@ export default function CreateLevelPage() {
                 <h6 className="fw-bold mb-2">📋 Datos Requeridos</h6>
                 <div className="small">
                   <p className="mb-2">
+                    <strong>Categoría:</strong>
+                    <br />
+                    <span className="text-muted">Grupo educativo (ej: Básico, Medio)</span>
+                  </p>
+                  <p className="mb-2">
                     <strong>Nombre:</strong>
                     <br />
                     <span className="text-muted">Nombre del nivel (ej: 1° Básico)</span>
@@ -150,8 +144,6 @@ export default function CreateLevelPage() {
                   onSwitchChange={(isActive) =>
                     setFormData({ ...formData, isActive })
                   }
-                  onSelectPredefined={handleSelectPredefined}
-                  showPredefined={true}
                 />
 
                 {/* Botones */}

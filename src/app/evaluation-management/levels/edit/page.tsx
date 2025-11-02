@@ -19,6 +19,7 @@ function EditLevelContent() {
     name: '',
     code: '',
     description: '',
+    categoryId: '' as number | '',
     isActive: true,
   });
   const [submitted, setSubmitted] = useState(false);
@@ -43,6 +44,7 @@ function EditLevelContent() {
       name: level.name,
       code: level.code,
       description: level.description,
+      categoryId: level.categoryId,
       isActive: level.isActive,
     });
     setLoading(false);
@@ -68,7 +70,7 @@ function EditLevelContent() {
     }
 
     // Validar campos obligatorios
-    if (!formData.name || !formData.code) {
+    if (!formData.name || !formData.code || !formData.categoryId) {
       setError('Por favor completa los campos obligatorios');
       return;
     }
@@ -78,6 +80,7 @@ function EditLevelContent() {
         name: formData.name,
         code: formData.code,
         description: formData.description,
+        categoryId: Number(formData.categoryId),
         isActive: formData.isActive,
       });
 
@@ -165,6 +168,11 @@ function EditLevelContent() {
                 <h6 className="fw-bold mb-2">📋 Datos Requeridos</h6>
                 <div className="small">
                   <p className="mb-2">
+                    <strong>Categoría:</strong>
+                    <br />
+                    <span className="text-muted">Grupo educativo (ej: Básico, Medio)</span>
+                  </p>
+                  <p className="mb-2">
                     <strong>Nombre:</strong>
                     <br />
                     <span className="text-muted">Nombre del nivel (ej: 1° Básico)</span>
@@ -208,7 +216,6 @@ function EditLevelContent() {
                   onSwitchChange={(isActive) =>
                     setFormData({ ...formData, isActive })
                   }
-                  showPredefined={false}
                 />
 
                 {/* Botones */}

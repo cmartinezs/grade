@@ -1,61 +1,67 @@
 'use client';
 
-import React from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { CHILEAN_EDUCATION_LEVELS } from '@/types/level';
+import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { levelStore } from '@/lib/levelStore';
+import AutocompleteSelect, { AutocompleteOption } from '@/components/AutocompleteSelect';
 
 export interface LevelFormData {
   name: string;
   code: string;
   description: string;
+  categoryId: number | '';
   isActive: boolean;
 }
 
 interface LevelFormFieldsProps {
   formData: LevelFormData;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   onSwitchChange: (isActive: boolean) => void;
-  onSelectPredefined?: (levelName: string) => void;
-  showPredefined?: boolean;
 }
 
 export default function LevelFormFields({
   formData,
   onChange,
   onSwitchChange,
-  onSelectPredefined,
-  showPredefined = true,
 }: LevelFormFieldsProps) {
+  const [categoryOptions, setCategoryOptions] = useState<AutocompleteOption[]>([]);
+
+  useEffect(() => {
+    const cats = levelStore.getAllCategories();
+    
+    const opts: AutocompleteOption[] = cats.map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      description: cat.description,
+    }));
+    setCategoryOptions(opts);
+  }, []);
+
+  const handleCategoryChange = (value: string | number) => {
+    // Create a synthetic event for consistency with other onChange handlers
+    const syntheticEvent = {
+      target: {
+        name: 'categoryId',
+        value: String(value),
+      },
+    } as React.ChangeEvent<HTMLSelectElement>;
+    onChange(syntheticEvent);
+  };
+
   return (
     <>
-      {/* Selector de Niveles Predefinidos */}
-      {showPredefined && onSelectPredefined && (
-        <>
-          <Form.Group className="mb-4 p-3 bg-light rounded">
-            <Form.Label className="fw-bold mb-3">
-              📚 Usar Nivel Predefinido (Chile)
-            </Form.Label>
-            <div className="d-flex flex-wrap gap-2">
-              {CHILEAN_EDUCATION_LEVELS.map((level) => (
-                <Button
-                  key={level.code}
-                  variant="outline-info"
-                  size="sm"
-                  onClick={() => onSelectPredefined(level.name)}
-                  className="mb-2"
-                >
-                  {level.name}
-                </Button>
-              ))}
-            </div>
-            <Form.Text className="text-muted d-block mt-2">
-              Haz clic en un nivel para autocompletar el formulario
-            </Form.Text>
-          </Form.Group>
-
-          <hr className="my-4" />
-        </>
-      )}
+      {/* Categoría Padre - Autocompletable */}
+      <AutocompleteSelect
+        value={formData.categoryId}
+        onChange={handleCategoryChange}
+        options={categoryOptions}
+        label="Categoría"
+        required
+        placeholder="Escribe para buscar o selecciona una categoría..."
+      />
+      <Form.Text className="text-muted d-block mb-3">
+        La categoría define el grupo al que pertenece este nivel
+      </Form.Text>
 
       {/* Nombre */}
       <Form.Group className="mb-3">
