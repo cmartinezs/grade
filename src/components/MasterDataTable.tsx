@@ -160,29 +160,22 @@ export default function MasterDataTable<T>(
       {/* Header */}
       <Row className="mb-4">
         <Col>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-start">
             <div>
-              <h1 className="mb-2">
-                {icon} {title}
-              </h1>
-              {description && (
-                <p className="text-muted">
-                  {description}
-                  <Badge bg="secondary" className="ms-2">
-                    {totalItems} elemento{totalItems !== 1 ? 's' : ''}
-                  </Badge>
-                </p>
-              )}
+              <div className="d-flex align-items-baseline gap-3">
+                <h1 className="mb-0">
+                  {icon} {title}
+                </h1>
+                {description && (
+                  <p className="text-muted mb-0">
+                    {description}
+                    <Badge bg="secondary" className="ms-2">
+                      {totalItems} elemento{totalItems !== 1 ? 's' : ''}
+                    </Badge>
+                  </p>
+                )}
+              </div>
             </div>
-            <Button
-              onClick={onCreateClick}
-              variant="primary"
-              className="d-flex align-items-center gap-2"
-              disabled={isLoading}
-            >
-              <span>{createButtonIcon}</span>
-              <span>{createButtonLabel}</span>
-            </Button>
           </div>
         </Col>
       </Row>
@@ -216,7 +209,7 @@ export default function MasterDataTable<T>(
             {!hideSearch && (
               <Card.Header className="bg-light">
                 <Row className="align-items-center">
-                  <Col md={6}>
+                  <Col md={4}>
                     <InputGroup>
                       <InputGroup.Text>🔍</InputGroup.Text>
                       <Form.Control
@@ -237,12 +230,17 @@ export default function MasterDataTable<T>(
                       )}
                     </InputGroup>
                   </Col>
-                  <Col md={6} className="text-end text-muted small">
-                    {isLoading ? (
-                      <Spinner animation="border" size="sm" className="me-2" />
-                    ) : (
-                      `Mostrando ${items.length} de ${totalItems}`
-                    )}
+                  <Col md={4}></Col>
+                  <Col md={4} className="text-end">
+                    <Button
+                      onClick={onCreateClick}
+                      variant="primary"
+                      size="sm"
+                      className="d-flex align-items-center gap-2 ms-auto"
+                    >
+                      <span>{createButtonIcon}</span>
+                      <span>{createButtonLabel}</span>
+                    </Button>
                   </Col>
                 </Row>
               </Card.Header>
@@ -328,40 +326,56 @@ export default function MasterDataTable<T>(
                   </Table>
 
                   {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="d-flex justify-content-center py-3">
-                      <Pagination>
-                        <Pagination.First
-                          onClick={() => onPageChange(1)}
-                          disabled={isFirstPage || isLoading}
-                        />
-                        <Pagination.Prev
-                          onClick={() => onPageChange(currentPage - 1)}
-                          disabled={isFirstPage || isLoading}
-                        />
+                  {totalPages >= 1 && (
+                    <div className="d-flex justify-content-between align-items-center py-3 px-3">
+                      <div></div>
+                      <Pagination className="mb-0">
+                        {totalPages > 1 && (
+                          <>
+                            <Pagination.First
+                              onClick={() => onPageChange(1)}
+                              disabled={isFirstPage || isLoading}
+                            />
+                            <Pagination.Prev
+                              onClick={() => onPageChange(currentPage - 1)}
+                              disabled={isFirstPage || isLoading}
+                            />
+                          </>
+                        )}
 
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                           (page) => (
                             <Pagination.Item
                               key={page}
                               active={page === currentPage}
-                              onClick={() => onPageChange(page)}
-                              disabled={isLoading}
+                              onClick={() => totalPages > 1 && onPageChange(page)}
+                              disabled={isLoading || totalPages === 1}
                             >
                               {page}
                             </Pagination.Item>
                           )
                         )}
 
-                        <Pagination.Next
-                          onClick={() => onPageChange(currentPage + 1)}
-                          disabled={isLastPage || isLoading}
-                        />
-                        <Pagination.Last
-                          onClick={() => onPageChange(totalPages)}
-                          disabled={isLastPage || isLoading}
-                        />
+                        {totalPages > 1 && (
+                          <>
+                            <Pagination.Next
+                              onClick={() => onPageChange(currentPage + 1)}
+                              disabled={isLastPage || isLoading}
+                            />
+                            <Pagination.Last
+                              onClick={() => onPageChange(totalPages)}
+                              disabled={isLastPage || isLoading}
+                            />
+                          </>
+                        )}
                       </Pagination>
+                      <div className="text-muted small">
+                        {isLoading ? (
+                          <Spinner animation="border" size="sm" className="me-2" />
+                        ) : (
+                          `Mostrando ${(currentPage - 1) * props.pageSize + 1}-${Math.min(currentPage * props.pageSize, totalItems)} de ${totalItems}`
+                        )}
+                      </div>
                     </div>
                   )}
                 </>
