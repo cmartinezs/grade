@@ -1,6 +1,14 @@
 'use client'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLoading } from './LoadingContext';
+import { auth, db } from '@/lib/firebase';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signOut
+} from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+
 // Tipos
 interface User {
   id: string;
@@ -44,40 +52,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Verificar si hay un usuario autenticado al cargar
   useEffect(() => {
     const checkAuth = () => {
-      try {
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
-          // Reestablecer cookie si hay usuario guardado
-          document.cookie = 'authenticated=true; path=/; max-age=86400';
+      // Monitorear cambios de autenticación en Firebase
+      const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+        try {
+          if (firebaseUser) {
+            // Obtener datos adicionales del usuario desde Firestore
+            const userDocRef = doc(db, 'users', firebaseUser.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            
+            if (userDocSnap.exists()) {
+              const userData = userDocSnap.data();
+              const user: User = {
+                id: firebaseUser.uid,
+                firstName: userData.firstName || '',
+                lastName: userData.lastName || '',
+                email: firebaseUser.email || '',
+                role: userData.role || 'student',
+                institution: userData.institution
+              };
+              setUser(user);
+              localStorage.setItem('user', JSON.stringify(user));
+              document.cookie = 'authenticated=true; path=/; max-age=86400';
+            }
+          } else {
+            // No hay usuario autenticado
+            setUser(null);
+            localStorage.removeItem('user');
+            document.cookie = 'authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          }
+        } catch (error) {
+          console.error('Error checking authentication:', error);
+          setUser(null);
+        } finally {
+          setIsInitializing(false);
         }
-      } catch (error) {
-        console.error('Error loading user from localStorage:', error);
-        localStorage.removeItem('user');
-      } finally {
-        setIsInitializing(false);
-      }
+      });
+      
+      return unsubscribe;
     };
-    checkAuth();
+    
+    const unsubscribe = checkAuth();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
       setLoadingMessage('Iniciando sesión...');
-      // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      // Usuario demo para testing (usamos la contraseña recibida si fuera necesario en el futuro)
-      void password;
-      const mockUser: User = {
-        id: '1',
-        firstName: 'Demo',
-        lastName: 'User',
-        email: email,
-        role: 'teacher',
-        institution: 'Universidad Demo'
+      
+      // Autenticar con Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+      
+      // Obtener datos adicionales del usuario desde Firestore
+      const userDocRef = doc(db, 'users', firebaseUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (!userDocSnap.exists()) {
+        console.error('User profile not found in Firestore');
+        return false;
+      }
+      
+      const userData = userDocSnap.data();
+      const user: User = {
+        id: firebaseUser.uid,
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        email: firebaseUser.email || email,
+        role: userData.role || 'student',
+        institution: userData.institution
       };
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+      
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
       // Establecer cookie para el middleware
       document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
       return true;
@@ -92,18 +140,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       setLoadingMessage('Creando cuenta...');
-      // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const newUser: User = {
-        id: Date.now().toString(),
+      
+      // Crear usuario en Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        userData.email,
+        userData.password
+      );
+      
+      const firebaseUser = userCredential.user;
+      
+      // Guardar datos adicionales en Firestore
+      const userDocRef = doc(db, 'users', firebaseUser.uid);
+      await setDoc(userDocRef, {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        role: userData.role,
+        institution: userData.institution || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      
+      // Crear objeto de usuario local
+      const user: User = {
+        id: firebaseUser.uid,
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email,
         role: userData.role,
         institution: userData.institution
       };
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
+      
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
       // Establecer cookie para el middleware
       document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
       return true;
@@ -114,18 +184,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
-  const logout = () => {
-    setLoading(true);
-    setLoadingMessage('Cerrando sesión...');
-    setUser(null);
-    localStorage.removeItem('user');
-    // Limpiar cookie del middleware
-    document.cookie = 'authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    // Redirigir inmediatamente a la página pública
-    setTimeout(() => {
+  const logout = async () => {
+    try {
+      setLoading(true);
+      setLoadingMessage('Cerrando sesión...');
+      
+      // Cerrar sesión en Firebase
+      await signOut(auth);
+      
+      setUser(null);
+      localStorage.removeItem('user');
+      // Limpiar cookie del middleware
+      document.cookie = 'authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      
+      // Redirigir a la página pública
+      setTimeout(() => {
+        setLoading(false);
+        window.location.href = '/';
+      }, 500);
+    } catch (error) {
+      console.error('Logout error:', error);
       setLoading(false);
-      window.location.href = '/';
-    }, 500);
+    }
   };
   const value: AuthContextType = {
     user,

@@ -8,20 +8,35 @@ Desarrollada con **Next.js 15.5.4**, **React 19**, **TypeScript 5+** y **React B
 
 ## 📚 Documentación
 
-**Nueva estructura de documentación en `docs/`:**
+### 🗂️ Índice de Documentación (EMPIEZA AQUÍ)
+**[→ DOCS_INDEX.md](./DOCS_INDEX.md)** - Guía de lectura en orden lógico
 
-**↪️ [Empieza aquí →](./docs/README.md)**
+## � Documentación
 
-Documentación rápida:
-- **[QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)** - ⚡ Guía rápida (comandos, ejemplos, FAQ)
-- **[PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - 🗂️ Estructura del proyecto
-- **[TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - 🐛 Solución de problemas
-- **[MASTER_DATA_TABLE.md](./docs/MASTER_DATA_TABLE.md)** - 📊 Guía del componente principal
-- **[ARCHITECTURE_PATTERNS.md](./docs/ARCHITECTURE_PATTERNS.md)** - 🏗️ Patrones y mejores prácticas
-- **[CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - 👥 Guía de contribución
-- **[CHANGES.md](./docs/CHANGES.md)** - 📝 Resumen de cambios recientes
+### 🔐 Firebase Authentication (Reciente)
+**[→ docs/changes/07-firebase-auth/INDEX.md](./docs/changes/07-firebase-auth/INDEX.md)** - Documentación Firebase Auth integrada
 
-Ver también: [PROJECT_STATUS.md](./PROJECT_STATUS.md) - Estado completo del proyecto
+| Archivo | Propósito | Duración |
+|---------|-----------|----------|
+| **[01_QUICK_START.md](./docs/changes/07-firebase-auth/01_QUICK_START.md)** | ⚡ Configuración rápida | 5 min |
+| **[02_FIREBASE_AUTH_SETUP.md](./docs/changes/07-firebase-auth/02_FIREBASE_AUTH_SETUP.md)** | 🔐 Autenticación detallada | 15 min |
+| **[03_FIRESTORE_STRUCTURE.md](./docs/changes/07-firebase-auth/03_FIRESTORE_STRUCTURE.md)** | 📊 Estructura de datos | 10 min |
+| **[04_IMPLEMENTATION_SUMMARY.md](./docs/changes/07-firebase-auth/04_IMPLEMENTATION_SUMMARY.md)** | 🔧 Cambios técnicos | 10 min |
+| **[05_PROJECT_STATUS.md](./docs/changes/07-firebase-auth/05_PROJECT_STATUS.md)** | 📈 Estado del proyecto | 5 min |
+
+### 📁 Documentación en `/docs/`
+- **[docs/QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)** - ⚡ Guía rápida
+- **[docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - 🗂️ Estructura del proyecto
+- **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - 🔧 Solución de problemas
+- **[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - 👥 Guía de contribución
+- **[docs/changes/](./docs/changes/)** - 📋 Historial de cambios y features recientes
+
+### 📁 Documentación en `/docs/`
+- **[docs/README.md](./docs/README.md)** - Empieza aquí para la estructura antigua
+- **[docs/QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)** - ⚡ Guía rápida
+- **[docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - �️ Estructura del proyecto
+- **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - � Solución de problemas
+- **[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - 👥 Guía de contribución
 
 ---
 
