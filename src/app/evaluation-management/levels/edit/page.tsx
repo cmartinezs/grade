@@ -54,9 +54,17 @@ function EditLevelContent() {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     
+    let processedValue: string | number | boolean = value;
+    if (type === 'checkbox') {
+      processedValue = checked;
+    } else if (name === 'categoryId' && value) {
+      // Ensure categoryId is always a number
+      processedValue = typeof value === 'number' ? value : parseInt(value, 10);
+    }
+    
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: processedValue,
     });
     setError('');
   };

@@ -38,13 +38,15 @@ export default function LevelFormFields({
   }, []);
 
   const handleCategoryChange = (value: string | number) => {
-    // Create a synthetic event for consistency with other onChange handlers
+    // Create a synthetic event that mimics a form input event
+    // Pass value as string so handleChange can process it consistently
     const syntheticEvent = {
       target: {
         name: 'categoryId',
-        value: String(value),
+        value: String(value), // Convert to string for consistent form handling
+        type: 'select-one',
       },
-    } as React.ChangeEvent<HTMLSelectElement>;
+    } as unknown as React.ChangeEvent<HTMLSelectElement>;
     onChange(syntheticEvent);
   };
 

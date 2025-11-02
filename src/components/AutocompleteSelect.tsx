@@ -41,9 +41,28 @@ export default function AutocompleteSelect({
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Initialize input value when value prop changes
+  // If value is an ID, find the corresponding option name
   useEffect(() => {
-    setInputValue(String(value));
-  }, [value]);
+    if (value && value !== '') {
+      // Convert value to the same type as option.id for proper comparison
+      const selectedOption = options.find(opt => {
+        // Compare as numbers if possible
+        if (typeof opt.id === 'number' && typeof value === 'string') {
+          return opt.id === parseInt(value, 10);
+        }
+        return opt.id === value;
+      });
+      
+      if (selectedOption) {
+        setInputValue(selectedOption.name);
+      } else {
+        // If not found in options, use the string value (user might be typing)
+        setInputValue(String(value));
+      }
+    } else {
+      setInputValue('');
+    }
+  }, [value, options]);
 
   // Initialize filtered options
   useEffect(() => {
@@ -53,8 +72,6 @@ export default function AutocompleteSelect({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
     setInputValue(inputVal);
-    // Pass as-is: string if user is typing, caller decides type
-    onChange(inputVal);
 
     if (inputVal.trim()) {
       const filtered = options.filter(opt =>
@@ -86,7 +103,7 @@ export default function AutocompleteSelect({
     setTimeout(() => {
       setShowSuggestions(false);
       onBlur?.();
-    }, 200);
+    }, 100);
   };
 
   return (
