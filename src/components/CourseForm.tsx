@@ -7,6 +7,7 @@ import { courseStore } from '@/lib/courseStore';
 import { levelStore } from '@/lib/levelStore';
 import { CourseValidationError } from '@/types/course';
 import AutocompleteSelect, { AutocompleteOption } from '@/components/AutocompleteSelect';
+import FreeTextAutocomplete from '@/components/FreeTextAutocomplete';
 
 interface CourseFormProps {
   mode: 'create' | 'edit';
@@ -237,10 +238,10 @@ export default function CourseForm({
         disabled={isDisabled}
       />
 
-      {/* Institution - Using AutocompleteSelect Component */}
-      <AutocompleteSelect
+      {/* Institution - Using FreeTextAutocomplete Component (free text field with suggestions) */}
+      <FreeTextAutocomplete
         value={institution}
-        onChange={(value) => setInstitution(String(value))}
+        onChange={(value) => setInstitution(value)}
         options={institutionOptions}
         label="Institución"
         required

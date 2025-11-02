@@ -3,17 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 
-export interface AutocompleteOption {
-  id: string | number;
+export interface FreeTextAutocompleteOption {
+  id?: string | number;
   name: string;
   description?: string;
 }
 
-interface AutocompleteSelectProps {
-  value: string | number;
-  onChange: (value: string | number) => void;
+interface FreeTextAutocompleteProps {
+  value: string;
+  onChange: (value: string) => void;
   onBlur?: () => void;
-  options: AutocompleteOption[];
+  options: FreeTextAutocompleteOption[];
   placeholder?: string;
   disabled?: boolean;
   isInvalid?: boolean;
@@ -23,53 +23,28 @@ interface AutocompleteSelectProps {
   autoComplete?: string;
 }
 
-export default function AutocompleteSelect({
+export default function FreeTextAutocomplete({
   value,
   onChange,
   onBlur,
   options,
-  placeholder = 'Escribe para buscar...',
+  placeholder = 'Escribe o selecciona...',
   disabled = false,
   isInvalid = false,
   label,
   required = false,
   errorMessage,
   autoComplete = 'off'
-}: AutocompleteSelectProps) {
+}: FreeTextAutocompleteProps) {
   const [inputValue, setInputValue] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState<AutocompleteOption[]>([]);
+  const [filteredOptions, setFilteredOptions] = useState<FreeTextAutocompleteOption[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isSelecting, setIsSelecting] = useState(false);
 
   // Initialize input value when value prop changes
-  // If value is an ID, find the corresponding option name
+  // For free text, we just use the value directly
   useEffect(() => {
-    // Skip this effect if we just made a selection (avoid overwriting user's choice)
-    if (isSelecting) {
-      setIsSelecting(false);
-      return;
-    }
-
-    if (value && value !== '') {
-      // Convert value to the same type as option.id for proper comparison
-      const selectedOption = options.find(opt => {
-        // Compare as numbers if possible
-        if (typeof opt.id === 'number' && typeof value === 'string') {
-          return opt.id === parseInt(value, 10);
-        }
-        return opt.id === value;
-      });
-      
-      if (selectedOption) {
-        setInputValue(selectedOption.name);
-      } else {
-        // If not found in options, use the string value (user might be typing)
-        setInputValue(String(value));
-      }
-    } else {
-      setInputValue('');
-    }
-  }, [value, options, isSelecting]);
+    setInputValue(value);
+  }, [value]);
 
   // Initialize filtered options
   useEffect(() => {
@@ -79,6 +54,8 @@ export default function AutocompleteSelect({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
     setInputValue(inputVal);
+    // Always call onChange with the current input value (free text mode)
+    onChange(inputVal);
 
     if (inputVal.trim()) {
       const filtered = options.filter(opt =>
@@ -92,13 +69,11 @@ export default function AutocompleteSelect({
     }
   };
 
-  const handleSelectOption = (option: AutocompleteOption) => {
-    // Set flag to prevent useEffect from overwriting this selection
-    setIsSelecting(true);
-    // Update input display with the selected option name
-    setInputValue(option.name);
-    // Pass the ID (number or string, as is)
-    onChange(option.id);
+  const handleSelectOption = (option: FreeTextAutocompleteOption) => {
+    // When selecting an option, use its name as the value
+    const selectedValue = option.name;
+    setInputValue(selectedValue);
+    onChange(selectedValue);
     setShowSuggestions(false);
   };
 
@@ -113,7 +88,7 @@ export default function AutocompleteSelect({
     setTimeout(() => {
       setShowSuggestions(false);
       onBlur?.();
-    }, 150); // Slightly longer delay to ensure handleSelectOption completes first
+    }, 150);
   };
 
   return (
@@ -156,9 +131,9 @@ export default function AutocompleteSelect({
             marginTop: '-4px'
           }}
         >
-          {filteredOptions.map((option) => (
+          {filteredOptions.map((option, idx) => (
             <div
-              key={option.id}
+              key={idx}
               onClick={() => handleSelectOption(option)}
               style={{
                 padding: '10px 15px',
