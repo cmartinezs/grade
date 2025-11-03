@@ -61,6 +61,281 @@ extend type Difficulty {
   """
   weight_max: Int @fdc_generated(from: "Difficulty.weight", purpose: QUERY_MAX)
 }
+extend type EducationalLevel {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "EducationalLevel", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table.
+  """
+  _count: Int! @fdc_generated(from: "EducationalLevel.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `active` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  active_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.active", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `categoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  categoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.categoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.code", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `deletedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.deletedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `deletedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.deletedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `levelId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  levelId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.levelId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `EducationalLevel` table where the `updatedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel.updatedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `EducationalLevel` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "EducationalLevel.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `deletedAt` field in the `EducationalLevel` table.
+  """
+  deletedAt_min: Timestamp @fdc_generated(from: "EducationalLevel.deletedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `EducationalLevel` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "EducationalLevel.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `EducationalLevel` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "EducationalLevel.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `deletedAt` field in the `EducationalLevel` table.
+  """
+  deletedAt_max: Timestamp @fdc_generated(from: "EducationalLevel.deletedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `EducationalLevel` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "EducationalLevel.updatedAt", purpose: QUERY_MAX)
+}
+extend type LevelCategory {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "LevelCategory", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table.
+  """
+  _count: Int! @fdc_generated(from: "LevelCategory.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `active` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  active_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.active", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `categoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  categoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.categoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.code", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `deletedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.deletedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `deletedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.deletedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `LevelCategory` table where the `updatedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory.updatedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `LevelCategory` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "LevelCategory.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `deletedAt` field in the `LevelCategory` table.
+  """
+  deletedAt_min: Timestamp @fdc_generated(from: "LevelCategory.deletedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `LevelCategory` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "LevelCategory.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `LevelCategory` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "LevelCategory.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `deletedAt` field in the `LevelCategory` table.
+  """
+  deletedAt_max: Timestamp @fdc_generated(from: "LevelCategory.deletedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `LevelCategory` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "LevelCategory.updatedAt", purpose: QUERY_MAX)
+}
 extend type Outcome {
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.

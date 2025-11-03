@@ -9,6 +9,17 @@ import {
   LevelCategory,
 } from '@/types/level';
 
+import {
+  createNewLevelCategory,
+  updateLevelCategoryInfo,
+  deactivateLevelCategoryInfo,
+  reactivateLevelCategoryInfo,
+  createNewEducationalLevel,
+  updateEducationalLevelInfo,
+  deactivateEducationalLevelInfo,
+  reactivateEducationalLevelInfo,
+} from './levelDataConnect';
+
 const CATEGORIES_STORAGE_KEY = 'parametric_level_categories';
 const LEVELS_STORAGE_KEY = 'parametric_educational_levels';
 
@@ -560,6 +571,110 @@ class LevelStore {
     return this.levelStore.deleteLevel(id);
   }
 }
+
+// ===================================================================
+// DATA CONNECT WRAPPERS (Funciones con cache sincronizado)
+// ===================================================================
+
+interface CacheState {
+  categories: LevelCategory[] | null;
+  levels: EducationalLevel[] | null;
+  lastFetch: Record<string, number>;
+  loading: Record<string, boolean>;
+}
+
+const cache: CacheState = {
+  categories: null,
+  levels: null,
+  lastFetch: {},
+  loading: {
+    categories: false,
+    levels: false,
+  }
+};
+
+/**
+ * Crear categoría de nivel (con sincronización de caché)
+ */
+export const createLevelCategory = async (
+  code: string,
+  name: string,
+  description: string | undefined,
+  createdBy: string
+): Promise<void> => {
+  try {
+    // Call Data Connect mutation
+    await createNewLevelCategory(code, name, description || '', createdBy);
+    
+    // Sync to cache with generated UUID
+    const categoryId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const newCategory: LevelCategory = {
+      id: parseInt(categoryId.substring(0, 8), 16), // Convert UUID start to number for id
+      code,
+      name,
+      description: description || '',
+      categoryId: null,
+      isActive: true,
+      createdAt: new Date(),
+      createdBy,
+      updatedAt: new Date(),
+      updatedBy: createdBy,
+      deletedAt: null,
+      deletedBy: null,
+    };
+    
+    if (cache.categories && Array.isArray(cache.categories)) {
+      cache.categories.push(newCategory);
+    } else {
+      cache.categories = null;
+    }
+  } catch (error) {
+    console.error('Error creating level category:', error);
+    throw error;
+  }
+};
+
+/**
+ * Crear nivel educacional (con sincronización de caché)
+ */
+export const createEducationalLevel = async (
+  code: string,
+  name: string,
+  categoryId: number,
+  description: string | undefined,
+  createdBy: string
+): Promise<void> => {
+  try {
+    // Call Data Connect mutation
+    await createNewEducationalLevel(code, name, categoryId.toString(), description || '', createdBy);
+    
+    // Sync to cache with generated UUID
+    const levelId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const newLevel: EducationalLevel = {
+      id: parseInt(levelId.substring(0, 8), 16), // Convert UUID start to number for id
+      code,
+      name,
+      description: description || '',
+      categoryId,
+      isActive: true,
+      createdAt: new Date(),
+      createdBy,
+      updatedAt: new Date(),
+      updatedBy: createdBy,
+      deletedAt: null,
+      deletedBy: null,
+    };
+    
+    if (cache.levels && Array.isArray(cache.levels)) {
+      cache.levels.push(newLevel);
+    } else {
+      cache.levels = null;
+    }
+  } catch (error) {
+    console.error('Error creating educational level:', error);
+    throw error;
+  }
+};
 
 // Export singletons
 export const levelCategoryStore = new LevelCategoryStore();

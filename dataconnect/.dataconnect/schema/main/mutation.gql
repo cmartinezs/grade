@@ -9,6 +9,24 @@ extend type Mutation {
     data: Difficulty_Data!
   ): Difficulty_KeyOutput! @fdc_generated(from: "Difficulty", purpose: INSERT_SINGLE)
   """
+  ✨ Insert a single `EducationalLevel` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  educationalLevel_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: EducationalLevel_Data!
+  ): EducationalLevel_KeyOutput! @fdc_generated(from: "EducationalLevel", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `LevelCategory` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  levelCategory_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: LevelCategory_Data!
+  ): LevelCategory_KeyOutput! @fdc_generated(from: "LevelCategory", purpose: INSERT_SINGLE)
+  """
   ✨ Insert a single `Outcome` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   outcome_insert(
@@ -89,6 +107,24 @@ extend type Mutation {
     """
     data: [Difficulty_Data!]!
   ): [Difficulty_KeyOutput!]! @fdc_generated(from: "Difficulty", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `EducationalLevel` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  educationalLevel_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [EducationalLevel_Data!]!
+  ): [EducationalLevel_KeyOutput!]! @fdc_generated(from: "EducationalLevel", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `LevelCategory` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  levelCategory_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [LevelCategory_Data!]!
+  ): [LevelCategory_KeyOutput!]! @fdc_generated(from: "LevelCategory", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Outcome` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -171,6 +207,24 @@ extend type Mutation {
     data: Difficulty_Data!
   ): Difficulty_KeyOutput! @fdc_generated(from: "Difficulty", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update a single `EducationalLevel` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EducationalLevel`.
+  """
+  educationalLevel_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: EducationalLevel_Data!
+  ): EducationalLevel_KeyOutput! @fdc_generated(from: "EducationalLevel", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `LevelCategory` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LevelCategory`.
+  """
+  levelCategory_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: LevelCategory_Data!
+  ): LevelCategory_KeyOutput! @fdc_generated(from: "LevelCategory", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update a single `Outcome` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Outcome`.
   """
   outcome_upsert(
@@ -251,6 +305,24 @@ extend type Mutation {
     """
     data: [Difficulty_Data!]!
   ): [Difficulty_KeyOutput!]! @fdc_generated(from: "Difficulty", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `EducationalLevel` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EducationalLevel`.
+  """
+  educationalLevel_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [EducationalLevel_Data!]!
+  ): [EducationalLevel_KeyOutput!]! @fdc_generated(from: "EducationalLevel", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `LevelCategory` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LevelCategory`.
+  """
+  levelCategory_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [LevelCategory_Data!]!
+  ): [LevelCategory_KeyOutput!]! @fdc_generated(from: "LevelCategory", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Outcome` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Outcome`.
   """
@@ -342,6 +414,44 @@ extend type Mutation {
     """
     data: Difficulty_Data!
   ): Difficulty_KeyOutput @fdc_generated(from: "Difficulty", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `EducationalLevel` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `EducationalLevel` or `null` if not found.
+  """
+  educationalLevel_update(
+    """
+    The key used to identify the object.
+    """
+    key: EducationalLevel_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EducationalLevel_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: EducationalLevel_Data!
+  ): EducationalLevel_KeyOutput @fdc_generated(from: "EducationalLevel", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `LevelCategory` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `LevelCategory` or `null` if not found.
+  """
+  levelCategory_update(
+    """
+    The key used to identify the object.
+    """
+    key: LevelCategory_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LevelCategory_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: LevelCategory_Data!
+  ): LevelCategory_KeyOutput @fdc_generated(from: "LevelCategory", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Outcome` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Outcome` or `null` if not found.
   """
@@ -514,6 +624,44 @@ extend type Mutation {
     data: Difficulty_Data!
   ): Int! @fdc_generated(from: "Difficulty", purpose: UPDATE_MULTIPLE)
   """
+  ✨ Update `EducationalLevel` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  educationalLevel_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: EducationalLevel_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: EducationalLevel_Data!
+  ): Int! @fdc_generated(from: "EducationalLevel", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `LevelCategory` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  levelCategory_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: LevelCategory_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: LevelCategory_Data!
+  ): Int! @fdc_generated(from: "LevelCategory", purpose: UPDATE_MULTIPLE)
+  """
   ✨ Update `Outcome` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   outcome_updateMany(
@@ -680,6 +828,34 @@ extend type Mutation {
     first: Difficulty_FirstRow
   ): Difficulty_KeyOutput @fdc_generated(from: "Difficulty", purpose: DELETE_SINGLE)
   """
+  ✨ Delete a single `EducationalLevel` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  educationalLevel_delete(
+    """
+    The key used to identify the object.
+    """
+    key: EducationalLevel_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EducationalLevel_FirstRow
+  ): EducationalLevel_KeyOutput @fdc_generated(from: "EducationalLevel", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `LevelCategory` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  levelCategory_delete(
+    """
+    The key used to identify the object.
+    """
+    key: LevelCategory_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: LevelCategory_FirstRow
+  ): LevelCategory_KeyOutput @fdc_generated(from: "LevelCategory", purpose: DELETE_SINGLE)
+  """
   ✨ Delete a single `Outcome` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   outcome_delete(
@@ -805,6 +981,34 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "Difficulty", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `EducationalLevel` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  educationalLevel_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: EducationalLevel_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "EducationalLevel", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `LevelCategory` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  levelCategory_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: LevelCategory_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "LevelCategory", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Outcome` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

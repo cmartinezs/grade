@@ -260,3 +260,76 @@ type QuestionOption @table(name: "question_options", key: "questionOptionId") {
   # ID de la pregunta a la que pertenece
   questionId: UUID! @col(name: "question_fk")
 }
+
+type LevelCategory @table(name: "level_categories", key: "categoryId") {
+  # Identificador único de la categoría de nivel
+  categoryId: UUID! @col(name: "category_id")
+  
+  # Código de la categoría (ej. CAT_BASIC, CAT_MEDIA)
+  code: String! @unique
+  
+  # Nombre de la categoría
+  name: String!
+  
+  # Descripción de la categoría
+  description: String
+  
+  # Indicador de activo/inactivo
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type EducationalLevel @table(name: "educational_levels", key: "levelId") {
+  # Identificador único del nivel educacional
+  levelId: UUID! @col(name: "level_id")
+  
+  # Identificador de la categoría padre
+  categoryId: UUID! @col(name: "category_fk")
+  
+  # Código del nivel (ej. LEVEL_1B, LEVEL_2M)
+  code: String! @unique
+  
+  # Nombre del nivel (ej. 1° Básico, 1° Medio)
+  name: String!
+  
+  # Descripción del nivel
+  description: String
+  
+  # Indicador de activo/inactivo
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}

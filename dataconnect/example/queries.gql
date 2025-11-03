@@ -114,3 +114,83 @@ query GetTopic($topicId: UUID!) @auth(level: USER) {
     deletedBy
   }
 }
+
+# ===================================================================
+# CATEGORÍAS DE NIVELES (Level Categories)
+# ===================================================================
+
+# Listar todas las categorías de niveles
+query ListLevelCategories @auth(level: USER) {
+  levelCategories {
+    categoryId
+    code
+    name
+    description
+    active
+    createdAt
+  }
+}
+
+# Obtener una categoría de nivel por ID
+query GetLevelCategory($categoryId: UUID!) @auth(level: USER) {
+  levelCategory(key: { categoryId: $categoryId }) {
+    categoryId
+    code
+    name
+    description
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# ===================================================================
+# NIVELES EDUCACIONALES (Educational Levels)
+# ===================================================================
+
+# Listar todos los niveles educacionales
+query ListEducationalLevels @auth(level: USER) {
+  educationalLevels {
+    levelId
+    categoryId
+    code
+    name
+    description
+    active
+    createdAt
+  }
+}
+
+# Obtener un nivel educacional por ID
+query GetEducationalLevel($levelId: UUID!) @auth(level: USER) {
+  educationalLevel(key: { levelId: $levelId }) {
+    levelId
+    categoryId
+    code
+    name
+    description
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# Obtener todos los niveles de una categoría específica
+query GetLevelsByCategory($categoryId: UUID!) @auth(level: USER) {
+  educationalLevels(where: { categoryId: { eq: $categoryId } }) {
+    levelId
+    code
+    name
+    description
+    active
+    createdAt
+  }
+}

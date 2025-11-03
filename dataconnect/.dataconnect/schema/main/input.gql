@@ -5,6 +5,18 @@ It has the same format as `Difficulty_Key`, but is only used as mutation return 
 """
 scalar Difficulty_KeyOutput
 """
+✨ `EducationalLevel_KeyOutput` returns the primary key fields of table type `EducationalLevel`.
+
+It has the same format as `EducationalLevel_Key`, but is only used as mutation return value.
+"""
+scalar EducationalLevel_KeyOutput
+"""
+✨ `LevelCategory_KeyOutput` returns the primary key fields of table type `LevelCategory`.
+
+It has the same format as `LevelCategory_Key`, but is only used as mutation return value.
+"""
+scalar LevelCategory_KeyOutput
+"""
 ✨ `Outcome_KeyOutput` returns the primary key fields of table type `Outcome`.
 
 It has the same format as `Outcome_Key`, but is only used as mutation return value.
@@ -254,6 +266,892 @@ input Difficulty_Order {
   ✨ Generated from Field `Difficulty`.`weight_max` of type `Int`
   """
   weight_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'EducationalLevel'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input EducationalLevel_Data {
+  """
+  ✨ Generated from Field `EducationalLevel`.`levelId` of type `UUID!`
+  """
+  levelId: UUID
+  """
+  ✨ `_expr` server value variant of `levelId` (✨ Generated from Field `EducationalLevel`.`levelId` of type `UUID!`)
+  """
+  levelId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`active` of type `Boolean!`
+  """
+  active: Boolean
+  """
+  ✨ `_expr` server value variant of `active` (✨ Generated from Field `EducationalLevel`.`active` of type `Boolean!`)
+  """
+  active_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `EducationalLevel`.`categoryId` of type `UUID!`)
+  """
+  categoryId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`code` of type `String!`
+  """
+  code: String
+  """
+  ✨ `_expr` server value variant of `code` (✨ Generated from Field `EducationalLevel`.`code` of type `String!`)
+  """
+  code_expr: String_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `EducationalLevel`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `EducationalLevel`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `EducationalLevel`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `EducationalLevel`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `EducationalLevel`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `EducationalLevel`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `EducationalLevel`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `EducationalLevel`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `EducationalLevel`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `EducationalLevel`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `EducationalLevel`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `EducationalLevel`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `EducationalLevel`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `EducationalLevel`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'EducationalLevel'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input EducationalLevel_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [EducationalLevel_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: EducationalLevel_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [EducationalLevel_Filter!]
+  """
+  ✨ Generated from Field `EducationalLevel`.`levelId` of type `UUID!`
+  """
+  levelId: UUID_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`active` of type `Boolean!`
+  """
+  active: Boolean_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`code` of type `String!`
+  """
+  code: String_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'EducationalLevel'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input EducationalLevel_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [EducationalLevel_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: EducationalLevel_Filter
+}
+"""
+✨ Generated having input type for table 'EducationalLevel'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input EducationalLevel_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [EducationalLevel_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: EducationalLevel_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [EducationalLevel_Having!]
+  """
+  ✨ Generated from Field `EducationalLevel`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`active_count` of type `Int!`
+  """
+  active_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`code_count` of type `Int!`
+  """
+  code_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`levelId_count` of type `Int!`
+  """
+  levelId_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'EducationalLevel'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input EducationalLevel_Key {
+  """
+  ✨ Generated from Field `EducationalLevel`.`levelId` of type `UUID!`
+  """
+  levelId: UUID
+  """
+  ✨ `_expr` server value variant of `levelId` (✨ Generated from Field `EducationalLevel`.`levelId` of type `UUID!`)
+  """
+  levelId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'EducationalLevel'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input EducationalLevel_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: EducationalLevel_Filter
+}
+"""
+✨ Generated order input type for table 'EducationalLevel'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input EducationalLevel_Order {
+  """
+  ✨ Generated from Field `EducationalLevel`.`levelId` of type `UUID!`
+  """
+  levelId: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`active` of type `Boolean!`
+  """
+  active: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`categoryId` of type `UUID!`
+  """
+  categoryId: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`code` of type `String!`
+  """
+  code: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`active_count` of type `Int!`
+  """
+  active_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`code_count` of type `Int!`
+  """
+  code_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`levelId_count` of type `Int!`
+  """
+  levelId_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `EducationalLevel`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'LevelCategory'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input LevelCategory_Data {
+  """
+  ✨ Generated from Field `LevelCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `LevelCategory`.`categoryId` of type `UUID!`)
+  """
+  categoryId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`active` of type `Boolean!`
+  """
+  active: Boolean
+  """
+  ✨ `_expr` server value variant of `active` (✨ Generated from Field `LevelCategory`.`active` of type `Boolean!`)
+  """
+  active_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`code` of type `String!`
+  """
+  code: String
+  """
+  ✨ `_expr` server value variant of `code` (✨ Generated from Field `LevelCategory`.`code` of type `String!`)
+  """
+  code_expr: String_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `LevelCategory`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `LevelCategory`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `LevelCategory`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `LevelCategory`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `LevelCategory`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `LevelCategory`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `LevelCategory`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `LevelCategory`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `LevelCategory`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `LevelCategory`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `LevelCategory`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `LevelCategory`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `LevelCategory`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `LevelCategory`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `LevelCategory`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'LevelCategory'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input LevelCategory_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [LevelCategory_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: LevelCategory_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [LevelCategory_Filter!]
+  """
+  ✨ Generated from Field `LevelCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`active` of type `Boolean!`
+  """
+  active: Boolean_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`code` of type `String!`
+  """
+  code: String_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'LevelCategory'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input LevelCategory_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [LevelCategory_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: LevelCategory_Filter
+}
+"""
+✨ Generated having input type for table 'LevelCategory'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input LevelCategory_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [LevelCategory_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: LevelCategory_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [LevelCategory_Having!]
+  """
+  ✨ Generated from Field `LevelCategory`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`active_count` of type `Int!`
+  """
+  active_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`code_count` of type `Int!`
+  """
+  code_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'LevelCategory'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input LevelCategory_Key {
+  """
+  ✨ Generated from Field `LevelCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `LevelCategory`.`categoryId` of type `UUID!`)
+  """
+  categoryId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'LevelCategory'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input LevelCategory_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: LevelCategory_Filter
+}
+"""
+✨ Generated order input type for table 'LevelCategory'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input LevelCategory_Order {
+  """
+  ✨ Generated from Field `LevelCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`active` of type `Boolean!`
+  """
+  active: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`code` of type `String!`
+  """
+  code: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`active_count` of type `Int!`
+  """
+  active_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`code_count` of type `Int!`
+  """
+  code_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `LevelCategory`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
 }
 """
 ✨ Generated data input type for table 'Outcome'. It includes all necessary fields for creating or upserting rows into table.

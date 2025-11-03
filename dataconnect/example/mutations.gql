@@ -270,3 +270,159 @@ mutation ReactivateTopic(
     }
   )
 }
+
+# ===================================================================
+# CATEGORÍAS DE NIVELES (Level Categories)
+# ===================================================================
+
+# Crear una nueva categoría de nivel
+mutation CreateLevelCategory(
+  $categoryId: UUID!
+  $code: String!
+  $name: String!
+  $description: String
+  $createdBy: UUID!
+) @auth(level: USER) {
+  levelCategory_insert(
+    data: {
+      categoryId: $categoryId
+      code: $code
+      name: $name
+      description: $description
+      createdBy: $createdBy
+      active: true
+    }
+  )
+}
+
+# Actualizar una categoría de nivel
+mutation UpdateLevelCategory(
+  $categoryId: UUID!
+  $code: String
+  $name: String
+  $description: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  levelCategory_update(
+    key: { categoryId: $categoryId }
+    data: {
+      code: $code
+      name: $name
+      description: $description
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar una categoría de nivel (soft delete)
+mutation DeactivateLevelCategory(
+  $categoryId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  levelCategory_update(
+    key: { categoryId: $categoryId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar una categoría de nivel (undo soft delete)
+mutation ReactivateLevelCategory(
+  $categoryId: UUID!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  levelCategory_update(
+    key: { categoryId: $categoryId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# ===================================================================
+# NIVELES EDUCACIONALES (Educational Levels)
+# ===================================================================
+
+# Crear un nuevo nivel educacional
+mutation CreateEducationalLevel(
+  $levelId: UUID!
+  $categoryId: UUID!
+  $code: String!
+  $name: String!
+  $description: String
+  $createdBy: UUID!
+) @auth(level: USER) {
+  educationalLevel_insert(
+    data: {
+      levelId: $levelId
+      categoryId: $categoryId
+      code: $code
+      name: $name
+      description: $description
+      createdBy: $createdBy
+      active: true
+    }
+  )
+}
+
+# Actualizar un nivel educacional
+mutation UpdateEducationalLevel(
+  $levelId: UUID!
+  $code: String
+  $name: String
+  $description: String
+  $categoryId: UUID
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  educationalLevel_update(
+    key: { levelId: $levelId }
+    data: {
+      code: $code
+      name: $name
+      description: $description
+      categoryId: $categoryId
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar un nivel educacional (soft delete)
+mutation DeactivateEducationalLevel(
+  $levelId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  educationalLevel_update(
+    key: { levelId: $levelId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar un nivel educacional (undo soft delete)
+mutation ReactivateEducationalLevel(
+  $levelId: UUID!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  educationalLevel_update(
+    key: { levelId: $levelId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}

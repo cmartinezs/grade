@@ -175,6 +175,102 @@ exports.reactivateTopic = function reactivateTopic(dcOrVars, vars) {
   return executeMutation(reactivateTopicRef(dcOrVars, vars));
 };
 
+const createLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateLevelCategory', inputVars);
+}
+createLevelCategoryRef.operationName = 'CreateLevelCategory';
+exports.createLevelCategoryRef = createLevelCategoryRef;
+
+exports.createLevelCategory = function createLevelCategory(dcOrVars, vars) {
+  return executeMutation(createLevelCategoryRef(dcOrVars, vars));
+};
+
+const updateLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateLevelCategory', inputVars);
+}
+updateLevelCategoryRef.operationName = 'UpdateLevelCategory';
+exports.updateLevelCategoryRef = updateLevelCategoryRef;
+
+exports.updateLevelCategory = function updateLevelCategory(dcOrVars, vars) {
+  return executeMutation(updateLevelCategoryRef(dcOrVars, vars));
+};
+
+const deactivateLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateLevelCategory', inputVars);
+}
+deactivateLevelCategoryRef.operationName = 'DeactivateLevelCategory';
+exports.deactivateLevelCategoryRef = deactivateLevelCategoryRef;
+
+exports.deactivateLevelCategory = function deactivateLevelCategory(dcOrVars, vars) {
+  return executeMutation(deactivateLevelCategoryRef(dcOrVars, vars));
+};
+
+const reactivateLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateLevelCategory', inputVars);
+}
+reactivateLevelCategoryRef.operationName = 'ReactivateLevelCategory';
+exports.reactivateLevelCategoryRef = reactivateLevelCategoryRef;
+
+exports.reactivateLevelCategory = function reactivateLevelCategory(dcOrVars, vars) {
+  return executeMutation(reactivateLevelCategoryRef(dcOrVars, vars));
+};
+
+const createEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateEducationalLevel', inputVars);
+}
+createEducationalLevelRef.operationName = 'CreateEducationalLevel';
+exports.createEducationalLevelRef = createEducationalLevelRef;
+
+exports.createEducationalLevel = function createEducationalLevel(dcOrVars, vars) {
+  return executeMutation(createEducationalLevelRef(dcOrVars, vars));
+};
+
+const updateEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateEducationalLevel', inputVars);
+}
+updateEducationalLevelRef.operationName = 'UpdateEducationalLevel';
+exports.updateEducationalLevelRef = updateEducationalLevelRef;
+
+exports.updateEducationalLevel = function updateEducationalLevel(dcOrVars, vars) {
+  return executeMutation(updateEducationalLevelRef(dcOrVars, vars));
+};
+
+const deactivateEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateEducationalLevel', inputVars);
+}
+deactivateEducationalLevelRef.operationName = 'DeactivateEducationalLevel';
+exports.deactivateEducationalLevelRef = deactivateEducationalLevelRef;
+
+exports.deactivateEducationalLevel = function deactivateEducationalLevel(dcOrVars, vars) {
+  return executeMutation(deactivateEducationalLevelRef(dcOrVars, vars));
+};
+
+const reactivateEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateEducationalLevel', inputVars);
+}
+reactivateEducationalLevelRef.operationName = 'ReactivateEducationalLevel';
+exports.reactivateEducationalLevelRef = reactivateEducationalLevelRef;
+
+exports.reactivateEducationalLevel = function reactivateEducationalLevel(dcOrVars, vars) {
+  return executeMutation(reactivateEducationalLevelRef(dcOrVars, vars));
+};
+
 const getUserByEmailRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -257,4 +353,64 @@ exports.getTopicRef = getTopicRef;
 
 exports.getTopic = function getTopic(dcOrVars, vars) {
   return executeQuery(getTopicRef(dcOrVars, vars));
+};
+
+const listLevelCategoriesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListLevelCategories');
+}
+listLevelCategoriesRef.operationName = 'ListLevelCategories';
+exports.listLevelCategoriesRef = listLevelCategoriesRef;
+
+exports.listLevelCategories = function listLevelCategories(dc) {
+  return executeQuery(listLevelCategoriesRef(dc));
+};
+
+const getLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetLevelCategory', inputVars);
+}
+getLevelCategoryRef.operationName = 'GetLevelCategory';
+exports.getLevelCategoryRef = getLevelCategoryRef;
+
+exports.getLevelCategory = function getLevelCategory(dcOrVars, vars) {
+  return executeQuery(getLevelCategoryRef(dcOrVars, vars));
+};
+
+const listEducationalLevelsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListEducationalLevels');
+}
+listEducationalLevelsRef.operationName = 'ListEducationalLevels';
+exports.listEducationalLevelsRef = listEducationalLevelsRef;
+
+exports.listEducationalLevels = function listEducationalLevels(dc) {
+  return executeQuery(listEducationalLevelsRef(dc));
+};
+
+const getEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetEducationalLevel', inputVars);
+}
+getEducationalLevelRef.operationName = 'GetEducationalLevel';
+exports.getEducationalLevelRef = getEducationalLevelRef;
+
+exports.getEducationalLevel = function getEducationalLevel(dcOrVars, vars) {
+  return executeQuery(getEducationalLevelRef(dcOrVars, vars));
+};
+
+const getLevelsByCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetLevelsByCategory', inputVars);
+}
+getLevelsByCategoryRef.operationName = 'GetLevelsByCategory';
+exports.getLevelsByCategoryRef = getLevelsByCategoryRef;
+
+exports.getLevelsByCategory = function getLevelsByCategory(dcOrVars, vars) {
+  return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
 };

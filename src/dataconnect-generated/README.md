@@ -17,6 +17,11 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetUnit*](#getunit)
   - [*ListTopics*](#listtopics)
   - [*GetTopic*](#gettopic)
+  - [*ListLevelCategories*](#listlevelcategories)
+  - [*GetLevelCategory*](#getlevelcategory)
+  - [*ListEducationalLevels*](#listeducationallevels)
+  - [*GetEducationalLevel*](#geteducationallevel)
+  - [*GetLevelsByCategory*](#getlevelsbycategory)
 - [**Mutations**](#mutations)
   - [*CreateUser*](#createuser)
   - [*UpdateUser*](#updateuser)
@@ -32,6 +37,14 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateTopic*](#updatetopic)
   - [*DeactivateTopic*](#deactivatetopic)
   - [*ReactivateTopic*](#reactivatetopic)
+  - [*CreateLevelCategory*](#createlevelcategory)
+  - [*UpdateLevelCategory*](#updatelevelcategory)
+  - [*DeactivateLevelCategory*](#deactivatelevelcategory)
+  - [*ReactivateLevelCategory*](#reactivatelevelcategory)
+  - [*CreateEducationalLevel*](#createeducationallevel)
+  - [*UpdateEducationalLevel*](#updateeducationallevel)
+  - [*DeactivateEducationalLevel*](#deactivateeducationallevel)
+  - [*ReactivateEducationalLevel*](#reactivateeducationallevel)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `example`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -844,6 +857,562 @@ console.log(data.topic);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.topic);
+});
+```
+
+## ListLevelCategories
+You can execute the `ListLevelCategories` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+listLevelCategories(): QueryPromise<ListLevelCategoriesData, undefined>;
+
+interface ListLevelCategoriesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListLevelCategoriesData, undefined>;
+}
+export const listLevelCategoriesRef: ListLevelCategoriesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listLevelCategories(dc: DataConnect): QueryPromise<ListLevelCategoriesData, undefined>;
+
+interface ListLevelCategoriesRef {
+  ...
+  (dc: DataConnect): QueryRef<ListLevelCategoriesData, undefined>;
+}
+export const listLevelCategoriesRef: ListLevelCategoriesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listLevelCategoriesRef:
+```typescript
+const name = listLevelCategoriesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListLevelCategories` query has no variables.
+### Return Type
+Recall that executing the `ListLevelCategories` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListLevelCategoriesData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListLevelCategoriesData {
+  levelCategories: ({
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+  } & LevelCategory_Key)[];
+}
+```
+### Using `ListLevelCategories`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listLevelCategories } from '@dataconnect/generated';
+
+
+// Call the `listLevelCategories()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listLevelCategories();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listLevelCategories(dataConnect);
+
+console.log(data.levelCategories);
+
+// Or, you can use the `Promise` API.
+listLevelCategories().then((response) => {
+  const data = response.data;
+  console.log(data.levelCategories);
+});
+```
+
+### Using `ListLevelCategories`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listLevelCategoriesRef } from '@dataconnect/generated';
+
+
+// Call the `listLevelCategoriesRef()` function to get a reference to the query.
+const ref = listLevelCategoriesRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listLevelCategoriesRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.levelCategories);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategories);
+});
+```
+
+## GetLevelCategory
+You can execute the `GetLevelCategory` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getLevelCategory(vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
+
+interface GetLevelCategoryRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
+}
+export const getLevelCategoryRef: GetLevelCategoryRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getLevelCategory(dc: DataConnect, vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
+
+interface GetLevelCategoryRef {
+  ...
+  (dc: DataConnect, vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
+}
+export const getLevelCategoryRef: GetLevelCategoryRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getLevelCategoryRef:
+```typescript
+const name = getLevelCategoryRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetLevelCategory` query requires an argument of type `GetLevelCategoryVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetLevelCategoryVariables {
+  categoryId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetLevelCategory` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetLevelCategoryData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetLevelCategoryData {
+  levelCategory?: {
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & LevelCategory_Key;
+}
+```
+### Using `GetLevelCategory`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getLevelCategory, GetLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `GetLevelCategory` query requires an argument of type `GetLevelCategoryVariables`:
+const getLevelCategoryVars: GetLevelCategoryVariables = {
+  categoryId: ..., 
+};
+
+// Call the `getLevelCategory()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getLevelCategory(getLevelCategoryVars);
+// Variables can be defined inline as well.
+const { data } = await getLevelCategory({ categoryId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getLevelCategory(dataConnect, getLevelCategoryVars);
+
+console.log(data.levelCategory);
+
+// Or, you can use the `Promise` API.
+getLevelCategory(getLevelCategoryVars).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory);
+});
+```
+
+### Using `GetLevelCategory`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getLevelCategoryRef, GetLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `GetLevelCategory` query requires an argument of type `GetLevelCategoryVariables`:
+const getLevelCategoryVars: GetLevelCategoryVariables = {
+  categoryId: ..., 
+};
+
+// Call the `getLevelCategoryRef()` function to get a reference to the query.
+const ref = getLevelCategoryRef(getLevelCategoryVars);
+// Variables can be defined inline as well.
+const ref = getLevelCategoryRef({ categoryId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getLevelCategoryRef(dataConnect, getLevelCategoryVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.levelCategory);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory);
+});
+```
+
+## ListEducationalLevels
+You can execute the `ListEducationalLevels` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+listEducationalLevels(): QueryPromise<ListEducationalLevelsData, undefined>;
+
+interface ListEducationalLevelsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListEducationalLevelsData, undefined>;
+}
+export const listEducationalLevelsRef: ListEducationalLevelsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listEducationalLevels(dc: DataConnect): QueryPromise<ListEducationalLevelsData, undefined>;
+
+interface ListEducationalLevelsRef {
+  ...
+  (dc: DataConnect): QueryRef<ListEducationalLevelsData, undefined>;
+}
+export const listEducationalLevelsRef: ListEducationalLevelsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listEducationalLevelsRef:
+```typescript
+const name = listEducationalLevelsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListEducationalLevels` query has no variables.
+### Return Type
+Recall that executing the `ListEducationalLevels` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListEducationalLevelsData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListEducationalLevelsData {
+  educationalLevels: ({
+    levelId: UUIDString;
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+  } & EducationalLevel_Key)[];
+}
+```
+### Using `ListEducationalLevels`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listEducationalLevels } from '@dataconnect/generated';
+
+
+// Call the `listEducationalLevels()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listEducationalLevels();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listEducationalLevels(dataConnect);
+
+console.log(data.educationalLevels);
+
+// Or, you can use the `Promise` API.
+listEducationalLevels().then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevels);
+});
+```
+
+### Using `ListEducationalLevels`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listEducationalLevelsRef } from '@dataconnect/generated';
+
+
+// Call the `listEducationalLevelsRef()` function to get a reference to the query.
+const ref = listEducationalLevelsRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listEducationalLevelsRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.educationalLevels);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevels);
+});
+```
+
+## GetEducationalLevel
+You can execute the `GetEducationalLevel` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getEducationalLevel(vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
+
+interface GetEducationalLevelRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
+}
+export const getEducationalLevelRef: GetEducationalLevelRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getEducationalLevel(dc: DataConnect, vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
+
+interface GetEducationalLevelRef {
+  ...
+  (dc: DataConnect, vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
+}
+export const getEducationalLevelRef: GetEducationalLevelRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getEducationalLevelRef:
+```typescript
+const name = getEducationalLevelRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetEducationalLevel` query requires an argument of type `GetEducationalLevelVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetEducationalLevelVariables {
+  levelId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetEducationalLevel` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetEducationalLevelData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetEducationalLevelData {
+  educationalLevel?: {
+    levelId: UUIDString;
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & EducationalLevel_Key;
+}
+```
+### Using `GetEducationalLevel`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getEducationalLevel, GetEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `GetEducationalLevel` query requires an argument of type `GetEducationalLevelVariables`:
+const getEducationalLevelVars: GetEducationalLevelVariables = {
+  levelId: ..., 
+};
+
+// Call the `getEducationalLevel()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getEducationalLevel(getEducationalLevelVars);
+// Variables can be defined inline as well.
+const { data } = await getEducationalLevel({ levelId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getEducationalLevel(dataConnect, getEducationalLevelVars);
+
+console.log(data.educationalLevel);
+
+// Or, you can use the `Promise` API.
+getEducationalLevel(getEducationalLevelVars).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel);
+});
+```
+
+### Using `GetEducationalLevel`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getEducationalLevelRef, GetEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `GetEducationalLevel` query requires an argument of type `GetEducationalLevelVariables`:
+const getEducationalLevelVars: GetEducationalLevelVariables = {
+  levelId: ..., 
+};
+
+// Call the `getEducationalLevelRef()` function to get a reference to the query.
+const ref = getEducationalLevelRef(getEducationalLevelVars);
+// Variables can be defined inline as well.
+const ref = getEducationalLevelRef({ levelId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getEducationalLevelRef(dataConnect, getEducationalLevelVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.educationalLevel);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel);
+});
+```
+
+## GetLevelsByCategory
+You can execute the `GetLevelsByCategory` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getLevelsByCategory(vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+
+interface GetLevelsByCategoryRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+}
+export const getLevelsByCategoryRef: GetLevelsByCategoryRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getLevelsByCategory(dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+
+interface GetLevelsByCategoryRef {
+  ...
+  (dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+}
+export const getLevelsByCategoryRef: GetLevelsByCategoryRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getLevelsByCategoryRef:
+```typescript
+const name = getLevelsByCategoryRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetLevelsByCategory` query requires an argument of type `GetLevelsByCategoryVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetLevelsByCategoryVariables {
+  categoryId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetLevelsByCategory` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetLevelsByCategoryData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetLevelsByCategoryData {
+  educationalLevels: ({
+    levelId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+  } & EducationalLevel_Key)[];
+}
+```
+### Using `GetLevelsByCategory`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getLevelsByCategory, GetLevelsByCategoryVariables } from '@dataconnect/generated';
+
+// The `GetLevelsByCategory` query requires an argument of type `GetLevelsByCategoryVariables`:
+const getLevelsByCategoryVars: GetLevelsByCategoryVariables = {
+  categoryId: ..., 
+};
+
+// Call the `getLevelsByCategory()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getLevelsByCategory(getLevelsByCategoryVars);
+// Variables can be defined inline as well.
+const { data } = await getLevelsByCategory({ categoryId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getLevelsByCategory(dataConnect, getLevelsByCategoryVars);
+
+console.log(data.educationalLevels);
+
+// Or, you can use the `Promise` API.
+getLevelsByCategory(getLevelsByCategoryVars).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevels);
+});
+```
+
+### Using `GetLevelsByCategory`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getLevelsByCategoryRef, GetLevelsByCategoryVariables } from '@dataconnect/generated';
+
+// The `GetLevelsByCategory` query requires an argument of type `GetLevelsByCategoryVariables`:
+const getLevelsByCategoryVars: GetLevelsByCategoryVariables = {
+  categoryId: ..., 
+};
+
+// Call the `getLevelsByCategoryRef()` function to get a reference to the query.
+const ref = getLevelsByCategoryRef(getLevelsByCategoryVars);
+// Variables can be defined inline as well.
+const ref = getLevelsByCategoryRef({ categoryId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getLevelsByCategoryRef(dataConnect, getLevelsByCategoryVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.educationalLevels);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevels);
 });
 ```
 
@@ -2511,6 +3080,956 @@ console.log(data.topic_update);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.topic_update);
+});
+```
+
+## CreateLevelCategory
+You can execute the `CreateLevelCategory` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+createLevelCategory(vars: CreateLevelCategoryVariables): MutationPromise<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+
+interface CreateLevelCategoryRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateLevelCategoryVariables): MutationRef<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+}
+export const createLevelCategoryRef: CreateLevelCategoryRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createLevelCategory(dc: DataConnect, vars: CreateLevelCategoryVariables): MutationPromise<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+
+interface CreateLevelCategoryRef {
+  ...
+  (dc: DataConnect, vars: CreateLevelCategoryVariables): MutationRef<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+}
+export const createLevelCategoryRef: CreateLevelCategoryRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createLevelCategoryRef:
+```typescript
+const name = createLevelCategoryRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateLevelCategory` mutation requires an argument of type `CreateLevelCategoryVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateLevelCategoryVariables {
+  categoryId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  createdBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `CreateLevelCategory` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateLevelCategoryData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateLevelCategoryData {
+  levelCategory_insert: LevelCategory_Key;
+}
+```
+### Using `CreateLevelCategory`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createLevelCategory, CreateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `CreateLevelCategory` mutation requires an argument of type `CreateLevelCategoryVariables`:
+const createLevelCategoryVars: CreateLevelCategoryVariables = {
+  categoryId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  createdBy: ..., 
+};
+
+// Call the `createLevelCategory()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createLevelCategory(createLevelCategoryVars);
+// Variables can be defined inline as well.
+const { data } = await createLevelCategory({ categoryId: ..., code: ..., name: ..., description: ..., createdBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createLevelCategory(dataConnect, createLevelCategoryVars);
+
+console.log(data.levelCategory_insert);
+
+// Or, you can use the `Promise` API.
+createLevelCategory(createLevelCategoryVars).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_insert);
+});
+```
+
+### Using `CreateLevelCategory`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createLevelCategoryRef, CreateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `CreateLevelCategory` mutation requires an argument of type `CreateLevelCategoryVariables`:
+const createLevelCategoryVars: CreateLevelCategoryVariables = {
+  categoryId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  createdBy: ..., 
+};
+
+// Call the `createLevelCategoryRef()` function to get a reference to the mutation.
+const ref = createLevelCategoryRef(createLevelCategoryVars);
+// Variables can be defined inline as well.
+const ref = createLevelCategoryRef({ categoryId: ..., code: ..., name: ..., description: ..., createdBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createLevelCategoryRef(dataConnect, createLevelCategoryVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.levelCategory_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_insert);
+});
+```
+
+## UpdateLevelCategory
+You can execute the `UpdateLevelCategory` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+updateLevelCategory(vars: UpdateLevelCategoryVariables): MutationPromise<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+
+interface UpdateLevelCategoryRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateLevelCategoryVariables): MutationRef<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+}
+export const updateLevelCategoryRef: UpdateLevelCategoryRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateLevelCategory(dc: DataConnect, vars: UpdateLevelCategoryVariables): MutationPromise<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+
+interface UpdateLevelCategoryRef {
+  ...
+  (dc: DataConnect, vars: UpdateLevelCategoryVariables): MutationRef<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+}
+export const updateLevelCategoryRef: UpdateLevelCategoryRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateLevelCategoryRef:
+```typescript
+const name = updateLevelCategoryRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateLevelCategory` mutation requires an argument of type `UpdateLevelCategoryVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateLevelCategoryVariables {
+  categoryId: UUIDString;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+}
+```
+### Return Type
+Recall that executing the `UpdateLevelCategory` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateLevelCategoryData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateLevelCategoryData {
+  levelCategory_update?: LevelCategory_Key | null;
+}
+```
+### Using `UpdateLevelCategory`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateLevelCategory, UpdateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `UpdateLevelCategory` mutation requires an argument of type `UpdateLevelCategoryVariables`:
+const updateLevelCategoryVars: UpdateLevelCategoryVariables = {
+  categoryId: ..., 
+  code: ..., // optional
+  name: ..., // optional
+  description: ..., // optional
+  updatedBy: ..., 
+  updatedAt: ..., 
+};
+
+// Call the `updateLevelCategory()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateLevelCategory(updateLevelCategoryVars);
+// Variables can be defined inline as well.
+const { data } = await updateLevelCategory({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateLevelCategory(dataConnect, updateLevelCategoryVars);
+
+console.log(data.levelCategory_update);
+
+// Or, you can use the `Promise` API.
+updateLevelCategory(updateLevelCategoryVars).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_update);
+});
+```
+
+### Using `UpdateLevelCategory`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateLevelCategoryRef, UpdateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `UpdateLevelCategory` mutation requires an argument of type `UpdateLevelCategoryVariables`:
+const updateLevelCategoryVars: UpdateLevelCategoryVariables = {
+  categoryId: ..., 
+  code: ..., // optional
+  name: ..., // optional
+  description: ..., // optional
+  updatedBy: ..., 
+  updatedAt: ..., 
+};
+
+// Call the `updateLevelCategoryRef()` function to get a reference to the mutation.
+const ref = updateLevelCategoryRef(updateLevelCategoryVars);
+// Variables can be defined inline as well.
+const ref = updateLevelCategoryRef({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateLevelCategoryRef(dataConnect, updateLevelCategoryVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.levelCategory_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_update);
+});
+```
+
+## DeactivateLevelCategory
+You can execute the `DeactivateLevelCategory` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+deactivateLevelCategory(vars: DeactivateLevelCategoryVariables): MutationPromise<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+
+interface DeactivateLevelCategoryRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateLevelCategoryVariables): MutationRef<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+}
+export const deactivateLevelCategoryRef: DeactivateLevelCategoryRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deactivateLevelCategory(dc: DataConnect, vars: DeactivateLevelCategoryVariables): MutationPromise<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+
+interface DeactivateLevelCategoryRef {
+  ...
+  (dc: DataConnect, vars: DeactivateLevelCategoryVariables): MutationRef<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+}
+export const deactivateLevelCategoryRef: DeactivateLevelCategoryRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deactivateLevelCategoryRef:
+```typescript
+const name = deactivateLevelCategoryRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeactivateLevelCategory` mutation requires an argument of type `DeactivateLevelCategoryVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeactivateLevelCategoryVariables {
+  categoryId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeactivateLevelCategory` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeactivateLevelCategoryData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeactivateLevelCategoryData {
+  levelCategory_update?: LevelCategory_Key | null;
+}
+```
+### Using `DeactivateLevelCategory`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deactivateLevelCategory, DeactivateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `DeactivateLevelCategory` mutation requires an argument of type `DeactivateLevelCategoryVariables`:
+const deactivateLevelCategoryVars: DeactivateLevelCategoryVariables = {
+  categoryId: ..., 
+  deletedAt: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `deactivateLevelCategory()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deactivateLevelCategory(deactivateLevelCategoryVars);
+// Variables can be defined inline as well.
+const { data } = await deactivateLevelCategory({ categoryId: ..., deletedAt: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deactivateLevelCategory(dataConnect, deactivateLevelCategoryVars);
+
+console.log(data.levelCategory_update);
+
+// Or, you can use the `Promise` API.
+deactivateLevelCategory(deactivateLevelCategoryVars).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_update);
+});
+```
+
+### Using `DeactivateLevelCategory`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deactivateLevelCategoryRef, DeactivateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `DeactivateLevelCategory` mutation requires an argument of type `DeactivateLevelCategoryVariables`:
+const deactivateLevelCategoryVars: DeactivateLevelCategoryVariables = {
+  categoryId: ..., 
+  deletedAt: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `deactivateLevelCategoryRef()` function to get a reference to the mutation.
+const ref = deactivateLevelCategoryRef(deactivateLevelCategoryVars);
+// Variables can be defined inline as well.
+const ref = deactivateLevelCategoryRef({ categoryId: ..., deletedAt: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deactivateLevelCategoryRef(dataConnect, deactivateLevelCategoryVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.levelCategory_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_update);
+});
+```
+
+## ReactivateLevelCategory
+You can execute the `ReactivateLevelCategory` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+reactivateLevelCategory(vars: ReactivateLevelCategoryVariables): MutationPromise<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+
+interface ReactivateLevelCategoryRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateLevelCategoryVariables): MutationRef<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+}
+export const reactivateLevelCategoryRef: ReactivateLevelCategoryRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+reactivateLevelCategory(dc: DataConnect, vars: ReactivateLevelCategoryVariables): MutationPromise<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+
+interface ReactivateLevelCategoryRef {
+  ...
+  (dc: DataConnect, vars: ReactivateLevelCategoryVariables): MutationRef<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+}
+export const reactivateLevelCategoryRef: ReactivateLevelCategoryRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the reactivateLevelCategoryRef:
+```typescript
+const name = reactivateLevelCategoryRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ReactivateLevelCategory` mutation requires an argument of type `ReactivateLevelCategoryVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ReactivateLevelCategoryVariables {
+  categoryId: UUIDString;
+  deletedBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ReactivateLevelCategory` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ReactivateLevelCategoryData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ReactivateLevelCategoryData {
+  levelCategory_update?: LevelCategory_Key | null;
+}
+```
+### Using `ReactivateLevelCategory`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, reactivateLevelCategory, ReactivateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `ReactivateLevelCategory` mutation requires an argument of type `ReactivateLevelCategoryVariables`:
+const reactivateLevelCategoryVars: ReactivateLevelCategoryVariables = {
+  categoryId: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `reactivateLevelCategory()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await reactivateLevelCategory(reactivateLevelCategoryVars);
+// Variables can be defined inline as well.
+const { data } = await reactivateLevelCategory({ categoryId: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await reactivateLevelCategory(dataConnect, reactivateLevelCategoryVars);
+
+console.log(data.levelCategory_update);
+
+// Or, you can use the `Promise` API.
+reactivateLevelCategory(reactivateLevelCategoryVars).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_update);
+});
+```
+
+### Using `ReactivateLevelCategory`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, reactivateLevelCategoryRef, ReactivateLevelCategoryVariables } from '@dataconnect/generated';
+
+// The `ReactivateLevelCategory` mutation requires an argument of type `ReactivateLevelCategoryVariables`:
+const reactivateLevelCategoryVars: ReactivateLevelCategoryVariables = {
+  categoryId: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `reactivateLevelCategoryRef()` function to get a reference to the mutation.
+const ref = reactivateLevelCategoryRef(reactivateLevelCategoryVars);
+// Variables can be defined inline as well.
+const ref = reactivateLevelCategoryRef({ categoryId: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = reactivateLevelCategoryRef(dataConnect, reactivateLevelCategoryVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.levelCategory_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.levelCategory_update);
+});
+```
+
+## CreateEducationalLevel
+You can execute the `CreateEducationalLevel` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+createEducationalLevel(vars: CreateEducationalLevelVariables): MutationPromise<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+
+interface CreateEducationalLevelRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateEducationalLevelVariables): MutationRef<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+}
+export const createEducationalLevelRef: CreateEducationalLevelRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createEducationalLevel(dc: DataConnect, vars: CreateEducationalLevelVariables): MutationPromise<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+
+interface CreateEducationalLevelRef {
+  ...
+  (dc: DataConnect, vars: CreateEducationalLevelVariables): MutationRef<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+}
+export const createEducationalLevelRef: CreateEducationalLevelRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createEducationalLevelRef:
+```typescript
+const name = createEducationalLevelRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateEducationalLevel` mutation requires an argument of type `CreateEducationalLevelVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateEducationalLevelVariables {
+  levelId: UUIDString;
+  categoryId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  createdBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `CreateEducationalLevel` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateEducationalLevelData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateEducationalLevelData {
+  educationalLevel_insert: EducationalLevel_Key;
+}
+```
+### Using `CreateEducationalLevel`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createEducationalLevel, CreateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `CreateEducationalLevel` mutation requires an argument of type `CreateEducationalLevelVariables`:
+const createEducationalLevelVars: CreateEducationalLevelVariables = {
+  levelId: ..., 
+  categoryId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  createdBy: ..., 
+};
+
+// Call the `createEducationalLevel()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createEducationalLevel(createEducationalLevelVars);
+// Variables can be defined inline as well.
+const { data } = await createEducationalLevel({ levelId: ..., categoryId: ..., code: ..., name: ..., description: ..., createdBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createEducationalLevel(dataConnect, createEducationalLevelVars);
+
+console.log(data.educationalLevel_insert);
+
+// Or, you can use the `Promise` API.
+createEducationalLevel(createEducationalLevelVars).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_insert);
+});
+```
+
+### Using `CreateEducationalLevel`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createEducationalLevelRef, CreateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `CreateEducationalLevel` mutation requires an argument of type `CreateEducationalLevelVariables`:
+const createEducationalLevelVars: CreateEducationalLevelVariables = {
+  levelId: ..., 
+  categoryId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  createdBy: ..., 
+};
+
+// Call the `createEducationalLevelRef()` function to get a reference to the mutation.
+const ref = createEducationalLevelRef(createEducationalLevelVars);
+// Variables can be defined inline as well.
+const ref = createEducationalLevelRef({ levelId: ..., categoryId: ..., code: ..., name: ..., description: ..., createdBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createEducationalLevelRef(dataConnect, createEducationalLevelVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.educationalLevel_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_insert);
+});
+```
+
+## UpdateEducationalLevel
+You can execute the `UpdateEducationalLevel` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+updateEducationalLevel(vars: UpdateEducationalLevelVariables): MutationPromise<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+
+interface UpdateEducationalLevelRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateEducationalLevelVariables): MutationRef<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+}
+export const updateEducationalLevelRef: UpdateEducationalLevelRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateEducationalLevel(dc: DataConnect, vars: UpdateEducationalLevelVariables): MutationPromise<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+
+interface UpdateEducationalLevelRef {
+  ...
+  (dc: DataConnect, vars: UpdateEducationalLevelVariables): MutationRef<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+}
+export const updateEducationalLevelRef: UpdateEducationalLevelRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateEducationalLevelRef:
+```typescript
+const name = updateEducationalLevelRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateEducationalLevel` mutation requires an argument of type `UpdateEducationalLevelVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateEducationalLevelVariables {
+  levelId: UUIDString;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  categoryId?: UUIDString | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+}
+```
+### Return Type
+Recall that executing the `UpdateEducationalLevel` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateEducationalLevelData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateEducationalLevelData {
+  educationalLevel_update?: EducationalLevel_Key | null;
+}
+```
+### Using `UpdateEducationalLevel`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateEducationalLevel, UpdateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `UpdateEducationalLevel` mutation requires an argument of type `UpdateEducationalLevelVariables`:
+const updateEducationalLevelVars: UpdateEducationalLevelVariables = {
+  levelId: ..., 
+  code: ..., // optional
+  name: ..., // optional
+  description: ..., // optional
+  categoryId: ..., // optional
+  updatedBy: ..., 
+  updatedAt: ..., 
+};
+
+// Call the `updateEducationalLevel()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateEducationalLevel(updateEducationalLevelVars);
+// Variables can be defined inline as well.
+const { data } = await updateEducationalLevel({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateEducationalLevel(dataConnect, updateEducationalLevelVars);
+
+console.log(data.educationalLevel_update);
+
+// Or, you can use the `Promise` API.
+updateEducationalLevel(updateEducationalLevelVars).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_update);
+});
+```
+
+### Using `UpdateEducationalLevel`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateEducationalLevelRef, UpdateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `UpdateEducationalLevel` mutation requires an argument of type `UpdateEducationalLevelVariables`:
+const updateEducationalLevelVars: UpdateEducationalLevelVariables = {
+  levelId: ..., 
+  code: ..., // optional
+  name: ..., // optional
+  description: ..., // optional
+  categoryId: ..., // optional
+  updatedBy: ..., 
+  updatedAt: ..., 
+};
+
+// Call the `updateEducationalLevelRef()` function to get a reference to the mutation.
+const ref = updateEducationalLevelRef(updateEducationalLevelVars);
+// Variables can be defined inline as well.
+const ref = updateEducationalLevelRef({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateEducationalLevelRef(dataConnect, updateEducationalLevelVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.educationalLevel_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_update);
+});
+```
+
+## DeactivateEducationalLevel
+You can execute the `DeactivateEducationalLevel` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+deactivateEducationalLevel(vars: DeactivateEducationalLevelVariables): MutationPromise<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+
+interface DeactivateEducationalLevelRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateEducationalLevelVariables): MutationRef<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+}
+export const deactivateEducationalLevelRef: DeactivateEducationalLevelRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deactivateEducationalLevel(dc: DataConnect, vars: DeactivateEducationalLevelVariables): MutationPromise<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+
+interface DeactivateEducationalLevelRef {
+  ...
+  (dc: DataConnect, vars: DeactivateEducationalLevelVariables): MutationRef<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+}
+export const deactivateEducationalLevelRef: DeactivateEducationalLevelRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deactivateEducationalLevelRef:
+```typescript
+const name = deactivateEducationalLevelRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeactivateEducationalLevel` mutation requires an argument of type `DeactivateEducationalLevelVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeactivateEducationalLevelVariables {
+  levelId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeactivateEducationalLevel` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeactivateEducationalLevelData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeactivateEducationalLevelData {
+  educationalLevel_update?: EducationalLevel_Key | null;
+}
+```
+### Using `DeactivateEducationalLevel`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deactivateEducationalLevel, DeactivateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `DeactivateEducationalLevel` mutation requires an argument of type `DeactivateEducationalLevelVariables`:
+const deactivateEducationalLevelVars: DeactivateEducationalLevelVariables = {
+  levelId: ..., 
+  deletedAt: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `deactivateEducationalLevel()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deactivateEducationalLevel(deactivateEducationalLevelVars);
+// Variables can be defined inline as well.
+const { data } = await deactivateEducationalLevel({ levelId: ..., deletedAt: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deactivateEducationalLevel(dataConnect, deactivateEducationalLevelVars);
+
+console.log(data.educationalLevel_update);
+
+// Or, you can use the `Promise` API.
+deactivateEducationalLevel(deactivateEducationalLevelVars).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_update);
+});
+```
+
+### Using `DeactivateEducationalLevel`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deactivateEducationalLevelRef, DeactivateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `DeactivateEducationalLevel` mutation requires an argument of type `DeactivateEducationalLevelVariables`:
+const deactivateEducationalLevelVars: DeactivateEducationalLevelVariables = {
+  levelId: ..., 
+  deletedAt: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `deactivateEducationalLevelRef()` function to get a reference to the mutation.
+const ref = deactivateEducationalLevelRef(deactivateEducationalLevelVars);
+// Variables can be defined inline as well.
+const ref = deactivateEducationalLevelRef({ levelId: ..., deletedAt: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deactivateEducationalLevelRef(dataConnect, deactivateEducationalLevelVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.educationalLevel_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_update);
+});
+```
+
+## ReactivateEducationalLevel
+You can execute the `ReactivateEducationalLevel` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+reactivateEducationalLevel(vars: ReactivateEducationalLevelVariables): MutationPromise<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+
+interface ReactivateEducationalLevelRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateEducationalLevelVariables): MutationRef<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+}
+export const reactivateEducationalLevelRef: ReactivateEducationalLevelRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+reactivateEducationalLevel(dc: DataConnect, vars: ReactivateEducationalLevelVariables): MutationPromise<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+
+interface ReactivateEducationalLevelRef {
+  ...
+  (dc: DataConnect, vars: ReactivateEducationalLevelVariables): MutationRef<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+}
+export const reactivateEducationalLevelRef: ReactivateEducationalLevelRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the reactivateEducationalLevelRef:
+```typescript
+const name = reactivateEducationalLevelRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ReactivateEducationalLevel` mutation requires an argument of type `ReactivateEducationalLevelVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ReactivateEducationalLevelVariables {
+  levelId: UUIDString;
+  deletedBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ReactivateEducationalLevel` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ReactivateEducationalLevelData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ReactivateEducationalLevelData {
+  educationalLevel_update?: EducationalLevel_Key | null;
+}
+```
+### Using `ReactivateEducationalLevel`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, reactivateEducationalLevel, ReactivateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `ReactivateEducationalLevel` mutation requires an argument of type `ReactivateEducationalLevelVariables`:
+const reactivateEducationalLevelVars: ReactivateEducationalLevelVariables = {
+  levelId: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `reactivateEducationalLevel()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await reactivateEducationalLevel(reactivateEducationalLevelVars);
+// Variables can be defined inline as well.
+const { data } = await reactivateEducationalLevel({ levelId: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await reactivateEducationalLevel(dataConnect, reactivateEducationalLevelVars);
+
+console.log(data.educationalLevel_update);
+
+// Or, you can use the `Promise` API.
+reactivateEducationalLevel(reactivateEducationalLevelVars).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_update);
+});
+```
+
+### Using `ReactivateEducationalLevel`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, reactivateEducationalLevelRef, ReactivateEducationalLevelVariables } from '@dataconnect/generated';
+
+// The `ReactivateEducationalLevel` mutation requires an argument of type `ReactivateEducationalLevelVariables`:
+const reactivateEducationalLevelVars: ReactivateEducationalLevelVariables = {
+  levelId: ..., 
+  deletedBy: ..., 
+};
+
+// Call the `reactivateEducationalLevelRef()` function to get a reference to the mutation.
+const ref = reactivateEducationalLevelRef(reactivateEducationalLevelVars);
+// Variables can be defined inline as well.
+const ref = reactivateEducationalLevelRef({ levelId: ..., deletedBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = reactivateEducationalLevelRef(dataConnect, reactivateEducationalLevelVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.educationalLevel_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.educationalLevel_update);
 });
 ```
 

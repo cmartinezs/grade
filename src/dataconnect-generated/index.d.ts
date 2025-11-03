@@ -10,6 +10,31 @@ export type DateString = string;
 
 
 
+export interface CreateEducationalLevelData {
+  educationalLevel_insert: EducationalLevel_Key;
+}
+
+export interface CreateEducationalLevelVariables {
+  levelId: UUIDString;
+  categoryId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  createdBy: UUIDString;
+}
+
+export interface CreateLevelCategoryData {
+  levelCategory_insert: LevelCategory_Key;
+}
+
+export interface CreateLevelCategoryVariables {
+  categoryId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  createdBy: UUIDString;
+}
+
 export interface CreateSubjectData {
   subject_insert: Subject_Key;
 }
@@ -57,6 +82,26 @@ export interface CreateUserVariables {
   createdBy: UUIDString;
 }
 
+export interface DeactivateEducationalLevelData {
+  educationalLevel_update?: EducationalLevel_Key | null;
+}
+
+export interface DeactivateEducationalLevelVariables {
+  levelId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+}
+
+export interface DeactivateLevelCategoryData {
+  levelCategory_update?: LevelCategory_Key | null;
+}
+
+export interface DeactivateLevelCategoryVariables {
+  categoryId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+}
+
 export interface DeactivateSubjectData {
   subject_update?: Subject_Key | null;
 }
@@ -90,6 +135,67 @@ export interface DeactivateUnitVariables {
 export interface Difficulty_Key {
   difficultyId: UUIDString;
   __typename?: 'Difficulty_Key';
+}
+
+export interface EducationalLevel_Key {
+  levelId: UUIDString;
+  __typename?: 'EducationalLevel_Key';
+}
+
+export interface GetEducationalLevelData {
+  educationalLevel?: {
+    levelId: UUIDString;
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & EducationalLevel_Key;
+}
+
+export interface GetEducationalLevelVariables {
+  levelId: UUIDString;
+}
+
+export interface GetLevelCategoryData {
+  levelCategory?: {
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & LevelCategory_Key;
+}
+
+export interface GetLevelCategoryVariables {
+  categoryId: UUIDString;
+}
+
+export interface GetLevelsByCategoryData {
+  educationalLevels: ({
+    levelId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+  } & EducationalLevel_Key)[];
+}
+
+export interface GetLevelsByCategoryVariables {
+  categoryId: UUIDString;
 }
 
 export interface GetSubjectData {
@@ -166,6 +272,34 @@ export interface GetUserByEmailVariables {
   email: string;
 }
 
+export interface LevelCategory_Key {
+  categoryId: UUIDString;
+  __typename?: 'LevelCategory_Key';
+}
+
+export interface ListEducationalLevelsData {
+  educationalLevels: ({
+    levelId: UUIDString;
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+  } & EducationalLevel_Key)[];
+}
+
+export interface ListLevelCategoriesData {
+  levelCategories: ({
+    categoryId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: TimestampString;
+  } & LevelCategory_Key)[];
+}
+
 export interface ListSubjectsData {
   subjects: ({
     subjectId: UUIDString;
@@ -216,6 +350,24 @@ export interface Question_Key {
   __typename?: 'Question_Key';
 }
 
+export interface ReactivateEducationalLevelData {
+  educationalLevel_update?: EducationalLevel_Key | null;
+}
+
+export interface ReactivateEducationalLevelVariables {
+  levelId: UUIDString;
+  deletedBy: UUIDString;
+}
+
+export interface ReactivateLevelCategoryData {
+  levelCategory_update?: LevelCategory_Key | null;
+}
+
+export interface ReactivateLevelCategoryVariables {
+  categoryId: UUIDString;
+  deletedBy: UUIDString;
+}
+
 export interface ReactivateSubjectData {
   subject_update?: Subject_Key | null;
 }
@@ -256,6 +408,33 @@ export interface Topic_Key {
 export interface Unit_Key {
   unitId: UUIDString;
   __typename?: 'Unit_Key';
+}
+
+export interface UpdateEducationalLevelData {
+  educationalLevel_update?: EducationalLevel_Key | null;
+}
+
+export interface UpdateEducationalLevelVariables {
+  levelId: UUIDString;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  categoryId?: UUIDString | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+}
+
+export interface UpdateLevelCategoryData {
+  levelCategory_update?: LevelCategory_Key | null;
+}
+
+export interface UpdateLevelCategoryVariables {
+  categoryId: UUIDString;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
 }
 
 export interface UpdateSubjectData {
@@ -481,6 +660,102 @@ export const reactivateTopicRef: ReactivateTopicRef;
 export function reactivateTopic(vars: ReactivateTopicVariables): MutationPromise<ReactivateTopicData, ReactivateTopicVariables>;
 export function reactivateTopic(dc: DataConnect, vars: ReactivateTopicVariables): MutationPromise<ReactivateTopicData, ReactivateTopicVariables>;
 
+interface CreateLevelCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateLevelCategoryVariables): MutationRef<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateLevelCategoryVariables): MutationRef<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+  operationName: string;
+}
+export const createLevelCategoryRef: CreateLevelCategoryRef;
+
+export function createLevelCategory(vars: CreateLevelCategoryVariables): MutationPromise<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+export function createLevelCategory(dc: DataConnect, vars: CreateLevelCategoryVariables): MutationPromise<CreateLevelCategoryData, CreateLevelCategoryVariables>;
+
+interface UpdateLevelCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateLevelCategoryVariables): MutationRef<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateLevelCategoryVariables): MutationRef<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+  operationName: string;
+}
+export const updateLevelCategoryRef: UpdateLevelCategoryRef;
+
+export function updateLevelCategory(vars: UpdateLevelCategoryVariables): MutationPromise<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+export function updateLevelCategory(dc: DataConnect, vars: UpdateLevelCategoryVariables): MutationPromise<UpdateLevelCategoryData, UpdateLevelCategoryVariables>;
+
+interface DeactivateLevelCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateLevelCategoryVariables): MutationRef<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeactivateLevelCategoryVariables): MutationRef<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+  operationName: string;
+}
+export const deactivateLevelCategoryRef: DeactivateLevelCategoryRef;
+
+export function deactivateLevelCategory(vars: DeactivateLevelCategoryVariables): MutationPromise<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+export function deactivateLevelCategory(dc: DataConnect, vars: DeactivateLevelCategoryVariables): MutationPromise<DeactivateLevelCategoryData, DeactivateLevelCategoryVariables>;
+
+interface ReactivateLevelCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateLevelCategoryVariables): MutationRef<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReactivateLevelCategoryVariables): MutationRef<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+  operationName: string;
+}
+export const reactivateLevelCategoryRef: ReactivateLevelCategoryRef;
+
+export function reactivateLevelCategory(vars: ReactivateLevelCategoryVariables): MutationPromise<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+export function reactivateLevelCategory(dc: DataConnect, vars: ReactivateLevelCategoryVariables): MutationPromise<ReactivateLevelCategoryData, ReactivateLevelCategoryVariables>;
+
+interface CreateEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateEducationalLevelVariables): MutationRef<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateEducationalLevelVariables): MutationRef<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+  operationName: string;
+}
+export const createEducationalLevelRef: CreateEducationalLevelRef;
+
+export function createEducationalLevel(vars: CreateEducationalLevelVariables): MutationPromise<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+export function createEducationalLevel(dc: DataConnect, vars: CreateEducationalLevelVariables): MutationPromise<CreateEducationalLevelData, CreateEducationalLevelVariables>;
+
+interface UpdateEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateEducationalLevelVariables): MutationRef<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateEducationalLevelVariables): MutationRef<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+  operationName: string;
+}
+export const updateEducationalLevelRef: UpdateEducationalLevelRef;
+
+export function updateEducationalLevel(vars: UpdateEducationalLevelVariables): MutationPromise<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+export function updateEducationalLevel(dc: DataConnect, vars: UpdateEducationalLevelVariables): MutationPromise<UpdateEducationalLevelData, UpdateEducationalLevelVariables>;
+
+interface DeactivateEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateEducationalLevelVariables): MutationRef<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeactivateEducationalLevelVariables): MutationRef<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+  operationName: string;
+}
+export const deactivateEducationalLevelRef: DeactivateEducationalLevelRef;
+
+export function deactivateEducationalLevel(vars: DeactivateEducationalLevelVariables): MutationPromise<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+export function deactivateEducationalLevel(dc: DataConnect, vars: DeactivateEducationalLevelVariables): MutationPromise<DeactivateEducationalLevelData, DeactivateEducationalLevelVariables>;
+
+interface ReactivateEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateEducationalLevelVariables): MutationRef<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReactivateEducationalLevelVariables): MutationRef<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+  operationName: string;
+}
+export const reactivateEducationalLevelRef: ReactivateEducationalLevelRef;
+
+export function reactivateEducationalLevel(vars: ReactivateEducationalLevelVariables): MutationPromise<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+export function reactivateEducationalLevel(dc: DataConnect, vars: ReactivateEducationalLevelVariables): MutationPromise<ReactivateEducationalLevelData, ReactivateEducationalLevelVariables>;
+
 interface GetUserByEmailRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
@@ -564,4 +839,64 @@ export const getTopicRef: GetTopicRef;
 
 export function getTopic(vars: GetTopicVariables): QueryPromise<GetTopicData, GetTopicVariables>;
 export function getTopic(dc: DataConnect, vars: GetTopicVariables): QueryPromise<GetTopicData, GetTopicVariables>;
+
+interface ListLevelCategoriesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListLevelCategoriesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListLevelCategoriesData, undefined>;
+  operationName: string;
+}
+export const listLevelCategoriesRef: ListLevelCategoriesRef;
+
+export function listLevelCategories(): QueryPromise<ListLevelCategoriesData, undefined>;
+export function listLevelCategories(dc: DataConnect): QueryPromise<ListLevelCategoriesData, undefined>;
+
+interface GetLevelCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
+  operationName: string;
+}
+export const getLevelCategoryRef: GetLevelCategoryRef;
+
+export function getLevelCategory(vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
+export function getLevelCategory(dc: DataConnect, vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
+
+interface ListEducationalLevelsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListEducationalLevelsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListEducationalLevelsData, undefined>;
+  operationName: string;
+}
+export const listEducationalLevelsRef: ListEducationalLevelsRef;
+
+export function listEducationalLevels(): QueryPromise<ListEducationalLevelsData, undefined>;
+export function listEducationalLevels(dc: DataConnect): QueryPromise<ListEducationalLevelsData, undefined>;
+
+interface GetEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
+  operationName: string;
+}
+export const getEducationalLevelRef: GetEducationalLevelRef;
+
+export function getEducationalLevel(vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
+export function getEducationalLevel(dc: DataConnect, vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
+
+interface GetLevelsByCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+  operationName: string;
+}
+export const getLevelsByCategoryRef: GetLevelsByCategoryRef;
+
+export function getLevelsByCategory(vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+export function getLevelsByCategory(dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
 
