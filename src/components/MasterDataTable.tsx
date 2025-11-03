@@ -211,8 +211,8 @@ export default function MasterDataTable<T>(
           <Card>
             {/* Header with Search */}
             {!hideSearch && (
-              <Card.Header className="bg-light">
-                <Row className="align-items-center">
+              <Card.Header className="bg-light p-3">
+                <Row className="align-items-center g-0">
                   <Col md={4}>
                     <InputGroup>
                       <InputGroup.Text>🔍</InputGroup.Text>
@@ -262,74 +262,76 @@ export default function MasterDataTable<T>(
                 </div>
               ) : hasResults ? (
                 <>
-                  <Table hover className="mb-0">
-                    <thead className="bg-light">
-                      <tr>
-                        {columns.map((col) => (
-                          <th
-                            key={String(col.key)}
-                            style={{ width: col.width }}
-                            className={col.sortable ? 'cursor-pointer' : ''}
-                          >
-                            {col.label}
-                          </th>
-                        ))}
-                        {actions.length > 0 && <th>Acciones</th>}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((item, idx) => {
-                        const itemKey = (item as T & { id?: string; course_id?: string }).id || (item as T & { id?: string; course_id?: string }).course_id || idx;
-                        return (
-                        <tr key={itemKey}>
-                          {columns.map((col) => {
-                            const value = item[col.key];
-                            const rendered = col.render
-                              ? col.render(value, item)
-                              : value;
-
-                            return (
-                              <td key={String(col.key)}>
-                                {rendered as React.ReactNode}
-                              </td>
-                            );
-                          })}
-                          {actions.length > 0 && (
-                            <td>
-                              <div className="d-flex gap-2">
-                                {actions.map((action, actionIdx) => {
-                                  const show = action.show
-                                    ? action.show(item)
-                                    : true;
-
-                                  if (!show) return null;
-
-                                  const icon = typeof action.icon === 'function' ? action.icon(item) : action.icon;
-                                  const label = typeof action.label === 'function' ? action.label(item) : action.label;
-                                  const variant = typeof action.variant === 'function' ? action.variant(item) : (action.variant || 'outline-secondary');
-                                  const title = typeof action.title === 'function' ? action.title(item) : (action.title || label);
-
-                                  return (
-                                    <Button
-                                      key={actionIdx}
-                                      variant={variant as 'outline-secondary' | 'outline-primary' | 'outline-danger' | 'outline-warning' | 'outline-success' | 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'light' | 'dark'}
-                                      size="sm"
-                                      onClick={() => action.onClick(item)}
-                                      title={title}
-                                      disabled={isLoading}
-                                    >
-                                      {icon}
-                                    </Button>
-                                  );
-                                })}
-                              </div>
-                            </td>
-                          )}
+                  <div style={{ overflow: 'hidden' }}>
+                    <Table hover className="mb-0" style={{ marginBottom: '0' }}>
+                      <thead className="bg-light">
+                        <tr>
+                          {columns.map((col) => (
+                            <th
+                              key={String(col.key)}
+                              style={{ width: col.width, paddingLeft: '1.5rem', paddingRight: '1.5rem' }}
+                              className={col.sortable ? 'cursor-pointer' : ''}
+                            >
+                              {col.label}
+                            </th>
+                          ))}
+                          {actions.length > 0 && <th style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}>Acciones</th>}
                         </tr>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
+                      </thead>
+                      <tbody>
+                        {items.map((item, idx) => {
+                          const itemKey = (item as T & { id?: string; course_id?: string }).id || (item as T & { id?: string; course_id?: string }).course_id || idx;
+                          return (
+                          <tr key={itemKey} style={{ verticalAlign: 'middle' }}>
+                            {columns.map((col) => {
+                              const value = item[col.key];
+                              const rendered = col.render
+                                ? col.render(value, item)
+                                : value;
+
+                              return (
+                                <td key={String(col.key)} style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}>
+                                  {rendered as React.ReactNode}
+                                </td>
+                              );
+                            })}
+                            {actions.length > 0 && (
+                              <td style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}>
+                                <div className="d-flex gap-2">
+                                  {actions.map((action, actionIdx) => {
+                                    const show = action.show
+                                      ? action.show(item)
+                                      : true;
+
+                                    if (!show) return null;
+
+                                    const icon = typeof action.icon === 'function' ? action.icon(item) : action.icon;
+                                    const label = typeof action.label === 'function' ? action.label(item) : action.label;
+                                    const variant = typeof action.variant === 'function' ? action.variant(item) : (action.variant || 'outline-secondary');
+                                    const title = typeof action.title === 'function' ? action.title(item) : (action.title || label);
+
+                                    return (
+                                      <Button
+                                        key={actionIdx}
+                                        variant={variant as 'outline-secondary' | 'outline-primary' | 'outline-danger' | 'outline-warning' | 'outline-success' | 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'light' | 'dark'}
+                                        size="sm"
+                                        onClick={() => action.onClick(item)}
+                                        title={title}
+                                        disabled={isLoading}
+                                      >
+                                        {icon}
+                                      </Button>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
 
                   {/* Pagination */}
                   {totalPages >= 1 && (
