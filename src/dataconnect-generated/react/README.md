@@ -765,10 +765,12 @@ The `CreateUser` Mutation requires an argument of type `CreateUserVariables`, wh
 
 ```javascript
 export interface CreateUserVariables {
+  userId: UUIDString;
   authId: string;
   name: string;
   email: string;
   role: string;
+  createdBy: UUIDString;
 }
 ```
 ### Return Type
@@ -818,14 +820,16 @@ export default function CreateUserComponent() {
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
   // The `useCreateUser` Mutation requires an argument of type `CreateUserVariables`:
   const createUserVars: CreateUserVariables = {
+    userId: ..., 
     authId: ..., 
     name: ..., 
     email: ..., 
     role: ..., 
+    createdBy: ..., 
   };
   mutation.mutate(createUserVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ authId: ..., name: ..., email: ..., role: ..., });
+  mutation.mutate({ userId: ..., authId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -969,8 +973,10 @@ The `CreateSubject` Mutation requires an argument of type `CreateSubjectVariable
 
 ```javascript
 export interface CreateSubjectVariables {
+  subjectId: UUIDString;
   name: string;
   code: string;
+  createdBy: UUIDString;
 }
 ```
 ### Return Type
@@ -1020,12 +1026,14 @@ export default function CreateSubjectComponent() {
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
   // The `useCreateSubject` Mutation requires an argument of type `CreateSubjectVariables`:
   const createSubjectVars: CreateSubjectVariables = {
+    subjectId: ..., 
     name: ..., 
     code: ..., 
+    createdBy: ..., 
   };
   mutation.mutate(createSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ name: ..., code: ..., });
+  mutation.mutate({ subjectId: ..., name: ..., code: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1361,8 +1369,11 @@ The `CreateUnit` Mutation requires an argument of type `CreateUnitVariables`, wh
 
 ```javascript
 export interface CreateUnitVariables {
+  unitId: UUIDString;
   name: string;
+  description?: string | null;
   subjectId: UUIDString;
+  createdBy: UUIDString;
 }
 ```
 ### Return Type
@@ -1412,12 +1423,15 @@ export default function CreateUnitComponent() {
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
   // The `useCreateUnit` Mutation requires an argument of type `CreateUnitVariables`:
   const createUnitVars: CreateUnitVariables = {
+    unitId: ..., 
     name: ..., 
+    description: ..., // optional
     subjectId: ..., 
+    createdBy: ..., 
   };
   mutation.mutate(createUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ name: ..., subjectId: ..., });
+  mutation.mutate({ unitId: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1458,7 +1472,9 @@ The `UpdateUnit` Mutation requires an argument of type `UpdateUnitVariables`, wh
 ```javascript
 export interface UpdateUnitVariables {
   unitId: UUIDString;
-  name?: string | null;
+  name: string;
+  description?: string | null;
+  subjectId: UUIDString;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
 }
@@ -1511,13 +1527,15 @@ export default function UpdateUnitComponent() {
   // The `useUpdateUnit` Mutation requires an argument of type `UpdateUnitVariables`:
   const updateUnitVars: UpdateUnitVariables = {
     unitId: ..., 
-    name: ..., // optional
+    name: ..., 
+    description: ..., // optional
+    subjectId: ..., 
     updatedBy: ..., 
     updatedAt: ..., 
   };
   mutation.mutate(updateUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1751,8 +1769,10 @@ The `CreateTopic` Mutation requires an argument of type `CreateTopicVariables`, 
 
 ```javascript
 export interface CreateTopicVariables {
+  topicId: UUIDString;
   name: string;
   unitId: UUIDString;
+  createdBy: UUIDString;
 }
 ```
 ### Return Type
@@ -1802,12 +1822,14 @@ export default function CreateTopicComponent() {
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
   // The `useCreateTopic` Mutation requires an argument of type `CreateTopicVariables`:
   const createTopicVars: CreateTopicVariables = {
+    topicId: ..., 
     name: ..., 
     unitId: ..., 
+    createdBy: ..., 
   };
   mutation.mutate(createTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ name: ..., unitId: ..., });
+  mutation.mutate({ topicId: ..., name: ..., unitId: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1848,7 +1870,8 @@ The `UpdateTopic` Mutation requires an argument of type `UpdateTopicVariables`, 
 ```javascript
 export interface UpdateTopicVariables {
   topicId: UUIDString;
-  name?: string | null;
+  unitId: UUIDString;
+  name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
 }
@@ -1901,13 +1924,14 @@ export default function UpdateTopicComponent() {
   // The `useUpdateTopic` Mutation requires an argument of type `UpdateTopicVariables`:
   const updateTopicVars: UpdateTopicVariables = {
     topicId: ..., 
-    name: ..., // optional
+    unitId: ..., 
+    name: ..., 
     updatedBy: ..., 
     updatedAt: ..., 
   };
   mutation.mutate(updateTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ topicId: ..., name: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

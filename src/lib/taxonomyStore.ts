@@ -65,7 +65,21 @@ export const getAllSubjects = (): Subject[] => {
     cache.loading.subjects = true;
     fetchAllSubjects()
       .then((data: any) => {
-        cache.subjects = data;
+        // data es { subjects: [...], ... }, necesitamos extraer y transformar el array
+        // Data Connect devuelve subjectId, pero nuestro tipo espera subject_id
+        const subjects = (data.subjects || []).map((s: any) => ({
+          subject_id: s.subjectId,
+          name: s.name,
+          code: s.code,
+          active: s.active,
+          created_at: s.createdAt,
+          created_by: s.createdBy,
+          updated_at: s.updatedAt,
+          updated_by: s.updatedBy,
+          deleted_at: s.deletedAt,
+          deleted_by: s.deletedBy,
+        }));
+        cache.subjects = subjects;
         cache.lastFetch.subjects = Date.now();
       })
       .catch((e: any) => console.error('Background fetch failed:', e))
@@ -89,9 +103,9 @@ export const getSubjectById = (subjectId: string): Subject | undefined => {
 /**
  * Crear nueva asignatura
  */
-export const createSubject = async (name: string, code: string): Promise<void> => {
+export const createSubject = async (name: string, code: string, createdBy: string): Promise<void> => {
   try {
-    await createNewSubject(name, code);
+    await createNewSubject(name, code, createdBy);
     cache.subjects = null;
   } catch (error) {
     console.error('Error creating subject:', error);
@@ -119,9 +133,12 @@ export const updateSubject = async (
 /**
  * Desactivar asignatura
  */
-export const deactivateSubject = async (subjectId: string): Promise<void> => {
+export const deactivateSubject = async (
+  subjectId: string,
+  userId: string
+): Promise<void> => {
   try {
-    await deactivateSubjectInfo(subjectId);
+    await deactivateSubjectInfo(subjectId, userId);
     cache.subjects = null;
   } catch (error) {
     console.error('Error deactivating subject:', error);
@@ -134,7 +151,8 @@ export const deactivateSubject = async (subjectId: string): Promise<void> => {
  * Usa soft delete pattern - marca como inactiva
  */
 export const deleteSubject = async (
-  subjectId: string
+  subjectId: string,
+  userId: string
 ): Promise<{ success: boolean; errors?: ValidationError[] }> => {
   try {
     const impact = analyzeSubjectDeleteImpact(subjectId);
@@ -156,7 +174,7 @@ export const deleteSubject = async (
     const relatedUnits = units.filter((u: Unit) => u.subject_fk === subjectId && u.active);
 
     for (const unit of relatedUnits) {
-      await deactivateUnitInfo(unit.unit_id);
+      await deactivateUnitInfo(unit.unit_id, userId);
     }
 
     // También deactivar todos los temas relacionados
@@ -164,12 +182,12 @@ export const deleteSubject = async (
     for (const unit of relatedUnits) {
       const relatedTopics = topics.filter((t: Topic) => t.unit_fk === unit.unit_id && t.active);
       for (const topic of relatedTopics) {
-        await deactivateTopicInfo(topic.topic_id);
+        await deactivateTopicInfo(topic.topic_id, userId);
       }
     }
 
     // Deactivar la asignatura
-    await deactivateSubjectInfo(subjectId);
+    await deactivateSubjectInfo(subjectId, userId);
 
     // Limpiar caches
     cache.subjects = null;
@@ -194,9 +212,12 @@ export const deleteSubject = async (
 /**
  * Reactivar asignatura
  */
-export const reactivateSubject = async (subjectId: string): Promise<void> => {
+export const reactivateSubject = async (
+  subjectId: string,
+  userId: string
+): Promise<void> => {
   try {
-    await reactivateSubjectInfo(subjectId);
+    await reactivateSubjectInfo(subjectId, userId);
     cache.subjects = null;
   } catch (error) {
     console.error('Error reactivating subject:', error);
@@ -252,7 +273,22 @@ export const getAllUnits = (): Unit[] => {
     cache.loading.units = true;
     fetchAllUnits()
       .then((data: any) => {
-        cache.units = data;
+        // data es { units: [...], ... }, necesitamos extraer y transformar el array
+        // Data Connect devuelve unitId/subjectId, pero nuestro tipo espera unit_id/subject_fk
+        const units = (data.units || []).map((u: any) => ({
+          unit_id: u.unitId,
+          name: u.name,
+          subject_fk: u.subjectId,
+          description: u.description,
+          active: u.active,
+          created_at: u.createdAt,
+          created_by: u.createdBy,
+          updated_at: u.updatedAt,
+          updated_by: u.updatedBy,
+          deleted_at: u.deletedAt,
+          deleted_by: u.deletedBy,
+        }));
+        cache.units = units;
         cache.lastFetch.units = Date.now();
       })
       .catch((e: any) => console.error('Background fetch failed:', e))
@@ -297,9 +333,14 @@ export const searchUnitsBySubject = (subjectId: string, searchTerm?: string): Un
 /**
  * Crear nueva unidad
  */
-export const createUnit = async (name: string, subjectId: string): Promise<void> => {
+export const createUnit = async (
+  name: string,
+  subjectId: string,
+  createdBy: string,
+  description?: string
+): Promise<void> => {
   try {
-    await createNewUnit(name, subjectId);
+    await createNewUnit(name, subjectId, createdBy, description);
     cache.units = null;
   } catch (error) {
     console.error('Error creating unit:', error);
@@ -312,11 +353,12 @@ export const createUnit = async (name: string, subjectId: string): Promise<void>
  */
 export const updateUnit = async (
   unitId: string,
-  updates: { name?: string; subject_fk?: string },
-  updatedBy: string
+  updates: { name?: string; subject_fk?: string; description?: string },
+  updatedBy: string,
+  subjectId?: string
 ): Promise<void> => {
   try {
-    await updateUnitInfo(unitId, updates, updatedBy);
+    await updateUnitInfo(unitId, updates, updatedBy, subjectId);
     cache.units = null;
   } catch (error) {
     console.error('Error updating unit:', error);
@@ -327,9 +369,9 @@ export const updateUnit = async (
 /**
  * Desactivar unidad
  */
-export const deactivateUnit = async (unitId: string): Promise<void> => {
+export const deactivateUnit = async (unitId: string, userId: string): Promise<void> => {
   try {
-    await deactivateUnitInfo(unitId);
+    await deactivateUnitInfo(unitId, userId);
     cache.units = null;
   } catch (error) {
     console.error('Error deactivating unit:', error);
@@ -341,7 +383,8 @@ export const deactivateUnit = async (unitId: string): Promise<void> => {
  * Eliminar unidad (alias para deactivateUnit)
  */
 export const deleteUnit = async (
-  unitId: string
+  unitId: string,
+  userId: string
 ): Promise<{ success: boolean; errors?: ValidationError[] }> => {
   try {
     const impact = analyzeUnitDeleteImpact(unitId);
@@ -363,11 +406,11 @@ export const deleteUnit = async (
     const relatedTopics = topics.filter((t: Topic) => t.unit_fk === unitId && t.active);
 
     for (const topic of relatedTopics) {
-      await deactivateTopicInfo(topic.topic_id);
+      await deactivateTopicInfo(topic.topic_id, userId);
     }
 
     // Deactivar la unidad
-    await deactivateUnitInfo(unitId);
+    await deactivateUnitInfo(unitId, userId);
 
     cache.units = null;
     cache.topics = null;
@@ -390,9 +433,9 @@ export const deleteUnit = async (
 /**
  * Reactivar unidad
  */
-export const reactivateUnit = async (unitId: string): Promise<void> => {
+export const reactivateUnit = async (unitId: string, userId: string): Promise<void> => {
   try {
-    await reactivateUnitInfo(unitId);
+    await reactivateUnitInfo(unitId, userId);
     cache.units = null;
   } catch (error) {
     console.error('Error reactivating unit:', error);
@@ -439,7 +482,22 @@ export const getAllTopics = (): Topic[] => {
     cache.loading.topics = true;
     fetchAllTopics()
       .then((data: any) => {
-        cache.topics = data;
+        // data es { topics: [...], ... }, necesitamos extraer y transformar el array
+        // Data Connect devuelve topicId/unitId, pero nuestro tipo espera topic_id/unit_fk
+        const topics = (data.topics || []).map((t: any) => ({
+          topic_id: t.topicId,
+          name: t.name,
+          unit_fk: t.unitId,
+          description: t.description,
+          active: t.active,
+          created_at: t.createdAt,
+          created_by: t.createdBy,
+          updated_at: t.updatedAt,
+          updated_by: t.updatedBy,
+          deleted_at: t.deletedAt,
+          deleted_by: t.deletedBy,
+        }));
+        cache.topics = topics;
         cache.lastFetch.topics = Date.now();
       })
       .catch((e: any) => console.error('Background fetch failed:', e))
@@ -449,7 +507,7 @@ export const getAllTopics = (): Topic[] => {
   }
 
   return cache.topics || [];
-};
+};;
 
 /**
  * Obtener tema por ID (sincrónico)
@@ -503,9 +561,13 @@ export const searchTaxonomy = (query: string): { subjects: Subject[]; units: Uni
 /**
  * Crear nuevo tema
  */
-export const createTopic = async (name: string, unitId: string): Promise<void> => {
+export const createTopic = async (
+  name: string,
+  unitId: string,
+  createdBy: string
+): Promise<void> => {
   try {
-    await createNewTopic(name, unitId);
+    await createNewTopic(name, unitId, createdBy);
     cache.topics = null;
   } catch (error) {
     console.error('Error creating topic:', error);
@@ -519,10 +581,11 @@ export const createTopic = async (name: string, unitId: string): Promise<void> =
 export const updateTopic = async (
   topicId: string,
   updates: { name?: string; unit_fk?: string },
-  updatedBy: string
+  updatedBy: string,
+  unitId?: string
 ): Promise<void> => {
   try {
-    await updateTopicInfo(topicId, updates, updatedBy);
+    await updateTopicInfo(topicId, updates, updatedBy, unitId);
     cache.topics = null;
   } catch (error) {
     console.error('Error updating topic:', error);
@@ -533,9 +596,9 @@ export const updateTopic = async (
 /**
  * Desactivar tema
  */
-export const deactivateTopic = async (topicId: string): Promise<void> => {
+export const deactivateTopic = async (topicId: string, userId: string): Promise<void> => {
   try {
-    await deactivateTopicInfo(topicId);
+    await deactivateTopicInfo(topicId, userId);
     cache.topics = null;
   } catch (error) {
     console.error('Error deactivating topic:', error);
@@ -547,7 +610,8 @@ export const deactivateTopic = async (topicId: string): Promise<void> => {
  * Eliminar tema (alias para deactivateTopic)
  */
 export const deleteTopic = async (
-  topicId: string
+  topicId: string,
+  userId: string
 ): Promise<{ success: boolean; errors?: ValidationError[] }> => {
   try {
     const impact = analyzeTopicDeleteImpact();
@@ -564,7 +628,7 @@ export const deleteTopic = async (
       };
     }
 
-    await deactivateTopicInfo(topicId);
+    await deactivateTopicInfo(topicId, userId);
 
     cache.topics = null;
 
@@ -586,9 +650,9 @@ export const deleteTopic = async (
 /**
  * Reactivar tema
  */
-export const reactivateTopic = async (topicId: string): Promise<void> => {
+export const reactivateTopic = async (topicId: string, userId: string): Promise<void> => {
   try {
-    await reactivateTopicInfo(topicId);
+    await reactivateTopicInfo(topicId, userId);
     cache.topics = null;
   } catch (error) {
     console.error('Error reactivating topic:', error);
@@ -661,5 +725,26 @@ export const getCacheStatus = () => {
     hasTopics: cache.topics !== null,
     lastFetch: cache.lastFetch,
     loading: cache.loading
+  };
+};
+
+/**
+ * DEBUG: Exportar caché completo para diagnóstico
+ */
+export const debugGetFullCache = () => {
+  return {
+    subjects: cache.subjects || [],
+    units: cache.units || [],
+    topics: cache.topics || [],
+    unitsBySubject: ((cache.units || []) as Unit[]).reduce((acc, unit) => {
+      if (!acc[unit.subject_fk]) acc[unit.subject_fk] = [];
+      acc[unit.subject_fk].push(unit);
+      return acc;
+    }, {} as Record<string, Unit[]>),
+    topicsByUnit: ((cache.topics || []) as Topic[]).reduce((acc, topic) => {
+      if (!acc[topic.unit_fk]) acc[topic.unit_fk] = [];
+      acc[topic.unit_fk].push(topic);
+      return acc;
+    }, {} as Record<string, Topic[]>),
   };
 };

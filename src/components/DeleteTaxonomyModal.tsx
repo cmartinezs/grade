@@ -13,6 +13,7 @@ import {
   getUnitById,
   getTopicById,
 } from '@/lib/taxonomyStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { TaxonomyType, DeleteImpactAnalysis } from '@/types/taxonomy';
 
 interface DeleteTaxonomyModalProps {
@@ -30,6 +31,7 @@ export default function DeleteTaxonomyModal({
   elementType,
   elementId,
 }: DeleteTaxonomyModalProps) {
+  const { user } = useAuth();
   const [impact, setImpact] = useState<DeleteImpactAnalysis | null>(null);
   const [elementName, setElementName] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -78,12 +80,20 @@ export default function DeleteTaxonomyModal({
     }
 
     try {
+      // Obtener userId del contexto de autenticación
+      const userId = user?.id;
+      
+      if (!userId) {
+        setErrorMessage('Usuario no autenticado');
+        return;
+      }
+
       if (elementType === 'subject') {
-        await deleteSubject(elementId);
+        await deleteSubject(elementId, userId);
       } else if (elementType === 'unit') {
-        await deleteUnit(elementId);
+        await deleteUnit(elementId, userId);
       } else {
-        await deleteTopic(elementId);
+        await deleteTopic(elementId, userId);
       }
 
       setSuccessMessage(`✅ ${getTaxonomyLabel(elementType)} eliminado exitosamente`);
@@ -92,7 +102,9 @@ export default function DeleteTaxonomyModal({
         handleHide();
       }, 1500);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Error al eliminar elemento');
+      const errorMessage = error instanceof Error ? error.message : 'Error al eliminar elemento';
+      console.error('Error deleting taxonomy:', error);
+      setErrorMessage(errorMessage);
     }
   };
 

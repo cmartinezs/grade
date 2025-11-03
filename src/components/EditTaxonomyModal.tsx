@@ -12,6 +12,7 @@ import {
   getUnitById,
   getTopicById,
 } from '@/lib/taxonomyStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { TaxonomyType, ValidationError, Subject, Unit } from '@/types/taxonomy';
 
 interface EditTaxonomyModalProps {
@@ -29,11 +30,13 @@ export default function EditTaxonomyModal({
   elementType,
   elementId,
 }: EditTaxonomyModalProps) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     code: '',
     subject_fk: '',
     unit_fk: '',
+    description: '',
   });
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -61,6 +64,7 @@ export default function EditTaxonomyModal({
             code: subject.code,
             subject_fk: '',
             unit_fk: '',
+            description: '',
           });
         }
       } else if (elementType === 'unit') {
@@ -71,6 +75,7 @@ export default function EditTaxonomyModal({
             code: '',
             subject_fk: unit.subject_fk,
             unit_fk: '',
+            description: unit.description || '',
           });
         }
       } else if (elementType === 'topic') {
@@ -83,6 +88,7 @@ export default function EditTaxonomyModal({
             code: '',
             subject_fk: unit ? unit.subject_fk : '',
             unit_fk: topic.unit_fk,
+            description: '',
           });
         }
       }
@@ -92,7 +98,7 @@ export default function EditTaxonomyModal({
   }, [show, elementId, elementType]);
 
   const handleHide = () => {
-    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '' });
+    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
     setErrors([]);
     setSuccessMessage(null);
     onHide();
@@ -103,15 +109,31 @@ export default function EditTaxonomyModal({
     setErrors([]);
     setSuccessMessage(null);
 
-    const userId = 'admin@example.com'; // Mock user ID
-
     try {
+      // Obtener userId del contexto de autenticación
+      const userId = user?.id;
+      
+      if (!userId) {
+        setErrors([{ field: 'general', message: 'Usuario no autenticado' }]);
+        return;
+      }
+
       if (elementType === 'subject') {
         await updateSubject(elementId, { name: formData.name, code: formData.code }, userId);
       } else if (elementType === 'unit') {
-        await updateUnit(elementId, { name: formData.name, subject_fk: formData.subject_fk }, userId);
+        await updateUnit(
+          elementId,
+          { name: formData.name, subject_fk: formData.subject_fk, description: formData.description },
+          userId,
+          formData.subject_fk
+        );
       } else {
-        await updateTopic(elementId, { name: formData.name, unit_fk: formData.unit_fk }, userId);
+        await updateTopic(
+          elementId,
+          { name: formData.name, unit_fk: formData.unit_fk },
+          userId,
+          formData.unit_fk
+        );
       }
 
       setSuccessMessage(`✅ ${getTaxonomyLabel(elementType)} actualizado exitosamente: "${formData.name}"`);
@@ -120,10 +142,12 @@ export default function EditTaxonomyModal({
         handleHide();
       }, 1500);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      console.error('Error updating taxonomy:', error);
       setErrors([
         {
           field: 'general',
-          message: error instanceof Error ? error.message : 'Error desconocido'
+          message: errorMessage
         }
       ]);
     }
@@ -252,6 +276,17 @@ export default function EditTaxonomyModal({
                     />
                     <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>
                     <Form.Text>El nombre debe ser único dentro de la asignatura seleccionada.</Form.Text>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Descripción (Opcional)</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="Descripción de la unidad..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    />
                   </Form.Group>
                 </>
               )}

@@ -9,6 +9,7 @@ import {
   getAllSubjects,
   getAllUnits,
 } from '@/lib/taxonomyStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { TaxonomyType, ValidationError, Subject, Unit } from '@/types/taxonomy';
 
 interface CreateTaxonomyModalProps {
@@ -18,12 +19,14 @@ interface CreateTaxonomyModalProps {
 }
 
 export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateTaxonomyModalProps) {
+  const { user } = useAuth();
   const [taxonomyType, setTaxonomyType] = useState<TaxonomyType>('subject');
   const [formData, setFormData] = useState({
     name: '',
     code: '',
     subject_fk: '',
     unit_fk: '',
+    description: '',
   });
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -41,7 +44,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
   // Reset form when modal is closed or opened
   const resetForm = () => {
     setTaxonomyType('subject');
-    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '' });
+    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
     setErrors([]);
     setSuccessMessage(null);
   };
@@ -54,7 +57,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
 
   const handleTypeChange = (type: TaxonomyType) => {
     setTaxonomyType(type);
-    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '' });
+    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
     setErrors([]);
     setSuccessMessage(null);
   };
@@ -64,13 +67,21 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     setErrors([]);
     setSuccessMessage(null);
 
+    // Obtener userId del contexto de autenticación
+    const userId = user?.id;
+    
+    if (!userId) {
+      setErrors([{ field: 'general', message: 'Usuario no autenticado' }]);
+      return;
+    }
+
     try {
       if (taxonomyType === 'subject') {
-        await createSubject(formData.name, formData.code);
+        await createSubject(formData.name, formData.code, userId);
       } else if (taxonomyType === 'unit') {
-        await createUnit(formData.name, formData.subject_fk);
+        await createUnit(formData.name, formData.subject_fk, userId, formData.description);
       } else {
-        await createTopic(formData.name, formData.unit_fk);
+        await createTopic(formData.name, formData.unit_fk, userId);
       }
 
       setSuccessMessage(`✅ ${getTaxonomyLabel(taxonomyType)} creado exitosamente: "${formData.name}"`);
@@ -243,6 +254,17 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
                 />
                 <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>
                 <Form.Text>El nombre debe ser único dentro de la asignatura seleccionada.</Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Descripción (Opcional)</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Descripción de la unidad..."
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
               </Form.Group>
             </>
           )}

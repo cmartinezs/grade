@@ -235,13 +235,60 @@ ESLint:          ✅ Passed
 Testing:         📝 En desarrollo
 ```
 
+### [v08: Regeneración de Data Connect y Ajustes Funcionales](./08-dataconnect-regeneration/INDEX.md)
+
+**Estado:** ✅ Completado  
+**Fecha:** 2 Noviembre 2025  
+**Build:** ✅ Exitoso (0 errores TS)
+
+Ajustes necesarios para compatibilidad con nueva regeneración de Firebase Data Connect. Nuevos parámetros en mutaciones, campos adicionales en schema y mejoras en autenticación.
+
+**Incluye:**
+- Nuevos parámetros en mutaciones (UUIDs, createdBy, userId)
+- Generación automática de UUIDs en cliente
+- Campos `description` para Unit y Topic
+- Transformación de tipos camelCase ↔ snake_case
+- Integración mejorada con AuthContext
+- 6 archivos modificados, 0 errores
+
+**Archivos:**
+- `INDEX.md` - Índice de cambios
+- `EXECUTIVE_SUMMARY_ES.md` - Resumen ejecutivo
+- `TECHNICAL_SUMMARY.md` - Documentación técnica
+- `IMPLEMENTATION_CHECKLIST.md` - Checklist detallado
+
+---
+
+### [v08: Regeneración de Firebase Data Connect](./08-dataconnect-regeneration/README.md)
+
+**Estado:** ✅ Completado  
+**Fecha:** 2 Noviembre 2025  
+**Build:** ✅ Exitoso (5.3s, 0 errores TS)
+
+Actualización del esquema de Firebase Data Connect con nuevos campos de auditoría y refactorización de la capa de datos para soportar nuevos parámetros requeridos.
+
+**Incluye:**
+- Nuevos campos: `description`, `createdBy`, `updatedBy`, `deletedBy`, `createdAt`, `updatedAt`, `deletedAt`
+- Generación de UUIDs cliente-side
+- Integración mejorada con contexto de autenticación
+- Transformación camelCase ↔ snake_case en tipos
+- 6 archivos modificados, 0 errores TypeScript
+
+**Archivos:**
+- `README.md` - Resumen ejecutivo
+- `INDEX.md` - Índice de cambios
+- `TECHNICAL_SUMMARY.md` - Documentación técnica
+- `BUILD_FIX_SUMMARY.md` - Resumen de fixes
+- `IMPLEMENTATION_CHECKLIST.md` - Checklist detallado
+- `NAVIGATION_GUIDE.md` - Guía de navegación
+
 ---
 
 ## 🚀 Próximos Cambios Planeados
 
-- **v07:** Autenticación Mejorada
-- **v08:** Testing Framework
-- **v09:** Reportes Avanzados
+- **v09:** Testing Framework
+- **v10:** Reportes Avanzados
+- **v11:** Optimizaciones de Rendimiento
 
 ---
 
@@ -264,5 +311,5 @@ Testing:         📝 En desarrollo
 
 ---
 
-**Última actualización:** 23 de Octubre de 2025  
-**Versión:** 1.0.0
+**Última actualización:** 2 de Noviembre de 2025  
+**Versión:** 1.1.0

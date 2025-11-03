@@ -49,18 +49,26 @@ export const getUserByEmail = async (email: string): Promise<UserData | null> =>
 /**
  * Crear usuario en Data Connect
  */
-export const createNewUser = async (userData: {
-  name: string;
-  email: string;
-  role: string;
-}): Promise<UserData | null> => {
+export const createNewUser = async (
+  userData: {
+    name: string;
+    email: string;
+    role: string;
+  },
+  createdBy: string
+): Promise<UserData | null> => {
   try {
+    // Generar UUID para userId
+    const userId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    
     // Generar un UUID simple para authId (en producción esto vendría de Firebase Auth)
     const authId = `auth_${Date.now()}`;
     
     const result = await dcCreateUser({
+      userId,
       ...userData,
-      authId
+      authId,
+      createdBy
     });
     
     // La respuesta contiene la clave del usuario creado

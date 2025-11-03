@@ -2179,6 +2179,14 @@ input Topic_Data {
   """
   deletedBy_expr: UUID_Expr
   """
+  ✨ Generated from Field `Topic`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Topic`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
   ✨ Generated from Field `Topic`.`name` of type `String!`
   """
   name: String
@@ -2260,6 +2268,10 @@ input Topic_Filter {
   """
   deletedBy: UUID_Filter
   """
+  ✨ Generated from Field `Topic`.`description` of type `String`
+  """
+  description: String_Filter
+  """
   ✨ Generated from Field `Topic`.`name` of type `String!`
   """
   name: String_Filter
@@ -2333,6 +2345,10 @@ input Topic_Having {
   ✨ Generated from Field `Topic`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Topic`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
   """
   ✨ Generated from Field `Topic`.`name_count` of type `Int!`
   """
@@ -2433,6 +2449,10 @@ input Topic_Order {
   """
   deletedBy: OrderDirection
   """
+  ✨ Generated from Field `Topic`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
   ✨ Generated from Field `Topic`.`name` of type `String!`
   """
   name: OrderDirection
@@ -2472,6 +2492,10 @@ input Topic_Order {
   ✨ Generated from Field `Topic`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Topic`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
   """
   ✨ Generated from Field `Topic`.`name_count` of type `Int!`
   """
@@ -2586,6 +2610,14 @@ input Unit_Data {
   """
   deletedBy_expr: UUID_Expr
   """
+  ✨ Generated from Field `Unit`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Unit`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
   ✨ Generated from Field `Unit`.`name` of type `String!`
   """
   name: String
@@ -2667,6 +2699,10 @@ input Unit_Filter {
   """
   deletedBy: UUID_Filter
   """
+  ✨ Generated from Field `Unit`.`description` of type `String`
+  """
+  description: String_Filter
+  """
   ✨ Generated from Field `Unit`.`name` of type `String!`
   """
   name: String_Filter
@@ -2740,6 +2776,10 @@ input Unit_Having {
   ✨ Generated from Field `Unit`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Unit`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
   """
   ✨ Generated from Field `Unit`.`name_count` of type `Int!`
   """
@@ -2840,6 +2880,10 @@ input Unit_Order {
   """
   deletedBy: OrderDirection
   """
+  ✨ Generated from Field `Unit`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
   ✨ Generated from Field `Unit`.`name` of type `String!`
   """
   name: OrderDirection
@@ -2879,6 +2923,10 @@ input Unit_Order {
   ✨ Generated from Field `Unit`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Unit`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
   """
   ✨ Generated from Field `Unit`.`name_count` of type `Int!`
   """

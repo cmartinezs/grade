@@ -11,6 +11,7 @@ import {
   TaxonomyHelpCard,
   TaxonomyCatalog,
 } from './components';
+import { TaxonomyDebug } from './components/TaxonomyDebug';
 import { useTaxonomyData, useTaxonomyModals } from './hooks';
 
 export default function TaxonomyPage() {
@@ -32,6 +33,9 @@ export default function TaxonomyPage() {
   return (
     <ProtectedRoute>
       <Container className="mt-4">
+        {/* Debug Component - only in development */}
+        {process.env.NODE_ENV === 'development' && <TaxonomyDebug />}
+
         {/* Header */}
         <Row className="mb-4">
           <Col>

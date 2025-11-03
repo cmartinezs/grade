@@ -17,6 +17,7 @@ export function TaxonomySubjectItem({
   onDelete,
   searchTerm,
 }: TaxonomySubjectItemProps) {
+  // Obtener units de manera sincrónica del caché
   const units = searchTerm
     ? searchUnitsBySubject(subject.subject_id, searchTerm)
     : getUnitsBySubject(subject.subject_id);
@@ -79,13 +80,14 @@ export function TaxonomySubjectItem({
         ) : (
           <Accordion>
             {units.map((unit) => (
-              <TaxonomyUnitItem
-                key={unit.unit_id}
-                unit={unit}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                searchTerm={searchTerm}
-              />
+              <div key={unit.unit_id}>
+                <TaxonomyUnitItem
+                  unit={unit}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  searchTerm={searchTerm}
+                />
+              </div>
             ))}
           </Accordion>
         )}

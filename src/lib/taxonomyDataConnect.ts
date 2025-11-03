@@ -32,9 +32,6 @@ import {
   GetTopicData,
 } from '../dataconnect-generated';
 
-// UUID para usuario del sistema (cuando no hay usuario autenticado disponible)
-const SYSTEM_USER_ID = '00000000-0000-0000-0000-000000000000';
-
 // ===================================================================
 // SUBJECTS (Asignaturas)
 // ===================================================================
@@ -61,10 +58,13 @@ export const fetchSubjectById = async (subjectId: string): Promise<GetSubjectDat
 
 export const createNewSubject = async (
   name: string,
-  code: string
+  code: string,
+  createdBy: string
 ): Promise<void> => {
   try {
-    await dcCreateSubject({ name, code });
+    // Generar UUID para subjectId
+    const subjectId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    await dcCreateSubject({ subjectId, name, code, createdBy });
   } catch (error) {
     console.error('Error creating subject:', error);
     throw error;
@@ -93,15 +93,14 @@ export const updateSubjectInfo = async (
 
 export const deactivateSubjectInfo = async (
   subjectId: string,
-  deletedBy?: string
+  deletedBy: string
 ): Promise<void> => {
   try {
     const now = new Date().toISOString();
-    const deletingUser = deletedBy || SYSTEM_USER_ID;
     await (dcDeactivateSubject as any)({
       subjectId,
       deletedAt: now,
-      deletedBy: deletingUser
+      deletedBy
     });
   } catch (error) {
     console.error(`Error deactivating subject ${subjectId}:`, error);
@@ -109,11 +108,11 @@ export const deactivateSubjectInfo = async (
   }
 };
 
-export const reactivateSubjectInfo = async (subjectId: string): Promise<void> => {
+export const reactivateSubjectInfo = async (subjectId: string, deletedBy: string): Promise<void> => {
   try {
     await (dcReactivateSubject as any)({ 
       subjectId,
-      deletedBy: SYSTEM_USER_ID
+      deletedBy
     });
   } catch (error) {
     console.error(`Error reactivating subject ${subjectId}:`, error);
@@ -159,10 +158,14 @@ export const fetchUnitsBySubject = async (subjectId: string): Promise<ListUnitsD
 
 export const createNewUnit = async (
   name: string,
-  subjectId: string
+  subjectId: string,
+  createdBy: string,
+  description?: string
 ): Promise<void> => {
   try {
-    await dcCreateUnit({ name, subjectId });
+    // Generar UUID para unitId
+    const unitId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    await dcCreateUnit({ unitId, name, description, subjectId, createdBy });
   } catch (error) {
     console.error('Error creating unit:', error);
     throw error;
@@ -171,14 +174,18 @@ export const createNewUnit = async (
 
 export const updateUnitInfo = async (
   unitId: string,
-  updates: { name?: string; subject_fk?: string },
-  updatedBy: string
+  updates: { name?: string; subject_fk?: string; description?: string },
+  updatedBy: string,
+  subjectId?: string
 ): Promise<void> => {
   try {
     const updatedAt = new Date().toISOString();
+    const subject_fk = updates.subject_fk || subjectId;
     await (dcUpdateUnit as any)({ 
       unitId, 
       name: updates.name, 
+      description: updates.description,
+      subjectId: subject_fk,
       updatedBy, 
       updatedAt 
     });
@@ -190,15 +197,14 @@ export const updateUnitInfo = async (
 
 export const deactivateUnitInfo = async (
   unitId: string,
-  deletedBy?: string
+  deletedBy: string
 ): Promise<void> => {
   try {
     const now = new Date().toISOString();
-    const deletingUser = deletedBy || SYSTEM_USER_ID;
     await (dcDeactivateUnit as any)({ 
       unitId,
       deletedAt: now,
-      deletedBy: deletingUser
+      deletedBy
     });
   } catch (error) {
     console.error(`Error deactivating unit ${unitId}:`, error);
@@ -206,11 +212,11 @@ export const deactivateUnitInfo = async (
   }
 };
 
-export const reactivateUnitInfo = async (unitId: string): Promise<void> => {
+export const reactivateUnitInfo = async (unitId: string, deletedBy: string): Promise<void> => {
   try {
     await (dcReactivateUnit as any)({ 
       unitId,
-      deletedBy: SYSTEM_USER_ID
+      deletedBy
     });
   } catch (error) {
     console.error(`Error reactivating unit ${unitId}:`, error);
@@ -256,10 +262,13 @@ export const fetchTopicsByUnit = async (unitId: string): Promise<ListTopicsData>
 
 export const createNewTopic = async (
   name: string,
-  unitId: string
+  unitId: string,
+  createdBy: string
 ): Promise<void> => {
   try {
-    await dcCreateTopic({ name, unitId });
+    // Generar UUID para topicId
+    const topicId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    await dcCreateTopic({ topicId, name, unitId, createdBy });
   } catch (error) {
     console.error('Error creating topic:', error);
     throw error;
@@ -269,12 +278,15 @@ export const createNewTopic = async (
 export const updateTopicInfo = async (
   topicId: string,
   updates: { name?: string; unit_fk?: string },
-  updatedBy: string
+  updatedBy: string,
+  unitId?: string
 ): Promise<void> => {
   try {
     const updatedAt = new Date().toISOString();
+    const unit_fk = updates.unit_fk || unitId;
     await (dcUpdateTopic as any)({ 
       topicId, 
+      unitId: unit_fk,
       name: updates.name, 
       updatedBy, 
       updatedAt 
@@ -287,15 +299,14 @@ export const updateTopicInfo = async (
 
 export const deactivateTopicInfo = async (
   topicId: string,
-  deletedBy?: string
+  deletedBy: string
 ): Promise<void> => {
   try {
     const now = new Date().toISOString();
-    const deletingUser = deletedBy || SYSTEM_USER_ID;
     await (dcDeactivateTopic as any)({ 
       topicId,
       deletedAt: now,
-      deletedBy: deletingUser
+      deletedBy
     });
   } catch (error) {
     console.error(`Error deactivating topic ${topicId}:`, error);
@@ -303,11 +314,11 @@ export const deactivateTopicInfo = async (
   }
 };
 
-export const reactivateTopicInfo = async (topicId: string): Promise<void> => {
+export const reactivateTopicInfo = async (topicId: string, deletedBy: string): Promise<void> => {
   try {
     await (dcReactivateTopic as any)({ 
       topicId,
-      deletedBy: SYSTEM_USER_ID
+      deletedBy
     });
   } catch (error) {
     console.error(`Error reactivating topic ${topicId}:`, error);

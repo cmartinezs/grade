@@ -42,13 +42,14 @@ export function TaxonomyCatalog({
         ) : (
           <Accordion>
             {subjects.map((subject) => (
-              <TaxonomySubjectItem
-                key={subject.subject_id}
-                subject={subject}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                searchTerm={searchTerm}
-              />
+              <div key={subject.subject_id}>
+                <TaxonomySubjectItem
+                  subject={subject}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  searchTerm={searchTerm}
+                />
+              </div>
             ))}
           </Accordion>
         )}

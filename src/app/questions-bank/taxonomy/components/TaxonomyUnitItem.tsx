@@ -17,6 +17,7 @@ export function TaxonomyUnitItem({
   onDelete,
   searchTerm,
 }: TaxonomyUnitItemProps) {
+  // Obtener topics de manera sincrónica del caché
   const topics = searchTerm
     ? searchTopicsByUnit(unit.unit_id, searchTerm)
     : getTopicsByUnit(unit.unit_id);

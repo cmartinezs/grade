@@ -712,6 +712,15 @@ extend type Topic {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Topic.deletedBy", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Topic` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Topic.description", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Topic` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   name_count(
@@ -835,6 +844,15 @@ extend type Unit {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Unit.deletedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Unit` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Unit.description", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Unit` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """

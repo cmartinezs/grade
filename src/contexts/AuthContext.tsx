@@ -182,13 +182,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       const firebaseUser = userCredential.user;
       
+      // Generar UUID para el usuario (será su propio creador)
+      const userId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+      
       // Guardar datos del usuario en Data Connect
       const fullName = `${userData.firstName} ${userData.lastName}`;
       const userDataConnectUser = await createNewUser({
         name: fullName,
         email: userData.email,
         role: userData.role
-      });
+      }, userId); // El usuario es su propio creador
       
       if (!userDataConnectUser) {
         console.error('Failed to create user in Data Connect');

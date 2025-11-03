@@ -5,7 +5,7 @@
 
 type User @table(name: "users", key: "userId") {
   # Identificador único del usuario
-  userId: UUID! @col(name: "user_id") @default(expr: "uuidV4()")
+  userId: UUID! @col(name: "user_id")
 
   # Identificador de firebase Auth
   authId: String! @col(name: "firebase_auth_id")
@@ -23,7 +23,7 @@ type User @table(name: "users", key: "userId") {
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
 
   # ID del usuario que realizó la creación
-  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  createdBy: UUID! @col(name: "created_by")
 
   # Fecha de última actualización
   updatedAt: Timestamp @col(name: "updated_at")
@@ -40,22 +40,22 @@ type User @table(name: "users", key: "userId") {
 
 type Subject @table(name: "subjects", key: "subjectId") {
   # Identificador único de la asignatura
-  subjectId: UUID! @col(name: "subject_id") @default(expr: "uuidV4()")
+  subjectId: UUID! @col(name: "subject_id")
   
   # Nombre de la asignatura
   name: String!
   
-  # Código de la asignatura
+  # Código de la asignatura (ej. MAT-101, ENG-102)
   code: String!
   
-  # Indica si la asignatura está activa
+  # Indicador de activo/inactivo
   active: Boolean! @default(value: true)
   
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
   
-  # ID del usuario creador
-  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
   
   # Fecha de última actualización
   updatedAt: Timestamp @col(name: "updated_at")
@@ -72,22 +72,25 @@ type Subject @table(name: "subjects", key: "subjectId") {
 
 type Unit @table(name: "units", key: "unitId") {
   # Identificador único de la unidad
-  unitId: UUID! @col(name: "unit_id") @default(expr: "uuidV4()")
+  unitId: UUID! @col(name: "unit_id")
+  
+  # Identificador de la asignatura padre
+  subjectId: UUID! @col(name: "subject_fk")
   
   # Nombre de la unidad
   name: String!
   
-  # ID de la asignatura a la que pertenece
-  subjectId: UUID! @col(name: "subject_fk")
+  # Descripción de la unidad
+  description: String
   
-  # Indica si la unidad está activa
+  # Indicador de activo/inactivo
   active: Boolean! @default(value: true)
   
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
   
-  # ID del usuario creador
-  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
   
   # Fecha de última actualización
   updatedAt: Timestamp @col(name: "updated_at")
@@ -104,22 +107,25 @@ type Unit @table(name: "units", key: "unitId") {
 
 type Topic @table(name: "topics", key: "topicId") {
   # Identificador único del tema
-  topicId: UUID! @col(name: "topic_id") @default(expr: "uuidV4()")
+  topicId: UUID! @col(name: "topic_id")
+  
+  # Identificador de la unidad padre
+  unitId: UUID! @col(name: "unit_fk")
   
   # Nombre del tema
   name: String!
   
-  # ID de la unidad a la que pertenece
-  unitId: UUID! @col(name: "unit_fk")
+  # Descripción del tema
+  description: String
   
-  # Indica si el tema está activo
+  # Indicador de activo/inactivo
   active: Boolean! @default(value: true)
   
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
   
-  # ID del usuario creador
-  createdBy: UUID! @col(name: "created_by") @default(expr: "auth.uid")
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
   
   # Fecha de última actualización
   updatedAt: Timestamp @col(name: "updated_at")
@@ -132,9 +138,11 @@ type Topic @table(name: "topics", key: "topicId") {
   
   # ID del usuario que realizó la eliminación
   deletedBy: UUID @col(name: "deleted_by")
-}type QuestionType @table(name: "question_types", key: "questionTypeId") {
+}
+
+type QuestionType @table(name: "question_types", key: "questionTypeId") {
   # Identificador único del tipo de pregunta
-  questionTypeId: UUID! @col(name: "question_type_id") @default(expr: "uuidV4()")
+  questionTypeId: UUID! @col(name: "question_type_id")
   
   # Código del tipo (TF, SC, MC)
   code: String!
@@ -145,7 +153,7 @@ type Topic @table(name: "topics", key: "topicId") {
 
 type Difficulty @table(name: "difficulties", key: "difficultyId") {
   # Identificador único del nivel de dificultad
-  difficultyId: UUID! @col(name: "difficulty_id") @default(expr: "uuidV4()")
+  difficultyId: UUID! @col(name: "difficulty_id")
   
   # Nivel de dificultad (Easy/Medium/Hard)
   level: String!
@@ -156,7 +164,7 @@ type Difficulty @table(name: "difficulties", key: "difficultyId") {
 
 type Outcome @table(name: "outcomes", key: "outcomeId") {
   # Identificador único del resultado de aprendizaje
-  outcomeId: UUID! @col(name: "outcome_id") @default(expr: "uuidV4()")
+  outcomeId: UUID! @col(name: "outcome_id")
   
   # Código del resultado (ej. LO-SCI-5.2)
   code: String!
@@ -188,7 +196,7 @@ type Outcome @table(name: "outcomes", key: "outcomeId") {
 
 type Question @table(name: "questions", key: "questionId") {
   # Identificador único de la pregunta
-  questionId: UUID! @col(name: "question_id") @default(expr: "uuidV4()")
+  questionId: UUID! @col(name: "question_id")
   
   # Texto de la pregunta
   text: String!
@@ -235,7 +243,7 @@ type Question @table(name: "questions", key: "questionId") {
 
 type QuestionOption @table(name: "question_options", key: "questionOptionId") {
   # Identificador único de la opción de pregunta
-  questionOptionId: UUID! @col(name: "question_option_id") @default(expr: "uuidV4()")
+  questionOptionId: UUID! @col(name: "question_option_id")
   
   # Texto de la opción
   text: String!

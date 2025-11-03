@@ -10,17 +10,21 @@
 
 # Crear un nuevo usuario
 mutation CreateUser(
+  $userId: UUID!
   $authId: String!
   $name: String!
   $email: String!
   $role: String!
+  $createdBy: UUID!
 ) @auth(level: USER) {
   user_insert(
     data: {
+      userId: $userId
       authId: $authId
       name: $name
       email: $email
       role: $role
+      createdBy: $createdBy
     }
   )
 }
@@ -52,13 +56,17 @@ mutation UpdateUser(
 
 # Crear una nueva asignatura
 mutation CreateSubject(
+  $subjectId: UUID!
   $name: String!
   $code: String!
+  $createdBy: UUID!
 ) @auth(level: USER) {
   subject_insert(
     data: {
+      subjectId: $subjectId
       name: $name
       code: $code
+      createdBy: $createdBy
       active: true
     }
   )
@@ -103,7 +111,7 @@ mutation DeactivateSubject(
 mutation ReactivateSubject(
   $subjectId: UUID!
   $deletedBy: UUID!
-  ) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
   subject_update(
     key: { subjectId: $subjectId }
     data: {
@@ -120,13 +128,19 @@ mutation ReactivateSubject(
 
 # Crear una nueva unidad dentro de una asignatura
 mutation CreateUnit(
+  $unitId: UUID!
   $name: String!
+  $description: String
   $subjectId: UUID!
+  $createdBy: UUID!
 ) @auth(level: USER) {
   unit_insert(
     data: {
+      unitId: $unitId
       name: $name
+      description: $description
       subjectId: $subjectId
+      createdBy: $createdBy
       active: true
     }
   )
@@ -135,7 +149,9 @@ mutation CreateUnit(
 # Actualizar una unidad
 mutation UpdateUnit(
   $unitId: UUID!
-  $name: String
+  $name: String!
+  $description: String
+  $subjectId: UUID!
   $updatedBy: UUID!
   $updatedAt: Timestamp!
 ) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
@@ -143,6 +159,7 @@ mutation UpdateUnit(
     key: { unitId: $unitId }
     data: {
       name: $name
+      description: $description
       updatedBy: $updatedBy
       updatedAt: $updatedAt
     }
@@ -187,13 +204,17 @@ mutation ReactivateUnit(
 
 # Crear un nuevo tema dentro de una unidad
 mutation CreateTopic(
+  $topicId: UUID!
   $name: String!
   $unitId: UUID!
+  $createdBy: UUID!
 ) @auth(level: USER) {
   topic_insert(
     data: {
+      topicId: $topicId
       name: $name
       unitId: $unitId
+      createdBy: $createdBy
       active: true
     }
   )
@@ -202,13 +223,15 @@ mutation CreateTopic(
 # Actualizar un tema
 mutation UpdateTopic(
   $topicId: UUID!
-  $name: String
+  $unitId: UUID!
+  $name: String!
   $updatedBy: UUID!
   $updatedAt: Timestamp!
 ) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
   topic_update(
     key: { topicId: $topicId }
     data: {
+      unitId: $unitId
       name: $name
       updatedBy: $updatedBy
       updatedAt: $updatedAt

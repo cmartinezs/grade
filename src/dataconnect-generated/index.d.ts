@@ -15,8 +15,10 @@ export interface CreateSubjectData {
 }
 
 export interface CreateSubjectVariables {
+  subjectId: UUIDString;
   name: string;
   code: string;
+  createdBy: UUIDString;
 }
 
 export interface CreateTopicData {
@@ -24,8 +26,10 @@ export interface CreateTopicData {
 }
 
 export interface CreateTopicVariables {
+  topicId: UUIDString;
   name: string;
   unitId: UUIDString;
+  createdBy: UUIDString;
 }
 
 export interface CreateUnitData {
@@ -33,8 +37,11 @@ export interface CreateUnitData {
 }
 
 export interface CreateUnitVariables {
+  unitId: UUIDString;
   name: string;
+  description?: string | null;
   subjectId: UUIDString;
+  createdBy: UUIDString;
 }
 
 export interface CreateUserData {
@@ -42,10 +49,12 @@ export interface CreateUserData {
 }
 
 export interface CreateUserVariables {
+  userId: UUIDString;
   authId: string;
   name: string;
   email: string;
   role: string;
+  createdBy: UUIDString;
 }
 
 export interface DeactivateSubjectData {
@@ -267,7 +276,8 @@ export interface UpdateTopicData {
 
 export interface UpdateTopicVariables {
   topicId: UUIDString;
-  name?: string | null;
+  unitId: UUIDString;
+  name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
 }
@@ -278,7 +288,9 @@ export interface UpdateUnitData {
 
 export interface UpdateUnitVariables {
   unitId: UUIDString;
-  name?: string | null;
+  name: string;
+  description?: string | null;
+  subjectId: UUIDString;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
 }
