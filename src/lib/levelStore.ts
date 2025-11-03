@@ -8,7 +8,7 @@ import {
   EducationalLevel,
   LevelCategory,
 } from '@/types/level';
-import { generateUUID, uuidToNumericId } from './uuid';
+import { generateUUID } from './uuid';
 
 import {
   createNewLevelCategory,
@@ -26,52 +26,54 @@ const LEVELS_STORAGE_KEY = 'parametric_educational_levels';
 
 // Seed data URLs
 // These URLs are defined for future dynamic loading capabilities
-// Currently, fallback seed data is used for initialization
-const FALLBACK_CATEGORIES: LevelCategory[] = [
-  {
-    id: 1,
-    code: 'CAT_BASIC',
-    name: 'Enseñanza Básica',
-    description: 'Educación básica (1° a 8° año)',
-    categoryId: null,
-    isActive: true,
-    createdAt: new Date('2025-01-01'),
-    createdBy: 'SYSTEM',
-    updatedAt: new Date('2025-01-01'),
-    updatedBy: 'SYSTEM',
-    deletedAt: null,
-    deletedBy: null,
-  },
-  {
-    id: 2,
-    code: 'CAT_MEDIA',
-    name: 'Enseñanza Media',
-    description: 'Educación media (1° a 4° año medio)',
-    categoryId: null,
-    isActive: true,
-    createdAt: new Date('2025-01-01'),
-    createdBy: 'SYSTEM',
-    updatedAt: new Date('2025-01-01'),
-    updatedBy: 'SYSTEM',
-    deletedAt: null,
-    deletedBy: null,
-  },
-];
+// Currently, fallback seed data is commented out as auto-load is disabled
 
-const FALLBACK_LEVELS: EducationalLevel[] = [
-  { id: 1, code: 'LEVEL_1B', name: '1° Básico', description: 'Primer año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 2, code: 'LEVEL_2B', name: '2° Básico', description: 'Segundo año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 3, code: 'LEVEL_3B', name: '3° Básico', description: 'Tercer año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 4, code: 'LEVEL_4B', name: '4° Básico', description: 'Cuarto año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 5, code: 'LEVEL_5B', name: '5° Básico', description: 'Quinto año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 6, code: 'LEVEL_6B', name: '6° Básico', description: 'Sexto año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 7, code: 'LEVEL_7B', name: '7° Básico', description: 'Séptimo año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 8, code: 'LEVEL_8B', name: '8° Básico', description: 'Octavo año de educación básica', categoryId: 1, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 9, code: 'LEVEL_1M', name: '1° Medio', description: 'Primer año de educación media', categoryId: 2, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 10, code: 'LEVEL_2M', name: '2° Medio', description: 'Segundo año de educación media', categoryId: 2, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 11, code: 'LEVEL_3M', name: '3° Medio', description: 'Tercer año de educación media', categoryId: 2, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-  { id: 12, code: 'LEVEL_4M', name: '4° Medio', description: 'Cuarto año de educación media', categoryId: 2, isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-];
+// DESHABILITADO: Ya no se cargan automáticamente
+// const FALLBACK_CATEGORIES: LevelCategory[] = [
+//   {
+//     id: 'cat-basic-001',
+//     code: 'CAT_BASIC',
+//     name: 'Enseñanza Básica',
+//     description: 'Educación básica (1° a 8° año)',
+//     categoryId: null,
+//     isActive: true,
+//     createdAt: new Date('2025-01-01'),
+//     createdBy: 'SYSTEM',
+//     updatedAt: new Date('2025-01-01'),
+//     updatedBy: 'SYSTEM',
+//     deletedAt: null,
+//     deletedBy: null,
+//   },
+//   {
+//     id: 'cat-media-002',
+//     code: 'CAT_MEDIA',
+//     name: 'Enseñanza Media',
+//     description: 'Educación media (1° a 4° año medio)',
+//     categoryId: null,
+//     isActive: true,
+//     createdAt: new Date('2025-01-01'),
+//     createdBy: 'SYSTEM',
+//     updatedAt: new Date('2025-01-01'),
+//     updatedBy: 'SYSTEM',
+//     deletedAt: null,
+//     deletedBy: null,
+//   },
+// ];
+
+// const FALLBACK_LEVELS: EducationalLevel[] = [
+//   { id: 'level-1b-001', code: 'LEVEL_1B', name: '1° Básico', description: 'Primer año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-2b-002', code: 'LEVEL_2B', name: '2° Básico', description: 'Segundo año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-3b-003', code: 'LEVEL_3B', name: '3° Básico', description: 'Tercer año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-4b-004', code: 'LEVEL_4B', name: '4° Básico', description: 'Cuarto año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-5b-005', code: 'LEVEL_5B', name: '5° Básico', description: 'Quinto año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-6b-006', code: 'LEVEL_6B', name: '6° Básico', description: 'Sexto año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-7b-007', code: 'LEVEL_7B', name: '7° Básico', description: 'Séptimo año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-8b-008', code: 'LEVEL_8B', name: '8° Básico', description: 'Octavo año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-1m-009', code: 'LEVEL_1M', name: '1° Medio', description: 'Primer año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-2m-010', code: 'LEVEL_2M', name: '2° Medio', description: 'Segundo año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-3m-011', code: 'LEVEL_3M', name: '3° Medio', description: 'Tercer año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+//   { id: 'level-4m-012', code: 'LEVEL_4M', name: '4° Medio', description: 'Cuarto año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
+// ];
 
 // ============================================================================
 // LEVEL CATEGORIES STORE
@@ -85,16 +87,18 @@ class LevelCategoryStore {
     const stored = localStorage.getItem(CATEGORIES_STORAGE_KEY);
     if (stored) return; // Already initialized
 
+    // DESHABILITADO: No cargar automáticamente
+    // Los datos deben cargarse desde Data-Connect o mediante carga manual desde JSON
     // Use fallback seed data
-    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(FALLBACK_CATEGORIES));
-    console.log(`[CATEGORY] ${FALLBACK_CATEGORIES.length} categorías de base inicializadas`);
+    // localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(FALLBACK_CATEGORIES));
+    // console.log(`[CATEGORY] ${FALLBACK_CATEGORIES.length} categorías de base inicializadas`);
   }
 
   // Load categories from localStorage
   private loadCategories(): LevelCategory[] {
     if (typeof window === 'undefined') return [];
 
-    this.initializeDefaultCategories();
+    // DESHABILITADO: this.initializeDefaultCategories();
 
     const stored = localStorage.getItem(CATEGORIES_STORAGE_KEY);
     if (!stored) return [];
@@ -119,13 +123,13 @@ class LevelCategoryStore {
   }
 
   // Get category by ID
-  getCategoryById(id: number): LevelCategory | null {
+  getCategoryById(id: string): LevelCategory | null {
     const categories = this.loadCategories();
     return categories.find((c) => c.id === id) || null;
   }
 
   // Get categories by parent ID (hierarchical)
-  getCategoriesByParent(categoryId: number | null): LevelCategory[] {
+  getCategoriesByParent(categoryId: string | null): LevelCategory[] {
     const categories = this.loadCategories();
     return categories.filter((c) => !c.deletedAt && c.categoryId === categoryId);
   }
@@ -141,7 +145,7 @@ class LevelCategoryStore {
     name: string;
     code: string;
     description: string;
-    categoryId?: number;
+    categoryId?: string;
     isActive?: boolean;
   }): LevelCategory {
     const categories = this.loadCategories();
@@ -151,9 +155,8 @@ class LevelCategoryStore {
       throw new Error(`El código de categoría "${input.code}" ya existe`);
     }
 
-    // Generate new ID
-    const maxId = Math.max(0, ...categories.map((c) => c.id));
-    const newId = maxId + 1;
+    // Generate new ID (string-based)
+    const newId = `cat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
     const timestamp = new Date();
     const newCategory: LevelCategory = {
@@ -180,12 +183,12 @@ class LevelCategoryStore {
 
   // Update category
   updateCategory(
-    id: number,
+    id: string,
     input: {
       name: string;
       code: string;
       description: string;
-      categoryId?: number;
+      categoryId?: string;
       isActive: boolean;
     }
   ): LevelCategory {
@@ -226,7 +229,7 @@ class LevelCategoryStore {
   }
 
   // Delete category (soft delete)
-  deleteCategory(id: number): void {
+  deleteCategory(id: string): void {
     const categories = this.loadCategories();
     const index = categories.findIndex((c) => c.id === id);
 
@@ -244,6 +247,42 @@ class LevelCategoryStore {
     localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
     console.log(`[CATEGORY] Categoría eliminada: ${categories[index].name}`);
   }
+
+  // Refresh categories from Data-Connect
+  refreshFromDataConnect(categories: Array<{
+    categoryId: string;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: string;
+  }>): void {
+    if (typeof window === 'undefined') return;
+
+    try {
+      // Convert Data-Connect format to LevelCategory format
+      const convertedCategories: LevelCategory[] = categories.map((cat) => ({
+        id: cat.categoryId,
+        categoryId: null, // Data-Connect doesn't support hierarchical categories yet
+        code: cat.code,
+        name: cat.name,
+        description: cat.description || '',
+        isActive: cat.active !== false,
+        createdAt: new Date(cat.createdAt),
+        createdBy: 'SYSTEM',
+        updatedAt: new Date(cat.createdAt),
+        updatedBy: 'SYSTEM',
+        deletedAt: null,
+        deletedBy: null,
+      }));
+
+      localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(convertedCategories));
+      console.log(`[CATEGORY] Refreshed ${convertedCategories.length} categories from Data-Connect`);
+    } catch (error) {
+      console.error('[CATEGORY] Error refreshing from Data-Connect:', error);
+      throw error;
+    }
+  }
 }
 
 // ============================================================================
@@ -258,16 +297,18 @@ class EducationalLevelStore {
     const stored = localStorage.getItem(LEVELS_STORAGE_KEY);
     if (stored) return; // Already initialized
 
+    // DESHABILITADO: No cargar automáticamente
+    // Los datos deben cargarse desde Data-Connect o mediante carga manual desde JSON
     // Use fallback seed data
-    localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(FALLBACK_LEVELS));
-    console.log(`[LEVEL] ${FALLBACK_LEVELS.length} niveles de base inicializados`);
+    // localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(FALLBACK_LEVELS));
+    // console.log(`[LEVEL] ${FALLBACK_LEVELS.length} niveles de base inicializados`);
   }
 
   // Load levels from localStorage
   private loadLevels(): EducationalLevel[] {
     if (typeof window === 'undefined') return [];
 
-    this.initializeDefaultLevels();
+    // DESHABILITADO: this.initializeDefaultLevels();
 
     const stored = localStorage.getItem(LEVELS_STORAGE_KEY);
     if (!stored) return [];
@@ -292,13 +333,13 @@ class EducationalLevelStore {
   }
 
   // Get level by ID
-  getLevelById(id: number): EducationalLevel | null {
+  getLevelById(id: string): EducationalLevel | null {
     const levels = this.loadLevels();
     return levels.find((l) => l.id === id) || null;
   }
 
   // Get levels by category ID
-  getLevelsByCategory(categoryId: number): EducationalLevel[] {
+  getLevelsByCategory(categoryId: string): EducationalLevel[] {
     const levels = this.loadLevels();
     return levels.filter((l) => !l.deletedAt && l.categoryId === categoryId);
   }
@@ -319,7 +360,7 @@ class EducationalLevelStore {
   getPaginatedLevels(
     page: number = 1,
     pageSize: number = 10,
-    options?: { includeInactive?: boolean; searchText?: string; categoryId?: number }
+    options?: { includeInactive?: boolean; searchText?: string; categoryId?: string }
   ): { levels: EducationalLevel[]; total: number; totalPages: number } {
     let allLevels = options?.includeInactive
       ? this.getAllLevelsIncludeInactive()
@@ -358,7 +399,7 @@ class EducationalLevelStore {
     name: string;
     code: string;
     description: string;
-    categoryId?: number;
+    categoryId?: string;
     isActive?: boolean;
   }): EducationalLevel {
     const levels = this.loadLevels();
@@ -368,9 +409,8 @@ class EducationalLevelStore {
       throw new Error(`El código "${input.code}" ya existe`);
     }
 
-    // Generate new ID
-    const maxId = Math.max(0, ...levels.map((l) => l.id));
-    const newId = maxId + 1;
+    // Generate new ID (string-based)
+    const newId = `level-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
     const timestamp = new Date();
     const newLevel: EducationalLevel = {
@@ -378,7 +418,7 @@ class EducationalLevelStore {
       name: input.name,
       code: input.code,
       description: input.description,
-      categoryId: input.categoryId || 1, // Default to first category
+      categoryId: input.categoryId || 'cat-basic-001', // Default to first category
       isActive: input.isActive !== false,
       createdAt: timestamp,
       createdBy: 'USER',
@@ -397,12 +437,12 @@ class EducationalLevelStore {
 
   // Update level
   updateLevel(
-    id: number,
+    id: string,
     input: {
       name: string;
       code: string;
       description: string;
-      categoryId?: number;
+      categoryId?: string;
       isActive: boolean;
     }
   ): EducationalLevel {
@@ -440,7 +480,7 @@ class EducationalLevelStore {
   }
 
   // Delete level (soft delete)
-  deleteLevel(id: number): void {
+  deleteLevel(id: string): void {
     const levels = this.loadLevels();
     const index = levels.findIndex((l) => l.id === id);
 
@@ -457,6 +497,43 @@ class EducationalLevelStore {
 
     localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
     console.log(`[LEVEL] Nivel eliminado: ${levels[index].name}`);
+  }
+
+  // Refresh levels from Data-Connect
+  refreshFromDataConnect(levels: Array<{
+    levelId: string;
+    categoryId: string;
+    code: string;
+    name: string;
+    description?: string | null;
+    active: boolean;
+    createdAt: string;
+  }>): void {
+    if (typeof window === 'undefined') return;
+
+    try {
+      // Convert Data-Connect format to EducationalLevel format
+      const convertedLevels: EducationalLevel[] = levels.map((lvl) => ({
+        id: lvl.levelId,
+        categoryId: lvl.categoryId,
+        code: lvl.code,
+        name: lvl.name,
+        description: lvl.description || '',
+        isActive: lvl.active !== false,
+        createdAt: new Date(lvl.createdAt),
+        createdBy: 'SYSTEM',
+        updatedAt: new Date(lvl.createdAt),
+        updatedBy: 'SYSTEM',
+        deletedAt: null,
+        deletedBy: null,
+      }));
+
+      localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(convertedLevels));
+      console.log(`[LEVEL] Refreshed ${convertedLevels.length} levels from Data-Connect`);
+    } catch (error) {
+      console.error('[LEVEL] Error refreshing from Data-Connect:', error);
+      throw error;
+    }
   }
 }
 
@@ -478,7 +555,7 @@ class LevelStore {
     return this.categoryStore.getAllCategories();
   }
 
-  getCategoryById(id: number): LevelCategory | null {
+  getCategoryById(id: string): LevelCategory | null {
     return this.categoryStore.getCategoryById(id);
   }
 
@@ -490,26 +567,26 @@ class LevelStore {
     name: string;
     code: string;
     description: string;
-    categoryId?: number;
+    categoryId?: string;
     isActive?: boolean;
   }): LevelCategory {
     return this.categoryStore.createCategory(input);
   }
 
   updateCategory(
-    id: number,
+    id: string,
     input: {
       name: string;
       code: string;
       description: string;
-      categoryId?: number;
+      categoryId?: string;
       isActive: boolean;
     }
   ): LevelCategory {
     return this.categoryStore.updateCategory(id, input);
   }
 
-  deleteCategory(id: number): void {
+  deleteCategory(id: string): void {
     return this.categoryStore.deleteCategory(id);
   }
 
@@ -518,7 +595,7 @@ class LevelStore {
     return this.levelStore.getAllLevels();
   }
 
-  getLevelById(id: number): EducationalLevel | null {
+  getLevelById(id: string): EducationalLevel | null {
     return this.levelStore.getLevelById(id);
   }
 
@@ -530,14 +607,14 @@ class LevelStore {
     return this.levelStore.getLevelByName(name);
   }
 
-  getLevelsByCategory(categoryId: number): EducationalLevel[] {
+  getLevelsByCategory(categoryId: string): EducationalLevel[] {
     return this.levelStore.getLevelsByCategory(categoryId);
   }
 
   getPaginatedLevels(
     page: number = 1,
     pageSize: number = 10,
-    options?: { includeInactive?: boolean; searchText?: string; categoryId?: number }
+    options?: { includeInactive?: boolean; searchText?: string; categoryId?: string }
   ): { levels: EducationalLevel[]; total: number; totalPages: number } {
     return this.levelStore.getPaginatedLevels(page, pageSize, options);
   }
@@ -547,7 +624,7 @@ class LevelStore {
     name: string;
     code: string;
     description: string;
-    categoryId?: number;
+    categoryId?: string;
     isActive?: boolean;
   }): EducationalLevel {
     return this.levelStore.createLevel(input);
@@ -555,12 +632,12 @@ class LevelStore {
 
   // Backwards compatible method
   updateLevel(
-    id: number,
+    id: string,
     input: {
       name: string;
       code: string;
       description: string;
-      categoryId?: number;
+      categoryId?: string;
       isActive: boolean;
     }
   ): EducationalLevel {
@@ -568,7 +645,7 @@ class LevelStore {
   }
 
   // Backwards compatible method
-  deleteLevel(id: number): void {
+  deleteLevel(id: string): void {
     return this.levelStore.deleteLevel(id);
   }
 }
@@ -607,10 +684,10 @@ export const createLevelCategory = async (
     // Call Data Connect mutation
     await createNewLevelCategory(code, name, description || '', createdBy);
     
-    // Sync to cache with generated UUID
-    const categoryUuid = generateUUID();
+    // Sync to cache with generated UUID as string ID
+    const categoryId = generateUUID();
     const newCategory: LevelCategory = {
-      id: uuidToNumericId(categoryUuid),
+      id: categoryId,
       code,
       name,
       description: description || '',
@@ -641,18 +718,18 @@ export const createLevelCategory = async (
 export const createEducationalLevel = async (
   code: string,
   name: string,
-  categoryId: number,
+  categoryId: string,
   description: string | undefined,
   createdBy: string
 ): Promise<void> => {
   try {
     // Call Data Connect mutation
-    await createNewEducationalLevel(code, name, categoryId.toString(), description || '', createdBy);
+    await createNewEducationalLevel(code, name, categoryId, description || '', createdBy);
     
-    // Sync to cache with generated UUID
-    const levelUuid = generateUUID();
+    // Sync to cache with generated UUID as string ID
+    const levelId = generateUUID();
     const newLevel: EducationalLevel = {
-      id: uuidToNumericId(levelUuid),
+      id: levelId,
       code,
       name,
       description: description || '',

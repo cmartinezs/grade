@@ -232,6 +232,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Cerrar sesión en Firebase
       await signOut(auth);
       
+      // Limpiar datos locales (niveles, categorías, cursos)
+      localStorage.removeItem('levels');
+      localStorage.removeItem('categories');
+      localStorage.removeItem('courses');
+      
+      // Limpiar estado del modal Chile Data Loader
+      localStorage.removeItem('chile_loader_modal_dismissed');
+      localStorage.removeItem('chile_loader_modal_dismissed_user');
+      
       setUser(null);
       localStorage.removeItem('user');
       localStorage.removeItem('authToken');

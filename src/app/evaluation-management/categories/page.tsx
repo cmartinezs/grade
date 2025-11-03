@@ -7,6 +7,8 @@ import MasterDataTable, {
   ActionButton,
 } from '@/components/MasterDataTable';
 import { Badge } from 'react-bootstrap';
+import ChileDataLoaderModal from '@/components/ChileDataLoaderModal';
+import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
 import { levelStore } from '@/lib/levelStore';
 import { LevelCategory } from '@/types/level';
 
@@ -14,19 +16,43 @@ const PAGE_SIZE = 10;
 
 export default function CategoriesPage() {
   const router = useRouter();
+  const { isDismissed, dismiss, isLoading: isChileLoaderLoading } = useChileLoaderModalState();
   const [categories, setCategories] = useState<LevelCategory[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<LevelCategory[]>([]);
   const [totalCategories, setTotalCategories] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showChileLoader, setShowChileLoader] = useState(false);
 
   // Load all categories on mount
+  // Esperar a que el hook termine de cargar el estado del localStorage
   useEffect(() => {
+    // No mostrar nada mientras se carga el estado del localStorage
+    if (isChileLoaderLoading) {
+      return;
+    }
+
+    if (isDismissed) {
+      // Si fue cerrado, no mostrar modal
+      setShowChileLoader(false);
+      const allCategories = levelStore.getAllCategories();
+      setCategories(allCategories);
+      setTotalCategories(allCategories.length);
+      return;
+    }
+    
     const allCategories = levelStore.getAllCategories();
     setCategories(allCategories);
     setTotalCategories(allCategories.length);
-  }, []);
+    
+    // Si no hay categorías y no han sido cerradas, mostrar el modal de carga
+    if (allCategories.length === 0) {
+      setShowChileLoader(true);
+    } else {
+      setShowChileLoader(false);
+    }
+  }, [isDismissed, isChileLoaderLoading]); // Incluir ambas dependencias
 
   // Filter and paginate categories
   useEffect(() => {
@@ -89,6 +115,18 @@ export default function CategoriesPage() {
     }
   };
 
+  const handleChileDataLoaded = () => {
+    // Recargar categorías después de cargar datos de Chile
+    const allCategories = levelStore.getAllCategories();
+    setCategories(allCategories);
+    setTotalCategories(allCategories.length);
+  };
+
+  const handleChileLoaderClose = () => {
+    setShowChileLoader(false);
+    dismiss(); // Marcar como cerrado en localStorage
+  };
+
   const columns: ColumnConfig<LevelCategory>[] = [
     {
       key: 'code',
@@ -109,7 +147,7 @@ export default function CategoriesPage() {
       label: 'Niveles',
       width: '80px',
       render: (categoryId) => {
-        const levels = levelStore.getLevelsByCategory(categoryId as number);
+        const levels = levelStore.getLevelsByCategory(categoryId as string);
         return <Badge bg="info">{String(levels.length || 0)}</Badge>;
       },
     },
@@ -150,24 +188,39 @@ export default function CategoriesPage() {
   ];
 
   return (
-    <MasterDataTable<LevelCategory>
-      title="📂 Gestión de Categorías de Niveles"
-      description="Administra las categorías de niveles educacionales"
-      columns={columns}
-      items={filteredCategories}
-      totalItems={totalCategories}
-      totalPages={Math.ceil(totalCategories / PAGE_SIZE)}
-      pageSize={PAGE_SIZE}
-      currentPage={currentPage}
-      isLoading={isLoading}
-      searchText={searchText}
-      onSearchChange={setSearchText}
-      onPageChange={setCurrentPage}
-      searchPlaceholder="Buscar por código, nombre..."
-      onCreateClick={() => router.push('/evaluation-management/categories/create')}
-      createButtonLabel="Nueva Categoría"
-      createButtonIcon="➕"
-      actions={actions}
-    />
+    <>
+      <MasterDataTable<LevelCategory>
+        title="📂 Gestión de Categorías de Niveles"
+        description="Administra las categorías de niveles educacionales"
+        columns={columns}
+        items={filteredCategories}
+        totalItems={totalCategories}
+        totalPages={Math.ceil(totalCategories / PAGE_SIZE)}
+        pageSize={PAGE_SIZE}
+        currentPage={currentPage}
+        isLoading={isLoading}
+        searchText={searchText}
+        onSearchChange={setSearchText}
+        onPageChange={setCurrentPage}
+        searchPlaceholder="Buscar por código, nombre..."
+        onCreateClick={() => router.push('/evaluation-management/categories/create')}
+        createButtonLabel="Nueva Categoría"
+        createButtonIcon="➕"
+        onPreloadData={() => setShowChileLoader(true)}
+        showPreloadButton={true}
+        emptyMessage="No hay categorías creadas aún"
+        emptyIcon="📭"
+        emptyActionLabel="Crear Primera Categoría"
+        actions={actions}
+      />
+      
+      <ChileDataLoaderModal
+        show={showChileLoader}
+        onHide={handleChileLoaderClose}
+        onSuccess={handleChileDataLoaded}
+        title="📍 Cargar Categorías de Chile"
+        description="No se encontraron categorías. ¿Deseas cargar las categorías del sistema educativo chileno?"
+      />
+    </>
   );
 }

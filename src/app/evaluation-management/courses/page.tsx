@@ -70,12 +70,12 @@ export default function CoursesPage() {
     setTotalPages(result.totalPages);
   };
 
-  const getLevelEditUrl = (levelId: number): string => {
+  const getLevelEditUrl = (levelId: string): string => {
     const level = levelStore.getLevelById(levelId);
     return level ? `/evaluation-management/levels/edit?id=${level.id}` : '#';
   };
 
-  const getLevelName = (levelId: number): string => {
+  const getLevelName = (levelId: string): string => {
     const level = levelStore.getLevelById(levelId);
     return level ? level.name : `Nivel ${levelId}`;
   };
@@ -96,9 +96,9 @@ export default function CoursesPage() {
       key: 'levelId',
       label: 'Nivel',
       render: (value) => (
-        <Link href={getLevelEditUrl(Number(value))} style={{ textDecoration: 'none' }}>
+        <Link href={getLevelEditUrl(String(value))} style={{ textDecoration: 'none' }}>
           <Badge bg="info" role="button" className="cursor-pointer">
-            {getLevelName(Number(value))}
+            {getLevelName(String(value))}
           </Badge>
         </Link>
       ),

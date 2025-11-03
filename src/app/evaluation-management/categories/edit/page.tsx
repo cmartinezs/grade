@@ -11,9 +11,9 @@ function EditCategoryContent() {
   const searchParams = useSearchParams();
   const categoryIdParam = searchParams.get('id');
 
-  // Parse and validate ID once
-  const categoryIdNumber = categoryIdParam ? parseInt(categoryIdParam, 10) : null;
-  const isValidId = categoryIdNumber !== null && !isNaN(categoryIdNumber);
+  // Validate ID (now as string)
+  const categoryId = categoryIdParam ? categoryIdParam : null;
+  const isValidId = categoryId !== null && categoryId.length > 0;
 
   const [formData, setFormData] = useState({
     name: '',
@@ -32,7 +32,7 @@ function EditCategoryContent() {
       return;
     }
 
-    const category = levelStore.getCategoryById(categoryIdNumber);
+    const category = levelStore.getCategoryById(categoryId);
     if (!category) {
       setError('Categoría no encontrada');
       setLoading(false);
@@ -46,7 +46,7 @@ function EditCategoryContent() {
       isActive: category.isActive,
     });
     setLoading(false);
-  }, [isValidId, categoryIdNumber]);
+  }, [isValidId, categoryId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -74,7 +74,7 @@ function EditCategoryContent() {
     }
 
     try {
-      levelStore.updateCategory(categoryIdNumber, {
+      levelStore.updateCategory(categoryId, {
         name: formData.name.trim(),
         code: formData.code.trim(),
         description: formData.description.trim(),

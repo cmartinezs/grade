@@ -23,7 +23,7 @@ export function groupLevelsByCategory(
   categories: LevelCategory[]
 ): { category: LevelCategory; levels: EducationalLevel[] }[] {
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
-  const grouped = new Map<number, EducationalLevel[]>();
+  const grouped = new Map<string, EducationalLevel[]>();
 
   // Initialize all categories
   categories.forEach((cat) => {
@@ -56,7 +56,7 @@ export function groupLevelsByCategory(
  */
 export function getLevelsByCategory(
   levels: EducationalLevel[],
-  categoryId: number
+  categoryId: string
 ): EducationalLevel[] {
   return levels
     .filter((level) => level.categoryId === categoryId)
@@ -71,7 +71,7 @@ export function getLevelsByCategory(
  */
 export function getCategoryById(
   categories: LevelCategory[],
-  categoryId: number
+  categoryId: string
 ): LevelCategory | undefined {
   return categories.find((cat) => cat.id === categoryId);
 }
@@ -84,7 +84,7 @@ export function getCategoryById(
  */
 export function getLevelById(
   levels: EducationalLevel[],
-  levelId: number
+  levelId: string
 ): EducationalLevel | undefined {
   return levels.find((level) => level.id === levelId);
 }
@@ -128,7 +128,7 @@ export function enrichLevelsWithCategory(
  */
 export function calculateCategoryStats(
   levels: EducationalLevel[],
-  categoryId: number
+  categoryId: string
 ): { total: number; active: number; inactive: number } {
   const categoryLevels = levels.filter((level) => level.categoryId === categoryId);
 
@@ -149,7 +149,7 @@ export function getCategoryStatistics(
   levels: EducationalLevel[],
   categories: LevelCategory[]
 ): Map<
-  number,
+  string,
   { category: LevelCategory; total: number; active: number; inactive: number }
 > {
   const stats = new Map();
@@ -212,7 +212,7 @@ export function getActiveLevels(levels: EducationalLevel[]): EducationalLevel[] 
 export function isCategoryCodeUnique(
   categories: LevelCategory[],
   code: string,
-  excludeId?: number
+  excludeId?: string
 ): boolean {
   return !categories.some(
     (cat) => cat.code === code && !cat.deletedAt && cat.id !== excludeId
@@ -229,7 +229,7 @@ export function isCategoryCodeUnique(
 export function isLevelCodeUnique(
   levels: EducationalLevel[],
   code: string,
-  excludeId?: number
+  excludeId?: string
 ): boolean {
   return !levels.some(
     (level) => level.code === code && !level.deletedAt && level.id !== excludeId
@@ -244,7 +244,7 @@ export function isLevelCodeUnique(
  */
 export function getCategoryChildren(
   categories: LevelCategory[],
-  parentCategoryId: number | null
+  parentCategoryId: string | null
 ): LevelCategory[] {
   return categories.filter(
     (cat) => !cat.deletedAt && cat.categoryId === parentCategoryId
@@ -259,10 +259,10 @@ export function getCategoryChildren(
  */
 export function getCategoryHierarchyPath(
   categories: LevelCategory[],
-  categoryId: number
+  categoryId: string
 ): LevelCategory[] {
   const path: LevelCategory[] = [];
-  let currentId: number | null = categoryId;
+  let currentId: string | null = categoryId;
 
   while (currentId !== null) {
     const current = categories.find((cat) => cat.id === currentId);

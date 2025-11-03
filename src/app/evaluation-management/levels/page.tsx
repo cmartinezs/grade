@@ -7,6 +7,8 @@ import MasterDataTable, {
   ActionButton,
 } from '@/components/MasterDataTable';
 import { Badge } from 'react-bootstrap';
+import ChileDataLoaderModal from '@/components/ChileDataLoaderModal';
+import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
 import { levelStore } from '@/lib/levelStore';
 import { EducationalLevel } from '@/types/level';
 
@@ -14,12 +16,14 @@ const PAGE_SIZE = 10;
 
 export default function LevelsPage() {
   const router = useRouter();
+  const { isDismissed, dismiss, isLoading: isChileLoaderLoading } = useChileLoaderModalState();
   const [levels, setLevels] = useState<EducationalLevel[]>([]);
   const [totalLevels, setTotalLevels] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showChileLoader, setShowChileLoader] = useState(false);
 
   // Load levels when page or search changes
   useEffect(() => {
@@ -33,6 +37,28 @@ export default function LevelsPage() {
     setTotalPages(result.totalPages);
     setIsLoading(false);
   }, [currentPage, searchText]);
+
+  // Check if there are levels and show loader if empty (only once on mount)
+  // Esperar a que el hook termine de cargar el estado del localStorage
+  useEffect(() => {
+    // No mostrar nada mientras se carga el estado del localStorage
+    if (isChileLoaderLoading) {
+      return;
+    }
+
+    if (isDismissed) {
+      // Si fue cerrado, no mostrar modal
+      setShowChileLoader(false);
+      return;
+    }
+    
+    const allLevels = levelStore.getAllLevels();
+    if (allLevels.length === 0) {
+      setShowChileLoader(true);
+    } else {
+      setShowChileLoader(false);
+    }
+  }, [isDismissed, isChileLoaderLoading]);
 
   // Reset to page 1 when search changes
   useEffect(() => {
@@ -79,6 +105,24 @@ export default function LevelsPage() {
         alert(`Error al eliminar: ${error instanceof Error ? error.message : 'Error desconocido'}`);
       }
     }
+  };
+
+  const handleChileDataLoaded = () => {
+    // Recargar niveles después de cargar datos de Chile
+    const result = levelStore.getPaginatedLevels(1, PAGE_SIZE, {
+      includeInactive: true,
+      searchText: '',
+    });
+    setLevels(result.levels);
+    setTotalLevels(result.total);
+    setTotalPages(result.totalPages);
+    setCurrentPage(1);
+    setSearchText('');
+  };
+
+  const handleChileLoaderClose = () => {
+    setShowChileLoader(false);
+    dismiss(); // Marcar como cerrado en localStorage
   };
 
   const handleEditLevel = (level: EducationalLevel) => {
@@ -143,27 +187,39 @@ export default function LevelsPage() {
   ];
 
   return (
-    <MasterDataTable<EducationalLevel>
-      items={levels}
-      totalItems={totalLevels}
-      totalPages={totalPages}
-      currentPage={currentPage}
-      pageSize={PAGE_SIZE}
-      isLoading={isLoading}
-      title="Gestión de Niveles Educacionales"
-      description="Administra los niveles educacionales del sistema"
-      icon="📊"
-      columns={columns}
-      actions={actions}
-      searchText={searchText}
-      onSearchChange={setSearchText}
-      onPageChange={setCurrentPage}
-      onCreateClick={() => router.push('/evaluation-management/levels/create')}
-      createButtonLabel="Nuevo Nivel"
-      createButtonIcon="➕"
-      emptyMessage="No hay niveles creados aún"
-      emptyIcon="📭"
-      emptyActionLabel="Crear Primer Nivel"
-    />
+    <>
+      <MasterDataTable<EducationalLevel>
+        items={levels}
+        totalItems={totalLevels}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        isLoading={isLoading}
+        title="Gestión de Niveles Educacionales"
+        description="Administra los niveles educacionales del sistema"
+        icon="📊"
+        columns={columns}
+        actions={actions}
+        searchText={searchText}
+        onSearchChange={setSearchText}
+        onPageChange={setCurrentPage}
+        onCreateClick={() => router.push('/evaluation-management/levels/create')}
+        createButtonLabel="Nuevo Nivel"
+        createButtonIcon="➕"
+        onPreloadData={() => setShowChileLoader(true)}
+        showPreloadButton={true}
+        emptyMessage="No hay niveles creados aún"
+        emptyIcon="📭"
+        emptyActionLabel="Crear Primer Nivel"
+      />
+      
+      <ChileDataLoaderModal
+        show={showChileLoader}
+        onHide={handleChileLoaderClose}
+        onSuccess={handleChileDataLoaded}
+        title="📍 Cargar Niveles de Chile"
+        description="No se encontraron niveles educacionales. ¿Deseas cargar los niveles del sistema educativo chileno?"
+      />
+    </>
   );
 }

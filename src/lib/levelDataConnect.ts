@@ -15,6 +15,8 @@ import {
   updateEducationalLevel as dcUpdateEducationalLevel,
   deactivateEducationalLevel as dcDeactivateEducationalLevel,
   reactivateEducationalLevel as dcReactivateEducationalLevel,
+  listLevelCategories as dcListLevelCategories,
+  listEducationalLevels as dcListEducationalLevels,
 } from '../dataconnect-generated';
 
 // ===================================================================
@@ -25,17 +27,19 @@ export const createNewLevelCategory = async (
   code: string,
   name: string,
   description: string | undefined,
-  createdBy: string
-): Promise<void> => {
+  createdBy: string,
+  categoryId?: string
+): Promise<string> => {
   try {
-    const categoryId = generateUUID();
+    const id = categoryId || generateUUID();
     await (dcCreateLevelCategory as any)({
-      categoryId,
+      categoryId: id,
       code,
       name,
       description,
       createdBy,
     });
+    return id;
   } catch (error) {
     console.error('Error creating level category:', error);
     throw error;
@@ -104,18 +108,20 @@ export const createNewEducationalLevel = async (
   name: string,
   categoryId: string,
   description: string | undefined,
-  createdBy: string
-): Promise<void> => {
+  createdBy: string,
+  levelId?: string
+): Promise<string> => {
   try {
-    const levelId = generateUUID();
+    const id = levelId || generateUUID();
     await (dcCreateEducationalLevel as any)({
-      levelId,
+      levelId: id,
       code,
       name,
       categoryId,
       description,
       createdBy,
     });
+    return id;
   } catch (error) {
     console.error('Error creating educational level:', error);
     throw error;
@@ -172,6 +178,40 @@ export const reactivateEducationalLevelInfo = async (
     });
   } catch (error) {
     console.error(`Error reactivating educational level ${levelId}:`, error);
+    throw error;
+  }
+};
+
+// ===================================================================
+// FETCH FROM DATA-CONNECT (For Refresh/Sync)
+// ===================================================================
+
+/**
+ * Fetch all level categories from Data-Connect
+ */
+export const fetchLevelCategoriesFromDataConnect = async () => {
+  try {
+    console.log('[levelDataConnect] Fetching level categories from Data-Connect...');
+    const result = await (dcListLevelCategories as any)();
+    console.log(`[levelDataConnect] Found ${result.data.levelCategories.length} categories`);
+    return result.data.levelCategories;
+  } catch (error) {
+    console.error('[levelDataConnect] Error fetching level categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch all educational levels from Data-Connect
+ */
+export const fetchEducationalLevelsFromDataConnect = async () => {
+  try {
+    console.log('[levelDataConnect] Fetching educational levels from Data-Connect...');
+    const result = await (dcListEducationalLevels as any)();
+    console.log(`[levelDataConnect] Found ${result.data.educationalLevels.length} levels`);
+    return result.data.educationalLevels;
+  } catch (error) {
+    console.error('[levelDataConnect] Error fetching educational levels:', error);
     throw error;
   }
 };

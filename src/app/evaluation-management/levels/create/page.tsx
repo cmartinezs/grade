@@ -12,7 +12,7 @@ export default function CreateLevelPage() {
     name: '',
     code: '',
     description: '',
-    categoryId: '' as number | '',
+    categoryId: '',
     isActive: true,
   });
   const [submitted, setSubmitted] = useState(false);
@@ -22,12 +22,9 @@ export default function CreateLevelPage() {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     
-    let processedValue: string | number | boolean = value;
+    let processedValue: string | boolean = value;
     if (type === 'checkbox') {
       processedValue = checked;
-    } else if (name === 'categoryId' && value) {
-      // Ensure categoryId is always a number
-      processedValue = typeof value === 'number' ? value : parseInt(value, 10);
     }
     
     setFormData({
@@ -51,7 +48,7 @@ export default function CreateLevelPage() {
         name: formData.name,
         code: formData.code,
         description: formData.description,
-        categoryId: Number(formData.categoryId),
+        categoryId: formData.categoryId,
         isActive: formData.isActive,
       });
 

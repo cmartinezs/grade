@@ -9,7 +9,7 @@ export interface LevelFormData {
   name: string;
   code: string;
   description: string;
-  categoryId: number | '';
+  categoryId: string | '';
   isActive: boolean;
 }
 

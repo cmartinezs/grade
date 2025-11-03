@@ -1,9 +1,9 @@
 [
   {
-    "id": 1,
+    "id": "cat-basic-001",
     "code": "CAT_BASIC",
-    "name": "Enseñanza Básica",
-    "description": "Educación básica (1° a 8° año)",
+    "name": "Ense\u00f1anza B\u00e1sica",
+    "description": "Educaci\u00f3n b\u00e1sica (1\u00b0 a 8\u00b0 a\u00f1o)",
     "categoryId": null,
     "isActive": true,
     "createdAt": "2025-01-01T00:00:00Z",
@@ -14,10 +14,10 @@
     "deletedBy": null
   },
   {
-    "id": 2,
+    "id": "cat-media-002",
     "code": "CAT_MEDIA",
-    "name": "Enseñanza Media",
-    "description": "Educación media (1° a 4° año medio)",
+    "name": "Ense\u00f1anza Media",
+    "description": "Educaci\u00f3n media (1\u00b0 a 4\u00b0 a\u00f1o medio)",
     "categoryId": null,
     "isActive": true,
     "createdAt": "2025-01-01T00:00:00Z",

@@ -14,7 +14,7 @@ interface CourseFormProps {
   courseId?: string;
   onSubmitSuccess?: (courseId: string) => void;
   isSubmitting?: boolean;
-  onSubmit?: (data: { name: string; code: string; levelId: number; institution: string; active: boolean }) => Promise<void>;
+  onSubmit?: (data: { name: string; code: string; levelId: string; institution: string; active: boolean }) => Promise<void>;
 }
 
 export default function CourseForm({
@@ -27,7 +27,7 @@ export default function CourseForm({
   const { user } = useAuth();
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
-  const [levelId, setLevelId] = useState(0);
+  const [levelId, setLevelId] = useState('');
   const [institution, setInstitution] = useState('');
   const [active, setActive] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +44,7 @@ export default function CourseForm({
       try {
         // Load levels
         const allLevels = levelStore.getAllLevels();
+        
         const levelOpts: AutocompleteOption[] = allLevels.map(lvl => ({
           id: lvl.id,
           name: lvl.name,
@@ -82,7 +83,7 @@ export default function CourseForm({
     if (mode === 'create') {
       setName('');
       setCode('');
-      setLevelId(0);
+      setLevelId('');
       setInstitution('');
       setActive(true);
     }
@@ -228,13 +229,14 @@ export default function CourseForm({
       {/* Academic Level - Using AutocompleteSelect Component */}
       <AutocompleteSelect
         value={levelId}
-        onChange={(value) => setLevelId(typeof value === 'number' ? value : parseInt(String(value), 10))}
+        onChange={(value) => setLevelId(String(value))}
         options={levelOptions}
         label="Nivel Académico"
         required
         placeholder="Escribe para buscar o selecciona un nivel..."
         isInvalid={getErrorsForField('levelId').length > 0}
         errorMessage={getErrorsForField('levelId')[0]?.message}
+        warningMessage={levelOptions.length === 0 ? "⚠️ No hay niveles académicos disponibles. Para poder crear un curso, primero debes crear o cargar los niveles. Ve a Gestión de Niveles para agregar niveles." : undefined}
         disabled={isDisabled}
       />
 

@@ -80,6 +80,7 @@ export interface MasterDataTableProps<T> {
   onCreateClick: () => void;
   createButtonLabel?: string;
   createButtonIcon?: string;
+  onPreloadData?: () => void; // Nuevo: callback para pre-carga de datos
 
   // Stat cards
   statCards?: StatCard[];
@@ -88,6 +89,7 @@ export interface MasterDataTableProps<T> {
   emptyMessage?: string;
   emptyIcon?: string;
   emptyActionLabel?: string;
+  showPreloadButton?: boolean; // Nuevo: mostrar botón de pre-carga
 }
 
 /**
@@ -145,9 +147,11 @@ export default function MasterDataTable<T>(
     onCreateClick,
     createButtonLabel = 'Crear',
     createButtonIcon = '➕',
+    onPreloadData,
     statCards = [],
     emptyMessage = 'No hay elementos',
     emptyIcon = '📭',
+    showPreloadButton = false,
     emptyActionLabel = 'Crear Elemento',
   } = props;
 
@@ -232,15 +236,17 @@ export default function MasterDataTable<T>(
                   </Col>
                   <Col md={4}></Col>
                   <Col md={4} className="text-end">
-                    <Button
-                      onClick={onCreateClick}
-                      variant="primary"
-                      size="sm"
-                      className="d-flex align-items-center gap-2 ms-auto"
-                    >
-                      <span>{createButtonIcon}</span>
-                      <span>{createButtonLabel}</span>
-                    </Button>
+                    {hasResults && (
+                      <Button
+                        onClick={onCreateClick}
+                        variant="primary"
+                        size="sm"
+                        className="d-flex align-items-center gap-2 ms-auto"
+                      >
+                        <span>{createButtonIcon}</span>
+                        <span>{createButtonLabel}</span>
+                      </Button>
+                    )}
                   </Col>
                 </Row>
               </Card.Header>
@@ -385,16 +391,28 @@ export default function MasterDataTable<T>(
                     {emptyIcon}
                   </p>
                   <h5 className="text-muted">{emptyMessage}</h5>
-                  {!searchText && (
-                    <Button
-                      variant="outline-primary"
-                      onClick={onCreateClick}
-                      className="mt-3"
-                      disabled={isLoading}
-                    >
-                      {createButtonIcon} {emptyActionLabel}
-                    </Button>
-                  )}
+                  <div className="mt-4 d-flex gap-2 justify-content-center">
+                    {showPreloadButton && onPreloadData && (
+                      <Button
+                        variant="success"
+                        onClick={onPreloadData}
+                        disabled={isLoading}
+                        className="d-flex align-items-center gap-2"
+                      >
+                        📥 Pre-carga de Datos
+                      </Button>
+                    )}
+                    {!searchText && (
+                      <Button
+                        variant="outline-primary"
+                        onClick={onCreateClick}
+                        disabled={isLoading}
+                        className="d-flex align-items-center gap-2"
+                      >
+                        {createButtonIcon} {emptyActionLabel}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               )}
             </Card.Body>

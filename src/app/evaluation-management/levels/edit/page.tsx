@@ -10,16 +10,16 @@ function EditLevelContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const levelIdParam = searchParams.get('id');
-  
-  // Parse and validate ID once
-  const levelIdNumber = levelIdParam ? parseInt(levelIdParam, 10) : null;
-  const isValidId = levelIdNumber !== null && !isNaN(levelIdNumber);
+
+  // Validate ID as string
+  const levelId = levelIdParam ? levelIdParam : null;
+  const isValidId = levelId !== null && levelId.length > 0;
 
   const [formData, setFormData] = useState({
     name: '',
     code: '',
     description: '',
-    categoryId: '' as number | '',
+    categoryId: '' as string,
     isActive: true,
   });
   const [submitted, setSubmitted] = useState(false);
@@ -33,7 +33,7 @@ function EditLevelContent() {
       return;
     }
 
-    const level = levelStore.getLevelById(levelIdNumber);
+    const level = levelStore.getLevelById(levelId as string);
     if (!level) {
       setError('Nivel no encontrado');
       setLoading(false);
@@ -48,7 +48,7 @@ function EditLevelContent() {
       isActive: level.isActive,
     });
     setLoading(false);
-  }, [isValidId, levelIdNumber]);
+  }, [isValidId, levelId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -58,8 +58,8 @@ function EditLevelContent() {
     if (type === 'checkbox') {
       processedValue = checked;
     } else if (name === 'categoryId' && value) {
-      // Ensure categoryId is always a number
-      processedValue = typeof value === 'number' ? value : parseInt(value, 10);
+      // Keep categoryId as string ID
+      processedValue = value;
     }
     
     setFormData({
@@ -84,11 +84,11 @@ function EditLevelContent() {
     }
 
     try {
-      levelStore.updateLevel(levelIdNumber, {
+      levelStore.updateLevel(levelId as string, {
         name: formData.name,
         code: formData.code,
         description: formData.description,
-        categoryId: Number(formData.categoryId),
+        categoryId: formData.categoryId,
         isActive: formData.isActive,
       });
 

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Alert } from 'react-bootstrap';
 
 export interface AutocompleteOption {
   id: string | number;
@@ -20,6 +20,7 @@ interface AutocompleteSelectProps {
   label?: string;
   required?: boolean;
   errorMessage?: string;
+  warningMessage?: string; // Nuevo: mensaje de advertencia
   autoComplete?: string;
 }
 
@@ -34,6 +35,7 @@ export default function AutocompleteSelect({
   label,
   required = false,
   errorMessage,
+  warningMessage,
   autoComplete = 'off'
 }: AutocompleteSelectProps) {
   const [inputValue, setInputValue] = useState('');
@@ -216,6 +218,13 @@ export default function AutocompleteSelect({
         <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
           {errorMessage}
         </Form.Control.Feedback>
+      )}
+
+      {/* Warning message with Alert block */}
+      {warningMessage && !isInvalid && (
+        <Alert variant="warning" className="mt-3 mb-0">
+          {warningMessage}
+        </Alert>
       )}
     </Form.Group>
   );

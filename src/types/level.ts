@@ -11,11 +11,11 @@
  * Ejemplo: "Enseñanza Básica", "Enseñanza Media"
  */
 export interface LevelCategory {
-  id: number;
+  id: string;
   code: string; // Unique code: "CAT_BASIC", "CAT_MEDIA", etc.
   name: string; // e.g., "Enseñanza Básica", "Enseñanza Media"
   description: string;
-  categoryId?: number | null; // Reference to parent category (if hierarchical)
+  categoryId?: string | null; // Reference to parent category (if hierarchical)
   isActive: boolean;
   createdAt: Date;
   createdBy: string;
@@ -30,11 +30,11 @@ export interface LevelCategory {
  * Ejemplo: "1° Básico", "2° Medio"
  */
 export interface EducationalLevel {
-  id: number;
+  id: string;
   code: string; // Unique code: "LEVEL_1B", "LEVEL_1M", etc.
   name: string; // e.g., "1° Básico", "2° Medio", etc.
   description: string;
-  categoryId: number; // Reference to parent LevelCategory
+  categoryId: string; // Reference to parent LevelCategory
   courseCount?: number; // Number of courses at this level
   isActive: boolean;
   createdAt: Date;
@@ -52,7 +52,7 @@ export interface CreateLevelCategoryInput {
   code: string;
   name: string;
   description: string;
-  categoryId?: number | null; // Optional parent category
+  categoryId?: string | null; // Optional parent category
   isActive?: boolean;
 }
 
@@ -63,7 +63,7 @@ export interface EditLevelCategoryInput {
   code: string;
   name: string;
   description: string;
-  categoryId?: number | null;
+  categoryId?: string | null;
   isActive: boolean;
 }
 
@@ -74,7 +74,7 @@ export interface CreateEducationalLevelInput {
   code: string;
   name: string;
   description: string;
-  categoryId: number; // Required: parent category
+  categoryId: string; // Required: parent category
   isActive?: boolean;
 }
 
@@ -85,7 +85,7 @@ export interface EditEducationalLevelInput {
   code: string;
   name: string;
   description: string;
-  categoryId: number;
+  categoryId: string;
   isActive: boolean;
 }
 
