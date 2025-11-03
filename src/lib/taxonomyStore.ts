@@ -105,8 +105,30 @@ export const getSubjectById = (subjectId: string): Subject | undefined => {
  */
 export const createSubject = async (name: string, code: string, createdBy: string): Promise<void> => {
   try {
+    const subjectId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
     await createNewSubject(name, code, createdBy);
-    cache.subjects = null;
+    
+    // Agregar el nuevo elemento al caché local para reflejar cambios inmediatamente
+    const newSubject: Subject = {
+      subject_id: subjectId,
+      name,
+      code,
+      active: true,
+      created_at: new Date().toISOString(),
+      created_by: createdBy,
+      updated_at: new Date().toISOString(),
+      updated_by: createdBy,
+      deleted_at: null,
+      deleted_by: null,
+    };
+    
+    // Agregar a caché si existe
+    if (cache.subjects && Array.isArray(cache.subjects)) {
+      cache.subjects.push(newSubject);
+    } else {
+      // Si no hay caché, limpiar para forzar recarga
+      cache.subjects = null;
+    }
   } catch (error) {
     console.error('Error creating subject:', error);
     throw error;
@@ -340,8 +362,31 @@ export const createUnit = async (
   description?: string
 ): Promise<void> => {
   try {
+    const unitId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
     await createNewUnit(name, subjectId, createdBy, description);
-    cache.units = null;
+    
+    // Agregar el nuevo elemento al caché local
+    const newUnit: Unit = {
+      unit_id: unitId,
+      name,
+      subject_fk: subjectId,
+      description: description || undefined,
+      active: true,
+      created_at: new Date().toISOString(),
+      created_by: createdBy,
+      updated_at: new Date().toISOString(),
+      updated_by: createdBy,
+      deleted_at: null,
+      deleted_by: null,
+    };
+    
+    // Agregar a caché si existe
+    if (cache.units && Array.isArray(cache.units)) {
+      cache.units.push(newUnit);
+    } else {
+      // Si no hay caché, limpiar para forzar recarga
+      cache.units = null;
+    }
   } catch (error) {
     console.error('Error creating unit:', error);
     throw error;
@@ -567,8 +612,30 @@ export const createTopic = async (
   createdBy: string
 ): Promise<void> => {
   try {
+    const topicId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
     await createNewTopic(name, unitId, createdBy);
-    cache.topics = null;
+    
+    // Agregar el nuevo elemento al caché local
+    const newTopic: Topic = {
+      topic_id: topicId,
+      name,
+      unit_fk: unitId,
+      active: true,
+      created_at: new Date().toISOString(),
+      created_by: createdBy,
+      updated_at: new Date().toISOString(),
+      updated_by: createdBy,
+      deleted_at: null,
+      deleted_by: null,
+    };
+    
+    // Agregar a caché si existe
+    if (cache.topics && Array.isArray(cache.topics)) {
+      cache.topics.push(newTopic);
+    } else {
+      // Si no hay caché, limpiar para forzar recarga
+      cache.topics = null;
+    }
   } catch (error) {
     console.error('Error creating topic:', error);
     throw error;
