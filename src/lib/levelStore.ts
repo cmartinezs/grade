@@ -8,6 +8,7 @@ import {
   EducationalLevel,
   LevelCategory,
 } from '@/types/level';
+import { generateUUID, uuidToNumericId } from './uuid';
 
 import {
   createNewLevelCategory,
@@ -607,9 +608,9 @@ export const createLevelCategory = async (
     await createNewLevelCategory(code, name, description || '', createdBy);
     
     // Sync to cache with generated UUID
-    const categoryId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const categoryUuid = generateUUID();
     const newCategory: LevelCategory = {
-      id: parseInt(categoryId.substring(0, 8), 16), // Convert UUID start to number for id
+      id: uuidToNumericId(categoryUuid),
       code,
       name,
       description: description || '',
@@ -649,9 +650,9 @@ export const createEducationalLevel = async (
     await createNewEducationalLevel(code, name, categoryId.toString(), description || '', createdBy);
     
     // Sync to cache with generated UUID
-    const levelId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const levelUuid = generateUUID();
     const newLevel: EducationalLevel = {
-      id: parseInt(levelId.substring(0, 8), 16), // Convert UUID start to number for id
+      id: uuidToNumericId(levelUuid),
       code,
       name,
       description: description || '',

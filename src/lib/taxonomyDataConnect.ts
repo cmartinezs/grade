@@ -5,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { generateUUID } from './uuid';
 import {
   listSubjects as dcListSubjects,
   listUnits as dcListUnits,
@@ -62,8 +63,8 @@ export const createNewSubject = async (
   createdBy: string
 ): Promise<void> => {
   try {
-    // Generar UUID para subjectId
-    const subjectId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    // Generate UUID for subjectId
+    const subjectId = generateUUID();
     await dcCreateSubject({ subjectId, name, code, createdBy });
   } catch (error) {
     console.error('Error creating subject:', error);
@@ -163,8 +164,8 @@ export const createNewUnit = async (
   description?: string
 ): Promise<void> => {
   try {
-    // Generar UUID para unitId
-    const unitId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    // Generate UUID for unitId
+    const unitId = generateUUID();
     await dcCreateUnit({ unitId, name, description, subjectId, createdBy });
   } catch (error) {
     console.error('Error creating unit:', error);
@@ -266,8 +267,8 @@ export const createNewTopic = async (
   createdBy: string
 ): Promise<void> => {
   try {
-    // Generar UUID para topicId
-    const topicId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    // Generate UUID for topicId
+    const topicId = generateUUID();
     await dcCreateTopic({ topicId, name, unitId, createdBy });
   } catch (error) {
     console.error('Error creating topic:', error);

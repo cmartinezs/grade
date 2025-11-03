@@ -5,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { generateUUID } from './uuid';
 import {
   createLevelCategory as dcCreateLevelCategory,
   updateLevelCategory as dcUpdateLevelCategory,
@@ -27,7 +28,7 @@ export const createNewLevelCategory = async (
   createdBy: string
 ): Promise<void> => {
   try {
-    const categoryId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const categoryId = generateUUID();
     await (dcCreateLevelCategory as any)({
       categoryId,
       code,
@@ -106,7 +107,7 @@ export const createNewEducationalLevel = async (
   createdBy: string
 ): Promise<void> => {
   try {
-    const levelId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const levelId = generateUUID();
     await (dcCreateEducationalLevel as any)({
       levelId,
       code,

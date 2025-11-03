@@ -9,6 +9,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { generateUUID, uuidToNumericId } from './uuid';
 import {
   fetchAllSubjects,
   createNewSubject,
@@ -105,7 +106,7 @@ export const getSubjectById = (subjectId: string): Subject | undefined => {
  */
 export const createSubject = async (name: string, code: string, createdBy: string): Promise<void> => {
   try {
-    const subjectId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const subjectId = generateUUID();
     await createNewSubject(name, code, createdBy);
     
     // Agregar el nuevo elemento al caché local para reflejar cambios inmediatamente
@@ -362,7 +363,7 @@ export const createUnit = async (
   description?: string
 ): Promise<void> => {
   try {
-    const unitId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const unitId = generateUUID();
     await createNewUnit(name, subjectId, createdBy, description);
     
     // Agregar el nuevo elemento al caché local
@@ -612,7 +613,7 @@ export const createTopic = async (
   createdBy: string
 ): Promise<void> => {
   try {
-    const topicId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    const topicId = generateUUID();
     await createNewTopic(name, unitId, createdBy);
     
     // Agregar el nuevo elemento al caché local

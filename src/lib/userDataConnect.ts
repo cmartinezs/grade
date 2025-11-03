@@ -3,6 +3,7 @@
  * Servicio para operaciones de usuario usando Firebase Data Connect
  */
 
+import { generateUUID } from './uuid';
 import {
   getUserByEmail as dcGetUserByEmail,
   createUser as dcCreateUser,
@@ -58,10 +59,10 @@ export const createNewUser = async (
   createdBy: string
 ): Promise<UserData | null> => {
   try {
-    // Generar UUID para userId
-    const userId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
+    // Generate UUID for userId
+    const userId = generateUUID();
     
-    // Generar un UUID simple para authId (en producción esto vendría de Firebase Auth)
+    // Generate a simple UUID for authId (in production this would come from Firebase Auth)
     const authId = `auth_${Date.now()}`;
     
     const result = await dcCreateUser({
