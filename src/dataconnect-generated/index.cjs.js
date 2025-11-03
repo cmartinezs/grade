@@ -271,6 +271,54 @@ exports.reactivateEducationalLevel = function reactivateEducationalLevel(dcOrVar
   return executeMutation(reactivateEducationalLevelRef(dcOrVars, vars));
 };
 
+const createCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateCourse', inputVars);
+}
+createCourseRef.operationName = 'CreateCourse';
+exports.createCourseRef = createCourseRef;
+
+exports.createCourse = function createCourse(dcOrVars, vars) {
+  return executeMutation(createCourseRef(dcOrVars, vars));
+};
+
+const updateCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateCourse', inputVars);
+}
+updateCourseRef.operationName = 'UpdateCourse';
+exports.updateCourseRef = updateCourseRef;
+
+exports.updateCourse = function updateCourse(dcOrVars, vars) {
+  return executeMutation(updateCourseRef(dcOrVars, vars));
+};
+
+const deactivateCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateCourse', inputVars);
+}
+deactivateCourseRef.operationName = 'DeactivateCourse';
+exports.deactivateCourseRef = deactivateCourseRef;
+
+exports.deactivateCourse = function deactivateCourse(dcOrVars, vars) {
+  return executeMutation(deactivateCourseRef(dcOrVars, vars));
+};
+
+const reactivateCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateCourse', inputVars);
+}
+reactivateCourseRef.operationName = 'ReactivateCourse';
+exports.reactivateCourseRef = reactivateCourseRef;
+
+exports.reactivateCourse = function reactivateCourse(dcOrVars, vars) {
+  return executeMutation(reactivateCourseRef(dcOrVars, vars));
+};
+
 const getUserByEmailRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -413,4 +461,52 @@ exports.getLevelsByCategoryRef = getLevelsByCategoryRef;
 
 exports.getLevelsByCategory = function getLevelsByCategory(dcOrVars, vars) {
   return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
+};
+
+const listCoursesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListCourses', inputVars);
+}
+listCoursesRef.operationName = 'ListCourses';
+exports.listCoursesRef = listCoursesRef;
+
+exports.listCourses = function listCourses(dcOrVars, vars) {
+  return executeQuery(listCoursesRef(dcOrVars, vars));
+};
+
+const getCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourse', inputVars);
+}
+getCourseRef.operationName = 'GetCourse';
+exports.getCourseRef = getCourseRef;
+
+exports.getCourse = function getCourse(dcOrVars, vars) {
+  return executeQuery(getCourseRef(dcOrVars, vars));
+};
+
+const getCoursesByUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByUser', inputVars);
+}
+getCoursesByUserRef.operationName = 'GetCoursesByUser';
+exports.getCoursesByUserRef = getCoursesByUserRef;
+
+exports.getCoursesByUser = function getCoursesByUser(dcOrVars, vars) {
+  return executeQuery(getCoursesByUserRef(dcOrVars, vars));
+};
+
+const getCoursesByLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByLevel', inputVars);
+}
+getCoursesByLevelRef.operationName = 'GetCoursesByLevel';
+exports.getCoursesByLevelRef = getCoursesByLevelRef;
+
+exports.getCoursesByLevel = function getCoursesByLevel(dcOrVars, vars) {
+  return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
 };

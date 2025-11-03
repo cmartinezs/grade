@@ -1,4 +1,10 @@
 """
+✨ `Course_KeyOutput` returns the primary key fields of table type `Course`.
+
+It has the same format as `Course_Key`, but is only used as mutation return value.
+"""
+scalar Course_KeyOutput
+"""
 ✨ `Difficulty_KeyOutput` returns the primary key fields of table type `Difficulty`.
 
 It has the same format as `Difficulty_Key`, but is only used as mutation return value.
@@ -64,6 +70,461 @@ scalar Unit_KeyOutput
 It has the same format as `User_Key`, but is only used as mutation return value.
 """
 scalar User_KeyOutput
+"""
+✨ Generated data input type for table 'Course'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Course_Data {
+  """
+  ✨ Generated from Field `Course`.`courseId` of type `UUID!`
+  """
+  courseId: UUID
+  """
+  ✨ `_expr` server value variant of `courseId` (✨ Generated from Field `Course`.`courseId` of type `UUID!`)
+  """
+  courseId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Course`.`active` of type `Boolean!`
+  """
+  active: Boolean
+  """
+  ✨ `_expr` server value variant of `active` (✨ Generated from Field `Course`.`active` of type `Boolean!`)
+  """
+  active_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `Course`.`code` of type `String!`
+  """
+  code: String
+  """
+  ✨ `_expr` server value variant of `code` (✨ Generated from Field `Course`.`code` of type `String!`)
+  """
+  code_expr: String_Expr
+  """
+  ✨ Generated from Field `Course`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Course`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Course`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Course`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Course`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Course`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Course`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `Course`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `Course`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `Course`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Course`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `Course`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Course`.`levelId` of type `UUID!`
+  """
+  levelId: UUID
+  """
+  ✨ `_expr` server value variant of `levelId` (✨ Generated from Field `Course`.`levelId` of type `UUID!`)
+  """
+  levelId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Course`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Course`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Course`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `Course`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Course`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Course`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'Course'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Course_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Course_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Course_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Course_Filter!]
+  """
+  ✨ Generated from Field `Course`.`courseId` of type `UUID!`
+  """
+  courseId: UUID_Filter
+  """
+  ✨ Generated from Field `Course`.`active` of type `Boolean!`
+  """
+  active: Boolean_Filter
+  """
+  ✨ Generated from Field `Course`.`code` of type `String!`
+  """
+  code: String_Filter
+  """
+  ✨ Generated from Field `Course`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `Course`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Course`.`levelId` of type `UUID!`
+  """
+  levelId: UUID_Filter
+  """
+  ✨ Generated from Field `Course`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Course`.`userId` of type `UUID!`
+  """
+  userId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'Course'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Course_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Course_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Course_Filter
+}
+"""
+✨ Generated having input type for table 'Course'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Course_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Course_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Course_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Course_Having!]
+  """
+  ✨ Generated from Field `Course`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`active_count` of type `Int!`
+  """
+  active_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`code_count` of type `Int!`
+  """
+  code_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`courseId_count` of type `Int!`
+  """
+  courseId_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`levelId_count` of type `Int!`
+  """
+  levelId_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Course`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Course'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Course_Key {
+  """
+  ✨ Generated from Field `Course`.`courseId` of type `UUID!`
+  """
+  courseId: UUID
+  """
+  ✨ `_expr` server value variant of `courseId` (✨ Generated from Field `Course`.`courseId` of type `UUID!`)
+  """
+  courseId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Course'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Course_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Course_Filter
+}
+"""
+✨ Generated order input type for table 'Course'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Course_Order {
+  """
+  ✨ Generated from Field `Course`.`courseId` of type `UUID!`
+  """
+  courseId: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`active` of type `Boolean!`
+  """
+  active: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`code` of type `String!`
+  """
+  code: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`levelId` of type `UUID!`
+  """
+  levelId: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`userId` of type `UUID!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`active_count` of type `Int!`
+  """
+  active_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`code_count` of type `Int!`
+  """
+  code_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`courseId_count` of type `Int!`
+  """
+  courseId_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`levelId_count` of type `Int!`
+  """
+  levelId_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
 """
 ✨ Generated data input type for table 'Difficulty'. It includes all necessary fields for creating or upserting rows into table.
 """

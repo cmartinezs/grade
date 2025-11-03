@@ -333,3 +333,41 @@ type EducationalLevel @table(name: "educational_levels", key: "levelId") {
   # ID del usuario que realizó la eliminación
   deletedBy: UUID @col(name: "deleted_by")
 }
+
+type Course @table(name: "courses", key: "courseId") {
+  # Identificador único del curso
+  courseId: UUID! @col(name: "course_id")
+  
+  # Nombre del curso (ej. 1° Básico A, 2° Medio B)
+  name: String!
+  
+  # Código del curso (ej. 1_Basico_A, 2_Medio_B)
+  code: String! @unique
+  
+  # ID del nivel educacional
+  levelId: UUID! @col(name: "level_fk")
+  
+  # ID del usuario asociado al curso
+  userId: UUID! @col(name: "user_fk")
+  
+  # Indicador de activo/inactivo
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}

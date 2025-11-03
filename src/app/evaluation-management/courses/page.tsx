@@ -162,7 +162,8 @@ export default function CoursesPage() {
         createButtonIcon="➕"
         emptyMessage="No hay cursos registrados"
         emptyIcon="📭"
-        emptyActionLabel="Crear Primer Curso"
+        emptyActionLabel="Generación Masiva"
+        emptyActionHref="/evaluation-management/courses/bulk-generate"
       />
 
       {/* Create Course Modal */}

@@ -415,6 +415,47 @@ class CourseStore {
     const courses = this.loadCourses().filter(c => !c.deleted_at);
     return Array.from(new Set(courses.map(c => c.institution))).sort();
   }
+
+  // Refresh courses from Data-Connect
+  refreshFromDataConnect(courses: Array<{
+    courseId: string;
+    name: string;
+    code: string;
+    levelId: string;
+    userId: string;
+    active: boolean;
+    createdAt: string;
+    createdBy?: string;
+    updatedAt?: string;
+    updatedBy?: string;
+    deletedAt?: string;
+    deletedBy?: string;
+  }>): void {
+    if (typeof window === 'undefined') return;
+
+    try {
+      // Convert Data-Connect format to Course format
+      const convertedCourses: Course[] = courses.map((course) => ({
+        course_id: course.courseId,
+        name: course.name,
+        code: course.code,
+        levelId: course.levelId,
+        institution: '', // No institution field in Data-Connect Course
+        active: course.active !== false,
+        created_at: new Date(course.createdAt),
+        created_by: course.createdBy || 'SYSTEM',
+        updated_at: course.updatedAt ? new Date(course.updatedAt) : new Date(course.createdAt),
+        updated_by: course.updatedBy || 'SYSTEM',
+        deleted_at: course.deletedAt ? new Date(course.deletedAt) : null,
+        deleted_by: course.deletedBy || null,
+      }));
+
+      localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(convertedCourses));
+      console.log(`[COURSE] Refreshed ${convertedCourses.length} courses from Data-Connect`);
+    } catch (error) {
+      console.error('[COURSE] Error refreshing courses from Data-Connect:', error);
+    }
+  }
 }
 
 export const courseStore = new CourseStore();

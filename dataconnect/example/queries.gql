@@ -194,3 +194,65 @@ query GetLevelsByCategory($categoryId: UUID!) @auth(level: USER) {
     createdAt
   }
 }
+
+# ===================================================================
+# CURSOS (Courses)
+# ===================================================================
+
+# Listar todos los cursos del usuario autenticado
+query ListCourses($userId: UUID!) @auth(expr: "userId == auth.uid") {
+  courses(where: { userId: { eq: $userId } }) {
+    courseId
+    name
+    code
+    levelId
+    userId
+    active
+    createdAt
+  }
+}
+
+# Obtener un curso por ID (solo si pertenece al usuario autenticado)
+query GetCourse($courseId: UUID!, $userId: UUID!) @auth(expr: "userId == auth.uid") {
+  course(key: { courseId: $courseId }) {
+    courseId
+    name
+    code
+    levelId
+    userId
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# Obtener cursos por usuario (solo para el usuario autenticado)
+query GetCoursesByUser($userId: UUID!) @auth(expr: "userId == auth.uid") {
+  courses(where: { userId: { eq: $userId } }) {
+    courseId
+    name
+    code
+    levelId
+    userId
+    active
+    createdAt
+  }
+}
+
+# Obtener cursos por nivel educacional del usuario autenticado
+query GetCoursesByLevel($userId: UUID!, $levelId: UUID!) @auth(expr: "userId == auth.uid") {
+  courses(where: { userId: { eq: $userId }, levelId: { eq: $levelId } }) {
+    courseId
+    name
+    code
+    levelId
+    userId
+    active
+    createdAt
+  }
+}
+

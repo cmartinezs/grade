@@ -1,5 +1,19 @@
 extend type Query {
   """
+  ✨ Look up a single `Course` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  course(
+    """
+    The key used to identify the object.
+    """
+    key: Course_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Course_FirstRow
+  ): Course @fdc_generated(from: "Course", purpose: QUERY_SINGLE)
+  """
   ✨ Look up a single `Difficulty` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
   difficulty(
@@ -153,6 +167,40 @@ extend type Query {
     """
     first: User_FirstRow
   ): User @fdc_generated(from: "User", purpose: QUERY_SINGLE)
+  """
+  ✨ List `Course` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  courses(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Course_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Course_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Course_Having
+  ): [Course!]! @fdc_generated(from: "Course", purpose: QUERY_MULTIPLE)
   """
   ✨ List `Difficulty` objects in the table and return selected fields, optionally filtered by `where` conditions
   """

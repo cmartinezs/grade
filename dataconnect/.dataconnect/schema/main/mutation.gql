@@ -1,5 +1,14 @@
 extend type Mutation {
   """
+  ✨ Insert a single `Course` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  course_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Course_Data!
+  ): Course_KeyOutput! @fdc_generated(from: "Course", purpose: INSERT_SINGLE)
+  """
   ✨ Insert a single `Difficulty` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   difficulty_insert(
@@ -98,6 +107,15 @@ extend type Mutation {
     """
     data: User_Data!
   ): User_KeyOutput! @fdc_generated(from: "User", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Course` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  course_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Course_Data!]!
+  ): [Course_KeyOutput!]! @fdc_generated(from: "Course", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Difficulty` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -198,6 +216,15 @@ extend type Mutation {
     data: [User_Data!]!
   ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: INSERT_MULTIPLE)
   """
+  ✨ Insert or update a single `Course` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Course`.
+  """
+  course_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Course_Data!
+  ): Course_KeyOutput! @fdc_generated(from: "Course", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update a single `Difficulty` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Difficulty`.
   """
   difficulty_upsert(
@@ -297,6 +324,15 @@ extend type Mutation {
     data: User_Data!
   ): User_KeyOutput! @fdc_generated(from: "User", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update `Course` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Course`.
+  """
+  course_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Course_Data!]!
+  ): [Course_KeyOutput!]! @fdc_generated(from: "Course", purpose: UPSERT_MULTIPLE)
+  """
   ✨ Insert or update `Difficulty` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Difficulty`.
   """
   difficulty_upsertMany(
@@ -395,6 +431,25 @@ extend type Mutation {
     """
     data: [User_Data!]!
   ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Course` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Course` or `null` if not found.
+  """
+  course_update(
+    """
+    The key used to identify the object.
+    """
+    key: Course_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Course_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Course_Data!
+  ): Course_KeyOutput @fdc_generated(from: "Course", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Difficulty` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Difficulty` or `null` if not found.
   """
@@ -605,6 +660,25 @@ extend type Mutation {
     data: User_Data!
   ): User_KeyOutput @fdc_generated(from: "User", purpose: UPDATE_SINGLE)
   """
+  ✨ Update `Course` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  course_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Course_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Course_Data!
+  ): Int! @fdc_generated(from: "Course", purpose: UPDATE_MULTIPLE)
+  """
   ✨ Update `Difficulty` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   difficulty_updateMany(
@@ -814,6 +888,20 @@ extend type Mutation {
     data: User_Data!
   ): Int! @fdc_generated(from: "User", purpose: UPDATE_MULTIPLE)
   """
+  ✨ Delete a single `Course` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  course_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Course_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Course_FirstRow
+  ): Course_KeyOutput @fdc_generated(from: "Course", purpose: DELETE_SINGLE)
+  """
   ✨ Delete a single `Difficulty` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   difficulty_delete(
@@ -967,6 +1055,20 @@ extend type Mutation {
     """
     first: User_FirstRow
   ): User_KeyOutput @fdc_generated(from: "User", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Course` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  course_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Course_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Course", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Difficulty` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

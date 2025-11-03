@@ -1,3 +1,145 @@
+extend type Course {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Course", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Course` table.
+  """
+  _count: Int! @fdc_generated(from: "Course.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `active` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  active_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.active", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.code", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `courseId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  courseId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.courseId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `deletedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.deletedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `deletedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.deletedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `levelId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  levelId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.levelId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `updatedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.updatedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Course` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Course` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Course.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `deletedAt` field in the `Course` table.
+  """
+  deletedAt_min: Timestamp @fdc_generated(from: "Course.deletedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Course` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Course.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Course` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Course.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `deletedAt` field in the `Course` table.
+  """
+  deletedAt_max: Timestamp @fdc_generated(from: "Course.deletedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Course` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Course.updatedAt", purpose: QUERY_MAX)
+}
 extend type Difficulty {
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.

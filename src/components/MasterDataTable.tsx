@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
   Container,
   Row,
@@ -89,6 +90,7 @@ export interface MasterDataTableProps<T> {
   emptyMessage?: string;
   emptyIcon?: string;
   emptyActionLabel?: string;
+  emptyActionHref?: string;
   showPreloadButton?: boolean; // Nuevo: mostrar botón de pre-carga
 }
 
@@ -153,6 +155,7 @@ export default function MasterDataTable<T>(
     emptyIcon = '📭',
     showPreloadButton = false,
     emptyActionLabel = 'Crear Elemento',
+    emptyActionHref,
   } = props;
 
   const hasResults = items.length > 0;
@@ -404,6 +407,7 @@ export default function MasterDataTable<T>(
                         📥 Pre-carga de Datos
                       </Button>
                     )}
+                    {/* Botón Crear Curso - siempre que no haya búsqueda */}
                     {!searchText && (
                       <Button
                         variant="outline-primary"
@@ -411,8 +415,21 @@ export default function MasterDataTable<T>(
                         disabled={isLoading}
                         className="d-flex align-items-center gap-2"
                       >
-                        {createButtonIcon} {emptyActionLabel}
+                        ➕ Crear Curso
                       </Button>
+                    )}
+                    
+                    {/* Botón Generación Masiva - solo si no hay cursos y no hay búsqueda */}
+                    {!searchText && totalItems === 0 && emptyActionHref && (
+                      <Link href={emptyActionHref}>
+                        <Button
+                          variant="outline-success"
+                          disabled={isLoading}
+                          className="d-flex align-items-center gap-2"
+                        >
+                          ⚡ {emptyActionLabel}
+                        </Button>
+                      </Link>
                     )}
                   </div>
                 </div>

@@ -62,7 +62,7 @@ export default function DashboardPage() {
       const inactiveCourses = courses.length - activeCourses;
 
       // Calculate courses by level
-      const coursesByLevel: Record<number, number> = {};
+      const coursesByLevel: Record<string, number> = {};
       courses.forEach((course) => {
         const levelId = course.levelId;
         coursesByLevel[levelId] = (coursesByLevel[levelId] || 0) + 1;

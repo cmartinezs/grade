@@ -29,6 +29,11 @@ const evalMenu = [
         icon: '📚',
         href: '/evaluation-management/courses' 
       },
+      { 
+        label: 'Generación Masiva de Cursos', 
+        icon: '⚡',
+        href: '/evaluation-management/courses/bulk-generate' 
+      },
     ]
   },
   { 

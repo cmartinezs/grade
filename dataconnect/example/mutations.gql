@@ -426,3 +426,84 @@ mutation ReactivateEducationalLevel(
     }
   )
 }
+
+# ===================================================================
+# CURSOS (Courses)
+# ===================================================================
+
+# Crear un nuevo curso
+mutation CreateCourse(
+  $courseId: UUID!
+  $name: String!
+  $code: String!
+  $levelId: UUID!
+  $userId: UUID!
+  $createdBy: UUID!
+) @auth(level: USER) {
+  course_insert(
+    data: {
+      courseId: $courseId
+      name: $name
+      code: $code
+      levelId: $levelId
+      userId: $userId
+      createdBy: $createdBy
+      active: true
+    }
+  )
+}
+
+# Actualizar un curso
+mutation UpdateCourse(
+  $courseId: UUID!
+  $name: String
+  $code: String
+  $levelId: UUID
+  $userId: UUID
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  course_update(
+    key: { courseId: $courseId }
+    data: {
+      name: $name
+      code: $code
+      levelId: $levelId
+      userId: $userId
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar un curso (soft delete)
+mutation DeactivateCourse(
+  $courseId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  course_update(
+    key: { courseId: $courseId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar un curso (undo soft delete)
+mutation ReactivateCourse(
+  $courseId: UUID!
+  $deletedBy: UUID!
+) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  course_update(
+    key: { courseId: $courseId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+

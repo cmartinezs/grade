@@ -248,6 +248,50 @@ export function reactivateEducationalLevel(dcOrVars, vars) {
   return executeMutation(reactivateEducationalLevelRef(dcOrVars, vars));
 }
 
+export const createCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateCourse', inputVars);
+}
+createCourseRef.operationName = 'CreateCourse';
+
+export function createCourse(dcOrVars, vars) {
+  return executeMutation(createCourseRef(dcOrVars, vars));
+}
+
+export const updateCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateCourse', inputVars);
+}
+updateCourseRef.operationName = 'UpdateCourse';
+
+export function updateCourse(dcOrVars, vars) {
+  return executeMutation(updateCourseRef(dcOrVars, vars));
+}
+
+export const deactivateCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateCourse', inputVars);
+}
+deactivateCourseRef.operationName = 'DeactivateCourse';
+
+export function deactivateCourse(dcOrVars, vars) {
+  return executeMutation(deactivateCourseRef(dcOrVars, vars));
+}
+
+export const reactivateCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateCourse', inputVars);
+}
+reactivateCourseRef.operationName = 'ReactivateCourse';
+
+export function reactivateCourse(dcOrVars, vars) {
+  return executeMutation(reactivateCourseRef(dcOrVars, vars));
+}
+
 export const getUserByEmailRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -378,5 +422,49 @@ getLevelsByCategoryRef.operationName = 'GetLevelsByCategory';
 
 export function getLevelsByCategory(dcOrVars, vars) {
   return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
+}
+
+export const listCoursesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListCourses', inputVars);
+}
+listCoursesRef.operationName = 'ListCourses';
+
+export function listCourses(dcOrVars, vars) {
+  return executeQuery(listCoursesRef(dcOrVars, vars));
+}
+
+export const getCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourse', inputVars);
+}
+getCourseRef.operationName = 'GetCourse';
+
+export function getCourse(dcOrVars, vars) {
+  return executeQuery(getCourseRef(dcOrVars, vars));
+}
+
+export const getCoursesByUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByUser', inputVars);
+}
+getCoursesByUserRef.operationName = 'GetCoursesByUser';
+
+export function getCoursesByUser(dcOrVars, vars) {
+  return executeQuery(getCoursesByUserRef(dcOrVars, vars));
+}
+
+export const getCoursesByLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByLevel', inputVars);
+}
+getCoursesByLevelRef.operationName = 'GetCoursesByLevel';
+
+export function getCoursesByLevel(dcOrVars, vars) {
+  return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
 }
 
