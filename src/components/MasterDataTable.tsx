@@ -79,6 +79,9 @@ export interface MasterDataTableProps<T> {
 
   // Callbacks
   onCreateClick: () => void;
+  onSortChange?: (column: keyof T, direction: 'asc' | 'desc') => void;
+  sortColumn?: keyof T;
+  sortDirection?: 'asc' | 'desc';
   createButtonLabel?: string;
   createButtonIcon?: string;
   onPreloadData?: () => void; // Nuevo: callback para pre-carga de datos
@@ -135,6 +138,7 @@ export default function MasterDataTable<T>(
     totalItems,
     totalPages,
     currentPage,
+    pageSize,
     isLoading = false,
     title,
     description,
@@ -156,6 +160,9 @@ export default function MasterDataTable<T>(
     showPreloadButton = false,
     emptyActionLabel = 'Crear Elemento',
     emptyActionHref,
+    onSortChange,
+    sortColumn,
+    sortDirection = 'asc',
   } = props;
 
   const hasResults = items.length > 0;
@@ -269,23 +276,54 @@ export default function MasterDataTable<T>(
                     <Table hover className="mb-0" style={{ marginBottom: '0' }}>
                       <thead className="bg-light">
                         <tr>
-                          {columns.map((col) => (
-                            <th
-                              key={String(col.key)}
-                              style={{ width: col.width, paddingLeft: '1.5rem', paddingRight: '1.5rem' }}
-                              className={col.sortable ? 'cursor-pointer' : ''}
-                            >
-                              {col.label}
-                            </th>
-                          ))}
+                          <th style={{ width: '60px', paddingLeft: '1.5rem', paddingRight: '1.5rem', textAlign: 'center' }}>
+                            #
+                          </th>
+                          {columns.map((col) => {
+                            const isSorted = sortColumn === col.key;
+                            const handleSort = () => {
+                              if (!col.sortable || !onSortChange) return;
+                              
+                              const newDirection = isSorted && sortDirection === 'asc' ? 'desc' : 'asc';
+                              onSortChange(col.key, newDirection);
+                            };
+
+                            return (
+                              <th
+                                key={String(col.key)}
+                                style={{ width: col.width, paddingLeft: '1.5rem', paddingRight: '1.5rem' }}
+                                className={col.sortable ? 'cursor-pointer user-select-none' : ''}
+                                onClick={handleSort}
+                                role={col.sortable ? 'button' : undefined}
+                                title={col.sortable ? 'Click para ordenar' : undefined}
+                              >
+                                <div className="d-flex align-items-center gap-2">
+                                  <span>{col.label}</span>
+                                  {col.sortable && (
+                                    <span style={{ fontSize: '0.85rem', minWidth: '1rem' }}>
+                                      {isSorted ? (
+                                        sortDirection === 'asc' ? '↑' : '↓'
+                                      ) : (
+                                        <span style={{ opacity: 0.4 }}>⇅</span>
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                              </th>
+                            );
+                          })}
                           {actions.length > 0 && <th style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}>Acciones</th>}
                         </tr>
                       </thead>
                       <tbody>
                         {items.map((item, idx) => {
                           const itemKey = (item as T & { id?: string; course_id?: string }).id || (item as T & { id?: string; course_id?: string }).course_id || idx;
+                          const rowNumber = (currentPage - 1) * pageSize + idx + 1;
                           return (
                           <tr key={itemKey} style={{ verticalAlign: 'middle' }}>
+                            <td style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem', textAlign: 'center', fontWeight: 'bold', color: '#6c757d', width: '60px' }}>
+                              {rowNumber}
+                            </td>
                             {columns.map((col) => {
                               const value = item[col.key];
                               const rendered = col.render

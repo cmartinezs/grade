@@ -33,10 +33,11 @@ type ProgressCallback = (progress: ProgressUpdate) => void;
  * Nota: Los IDs en el JSON no son UUIDs válidos, así que generamos UUIDs
  * y mapeamos los IDs del JSON a los UUIDs generados.
  * 
+ * @param userId - UUID del usuario logueado que crea los registros
  * @param onProgress - Callback opcional para recibir actualizaciones de progreso
  * @returns Resultado con cantidad de registros cargados y errores
  */
-export async function loadChileEducationData(onProgress?: ProgressCallback): Promise<ChileDataLoadResult> {
+export async function loadChileEducationData(userId: string, onProgress?: ProgressCallback): Promise<ChileDataLoadResult> {
   const result: ChileDataLoadResult = {
     categoriesCreated: 0,
     levelsCreated: 0,
@@ -84,8 +85,10 @@ export async function loadChileEducationData(onProgress?: ProgressCallback): Pro
     // Mapeo: JSON ID -> UUID generado
     const categoryIdMap = new Map<string, string>();
     
-    // UUID para el usuario del sistema
-    const systemUUID = generateUUID();
+    // Validar que tenemos el UUID del usuario
+    if (!userId) {
+      throw new Error('User ID is required to load Chile education data');
+    }
     
     for (let i = 0; i < categories.length; i++) {
       const category = categories[i];
@@ -108,7 +111,7 @@ export async function loadChileEducationData(onProgress?: ProgressCallback): Pro
           category.code,
           category.name,
           category.description,
-          systemUUID,
+          userId, // Usar el UUID del usuario logueado
           generatedUUID // Pasar el UUID específico
         );
         
@@ -150,7 +153,7 @@ export async function loadChileEducationData(onProgress?: ProgressCallback): Pro
           level.name,
           mappedCategoryId,
           level.description,
-          systemUUID,
+          userId, // Usar el UUID del usuario logueado
           levelUUID // Pasar el UUID específico
         );
         result.levelsCreated++;

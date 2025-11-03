@@ -6,14 +6,70 @@
  * - Letras (A, B, C, D, etc.)
  */
 
-import { generateUUID } from './uuid';
 import { courseStore } from './courseStore';
+
+/**
+ * Genera las iniciales de una cadena (primera letra de cada palabra)
+ * ej: "Colegio San Miguel" -> "CSM"
+ */
+function getInitials(text: string): string {
+  return text
+    .split(/\s+/)
+    .filter(word => word.length > 0)
+    .map(word => word[0].toUpperCase())
+    .join('');
+}
+
+/**
+ * Genera el código de curso según el formato:
+ * INSTIT-CATEG-NIVEL-LETRA (siempre en mayúsculas)
+ * ej: CSM-EGB-7-A (Colegio San Miguel - Educación General Básica - 7mo - A)
+ */
+function generateCourseCode(
+  institutionInitials: string,
+  categoryCode: string,
+  levelCode: string,
+  letter: string
+): string {
+  return `${institutionInitials}-${categoryCode}-${levelCode}-${letter}`.toUpperCase();
+}
+
+/**
+ * Obtiene el código de nivel (número o identificador)
+ * Intenta extraer un número del nombre del nivel
+ * ej: "7° Básico" -> "7", "Kinder" -> "KG"
+ */
+function getLevelCode(levelName: string): string {
+  // Buscar números en el nombre
+  const numberMatch = levelName.match(/\d+/);
+  if (numberMatch) {
+    return numberMatch[0];
+  }
+  
+  // Si es Kinder, retornar "KG"
+  if (levelName.toLowerCase().includes('kinder')) {
+    return 'KG';
+  }
+  
+  // Si es Preescolar, retornar "PRE"
+  if (levelName.toLowerCase().includes('preescolar')) {
+    return 'PRE';
+  }
+  
+  // Por defecto, usar iniciales
+  return getInitials(levelName);
+}
 
 export interface CourseLoadOptions {
   institution: string;
   numberOfLetters: number; // A, B, C, D, etc.
   levelIds: string[]; // IDs of levels to create courses for
   levelNames: Record<string, string>; // Mapping of levelId to level name
+  levelCategories?: Record<string, string>; // Mapping of levelId to categoryId
+  categoryNames?: Record<string, string>; // Mapping of categoryId to category name
+  levelCodes?: Record<string, string>; // Mapping of levelId to level code
+  categoryCodes?: Record<string, string>; // Mapping of categoryId to category code
+  userId?: string; // UUID del usuario logueado
 }
 
 export interface CourseLoadResult {
@@ -37,9 +93,17 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
     console.log(`[CourseDataLoader] Institution: ${options.institution}`);
     console.log(`[CourseDataLoader] Letters: ${options.numberOfLetters}`);
     console.log(`[CourseDataLoader] Levels: ${options.levelIds.length}`);
+    console.log(`[CourseDataLoader] User ID: ${options.userId}`);
 
-    // UUID para el usuario del sistema
-    const systemUUID = generateUUID();
+    // Usar el UUID del usuario logueado
+    const userUUID = options.userId;
+    
+    if (!userUUID) {
+      throw new Error('User ID is required to create courses');
+    }
+
+    // Calcular iniciales de la institución
+    const institutionInitials = getInitials(options.institution);
 
     // Generar todas las combinaciones de nivel + letra
     const coursesToCreate: Array<{
@@ -50,12 +114,16 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
 
     for (const levelId of options.levelIds) {
       const levelName = options.levelNames[levelId] || 'Unknown';
+      const categoryId = options.levelCategories?.[levelId];
+      const categoryName = categoryId && options.categoryNames ? options.categoryNames[categoryId] : 'General';
+      const categoryCode = (categoryId && options.categoryCodes?.[categoryId]) || getInitials(categoryName);
+      const levelCode = options.levelCodes?.[levelId] || getLevelCode(levelName);
 
       // Generar letras: A, B, C, D, etc.
       for (let i = 0; i < options.numberOfLetters; i++) {
         const letter = String.fromCharCode(65 + i); // 65 = 'A'
         const courseName = `${levelName} ${letter}`;
-        const courseCode = `${levelName.replace(/°/g, '').replace(/ /g, '_')}_${letter}`;
+        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, letter);
 
         coursesToCreate.push({
           name: courseName,
@@ -78,7 +146,7 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
             institution: options.institution,
             active: true,
           },
-          systemUUID
+          userUUID
         );
         result.coursesCreated++;
         console.log(`[CourseDataLoader] Created course: ${course.name} (${courseId})`);

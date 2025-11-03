@@ -16,6 +16,7 @@
 
 import { useCallback } from 'react';
 import { loadChileEducationData } from '@/lib/chileDataLoader';
+import { useAuth } from '@/contexts/AuthContext';
 import { levelCategoryStore, educationalLevelStore } from '@/lib/levelStore';
 import {
   fetchLevelCategoriesFromDataConnect,
@@ -39,6 +40,8 @@ interface ProgressUpdate {
 type ProgressCallback = (progress: ProgressUpdate) => void;
 
 export function useChileDataLoader() {
+  const { user } = useAuth();
+
   /**
    * Carga toda la configuración de Chile (categorías y niveles) a Data-Connect
    * y refresca los stores locales con los datos desde la base de datos
@@ -49,9 +52,18 @@ export function useChileDataLoader() {
     async (onProgress?: ProgressCallback): Promise<LoadChileDataResult> => {
       try {
         console.log('[useChileDataLoader] Starting Chile configuration load...');
+
+        if (!user?.id) {
+          return {
+            categoriesLoaded: 0,
+            levelsLoaded: 0,
+            success: false,
+            message: '❌ Usuario no autenticado',
+          };
+        }
         
-        // 1. Cargar datos a Data-Connect
-        const result = await loadChileEducationData(onProgress);
+        // 1. Cargar datos a Data-Connect con el userId del usuario logueado
+        const result = await loadChileEducationData(user.id, onProgress);
         
         // Si hubo errores, reportar
         if (result.errors.length > 0) {
@@ -96,7 +108,7 @@ export function useChileDataLoader() {
         };
       }
     },
-    []
+    [user?.id]
   );
 
   return {

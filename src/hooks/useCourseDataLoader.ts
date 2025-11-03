@@ -7,6 +7,7 @@
 
 import { useCallback } from 'react';
 import { loadCoursesInBulk, CourseLoadOptions } from '@/lib/courseDataLoader';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LoadCoursesResult {
   coursesCreated: number;
@@ -26,6 +27,8 @@ interface ProgressUpdate {
 type ProgressCallback = (progress: ProgressUpdate) => void;
 
 export function useCourseDataLoader() {
+  const { user } = useAuth();
+
   /**
    * Carga masivamente cursos a Data-Connect y actualiza el store local
    * 
@@ -42,6 +45,16 @@ export function useCourseDataLoader() {
         console.log(`[useCourseDataLoader] Institution: ${options.institution}`);
         console.log(`[useCourseDataLoader] Letters: ${options.numberOfLetters}`);
         console.log(`[useCourseDataLoader] Levels: ${options.levelIds.length}`);
+        console.log(`[useCourseDataLoader] User ID: ${user?.id}`);
+
+        if (!user?.id) {
+          return {
+            coursesCreated: 0,
+            errors: ['Usuario no autenticado'],
+            success: false,
+            message: '❌ Usuario no autenticado',
+          };
+        }
 
         // Calcular total de cursos a crear
         const totalCourses = options.levelIds.length * options.numberOfLetters;
@@ -56,8 +69,11 @@ export function useCourseDataLoader() {
           });
         }
 
-        // 1. Crear cursos en Data-Connect
-        const result = await loadCoursesInBulk(options);
+        // 1. Crear cursos en Data-Connect con el userId del usuario logueado
+        const result = await loadCoursesInBulk({
+          ...options,
+          userId: user.id,
+        });
 
         // 2. Los cursos ya están en el store (courseStore.createCourse)
         // No es necesario recargar desde Data-Connect
@@ -96,7 +112,7 @@ export function useCourseDataLoader() {
         };
       }
     },
-    []
+    [user?.id]
   );
 
   return {
