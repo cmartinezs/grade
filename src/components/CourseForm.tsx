@@ -122,7 +122,7 @@ export default function CourseForm({
             institution: institution.trim(),
             active
           },
-          user?.email || 'anonymous'
+          user?.id || 'anonymous'
         );
 
         setSubmitSuccess(true);
@@ -140,7 +140,7 @@ export default function CourseForm({
             institution: institution.trim(),
             active
           },
-          user?.email || 'anonymous'
+          user?.id || 'anonymous'
         );
 
         setSubmitSuccess(true);

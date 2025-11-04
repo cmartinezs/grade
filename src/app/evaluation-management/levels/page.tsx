@@ -9,6 +9,7 @@ import MasterDataTable, {
 import { Badge } from 'react-bootstrap';
 import ChileDataLoaderModal from '@/components/ChileDataLoaderModal';
 import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
+import { useAuth } from '@/contexts/AuthContext';
 import { levelStore } from '@/lib/levelStore';
 import { EducationalLevel } from '@/types/level';
 
@@ -16,6 +17,7 @@ const PAGE_SIZE = 10;
 
 export default function LevelsPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const { isDismissed, dismiss, isLoading: isChileLoaderLoading } = useChileLoaderModalState();
   const [levels, setLevels] = useState<EducationalLevel[]>([]);
   const [totalLevels, setTotalLevels] = useState(0);
@@ -27,37 +29,63 @@ export default function LevelsPage() {
 
   // Load levels when page or search changes
   useEffect(() => {
-    setIsLoading(true);
-    const result = levelStore.getPaginatedLevels(currentPage, PAGE_SIZE, {
-      includeInactive: true,
-      searchText,
-    });
-    setLevels(result.levels);
-    setTotalLevels(result.total);
-    setTotalPages(result.totalPages);
-    setIsLoading(false);
+    const loadLevelsData = async () => {
+      setIsLoading(true);
+      try {
+        // First load from Data-Connect if not already loaded
+        await levelStore.loadLevels();
+        
+        // Then get paginated results from cache
+        const result = levelStore.getPaginatedLevels(currentPage, PAGE_SIZE, {
+          includeInactive: true,
+          searchText,
+        });
+        setLevels(result.levels);
+        setTotalLevels(result.total);
+        setTotalPages(result.totalPages);
+      } catch (error) {
+        console.error('Error loading levels:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadLevelsData();
   }, [currentPage, searchText]);
 
   // Check if there are levels and show loader if empty (only once on mount)
-  // Esperar a que el hook termine de cargar el estado del localStorage
   useEffect(() => {
     // No mostrar nada mientras se carga el estado del localStorage
     if (isChileLoaderLoading) {
       return;
     }
 
+    const checkAndShowLoader = async () => {
+      try {
+        // Load from Data-Connect
+        await levelStore.loadLevels();
+        
+        // Check if we have levels
+        const allLevels = levelStore.getAllLevels();
+        if (allLevels.length === 0) {
+          if (!isDismissed) {
+            setShowChileLoader(true);
+          }
+        } else {
+          setShowChileLoader(false);
+        }
+      } catch (error) {
+        console.error('Error checking levels:', error);
+      }
+    };
+
     if (isDismissed) {
       // Si fue cerrado, no mostrar modal
       setShowChileLoader(false);
       return;
     }
-    
-    const allLevels = levelStore.getAllLevels();
-    if (allLevels.length === 0) {
-      setShowChileLoader(true);
-    } else {
-      setShowChileLoader(false);
-    }
+
+    checkAndShowLoader();
   }, [isDismissed, isChileLoaderLoading]);
 
   // Reset to page 1 when search changes
@@ -75,6 +103,7 @@ export default function LevelsPage() {
         code: level.code,
         description: level.description,
         isActive: !level.isActive,
+        userId: user?.id,
       });
       // Reload current page
       const result = levelStore.getPaginatedLevels(currentPage, PAGE_SIZE, {
@@ -89,10 +118,10 @@ export default function LevelsPage() {
     }
   };
 
-  const handleDeleteLevel = (level: EducationalLevel) => {
+  const handleDeleteLevel = async (level: EducationalLevel) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este nivel?')) {
       try {
-        levelStore.deleteLevel(level.id);
+        await levelStore.deleteLevel(level.id, user?.id);
         // Reload current page
         const result = levelStore.getPaginatedLevels(currentPage, PAGE_SIZE, {
           includeInactive: true,

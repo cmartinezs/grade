@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
+import { useAuth } from '@/contexts/AuthContext';
 import CategoryFormFields from '@/components/CategoryFormFields';
 
 export default function CreateCategoryPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -28,7 +30,7 @@ export default function CreateCategoryPage() {
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Validar campos obligatorios
@@ -38,11 +40,12 @@ export default function CreateCategoryPage() {
     }
 
     try {
-      levelStore.createCategory({
+      await levelStore.createCategory({
         name: formData.name.trim(),
         code: formData.code.trim(),
         description: formData.description.trim(),
         isActive: formData.isActive,
+        userId: user?.id,
       });
 
       setSubmitted(true);

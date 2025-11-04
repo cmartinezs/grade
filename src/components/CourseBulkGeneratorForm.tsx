@@ -10,7 +10,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Form, Button, Card, Alert, ProgressBar, Spinner } from 'react-bootstrap';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
-import { CourseLoadOptions } from '@/lib/courseDataLoader';
+import { CourseGenerationOptions } from '@/lib/courseDataLoader';
 import { LevelCategory } from '@/types/level';
 
 interface ProgressState {
@@ -34,7 +34,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   showSummary = false,
   compact = false,
 }) => {
-  const { loadCourses } = useCourseDataLoader();
+  const { generateCourses } = useCourseDataLoader();
 
   // Form state
   const [institutionName, setInstitutionName] = useState('');
@@ -142,7 +142,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       categoryNames[cat.id] = cat.name || '';
     });
 
-    const options: CourseLoadOptions = {
+    const options: CourseGenerationOptions = {
       institution: institutionName,
       numberOfLetters,
       levelIds: selectedLevels,
@@ -156,7 +156,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
     setSuccess(false);
 
     try {
-      const result = await loadCourses(options, (progressUpdate) => {
+      const result = await generateCourses(options, (progressUpdate) => {
         setProgress({
           currentStep: progressUpdate.currentStep,
           currentIndex: progressUpdate.currentIndex,

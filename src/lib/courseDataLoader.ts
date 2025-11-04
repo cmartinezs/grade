@@ -1,12 +1,20 @@
 /**
- * Course Data Loader - Bulk Creation
- * Generación masiva de cursos para una institución específica
+ * Course Bulk Generator - Generación Masiva de Cursos
  * Genera cursos para todas las combinaciones de:
  * - Niveles educacionales (o seleccionados)
  * - Letras (A, B, C, D, etc.)
  */
 
 import { courseStore } from './courseStore';
+import { educationalLevelStore } from './levelStore';
+
+/**
+ * Valida si una cadena es un UUID válido
+ */
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+}
 
 /**
  * Genera las iniciales de una cadena (primera letra de cada palabra)
@@ -60,7 +68,7 @@ function getLevelCode(levelName: string): string {
   return getInitials(levelName);
 }
 
-export interface CourseLoadOptions {
+export interface CourseGenerationOptions {
   institution: string;
   numberOfLetters: number; // A, B, C, D, etc.
   levelIds: string[]; // IDs of levels to create courses for
@@ -72,28 +80,28 @@ export interface CourseLoadOptions {
   userId?: string; // UUID del usuario logueado
 }
 
-export interface CourseLoadResult {
+export interface CourseGenerationResult {
   coursesCreated: number;
   errors: string[];
 }
 
 /**
- * Carga masivamente cursos para una institución
- * @param options Opciones de carga (institución, letras, niveles)
+ * Genera masivamente cursos para una institución
+ * @param options Opciones de generación (institución, letras, niveles)
  * @returns Resultado con cantidad de cursos creados y errores
  */
-export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<CourseLoadResult> {
-  const result: CourseLoadResult = {
+export async function generateCoursesInBulk(options: CourseGenerationOptions): Promise<CourseGenerationResult> {
+  const result: CourseGenerationResult = {
     coursesCreated: 0,
     errors: [],
   };
 
   try {
-    console.log('[CourseDataLoader] Starting bulk course creation...');
-    console.log(`[CourseDataLoader] Institution: ${options.institution}`);
-    console.log(`[CourseDataLoader] Letters: ${options.numberOfLetters}`);
-    console.log(`[CourseDataLoader] Levels: ${options.levelIds.length}`);
-    console.log(`[CourseDataLoader] User ID: ${options.userId}`);
+    console.log('[CourseBulkGenerator] Starting bulk course generation...');
+    console.log(`[CourseBulkGenerator] Institution: ${options.institution}`);
+    console.log(`[CourseBulkGenerator] Letters: ${options.numberOfLetters}`);
+    console.log(`[CourseBulkGenerator] Levels: ${options.levelIds.length}`);
+    console.log(`[CourseBulkGenerator] User ID: ${options.userId}`);
 
     // Usar el UUID del usuario logueado
     const userUUID = options.userId;
@@ -104,6 +112,27 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
 
     // Calcular iniciales de la institución
     const institutionInitials = getInitials(options.institution);
+
+    // Validar que todos los levelIds sean válidos
+    console.log('[CourseBulkGenerator] Validating levelIds...', options.levelIds);
+    for (const levelId of options.levelIds) {
+      if (!isValidUUID(levelId)) {
+        const availableLevels = educationalLevelStore.getAllLevels();
+        const levelNames = availableLevels.map(l => l.name).join(', ') || 'ninguno';
+        throw new Error(
+          `❌ El nivel '${levelId}' no tiene un UUID válido.\n\n` +
+          `Esto ocurre porque los niveles deben ser cargados desde Data-Connect.\n\n` +
+          `✅ Solución: Ve a "Gestión Académica > Categorías de Niveles" o "Gestión Académica > Niveles Educacionales"` +
+          ` y carga la configuración de Chile primero.\n\n` +
+          `Niveles disponibles actualmente: ${levelNames}`
+        );
+      }
+      const level = educationalLevelStore.getLevelById(levelId);
+      if (!level) {
+        throw new Error(`Level not found in store: ${levelId}`);
+      }
+      console.log(`[CourseBulkGenerator] Level validated: ${level.name} (${levelId})`);
+    }
 
     // Generar todas las combinaciones de nivel + letra
     const coursesToCreate: Array<{
@@ -133,7 +162,7 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
       }
     }
 
-    console.log(`[CourseDataLoader] Will create ${coursesToCreate.length} courses`);
+    console.log(`[CourseBulkGenerator] Will create ${coursesToCreate.length} courses`);
 
     // Crear cursos
     for (const course of coursesToCreate) {
@@ -149,7 +178,7 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
           userUUID
         );
         result.coursesCreated++;
-        console.log(`[CourseDataLoader] Created course: ${course.name} (${courseId})`);
+        console.log(`[CourseBulkGenerator] Created course: ${course.name} (${courseId})`);
       } catch (error) {
         const errorMsg = `Failed to create course ${course.name}: ${error instanceof Error ? error.message : String(error)}`;
         console.error(errorMsg);
@@ -158,10 +187,10 @@ export async function loadCoursesInBulk(options: CourseLoadOptions): Promise<Cou
       }
     }
 
-    console.log('[CourseDataLoader] Bulk creation completed:', result);
+    console.log('[CourseBulkGenerator] Bulk generation completed:', result);
     return result;
   } catch (error) {
-    const errorMsg = `Unexpected error in course data loader: ${error instanceof Error ? error.message : String(error)}`;
+    const errorMsg = `Unexpected error in course bulk generator: ${error instanceof Error ? error.message : String(error)}`;
     console.error(errorMsg);
     result.errors.push(errorMsg);
     return result;

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
@@ -16,6 +17,7 @@ const PAGE_SIZE = 10;
 
 export default function CategoriesPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const { isDismissed, dismiss, isLoading: isChileLoaderLoading } = useChileLoaderModalState();
   const [categories, setCategories] = useState<LevelCategory[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<LevelCategory[]>([]);
@@ -26,32 +28,45 @@ export default function CategoriesPage() {
   const [showChileLoader, setShowChileLoader] = useState(false);
 
   // Load all categories on mount
-  // Esperar a que el hook termine de cargar el estado del localStorage
   useEffect(() => {
     // No mostrar nada mientras se carga el estado del localStorage
     if (isChileLoaderLoading) {
       return;
     }
 
+    const loadCategoriesData = async () => {
+      try {
+        // Load from Data-Connect
+        await levelStore.loadCategories();
+        
+        // Get cached categories
+        const allCategories = levelStore.getAllCategories();
+        setCategories(allCategories);
+        setTotalCategories(allCategories.length);
+        
+        // Si no hay categorías y no han sido cerradas, mostrar el modal de carga
+        if (allCategories.length === 0) {
+          if (!isDismissed) {
+            setShowChileLoader(true);
+          }
+        } else {
+          setShowChileLoader(false);
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        // On error, try to get whatever is cached
+        const allCategories = levelStore.getAllCategories();
+        setCategories(allCategories);
+        setTotalCategories(allCategories.length);
+      }
+    };
+
     if (isDismissed) {
       // Si fue cerrado, no mostrar modal
       setShowChileLoader(false);
-      const allCategories = levelStore.getAllCategories();
-      setCategories(allCategories);
-      setTotalCategories(allCategories.length);
-      return;
     }
-    
-    const allCategories = levelStore.getAllCategories();
-    setCategories(allCategories);
-    setTotalCategories(allCategories.length);
-    
-    // Si no hay categorías y no han sido cerradas, mostrar el modal de carga
-    if (allCategories.length === 0) {
-      setShowChileLoader(true);
-    } else {
-      setShowChileLoader(false);
-    }
+
+    loadCategoriesData();
   }, [isDismissed, isChileLoaderLoading]); // Incluir ambas dependencias
 
   // Filter and paginate categories
@@ -91,6 +106,7 @@ export default function CategoriesPage() {
         description: category.description,
         categoryId: category.categoryId ?? undefined,
         isActive: !category.isActive,
+        userId: user?.id,
       });
 
       // Reload data
@@ -101,10 +117,10 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDeleteCategory = (category: LevelCategory) => {
+  const handleDeleteCategory = async (category: LevelCategory) => {
     if (window.confirm(`¿Estás seguro de que deseas eliminar esta categoría?`)) {
       try {
-        levelStore.deleteCategory(category.id);
+        await levelStore.deleteCategory(category.id, user?.id);
         
         // Reload data
         const result = levelStore.getAllCategories();

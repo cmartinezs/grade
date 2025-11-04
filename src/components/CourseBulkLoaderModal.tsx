@@ -12,8 +12,17 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Modal, Button, Form, ProgressBar, Card, Alert, Spinner } from 'react-bootstrap';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
+import { CourseGenerationOptions } from '@/lib/courseDataLoader';
 import { educationalLevelStore } from '@/lib/levelStore';
-import { CourseLoadOptions } from '@/lib/courseDataLoader';
+
+// Re-export ProgressUpdate type from hook for use in this component
+interface ProgressUpdate {
+  currentStep: string;
+  currentIndex: number;
+  total: number;
+  itemName: string;
+  percentage: number;
+}
 
 interface ProgressState {
   currentStep: string;
@@ -36,7 +45,7 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
   onSuccess,
   onDismiss,
 }) => {
-  const { loadCourses } = useCourseDataLoader();
+  const { generateCourses } = useCourseDataLoader();
 
   // Form state
   const [institutionName, setInstitutionName] = useState('');
@@ -138,7 +147,7 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
       }
     });
 
-    const options: CourseLoadOptions = {
+    const options: CourseGenerationOptions = {
       institution: institutionName,
       numberOfLetters,
       levelIds: selectedLevels,
@@ -150,7 +159,7 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
     setSuccess(false);
 
     try {
-      const result = await loadCourses(options, (progressUpdate) => {
+      const result = await generateCourses(options, (progressUpdate: ProgressUpdate) => {
         setProgress({
           currentStep: progressUpdate.currentStep,
           currentIndex: progressUpdate.currentIndex,

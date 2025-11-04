@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
+import { useAuth } from '@/contexts/AuthContext';
 import LevelFormFields from '@/components/LevelFormFields';
 
 export default function CreateLevelPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -34,7 +36,7 @@ export default function CreateLevelPage() {
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Validar campos obligatorios
@@ -44,12 +46,13 @@ export default function CreateLevelPage() {
     }
 
     try {
-      levelStore.createLevel({
+      await levelStore.createLevel({
         name: formData.name,
         code: formData.code,
         description: formData.description,
         categoryId: formData.categoryId,
         isActive: formData.isActive,
+        userId: user?.id,
       });
 
       setSubmitted(true);

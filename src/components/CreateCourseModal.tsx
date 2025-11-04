@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import CourseForm from '@/components/CourseForm';
 import { courseStore } from '@/lib/courseStore';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface CreateCourseModalProps {
   show: boolean;
@@ -12,6 +13,7 @@ interface CreateCourseModalProps {
 }
 
 export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCourseModalProps) {
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [createdCourseId, setCreatedCourseId] = useState('');
@@ -27,7 +29,7 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
     try {
       const newCourse = await courseStore.createCourse(
         data,
-        'anonymous'
+        user?.id || 'anonymous'
       );
       setSubmitSuccess(true);
       setCreatedCourseId(newCourse.course_id);

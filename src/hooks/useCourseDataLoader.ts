@@ -2,14 +2,14 @@
  * Hook para generar masivamente cursos para una institución
  * Proporciona funcionalidad para generar cursos con combinaciones de niveles y letras
  * 
- * Los datos se cargan directamente a Data-Connect y se sincronizan con el store local
+ * Los datos se guardan directamente a Data-Connect y se sincronizan con el store local
  */
 
 import { useCallback } from 'react';
-import { loadCoursesInBulk, CourseLoadOptions } from '@/lib/courseDataLoader';
+import { generateCoursesInBulk, CourseGenerationOptions } from '@/lib/courseDataLoader';
 import { useAuth } from '@/contexts/AuthContext';
 
-interface LoadCoursesResult {
+interface GenerateCoursesResult {
   coursesCreated: number;
   errors: string[];
   success: boolean;
@@ -30,22 +30,22 @@ export function useCourseDataLoader() {
   const { user } = useAuth();
 
   /**
-   * Carga masivamente cursos a Data-Connect y actualiza el store local
+   * Genera masivamente cursos a Data-Connect y actualiza el store local
    * 
-   * @param options - Opciones de carga (institución, letras, niveles)
+   * @param options - Opciones de generación (institución, letras, niveles)
    * @param onProgress - Callback para recibir actualizaciones de progreso
    */
-  const loadCourses = useCallback(
+  const generateCourses = useCallback(
     async (
-      options: CourseLoadOptions,
+      options: CourseGenerationOptions,
       onProgress?: ProgressCallback
-    ): Promise<LoadCoursesResult> => {
+    ): Promise<GenerateCoursesResult> => {
       try {
-        console.log('[useCourseDataLoader] Starting bulk course load...');
-        console.log(`[useCourseDataLoader] Institution: ${options.institution}`);
-        console.log(`[useCourseDataLoader] Letters: ${options.numberOfLetters}`);
-        console.log(`[useCourseDataLoader] Levels: ${options.levelIds.length}`);
-        console.log(`[useCourseDataLoader] User ID: ${user?.id}`);
+        console.log('[useCourseGenerator] Starting bulk course generation...');
+        console.log(`[useCourseGenerator] Institution: ${options.institution}`);
+        console.log(`[useCourseGenerator] Letters: ${options.numberOfLetters}`);
+        console.log(`[useCourseGenerator] Levels: ${options.levelIds.length}`);
+        console.log(`[useCourseGenerator] User ID: ${user?.id}`);
 
         if (!user?.id) {
           return {
@@ -69,8 +69,8 @@ export function useCourseDataLoader() {
           });
         }
 
-        // 1. Crear cursos en Data-Connect con el userId del usuario logueado
-        const result = await loadCoursesInBulk({
+        // 1. Generar cursos en Data-Connect con el userId del usuario logueado
+        const result = await generateCoursesInBulk({
           ...options,
           userId: user.id,
         });
@@ -78,11 +78,11 @@ export function useCourseDataLoader() {
         // 2. Los cursos ya están en el store (courseStore.createCourse)
         // No es necesario recargar desde Data-Connect
         
-        console.log('[useCourseDataLoader] Bulk load completed successfully');
+        console.log('[useCourseGenerator] Bulk generation completed successfully');
 
         if (onProgress) {
           onProgress({
-            currentStep: '✅ Carga completada',
+            currentStep: '✅ Generación completada',
             currentIndex: totalCourses,
             total: totalCourses,
             itemName: `${result.coursesCreated} cursos creados`,
@@ -102,13 +102,13 @@ export function useCourseDataLoader() {
           message,
         };
       } catch (error) {
-        const errorMsg = `Error loading courses: ${error instanceof Error ? error.message : String(error)}`;
-        console.error('[useCourseDataLoader]', errorMsg);
+        const errorMsg = `Error generating courses: ${error instanceof Error ? error.message : String(error)}`;
+        console.error('[useCourseGenerator]', errorMsg);
         return {
           coursesCreated: 0,
           errors: [errorMsg],
           success: false,
-          message: '❌ Error al cargar cursos',
+          message: '❌ Error al generar cursos',
         };
       }
     },
@@ -116,6 +116,6 @@ export function useCourseDataLoader() {
   );
 
   return {
-    loadCourses,
+    generateCourses,
   };
 }

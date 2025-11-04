@@ -19,61 +19,30 @@ import {
   updateEducationalLevelInfo,
   deactivateEducationalLevelInfo,
   reactivateEducationalLevelInfo,
+  fetchLevelCategoriesFromDataConnect,
+  fetchEducationalLevelsFromDataConnect,
 } from './levelDataConnect';
 
 const CATEGORIES_STORAGE_KEY = 'parametric_level_categories';
 const LEVELS_STORAGE_KEY = 'parametric_educational_levels';
 
-// Seed data URLs
-// These URLs are defined for future dynamic loading capabilities
-// Currently, fallback seed data is commented out as auto-load is disabled
+// ============================================================================
+// IN-MEMORY CACHE (single source of truth - loaded from Data-Connect)
+// ============================================================================
 
-// DESHABILITADO: Ya no se cargan automáticamente
-// const FALLBACK_CATEGORIES: LevelCategory[] = [
-//   {
-//     id: 'cat-basic-001',
-//     code: 'CAT_BASIC',
-//     name: 'Enseñanza Básica',
-//     description: 'Educación básica (1° a 8° año)',
-//     categoryId: null,
-//     isActive: true,
-//     createdAt: new Date('2025-01-01'),
-//     createdBy: 'SYSTEM',
-//     updatedAt: new Date('2025-01-01'),
-//     updatedBy: 'SYSTEM',
-//     deletedAt: null,
-//     deletedBy: null,
-//   },
-//   {
-//     id: 'cat-media-002',
-//     code: 'CAT_MEDIA',
-//     name: 'Enseñanza Media',
-//     description: 'Educación media (1° a 4° año medio)',
-//     categoryId: null,
-//     isActive: true,
-//     createdAt: new Date('2025-01-01'),
-//     createdBy: 'SYSTEM',
-//     updatedAt: new Date('2025-01-01'),
-//     updatedBy: 'SYSTEM',
-//     deletedAt: null,
-//     deletedBy: null,
-//   },
-// ];
+interface MemoryCache {
+  categories: LevelCategory[] | null;
+  levels: EducationalLevel[] | null;
+  categoriesLoaded: boolean;
+  levelsLoaded: boolean;
+}
 
-// const FALLBACK_LEVELS: EducationalLevel[] = [
-//   { id: 'level-1b-001', code: 'LEVEL_1B', name: '1° Básico', description: 'Primer año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-2b-002', code: 'LEVEL_2B', name: '2° Básico', description: 'Segundo año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-3b-003', code: 'LEVEL_3B', name: '3° Básico', description: 'Tercer año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-4b-004', code: 'LEVEL_4B', name: '4° Básico', description: 'Cuarto año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-5b-005', code: 'LEVEL_5B', name: '5° Básico', description: 'Quinto año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-6b-006', code: 'LEVEL_6B', name: '6° Básico', description: 'Sexto año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-7b-007', code: 'LEVEL_7B', name: '7° Básico', description: 'Séptimo año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-8b-008', code: 'LEVEL_8B', name: '8° Básico', description: 'Octavo año de educación básica', categoryId: 'cat-basic-001', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-1m-009', code: 'LEVEL_1M', name: '1° Medio', description: 'Primer año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-2m-010', code: 'LEVEL_2M', name: '2° Medio', description: 'Segundo año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-3m-011', code: 'LEVEL_3M', name: '3° Medio', description: 'Tercer año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-//   { id: 'level-4m-012', code: 'LEVEL_4M', name: '4° Medio', description: 'Cuarto año de educación media', categoryId: 'cat-media-002', isActive: true, createdAt: new Date('2025-01-01'), createdBy: 'SYSTEM', updatedAt: new Date('2025-01-01'), updatedBy: 'SYSTEM', deletedAt: null, deletedBy: null },
-// ];
+const memoryCache: MemoryCache = {
+  categories: null,
+  levels: null,
+  categoriesLoaded: false,
+  levelsLoaded: false,
+};
 
 // ============================================================================
 // LEVEL CATEGORIES STORE
@@ -94,22 +63,70 @@ class LevelCategoryStore {
     // console.log(`[CATEGORY] ${FALLBACK_CATEGORIES.length} categorías de base inicializadas`);
   }
 
-  // Load categories from localStorage
+  // Load categories from in-memory cache or Data-Connect
   private loadCategories(): LevelCategory[] {
-    if (typeof window === 'undefined') return [];
+    // Return from cache if already loaded
+    if (memoryCache.categoriesLoaded && memoryCache.categories !== null) {
+      return memoryCache.categories;
+    }
 
-    // DESHABILITADO: this.initializeDefaultCategories();
+    // If categories not loaded yet, return empty array
+    // (async loading should be done via loadCategoriesAsync)
+    return [];
+  }
 
-    const stored = localStorage.getItem(CATEGORIES_STORAGE_KEY);
-    if (!stored) return [];
+  // Async load categories from Data-Connect
+  async loadCategoriesAsync(): Promise<LevelCategory[]> {
+    // Return from cache if already loaded
+    if (memoryCache.categoriesLoaded && memoryCache.categories !== null) {
+      return memoryCache.categories;
+    }
 
-    const categories = JSON.parse(stored);
-    return categories.map((c: LevelCategory) => ({
-      ...c,
-      createdAt: new Date(c.createdAt),
-      updatedAt: new Date(c.updatedAt),
-      deletedAt: c.deletedAt ? new Date(c.deletedAt) : null,
-    }));
+    try {
+      const data = await fetchLevelCategoriesFromDataConnect();
+      
+      // Convert from Data-Connect format to LevelCategory format
+      const categories: LevelCategory[] = data.map((cat: {
+        categoryId: string;
+        parentCategoryId?: string | null;
+        code: string;
+        name: string;
+        description?: string | null;
+        active?: boolean;
+        createdAt: string;
+        createdBy: string;
+        updatedAt?: string | null;
+        updatedBy?: string | null;
+        deletedAt?: string | null;
+        deletedBy?: string | null;
+      }) => ({
+        id: cat.categoryId,
+        categoryId: cat.parentCategoryId || null,
+        code: cat.code,
+        name: cat.name,
+        description: cat.description || '',
+        isActive: cat.active !== false,
+        createdAt: new Date(cat.createdAt),
+        createdBy: cat.createdBy,
+        updatedAt: cat.updatedAt ? new Date(cat.updatedAt) : new Date(cat.createdAt),
+        updatedBy: cat.updatedBy || cat.createdBy,
+        deletedAt: cat.deletedAt ? new Date(cat.deletedAt) : null,
+        deletedBy: cat.deletedBy || null,
+      }));
+
+      // Store in memory cache
+      memoryCache.categories = categories;
+      memoryCache.categoriesLoaded = true;
+
+      console.log(`[CATEGORY] Loaded ${categories.length} categories from Data-Connect`);
+      return categories;
+    } catch (error) {
+      console.error('[CATEGORY] Error loading categories from Data-Connect:', error);
+      // Return empty array on error
+      memoryCache.categories = [];
+      memoryCache.categoriesLoaded = true;
+      return [];
+    }
   }
 
   // Get all active categories
@@ -140,14 +157,15 @@ class LevelCategoryStore {
     return categories.find((c) => !c.deletedAt && c.code === code) || null;
   }
 
-  // Create new category
-  createCategory(input: {
+  // Create new category - ASYNC to sync with Data-Connect
+  async createCategory(input: {
     name: string;
     code: string;
     description: string;
     categoryId?: string;
     isActive?: boolean;
-  }): LevelCategory {
+    userId?: string;
+  }): Promise<LevelCategory> {
     const categories = this.loadCategories();
 
     // Check if code already exists
@@ -155,8 +173,23 @@ class LevelCategoryStore {
       throw new Error(`El código de categoría "${input.code}" ya existe`);
     }
 
-    // Generate new ID (string-based)
-    const newId = `cat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    // Generate new ID using proper UUID
+    const newId = generateUUID();
+
+    // Sync to Data-Connect
+    try {
+      await createNewLevelCategory(
+        input.code,
+        input.name,
+        input.description,
+        input.userId || 'SYSTEM',
+        newId
+      );
+      console.log(`[CATEGORY] Sincronizado a Data-Connect: ${input.name} (${input.code})`);
+    } catch (error) {
+      console.error(`[CATEGORY] Error sincronizando a Data-Connect:`, error);
+      throw error;
+    }
 
     const timestamp = new Date();
     const newCategory: LevelCategory = {
@@ -167,17 +200,17 @@ class LevelCategoryStore {
       categoryId: input.categoryId || null,
       isActive: input.isActive !== false,
       createdAt: timestamp,
-      createdBy: 'USER',
+      createdBy: input.userId || 'SYSTEM',
       updatedAt: timestamp,
-      updatedBy: 'USER',
+      updatedBy: input.userId || 'SYSTEM',
       deletedAt: null,
       deletedBy: null,
     };
 
     categories.push(newCategory);
-    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    // localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
 
-    console.log(`[CATEGORY] Categoría creada: ${newCategory.name} (${newCategory.code})`);
+    console.log(`[CATEGORY] Categoría creada localmente: ${newCategory.name} (${newCategory.code})`);
     return newCategory;
   }
 
@@ -190,6 +223,7 @@ class LevelCategoryStore {
       description: string;
       categoryId?: string;
       isActive: boolean;
+      userId?: string;
     }
   ): LevelCategory {
     const categories = this.loadCategories();
@@ -218,18 +252,18 @@ class LevelCategoryStore {
       categoryId: input.categoryId !== undefined ? input.categoryId : category.categoryId,
       isActive: input.isActive,
       updatedAt: timestamp,
-      updatedBy: 'USER',
+      updatedBy: input.userId || 'SYSTEM',
     };
 
     categories[index] = updatedCategory;
-    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    // localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
 
     console.log(`[CATEGORY] Categoría actualizada: ${updatedCategory.name} (${updatedCategory.code})`);
     return updatedCategory;
   }
 
-  // Delete category (soft delete)
-  deleteCategory(id: string): void {
+  // Delete category (soft delete) - ASYNC to sync with Data-Connect
+  async deleteCategory(id: string, userId?: string): Promise<void> {
     const categories = this.loadCategories();
     const index = categories.findIndex((c) => c.id === id);
 
@@ -237,15 +271,26 @@ class LevelCategoryStore {
       throw new Error(`Categoría con ID ${id} no encontrada`);
     }
 
+    const categoryName = categories[index].name;
+
+    // Sync to Data-Connect
+    try {
+      await deactivateLevelCategoryInfo(id, userId || 'SYSTEM');
+      console.log(`[CATEGORY] Desactivada en Data-Connect: ${categoryName}`);
+    } catch (error) {
+      console.error(`[CATEGORY] Error desactivando en Data-Connect:`, error);
+      throw error;
+    }
+
     const timestamp = new Date();
     categories[index] = {
       ...categories[index],
       deletedAt: timestamp,
-      deletedBy: 'USER',
+      deletedBy: userId || 'SYSTEM',
     };
 
-    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
-    console.log(`[CATEGORY] Categoría eliminada: ${categories[index].name}`);
+    // localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    console.log(`[CATEGORY] Categoría eliminada localmente: ${categoryName}`);
   }
 
   // Refresh categories from Data-Connect
@@ -276,7 +321,7 @@ class LevelCategoryStore {
         deletedBy: null,
       }));
 
-      localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(convertedCategories));
+      // localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(convertedCategories));
       console.log(`[CATEGORY] Refreshed ${convertedCategories.length} categories from Data-Connect`);
     } catch (error) {
       console.error('[CATEGORY] Error refreshing from Data-Connect:', error);
@@ -304,22 +349,70 @@ class EducationalLevelStore {
     // console.log(`[LEVEL] ${FALLBACK_LEVELS.length} niveles de base inicializados`);
   }
 
-  // Load levels from localStorage
+  // Load levels from in-memory cache or Data-Connect
   private loadLevels(): EducationalLevel[] {
-    if (typeof window === 'undefined') return [];
+    // Return from cache if already loaded
+    if (memoryCache.levelsLoaded && memoryCache.levels !== null) {
+      return memoryCache.levels;
+    }
 
-    // DESHABILITADO: this.initializeDefaultLevels();
+    // If levels not loaded yet, return empty array
+    // (async loading should be done via loadLevelsAsync)
+    return [];
+  }
 
-    const stored = localStorage.getItem(LEVELS_STORAGE_KEY);
-    if (!stored) return [];
+  // Async load levels from Data-Connect
+  async loadLevelsAsync(): Promise<EducationalLevel[]> {
+    // Return from cache if already loaded
+    if (memoryCache.levelsLoaded && memoryCache.levels !== null) {
+      return memoryCache.levels;
+    }
 
-    const levels = JSON.parse(stored);
-    return levels.map((l: EducationalLevel) => ({
-      ...l,
-      createdAt: new Date(l.createdAt),
-      updatedAt: new Date(l.updatedAt),
-      deletedAt: l.deletedAt ? new Date(l.deletedAt) : null,
-    }));
+    try {
+      const data = await fetchEducationalLevelsFromDataConnect();
+      
+      // Convert from Data-Connect format to EducationalLevel format
+      const levels: EducationalLevel[] = data.map((lvl: {
+        levelId: string;
+        categoryId: string;
+        code: string;
+        name: string;
+        description?: string | null;
+        active?: boolean;
+        createdAt: string;
+        createdBy: string;
+        updatedAt?: string | null;
+        updatedBy?: string | null;
+        deletedAt?: string | null;
+        deletedBy?: string | null;
+      }) => ({
+        id: lvl.levelId,
+        categoryId: lvl.categoryId,
+        code: lvl.code,
+        name: lvl.name,
+        description: lvl.description || '',
+        isActive: lvl.active !== false,
+        createdAt: new Date(lvl.createdAt),
+        createdBy: lvl.createdBy,
+        updatedAt: lvl.updatedAt ? new Date(lvl.updatedAt) : new Date(lvl.createdAt),
+        updatedBy: lvl.updatedBy || lvl.createdBy,
+        deletedAt: lvl.deletedAt ? new Date(lvl.deletedAt) : null,
+        deletedBy: lvl.deletedBy || null,
+      }));
+
+      // Store in memory cache
+      memoryCache.levels = levels;
+      memoryCache.levelsLoaded = true;
+
+      console.log(`[LEVEL] Loaded ${levels.length} levels from Data-Connect`);
+      return levels;
+    } catch (error) {
+      console.error('[LEVEL] Error loading levels from Data-Connect:', error);
+      // Return empty array on error
+      memoryCache.levels = [];
+      memoryCache.levelsLoaded = true;
+      return [];
+    }
   }
 
   // Get all active levels
@@ -394,14 +487,15 @@ class EducationalLevelStore {
     };
   }
 
-  // Create new level
-  createLevel(input: {
+  // Create new level - ASYNC to sync with Data-Connect
+  async createLevel(input: {
     name: string;
     code: string;
     description: string;
     categoryId?: string;
     isActive?: boolean;
-  }): EducationalLevel {
+    userId?: string;
+  }): Promise<EducationalLevel> {
     const levels = this.loadLevels();
 
     // Check if code already exists
@@ -409,8 +503,24 @@ class EducationalLevelStore {
       throw new Error(`El código "${input.code}" ya existe`);
     }
 
-    // Generate new ID (string-based)
-    const newId = `level-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    // Generate new ID using proper UUID
+    const newId = generateUUID();
+
+    // Sync to Data-Connect
+    try {
+      await createNewEducationalLevel(
+        input.code,
+        input.name,
+        input.categoryId || 'cat-basic-001',
+        input.description,
+        input.userId || 'SYSTEM',
+        newId
+      );
+      console.log(`[LEVEL] Sincronizado a Data-Connect: ${input.name} (${input.code})`);
+    } catch (error) {
+      console.error(`[LEVEL] Error sincronizando a Data-Connect:`, error);
+      throw error;
+    }
 
     const timestamp = new Date();
     const newLevel: EducationalLevel = {
@@ -421,15 +531,15 @@ class EducationalLevelStore {
       categoryId: input.categoryId || 'cat-basic-001', // Default to first category
       isActive: input.isActive !== false,
       createdAt: timestamp,
-      createdBy: 'USER',
+      createdBy: input.userId || 'SYSTEM',
       updatedAt: timestamp,
-      updatedBy: 'USER',
+      updatedBy: input.userId || 'SYSTEM',
       deletedAt: null,
       deletedBy: null,
     };
 
     levels.push(newLevel);
-    localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
+    // localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
 
     console.log(`[LEVEL] Nivel creado: ${newLevel.name} (${newLevel.code})`);
     return newLevel;
@@ -444,6 +554,7 @@ class EducationalLevelStore {
       description: string;
       categoryId?: string;
       isActive: boolean;
+      userId?: string;
     }
   ): EducationalLevel {
     const levels = this.loadLevels();
@@ -469,18 +580,18 @@ class EducationalLevelStore {
       categoryId: input.categoryId !== undefined ? input.categoryId : level.categoryId,
       isActive: input.isActive,
       updatedAt: timestamp,
-      updatedBy: 'USER',
+      updatedBy: input.userId || 'SYSTEM',
     };
 
     levels[index] = updatedLevel;
-    localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
+    // localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
 
     console.log(`[LEVEL] Nivel actualizado: ${updatedLevel.name} (${updatedLevel.code})`);
     return updatedLevel;
   }
 
-  // Delete level (soft delete)
-  deleteLevel(id: string): void {
+  // Delete level (soft delete) - ASYNC to sync with Data-Connect
+  async deleteLevel(id: string, userId?: string): Promise<void> {
     const levels = this.loadLevels();
     const index = levels.findIndex((l) => l.id === id);
 
@@ -488,15 +599,26 @@ class EducationalLevelStore {
       throw new Error(`Nivel con ID ${id} no encontrado`);
     }
 
+    const levelName = levels[index].name;
+
+    // Sync to Data-Connect
+    try {
+      await deactivateEducationalLevelInfo(id, userId || 'SYSTEM');
+      console.log(`[LEVEL] Desactivado en Data-Connect: ${levelName}`);
+    } catch (error) {
+      console.error(`[LEVEL] Error desactivando en Data-Connect:`, error);
+      throw error;
+    }
+
     const timestamp = new Date();
     levels[index] = {
       ...levels[index],
       deletedAt: timestamp,
-      deletedBy: 'USER',
+      deletedBy: userId || 'SYSTEM',
     };
 
-    localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
-    console.log(`[LEVEL] Nivel eliminado: ${levels[index].name}`);
+    // localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(levels));
+    console.log(`[LEVEL] Nivel eliminado localmente: ${levelName}`);
   }
 
   // Refresh levels from Data-Connect
@@ -528,7 +650,7 @@ class EducationalLevelStore {
         deletedBy: null,
       }));
 
-      localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(convertedLevels));
+      // localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(convertedLevels));
       console.log(`[LEVEL] Refreshed ${convertedLevels.length} levels from Data-Connect`);
     } catch (error) {
       console.error('[LEVEL] Error refreshing from Data-Connect:', error);
@@ -550,6 +672,31 @@ class LevelStore {
     this.levelStore = new EducationalLevelStore();
   }
 
+  // ---- Initialization (Load from Data-Connect) ----
+  /**
+   * Load categories from Data-Connect and cache in memory
+   */
+  async loadCategories(): Promise<LevelCategory[]> {
+    return this.categoryStore.loadCategoriesAsync();
+  }
+
+  /**
+   * Load levels from Data-Connect and cache in memory
+   */
+  async loadLevels(): Promise<EducationalLevel[]> {
+    return this.levelStore.loadLevelsAsync();
+  }
+
+  /**
+   * Load both categories and levels from Data-Connect
+   */
+  async loadAll(): Promise<void> {
+    await Promise.all([
+      this.loadCategories(),
+      this.loadLevels(),
+    ]);
+  }
+
   // ---- Category Methods ----
   getAllCategories(): LevelCategory[] {
     return this.categoryStore.getAllCategories();
@@ -563,13 +710,14 @@ class LevelStore {
     return this.categoryStore.getCategoryByCode(code);
   }
 
-  createCategory(input: {
+  async createCategory(input: {
     name: string;
     code: string;
     description: string;
     categoryId?: string;
     isActive?: boolean;
-  }): LevelCategory {
+    userId?: string;
+  }): Promise<LevelCategory> {
     return this.categoryStore.createCategory(input);
   }
 
@@ -581,13 +729,14 @@ class LevelStore {
       description: string;
       categoryId?: string;
       isActive: boolean;
+      userId?: string;
     }
   ): LevelCategory {
     return this.categoryStore.updateCategory(id, input);
   }
 
-  deleteCategory(id: string): void {
-    return this.categoryStore.deleteCategory(id);
+  async deleteCategory(id: string, userId?: string): Promise<void> {
+    return this.categoryStore.deleteCategory(id, userId);
   }
 
   // ---- Level Methods ----
@@ -620,13 +769,14 @@ class LevelStore {
   }
 
   // Backwards compatible method
-  createLevel(input: {
+  async createLevel(input: {
     name: string;
     code: string;
     description: string;
     categoryId?: string;
     isActive?: boolean;
-  }): EducationalLevel {
+    userId?: string;
+  }): Promise<EducationalLevel> {
     return this.levelStore.createLevel(input);
   }
 
@@ -639,14 +789,14 @@ class LevelStore {
       description: string;
       categoryId?: string;
       isActive: boolean;
+      userId?: string;
     }
   ): EducationalLevel {
     return this.levelStore.updateLevel(id, input);
   }
-
   // Backwards compatible method
-  deleteLevel(id: string): void {
-    return this.levelStore.deleteLevel(id);
+  async deleteLevel(id: string, userId?: string): Promise<void> {
+    return this.levelStore.deleteLevel(id, userId);
   }
 }
 

@@ -5,6 +5,7 @@
  */
 
 import { Course, CreateCourseInput, EditCourseInput, CourseValidationError } from '@/types/course';
+import { createNewCourse, updateCourseInfo, deactivateCourseInfo, reactivateCourseInfo } from './courseDataConnect';
 
 const COURSES_STORAGE_KEY = 'evaluation_management_courses';
 const COURSE_COUNTER_KEY = 'evaluation_management_course_counter';
@@ -89,7 +90,7 @@ class CourseStore {
   // Save courses to localStorage
   private saveCourses(courses: Course[]): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
+    // localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
   }
 
   // Get next course ID
@@ -98,7 +99,7 @@ class CourseStore {
     
     const counter = parseInt(localStorage.getItem(COURSE_COUNTER_KEY) || '0', 10);
     const nextCounter = counter + 1;
-    localStorage.setItem(COURSE_COUNTER_KEY, nextCounter.toString());
+    // localStorage.setItem(COURSE_COUNTER_KEY, nextCounter.toString());
     return `c-${nextCounter}`;
   }
 
@@ -167,9 +168,18 @@ class CourseStore {
     // RN-2: Default active state is true
     const active = input.active !== undefined ? input.active : true;
 
-    // Create course
+    // Create course - Generate UUID
+    const courseId = await createNewCourse(
+      input.name.trim(),
+      input.code.trim().toUpperCase(),
+      input.levelId,
+      currentUser,
+      currentUser
+    );
+
+    // Create local course object
     const newCourse: Course = {
-      course_id: this.getNextCourseId(),
+      course_id: courseId,
       name: input.name.trim(),
       code: input.code.trim().toUpperCase(),
       levelId: input.levelId,
@@ -250,6 +260,17 @@ class CourseStore {
       console.warn(`[CURSO] Cambiando código del curso ${courseId}: ${existingCourse.code} -> ${input.code}`);
       // En el futuro: if (hasAssociatedEvaluations(courseId)) throw new Error(...)
     }
+
+    // Update in Data-Connect
+    await updateCourseInfo(
+      courseId,
+      {
+        name: input.name.trim(),
+        code: input.code.trim().toUpperCase(),
+        levelId: input.levelId,
+      },
+      currentUser
+    );
 
     // RN-2: Registrar en historial de auditoría
     const updatedCourse: Course = {
@@ -450,7 +471,7 @@ class CourseStore {
         deleted_by: course.deletedBy || null,
       }));
 
-      localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(convertedCourses));
+      // localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(convertedCourses));
       console.log(`[COURSE] Refreshed ${convertedCourses.length} courses from Data-Connect`);
     } catch (error) {
       console.error('[COURSE] Error refreshing courses from Data-Connect:', error);

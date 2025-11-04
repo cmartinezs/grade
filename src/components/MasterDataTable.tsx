@@ -459,7 +459,10 @@ export default function MasterDataTable<T>(
                     
                     {/* Botón Generación Masiva - solo si no hay cursos y no hay búsqueda */}
                     {!searchText && totalItems === 0 && emptyActionHref && (
-                      <Link href={emptyActionHref}>
+                      <Link 
+                        href={emptyActionHref}
+                        style={{ textDecoration: 'none' }}
+                      >
                         <Button
                           variant="outline-success"
                           disabled={isLoading}
