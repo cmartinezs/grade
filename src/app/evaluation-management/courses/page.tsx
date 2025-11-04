@@ -110,7 +110,7 @@ export default function CoursesPage() {
       key: 'code',
       label: 'Código',
       render: (value) => <code className="text-primary">{String(value)}</code>,
-      width: '100px',
+      width: '180px',
     },
     {
       key: 'name',
@@ -127,6 +127,7 @@ export default function CoursesPage() {
           </Badge>
         </Link>
       ),
+      width: '140px',
     },
     {
       key: 'institution',

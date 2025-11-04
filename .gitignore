@@ -2,6 +2,7 @@
 
 .idea
 .firebase
+*.log
 
 # dependencies
 /node_modules
