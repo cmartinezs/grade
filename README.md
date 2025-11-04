@@ -24,19 +24,20 @@ Desarrollada con **Next.js 15.5.4**, **React 19**, **TypeScript 5+** y **React B
 | **[04_IMPLEMENTATION_SUMMARY.md](./docs/changes/07-firebase-auth/04_IMPLEMENTATION_SUMMARY.md)** | 🔧 Cambios técnicos | 10 min |
 | **[05_PROJECT_STATUS.md](./docs/changes/07-firebase-auth/05_PROJECT_STATUS.md)** | 📈 Estado del proyecto | 5 min |
 
-### 📁 Documentación en `/docs/`
+### �️ Firebase Data Connect (Reciente)
+**[→ docs/DATACONNECT_TECHNICAL_GUIDE.md](./docs/DATACONNECT_TECHNICAL_GUIDE.md)** - Documentación técnica de Data Connect
+
+| Archivo | Propósito |
+|---------|-----------|
+| **[DATACONNECT_TECHNICAL_GUIDE.md](./docs/DATACONNECT_TECHNICAL_GUIDE.md)** | 🔧 Guía técnica completa (Schemas, Queries, Mutations, SDK, Deploy) |
+| **[DATACONNECT_QUICK_REFERENCE.md](./docs/DATACONNECT_QUICK_REFERENCE.md)** | ⚡ Referencia rápida (comandos y ejemplos) |
+
+###  Documentación en `/docs/`
 - **[docs/QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)** - ⚡ Guía rápida
 - **[docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - 🗂️ Estructura del proyecto
 - **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - 🔧 Solución de problemas
 - **[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - 👥 Guía de contribución
 - **[docs/changes/](./docs/changes/)** - 📋 Historial de cambios y features recientes
-
-### 📁 Documentación en `/docs/`
-- **[docs/README.md](./docs/README.md)** - Empieza aquí para la estructura antigua
-- **[docs/QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md)** - ⚡ Guía rápida
-- **[docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - �️ Estructura del proyecto
-- **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - � Solución de problemas
-- **[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - 👥 Guía de contribución
 
 ---
 
@@ -73,6 +74,39 @@ npm run start      # Iniciar servidor producción
 npm run lint       # Ejecutar linter (ESLint)
 npm run type-check # Verificar tipos TypeScript
 ```
+
+### Scripts de Desarrollo Rápido
+
+Para mayor conveniencia, se proporcionan scripts de inicio rápido según tu sistema operativo:
+
+#### 🐧 Linux / macOS
+```bash
+./dev.sh           # Ejecutar servidor de desarrollo
+./run.sh           # Ejecutar aplicación web completa
+```
+
+#### 🪟 Windows - PowerShell
+```powershell
+.\dev.ps1          # Ejecutar servidor de desarrollo
+.\run.ps1          # Ejecutar aplicación web completa
+```
+
+> **Nota:** Si tienes restricción de ejecución de scripts en PowerShell, ejecuta primero:
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
+
+#### 🪟 Windows - CMD
+```cmd
+dev.cmd            # Ejecutar servidor de desarrollo
+run.cmd            # Ejecutar aplicación web completa
+```
+
+Estos scripts automáticamente:
+- ✅ Verifican que estés en la raíz del proyecto
+- ✅ Instalan dependencias si no existen
+- ✅ Validan la configuración de `.env.local`
+- ✅ Inician el servidor en `http://localhost:3000`
 
 ---
 
@@ -165,7 +199,114 @@ firebase deploy
 
 ---
 
-## 🌟 Características Principales
+## 🗄️ Firebase Data Connect
+
+Este proyecto usa **Firebase Data Connect** para conectarse a una base de datos **PostgreSQL** en Cloud SQL, proporcionando una forma segura y escalable de acceder a datos.
+
+> **📖 IMPORTANTE:** Consulta las guías de Data Connect para información técnica detallada:
+> - **[Guía Técnica Completa](./docs/DATACONNECT_TECHNICAL_GUIDE.md)** - Schemas, Queries, Mutations, SDK, Deploy
+> - **[Quick Reference](./docs/DATACONNECT_QUICK_REFERENCE.md)** - Comandos y ejemplos rápidos
+
+### Configuración Inicial
+
+#### 1. Requisitos Previos
+- Firebase CLI instalado: `npm install -g firebase-tools`
+- Acceso a un proyecto Firebase con Data Connect habilitado
+- Instancia Cloud SQL PostgreSQL configurada
+
+#### 2. Autenticación con Firebase
+```bash
+firebase login
+```
+
+#### 3. Configurar Credenciales en `.env.local`
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_DATACONNECT_ENDPOINT=your_dataconnect_endpoint
+```
+
+### Estructura de Data Connect
+
+**Archivo principal:** `/dataconnect/dataconnect.yaml`
+```yaml
+specVersion: "v1"
+serviceId: "grade-2c5d1-2-service"
+location: "southamerica-west1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "grade-2c5d1-2-database"
+      cloudSql:
+        instanceId: "grade-2c5d1-2-instance"
+connectorDirs: ["./example"]
+```
+
+### Operaciones Disponibles
+
+#### Queries (Lectura)
+```typescript
+// src/lib/userDataConnect.ts
+import { getUserByEmail } from '@/lib/userDataConnect';
+
+const user = await getUserByEmail('user@example.com');
+```
+
+#### Mutations (Escritura)
+```typescript
+// src/lib/userDataConnect.ts
+import { createUser, updateUser } from '@/lib/userDataConnect';
+
+// Crear usuario
+const newUser = await createUser({
+  id: generateUUID(),
+  email: 'newuser@example.com',
+  name: 'John Doe',
+  role: 'teacher'
+});
+
+// Actualizar usuario
+await updateUser(userId, { name: 'Jane Doe' });
+```
+
+### Flujo de Autenticación con Data Connect
+
+```
+Firebase Auth (signIn)
+    ↓
+Data Connect Query (getUserByEmail)
+    ↓
+Crear objeto User local
+    ↓
+Guardar en localStorage
+    ↓
+AuthContext actualizado
+    ↓
+Redirigir a dashboard
+```
+
+### Archivos Principales de Data Connect
+
+| Archivo | Propósito |
+|---------|-----------|
+| `/dataconnect/dataconnect.yaml` | Configuración de Data Connect |
+| `/dataconnect/schema/schema.gql` | Schema de GraphQL |
+| `/dataconnect/example/queries.gql` | Queries (lecturas) |
+| `/dataconnect/example/mutations.gql` | Mutations (escrituras) |
+| `/src/lib/userDataConnect.ts` | Funciones de usuario |
+| `/src/lib/levelDataConnect.ts` | Funciones de niveles |
+| `/src/lib/taxonomyDataConnect.ts` | Funciones de taxonomía |
+
+### Documentación Completa
+
+Para más información sobre la migración de Firestore a Data Connect y arquitectura:
+- **[→ docs/FIRESTORE_TO_DATACONNECT_MIGRATION.md](./docs/FIRESTORE_TO_DATACONNECT_MIGRATION.md)** - Migración detallada
+- **[→ docs/UUID_ARCHITECTURE.md](./docs/UUID_ARCHITECTURE.md)** - Arquitectura con Data Connect
+- **[→ docs/DATACONNECT_TECHNICAL_GUIDE.md](./docs/DATACONNECT_TECHNICAL_GUIDE.md)** - 🔧 Guía técnica completa (RECOMENDADO)
+
+---
 
 GRADE es una plataforma educacional completa que integra:
 
