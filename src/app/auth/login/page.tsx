@@ -154,15 +154,6 @@ export default function LoginPage() {
                   </Link>
                 </p>
               </div>
-
-              {/* Demo credentials */}
-              <Card className="mt-4 bg-light">
-                <Card.Body className="py-3">
-                  <small className="text-muted">
-                    <strong>Demo:</strong> Usa cualquier email/contraseña para probar
-                  </small>
-                </Card.Body>
-              </Card>
             </Card.Body>
           </Card>
         </div>
