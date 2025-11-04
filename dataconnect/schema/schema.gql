@@ -8,7 +8,7 @@ type User @table(name: "users", key: "userId") {
   userId: UUID! @col(name: "user_id")
 
   # Identificador de firebase Auth
-  authId: String! @col(name: "firebase_auth_id")
+  firebaseId: String! @col(name: "firebase_id")
   
   # Nombre del usuario
   name: String!

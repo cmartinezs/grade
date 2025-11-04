@@ -1194,6 +1194,7 @@ The `ListCourses` Query requires an argument of type `ListCoursesVariables`, whi
 ```javascript
 export interface ListCoursesVariables {
   userId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1229,13 +1230,14 @@ export default function ListCoursesComponent() {
   // The `useListCourses` Query hook requires an argument of type `ListCoursesVariables`:
   const listCoursesVars: ListCoursesVariables = {
     userId: ..., 
+    firebaseId: ..., 
   };
 
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
   const query = useListCourses(listCoursesVars);
   // Variables can be defined inline as well.
-  const query = useListCourses({ userId: ..., });
+  const query = useListCourses({ userId: ..., firebaseId: ..., });
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
@@ -1285,6 +1287,7 @@ The `GetCourse` Query requires an argument of type `GetCourseVariables`, which i
 export interface GetCourseVariables {
   courseId: UUIDString;
   userId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1295,7 +1298,7 @@ To check the status of a Query, use the `UseQueryResult.status` field. You can a
 To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetCourse` Query is of type `GetCourseData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
 export interface GetCourseData {
-  course?: {
+  courses: ({
     courseId: UUIDString;
     name: string;
     code: string;
@@ -1308,7 +1311,7 @@ export interface GetCourseData {
     updatedBy?: UUIDString | null;
     deletedAt?: TimestampString | null;
     deletedBy?: UUIDString | null;
-  } & Course_Key;
+  } & Course_Key)[];
 }
 ```
 
@@ -1326,13 +1329,14 @@ export default function GetCourseComponent() {
   const getCourseVars: GetCourseVariables = {
     courseId: ..., 
     userId: ..., 
+    firebaseId: ..., 
   };
 
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
   const query = useGetCourse(getCourseVars);
   // Variables can be defined inline as well.
-  const query = useGetCourse({ courseId: ..., userId: ..., });
+  const query = useGetCourse({ courseId: ..., userId: ..., firebaseId: ..., });
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
@@ -1358,7 +1362,7 @@ export default function GetCourseComponent() {
 
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
-    console.log(query.data.course);
+    console.log(query.data.courses);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -1381,6 +1385,7 @@ The `GetCoursesByUser` Query requires an argument of type `GetCoursesByUserVaria
 ```javascript
 export interface GetCoursesByUserVariables {
   userId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1416,13 +1421,14 @@ export default function GetCoursesByUserComponent() {
   // The `useGetCoursesByUser` Query hook requires an argument of type `GetCoursesByUserVariables`:
   const getCoursesByUserVars: GetCoursesByUserVariables = {
     userId: ..., 
+    firebaseId: ..., 
   };
 
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
   const query = useGetCoursesByUser(getCoursesByUserVars);
   // Variables can be defined inline as well.
-  const query = useGetCoursesByUser({ userId: ..., });
+  const query = useGetCoursesByUser({ userId: ..., firebaseId: ..., });
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
@@ -1472,6 +1478,7 @@ The `GetCoursesByLevel` Query requires an argument of type `GetCoursesByLevelVar
 export interface GetCoursesByLevelVariables {
   userId: UUIDString;
   levelId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1508,13 +1515,14 @@ export default function GetCoursesByLevelComponent() {
   const getCoursesByLevelVars: GetCoursesByLevelVariables = {
     userId: ..., 
     levelId: ..., 
+    firebaseId: ..., 
   };
 
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
   const query = useGetCoursesByLevel(getCoursesByLevelVars);
   // Variables can be defined inline as well.
-  const query = useGetCoursesByLevel({ userId: ..., levelId: ..., });
+  const query = useGetCoursesByLevel({ userId: ..., levelId: ..., firebaseId: ..., });
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
@@ -1587,7 +1595,7 @@ The `CreateUser` Mutation requires an argument of type `CreateUserVariables`, wh
 ```javascript
 export interface CreateUserVariables {
   userId: UUIDString;
-  authId: string;
+  firebaseId: string;
   name: string;
   email: string;
   role: string;
@@ -1642,7 +1650,7 @@ export default function CreateUserComponent() {
   // The `useCreateUser` Mutation requires an argument of type `CreateUserVariables`:
   const createUserVars: CreateUserVariables = {
     userId: ..., 
-    authId: ..., 
+    firebaseId: ..., 
     name: ..., 
     email: ..., 
     role: ..., 
@@ -1650,7 +1658,7 @@ export default function CreateUserComponent() {
   };
   mutation.mutate(createUserVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ userId: ..., authId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
+  mutation.mutate({ userId: ..., firebaseId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1696,6 +1704,7 @@ export interface UpdateUserVariables {
   role?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1751,10 +1760,11 @@ export default function UpdateUserComponent() {
     role: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateUserVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ userId: ..., name: ..., email: ..., role: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ userId: ..., name: ..., email: ..., role: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1899,6 +1909,7 @@ export interface UpdateSubjectVariables {
   code?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1953,10 +1964,11 @@ export default function UpdateSubjectComponent() {
     code: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1999,6 +2011,7 @@ export interface DeactivateSubjectVariables {
   subjectId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2051,10 +2064,11 @@ export default function DeactivateSubjectComponent() {
     subjectId: ..., 
     deletedAt: ..., 
     deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(deactivateSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ subjectId: ..., deletedAt: ..., deletedBy: ..., });
+  mutation.mutate({ subjectId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2095,7 +2109,7 @@ The `ReactivateSubject` Mutation requires an argument of type `ReactivateSubject
 ```javascript
 export interface ReactivateSubjectVariables {
   subjectId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2146,11 +2160,11 @@ export default function ReactivateSubjectComponent() {
   // The `useReactivateSubject` Mutation requires an argument of type `ReactivateSubjectVariables`:
   const reactivateSubjectVars: ReactivateSubjectVariables = {
     subjectId: ..., 
-    deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(reactivateSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ subjectId: ..., deletedBy: ..., });
+  mutation.mutate({ subjectId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2298,6 +2312,7 @@ export interface UpdateUnitVariables {
   subjectId: UUIDString;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2353,10 +2368,11 @@ export default function UpdateUnitComponent() {
     subjectId: ..., 
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2399,6 +2415,7 @@ export interface DeactivateUnitVariables {
   unitId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2451,10 +2468,11 @@ export default function DeactivateUnitComponent() {
     unitId: ..., 
     deletedAt: ..., 
     deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(deactivateUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ unitId: ..., deletedAt: ..., deletedBy: ..., });
+  mutation.mutate({ unitId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2495,7 +2513,7 @@ The `ReactivateUnit` Mutation requires an argument of type `ReactivateUnitVariab
 ```javascript
 export interface ReactivateUnitVariables {
   unitId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2546,11 +2564,11 @@ export default function ReactivateUnitComponent() {
   // The `useReactivateUnit` Mutation requires an argument of type `ReactivateUnitVariables`:
   const reactivateUnitVars: ReactivateUnitVariables = {
     unitId: ..., 
-    deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(reactivateUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ unitId: ..., deletedBy: ..., });
+  mutation.mutate({ unitId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2695,6 +2713,7 @@ export interface UpdateTopicVariables {
   name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2749,10 +2768,11 @@ export default function UpdateTopicComponent() {
     name: ..., 
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2795,6 +2815,7 @@ export interface DeactivateTopicVariables {
   topicId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2847,10 +2868,11 @@ export default function DeactivateTopicComponent() {
     topicId: ..., 
     deletedAt: ..., 
     deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(deactivateTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ topicId: ..., deletedAt: ..., deletedBy: ..., });
+  mutation.mutate({ topicId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2891,7 +2913,7 @@ The `ReactivateTopic` Mutation requires an argument of type `ReactivateTopicVari
 ```javascript
 export interface ReactivateTopicVariables {
   topicId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2942,11 +2964,11 @@ export default function ReactivateTopicComponent() {
   // The `useReactivateTopic` Mutation requires an argument of type `ReactivateTopicVariables`:
   const reactivateTopicVars: ReactivateTopicVariables = {
     topicId: ..., 
-    deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(reactivateTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ topicId: ..., deletedBy: ..., });
+  mutation.mutate({ topicId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3094,6 +3116,7 @@ export interface UpdateLevelCategoryVariables {
   description?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3149,10 +3172,11 @@ export default function UpdateLevelCategoryComponent() {
     description: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateLevelCategoryVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3195,6 +3219,7 @@ export interface DeactivateLevelCategoryVariables {
   categoryId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3247,10 +3272,11 @@ export default function DeactivateLevelCategoryComponent() {
     categoryId: ..., 
     deletedAt: ..., 
     deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(deactivateLevelCategoryVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ categoryId: ..., deletedAt: ..., deletedBy: ..., });
+  mutation.mutate({ categoryId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3291,7 +3317,7 @@ The `ReactivateLevelCategory` Mutation requires an argument of type `ReactivateL
 ```javascript
 export interface ReactivateLevelCategoryVariables {
   categoryId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3342,11 +3368,11 @@ export default function ReactivateLevelCategoryComponent() {
   // The `useReactivateLevelCategory` Mutation requires an argument of type `ReactivateLevelCategoryVariables`:
   const reactivateLevelCategoryVars: ReactivateLevelCategoryVariables = {
     categoryId: ..., 
-    deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(reactivateLevelCategoryVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ categoryId: ..., deletedBy: ..., });
+  mutation.mutate({ categoryId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3497,6 +3523,7 @@ export interface UpdateEducationalLevelVariables {
   categoryId?: UUIDString | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3553,10 +3580,11 @@ export default function UpdateEducationalLevelComponent() {
     categoryId: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateEducationalLevelVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3599,6 +3627,7 @@ export interface DeactivateEducationalLevelVariables {
   levelId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3651,10 +3680,11 @@ export default function DeactivateEducationalLevelComponent() {
     levelId: ..., 
     deletedAt: ..., 
     deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(deactivateEducationalLevelVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ levelId: ..., deletedAt: ..., deletedBy: ..., });
+  mutation.mutate({ levelId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3695,7 +3725,7 @@ The `ReactivateEducationalLevel` Mutation requires an argument of type `Reactiva
 ```javascript
 export interface ReactivateEducationalLevelVariables {
   levelId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3746,11 +3776,11 @@ export default function ReactivateEducationalLevelComponent() {
   // The `useReactivateEducationalLevel` Mutation requires an argument of type `ReactivateEducationalLevelVariables`:
   const reactivateEducationalLevelVars: ReactivateEducationalLevelVariables = {
     levelId: ..., 
-    deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(reactivateEducationalLevelVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ levelId: ..., deletedBy: ..., });
+  mutation.mutate({ levelId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3901,6 +3931,7 @@ export interface UpdateCourseVariables {
   userId?: UUIDString | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3957,10 +3988,11 @@ export default function UpdateCourseComponent() {
     userId: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(updateCourseVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ courseId: ..., name: ..., code: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., });
+  mutation.mutate({ courseId: ..., name: ..., code: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4003,6 +4035,7 @@ export interface DeactivateCourseVariables {
   courseId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4055,10 +4088,11 @@ export default function DeactivateCourseComponent() {
     courseId: ..., 
     deletedAt: ..., 
     deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(deactivateCourseVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ courseId: ..., deletedAt: ..., deletedBy: ..., });
+  mutation.mutate({ courseId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4099,7 +4133,7 @@ The `ReactivateCourse` Mutation requires an argument of type `ReactivateCourseVa
 ```javascript
 export interface ReactivateCourseVariables {
   courseId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4150,11 +4184,11 @@ export default function ReactivateCourseComponent() {
   // The `useReactivateCourse` Mutation requires an argument of type `ReactivateCourseVariables`:
   const reactivateCourseVars: ReactivateCourseVariables = {
     courseId: ..., 
-    deletedBy: ..., 
+    firebaseId: ..., 
   };
   mutation.mutate(reactivateCourseVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ courseId: ..., deletedBy: ..., });
+  mutation.mutate({ courseId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

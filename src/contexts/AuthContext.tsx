@@ -17,7 +17,7 @@ interface User {
   email: string;
   role: string;
   institution?: string;
-  firebaseUid?: string;
+  firebaseUid: string;
 }
 
 interface AuthContextType {
@@ -191,7 +191,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         name: fullName,
         email: userData.email,
         role: userData.role
-      }, userId); // El usuario es su propio creador
+      }, userId, firebaseUser.uid); // El usuario es su propio creador
       
       if (!userDataConnectUser) {
         console.error('Failed to create user in Data Connect');

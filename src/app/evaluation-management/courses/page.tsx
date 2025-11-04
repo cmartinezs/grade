@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Badge } from 'react-bootstrap';
+import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import MasterDataTable, {
   ColumnConfig,
@@ -17,6 +18,7 @@ import { Course } from '@/types/course';
 const PAGE_SIZE = 10;
 
 export default function CoursesPage() {
+  const { user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
@@ -29,17 +31,33 @@ export default function CoursesPage() {
 
   // Load courses when page or search changes
   useEffect(() => {
-    setIsLoading(true);
-    const result = courseStore.getPaginatedCourses(currentPage, PAGE_SIZE, {
-      searchText,
-      includeInactive: true
-    });
+    if (!user?.firebaseUid || !user?.id) return; // Wait for user to be authenticated
 
-    setCourses(result.courses);
-    setTotalCourses(result.total);
-    setTotalPages(result.totalPages);
-    setIsLoading(false);
-  }, [currentPage, searchText]);
+    const loadCoursesData = async () => {
+      setIsLoading(true);
+      try {
+        // First load from Data-Connect if not already loaded
+        // Pass both userId (system UUID) and firebaseUid (auth.uid from Firebase token)
+        await courseStore.loadCourses(user.id, user.firebaseUid);
+        
+        // Then get paginated results from cache
+        const result = courseStore.getPaginatedCourses(currentPage, PAGE_SIZE, {
+          searchText,
+          includeInactive: true
+        });
+
+        setCourses(result.courses);
+        setTotalCourses(result.total);
+        setTotalPages(result.totalPages);
+      } catch (error) {
+        console.error('Error loading courses:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCoursesData();
+  }, [currentPage, searchText, user?.id, user?.firebaseUid]);
 
   // Reset to page 1 when search changes
   useEffect(() => {

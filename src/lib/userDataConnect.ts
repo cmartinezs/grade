@@ -56,19 +56,17 @@ export const createNewUser = async (
     email: string;
     role: string;
   },
-  createdBy: string
+  createdBy: string,
+  firebaseUid: string
 ): Promise<UserData | null> => {
   try {
     // Generate UUID for userId
     const userId = generateUUID();
     
-    // Generate a simple UUID for authId (in production this would come from Firebase Auth)
-    const authId = `auth_${Date.now()}`;
-    
     const result = await dcCreateUser({
       userId,
+      firebaseId: firebaseUid,
       ...userData,
-      authId,
       createdBy
     });
     

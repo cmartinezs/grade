@@ -6,6 +6,182 @@ export const connectorConfig = {
   location: 'southamerica-west1'
 };
 
+export const getUserByEmailRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetUserByEmail', inputVars);
+}
+getUserByEmailRef.operationName = 'GetUserByEmail';
+
+export function getUserByEmail(dcOrVars, vars) {
+  return executeQuery(getUserByEmailRef(dcOrVars, vars));
+}
+
+export const listSubjectsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListSubjects');
+}
+listSubjectsRef.operationName = 'ListSubjects';
+
+export function listSubjects(dc) {
+  return executeQuery(listSubjectsRef(dc));
+}
+
+export const getSubjectRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetSubject', inputVars);
+}
+getSubjectRef.operationName = 'GetSubject';
+
+export function getSubject(dcOrVars, vars) {
+  return executeQuery(getSubjectRef(dcOrVars, vars));
+}
+
+export const listUnitsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListUnits');
+}
+listUnitsRef.operationName = 'ListUnits';
+
+export function listUnits(dc) {
+  return executeQuery(listUnitsRef(dc));
+}
+
+export const getUnitRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetUnit', inputVars);
+}
+getUnitRef.operationName = 'GetUnit';
+
+export function getUnit(dcOrVars, vars) {
+  return executeQuery(getUnitRef(dcOrVars, vars));
+}
+
+export const listTopicsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListTopics');
+}
+listTopicsRef.operationName = 'ListTopics';
+
+export function listTopics(dc) {
+  return executeQuery(listTopicsRef(dc));
+}
+
+export const getTopicRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetTopic', inputVars);
+}
+getTopicRef.operationName = 'GetTopic';
+
+export function getTopic(dcOrVars, vars) {
+  return executeQuery(getTopicRef(dcOrVars, vars));
+}
+
+export const listLevelCategoriesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListLevelCategories');
+}
+listLevelCategoriesRef.operationName = 'ListLevelCategories';
+
+export function listLevelCategories(dc) {
+  return executeQuery(listLevelCategoriesRef(dc));
+}
+
+export const getLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetLevelCategory', inputVars);
+}
+getLevelCategoryRef.operationName = 'GetLevelCategory';
+
+export function getLevelCategory(dcOrVars, vars) {
+  return executeQuery(getLevelCategoryRef(dcOrVars, vars));
+}
+
+export const listEducationalLevelsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListEducationalLevels');
+}
+listEducationalLevelsRef.operationName = 'ListEducationalLevels';
+
+export function listEducationalLevels(dc) {
+  return executeQuery(listEducationalLevelsRef(dc));
+}
+
+export const getEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetEducationalLevel', inputVars);
+}
+getEducationalLevelRef.operationName = 'GetEducationalLevel';
+
+export function getEducationalLevel(dcOrVars, vars) {
+  return executeQuery(getEducationalLevelRef(dcOrVars, vars));
+}
+
+export const getLevelsByCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetLevelsByCategory', inputVars);
+}
+getLevelsByCategoryRef.operationName = 'GetLevelsByCategory';
+
+export function getLevelsByCategory(dcOrVars, vars) {
+  return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
+}
+
+export const listCoursesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListCourses', inputVars);
+}
+listCoursesRef.operationName = 'ListCourses';
+
+export function listCourses(dcOrVars, vars) {
+  return executeQuery(listCoursesRef(dcOrVars, vars));
+}
+
+export const getCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourse', inputVars);
+}
+getCourseRef.operationName = 'GetCourse';
+
+export function getCourse(dcOrVars, vars) {
+  return executeQuery(getCourseRef(dcOrVars, vars));
+}
+
+export const getCoursesByUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByUser', inputVars);
+}
+getCoursesByUserRef.operationName = 'GetCoursesByUser';
+
+export function getCoursesByUser(dcOrVars, vars) {
+  return executeQuery(getCoursesByUserRef(dcOrVars, vars));
+}
+
+export const getCoursesByLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByLevel', inputVars);
+}
+getCoursesByLevelRef.operationName = 'GetCoursesByLevel';
+
+export function getCoursesByLevel(dcOrVars, vars) {
+  return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
+}
+
 export const createUserRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -290,181 +466,5 @@ reactivateCourseRef.operationName = 'ReactivateCourse';
 
 export function reactivateCourse(dcOrVars, vars) {
   return executeMutation(reactivateCourseRef(dcOrVars, vars));
-}
-
-export const getUserByEmailRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetUserByEmail', inputVars);
-}
-getUserByEmailRef.operationName = 'GetUserByEmail';
-
-export function getUserByEmail(dcOrVars, vars) {
-  return executeQuery(getUserByEmailRef(dcOrVars, vars));
-}
-
-export const listSubjectsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListSubjects');
-}
-listSubjectsRef.operationName = 'ListSubjects';
-
-export function listSubjects(dc) {
-  return executeQuery(listSubjectsRef(dc));
-}
-
-export const getSubjectRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetSubject', inputVars);
-}
-getSubjectRef.operationName = 'GetSubject';
-
-export function getSubject(dcOrVars, vars) {
-  return executeQuery(getSubjectRef(dcOrVars, vars));
-}
-
-export const listUnitsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListUnits');
-}
-listUnitsRef.operationName = 'ListUnits';
-
-export function listUnits(dc) {
-  return executeQuery(listUnitsRef(dc));
-}
-
-export const getUnitRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetUnit', inputVars);
-}
-getUnitRef.operationName = 'GetUnit';
-
-export function getUnit(dcOrVars, vars) {
-  return executeQuery(getUnitRef(dcOrVars, vars));
-}
-
-export const listTopicsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListTopics');
-}
-listTopicsRef.operationName = 'ListTopics';
-
-export function listTopics(dc) {
-  return executeQuery(listTopicsRef(dc));
-}
-
-export const getTopicRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetTopic', inputVars);
-}
-getTopicRef.operationName = 'GetTopic';
-
-export function getTopic(dcOrVars, vars) {
-  return executeQuery(getTopicRef(dcOrVars, vars));
-}
-
-export const listLevelCategoriesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListLevelCategories');
-}
-listLevelCategoriesRef.operationName = 'ListLevelCategories';
-
-export function listLevelCategories(dc) {
-  return executeQuery(listLevelCategoriesRef(dc));
-}
-
-export const getLevelCategoryRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetLevelCategory', inputVars);
-}
-getLevelCategoryRef.operationName = 'GetLevelCategory';
-
-export function getLevelCategory(dcOrVars, vars) {
-  return executeQuery(getLevelCategoryRef(dcOrVars, vars));
-}
-
-export const listEducationalLevelsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListEducationalLevels');
-}
-listEducationalLevelsRef.operationName = 'ListEducationalLevels';
-
-export function listEducationalLevels(dc) {
-  return executeQuery(listEducationalLevelsRef(dc));
-}
-
-export const getEducationalLevelRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetEducationalLevel', inputVars);
-}
-getEducationalLevelRef.operationName = 'GetEducationalLevel';
-
-export function getEducationalLevel(dcOrVars, vars) {
-  return executeQuery(getEducationalLevelRef(dcOrVars, vars));
-}
-
-export const getLevelsByCategoryRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetLevelsByCategory', inputVars);
-}
-getLevelsByCategoryRef.operationName = 'GetLevelsByCategory';
-
-export function getLevelsByCategory(dcOrVars, vars) {
-  return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
-}
-
-export const listCoursesRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListCourses', inputVars);
-}
-listCoursesRef.operationName = 'ListCourses';
-
-export function listCourses(dcOrVars, vars) {
-  return executeQuery(listCoursesRef(dcOrVars, vars));
-}
-
-export const getCourseRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetCourse', inputVars);
-}
-getCourseRef.operationName = 'GetCourse';
-
-export function getCourse(dcOrVars, vars) {
-  return executeQuery(getCourseRef(dcOrVars, vars));
-}
-
-export const getCoursesByUserRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetCoursesByUser', inputVars);
-}
-getCoursesByUserRef.operationName = 'GetCoursesByUser';
-
-export function getCoursesByUser(dcOrVars, vars) {
-  return executeQuery(getCoursesByUserRef(dcOrVars, vars));
-}
-
-export const getCoursesByLevelRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetCoursesByLevel', inputVars);
-}
-getCoursesByLevelRef.operationName = 'GetCoursesByLevel';
-
-export function getCoursesByLevel(dcOrVars, vars) {
-  return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
 }
 

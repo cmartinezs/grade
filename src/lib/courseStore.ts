@@ -5,80 +5,100 @@
  */
 
 import { Course, CreateCourseInput, EditCourseInput, CourseValidationError } from '@/types/course';
-import { createNewCourse, updateCourseInfo, deactivateCourseInfo, reactivateCourseInfo } from './courseDataConnect';
+import { createNewCourse, updateCourseInfo, fetchCoursesFromDataConnect } from './courseDataConnect';
 
 const COURSES_STORAGE_KEY = 'evaluation_management_courses';
 const COURSE_COUNTER_KEY = 'evaluation_management_course_counter';
 
-// Default courses for initialization
-const DEFAULT_COURSES: Omit<Course, 'course_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by' | 'deleted_at' | 'deleted_by'>[] = [
-  // Enseñanza Básica
-  { name: '1° Básico A', code: '1B-A', levelId: 'level-1b-001', institution: 'Colegio Ejemplo', active: true },
-  { name: '1° Básico B', code: '1B-B', levelId: 'level-1b-001', institution: 'Colegio Ejemplo', active: true },
-  { name: '2° Básico A', code: '2B-A', levelId: 'level-2b-002', institution: 'Colegio Ejemplo', active: true },
-  { name: '3° Básico A', code: '3B-A', levelId: 'level-3b-003', institution: 'Colegio Ejemplo', active: true },
-  { name: '4° Básico A', code: '4B-A', levelId: 'level-4b-004', institution: 'Colegio Ejemplo', active: true },
-  { name: '5° Básico A', code: '5B-A', levelId: 'level-5b-005', institution: 'Colegio Ejemplo', active: true },
-  { name: '5° Básico B', code: '5B-B', levelId: 'level-5b-005', institution: 'Colegio Ejemplo', active: true },
-  { name: '6° Básico A', code: '6B-A', levelId: 'level-6b-006', institution: 'Colegio Ejemplo', active: true },
-  { name: '7° Básico A', code: '7B-A', levelId: 'level-7b-007', institution: 'Colegio Ejemplo', active: true },
-  { name: '8° Básico A', code: '8B-A', levelId: 'level-8b-008', institution: 'Colegio Ejemplo', active: true },
-  
-  // Enseñanza Media
-  { name: '1° Medio A', code: '1M-A', levelId: 'level-1m-009', institution: 'Colegio Ejemplo', active: true },
-  { name: '1° Medio B', code: '1M-B', levelId: 'level-1m-009', institution: 'Colegio Ejemplo', active: true },
-  { name: '2° Medio A', code: '2M-A', levelId: 'level-2m-010', institution: 'Colegio Ejemplo', active: true },
-  { name: '3° Medio A', code: '3M-A', levelId: 'level-3m-011', institution: 'Colegio Ejemplo', active: true },
-  { name: '4° Medio A', code: '4M-A', levelId: 'level-4m-012', institution: 'Colegio Ejemplo', active: true },
-];
+// ============================================================================
+// IN-MEMORY CACHE (single source of truth - loaded from Data-Connect)
+// ============================================================================
+
+interface MemoryCache {
+  courses: Course[] | null;
+  coursesLoaded: boolean;
+}
+
+const memoryCache: MemoryCache = {
+  courses: null,
+  coursesLoaded: false,
+};
 
 class CourseStore {
-  // Initialize with default courses if empty
-  private initializeDefaultCourses(): void {
-    if (typeof window === 'undefined') return;
-    
-    const stored = localStorage.getItem(COURSES_STORAGE_KEY);
-    if (stored) return; // Already initialized
-    
-    // DESHABILITADO: No cargar automáticamente
-    // Los datos deben cargarse desde Data-Connect o mediante carga manual desde JSON
-    // const currentDate = new Date();
-    // const systemUser = 'system';
-    // 
-    // const courses: Course[] = DEFAULT_COURSES.map((course, index) => ({
-    //   ...course,
-    //   course_id: `c-${index + 1}`,
-    //   created_at: currentDate,
-    //   created_by: systemUser,
-    //   updated_at: currentDate,
-    //   updated_by: systemUser,
-    //   deleted_at: null,
-    //   deleted_by: null,
-    // }));
-    // 
-    // localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
-    // localStorage.setItem(COURSE_COUNTER_KEY, DEFAULT_COURSES.length.toString());
-    // 
-    // console.log(`[CURSO] ${DEFAULT_COURSES.length} cursos de base inicializados`);
+  // ---- Initialization (Load from Data-Connect) ----
+  /**
+   * Load courses from Data-Connect and cache in memory
+   * @param userId - The system User UUID (for course queries)
+   * @param firebaseUid - The Firebase UID (auth.uid from token) for authentication
+   */
+  async loadCourses(userId: string, firebaseUid: string): Promise<Course[]> {
+    return this.loadCoursesAsync(userId, firebaseUid);
   }
 
-  // Load courses from localStorage
-  private loadCourses(): Course[] {
-    if (typeof window === 'undefined') return [];
-    
-    // DESHABILITADO: Initialize default courses if needed
-    // this.initializeDefaultCourses();
-    
-    const stored = localStorage.getItem(COURSES_STORAGE_KEY);
-    if (!stored) return [];
-    
-    const courses = JSON.parse(stored);
-    return courses.map((c: Course) => ({
-      ...c,
-      created_at: c.created_at ? new Date(c.created_at) : new Date(),
-      updated_at: c.updated_at ? new Date(c.updated_at) : new Date(),
-      deleted_at: c.deleted_at ? new Date(c.deleted_at) : null,
-    }));
+  // Load courses from in-memory cache (synchronous - returns cached data)
+  private loadCoursesSync(): Course[] {
+    // Return from cache if already loaded
+    if (memoryCache.coursesLoaded && memoryCache.courses !== null) {
+      return memoryCache.courses;
+    }
+
+    // If courses not loaded yet, return empty array
+    // (async loading should be done via loadCourses)
+    return [];
+  }
+
+  // Async load courses from Data-Connect (private method)
+  private async loadCoursesAsync(userId: string, firebaseUid: string): Promise<Course[]> {
+    // Return from cache if already loaded
+    if (memoryCache.coursesLoaded && memoryCache.courses !== null) {
+      return memoryCache.courses;
+    }
+
+    try {
+      const data = await fetchCoursesFromDataConnect(userId, firebaseUid);
+      
+      // Convert from Data-Connect format to Course format
+      const courses: Course[] = data.map((course: {
+        courseId: string;
+        name: string;
+        code: string;
+        levelId: string;
+        userId: string;
+        active: boolean;
+        createdAt: string;
+        createdBy?: string;
+        updatedAt?: string;
+        updatedBy?: string;
+        deletedAt?: string;
+        deletedBy?: string;
+      }) => ({
+        course_id: course.courseId,
+        name: course.name,
+        code: course.code,
+        levelId: course.levelId,
+        institution: '', // Data-Connect doesn't have institution field yet
+        active: course.active !== false,
+        created_at: new Date(course.createdAt),
+        created_by: course.createdBy || 'SYSTEM',
+        updated_at: course.updatedAt ? new Date(course.updatedAt) : new Date(course.createdAt),
+        updated_by: course.updatedBy || course.createdBy || 'SYSTEM',
+        deleted_at: course.deletedAt ? new Date(course.deletedAt) : null,
+        deleted_by: course.deletedBy || null,
+      }));
+
+      // Store in memory cache
+      memoryCache.courses = courses;
+      memoryCache.coursesLoaded = true;
+
+      console.log(`[COURSE] Loaded ${courses.length} courses from Data-Connect`);
+      return courses;
+    } catch (error) {
+      console.error('[COURSE] Error loading courses from Data-Connect:', error);
+      // Return empty array on error
+      memoryCache.courses = [];
+      memoryCache.coursesLoaded = true;
+      return [];
+    }
   }
 
   // Clear all courses (for cleanup/migration)
@@ -88,7 +108,7 @@ class CourseStore {
     localStorage.removeItem(COURSE_COUNTER_KEY);
   }
   // Save courses to localStorage
-  private saveCourses(courses: Course[]): void {
+  private saveCourses(): void {
     if (typeof window === 'undefined') return;
     // localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
   }
@@ -156,7 +176,7 @@ class CourseStore {
 
   // Create a new course (CU-GE-01)
   async createCourse(input: CreateCourseInput, currentUser: string): Promise<Course> {
-    const courses = this.loadCourses();
+    const courses = this.loadCoursesSync();
 
     // Validate input
     const validationErrors = this.validateCourseInput(input, courses);
@@ -194,7 +214,7 @@ class CourseStore {
     };
 
     courses.push(newCourse);
-    this.saveCourses(courses);
+    this.saveCourses();
 
     console.log(`[CURSO] Curso ${newCourse.course_id} creado por ${currentUser}`);
 
@@ -203,7 +223,7 @@ class CourseStore {
 
   // Get all courses
   getCourses(includeInactive = true, includeDeleted = false): Course[] {
-    const courses = this.loadCourses();
+    const courses = this.loadCoursesSync();
     
     return courses.filter(c => {
       if (!includeDeleted && c.deleted_at) return false;
@@ -214,13 +234,13 @@ class CourseStore {
 
   // Get course by ID
   getCourse(courseId: string): Course | null {
-    const courses = this.loadCourses();
+    const courses = this.loadCoursesSync();
     return courses.find(c => c.course_id === courseId && !c.deleted_at) || null;
   }
 
   // Check if code exists (for validation)
   codeExists(code: string, excludeCourseId?: string): boolean {
-    const courses = this.loadCourses();
+    const courses = this.loadCoursesSync();
     const normalizedCode = code.trim().toUpperCase();
     
     return courses.some(c => 
@@ -236,7 +256,7 @@ class CourseStore {
     input: EditCourseInput,
     currentUser: string
   ): Promise<Course> {
-    const courses = this.loadCourses();
+    const courses = this.loadCoursesSync();
     const courseIndex = courses.findIndex(c => c.course_id === courseId && !c.deleted_at);
 
     // A1: Curso inexistente
@@ -285,7 +305,7 @@ class CourseStore {
     };
 
     courses[courseIndex] = updatedCourse;
-    this.saveCourses(courses);
+    this.saveCourses();
 
     console.log(`[CURSO] Curso ${courseId} editado por ${currentUser}`, {
       changes: {
@@ -374,7 +394,7 @@ class CourseStore {
     pageSize: number;
     totalPages: number;
   } {
-    let courses = this.loadCourses();
+    let courses = this.loadCoursesSync();
 
     // Apply filters
     const { searchText, level, institution, includeInactive = true } = filters;
@@ -433,7 +453,7 @@ class CourseStore {
 
   // Get unique institutions (for filter dropdown)
   getInstitutions(): string[] {
-    const courses = this.loadCourses().filter(c => !c.deleted_at);
+    const courses = this.loadCoursesSync().filter(c => !c.deleted_at);
     return Array.from(new Set(courses.map(c => c.institution))).sort();
   }
 

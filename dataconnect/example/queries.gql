@@ -200,7 +200,10 @@ query GetLevelsByCategory($categoryId: UUID!) @auth(level: USER) {
 # ===================================================================
 
 # Listar todos los cursos del usuario autenticado
-query ListCourses($userId: UUID!) @auth(expr: "userId == auth.uid") {
+query ListCourses(
+  $userId: UUID!,
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
   courses(where: { userId: { eq: $userId } }) {
     courseId
     name
@@ -213,8 +216,8 @@ query ListCourses($userId: UUID!) @auth(expr: "userId == auth.uid") {
 }
 
 # Obtener un curso por ID (solo si pertenece al usuario autenticado)
-query GetCourse($courseId: UUID!, $userId: UUID!) @auth(expr: "userId == auth.uid") {
-  course(key: { courseId: $courseId }) {
+query GetCourse($courseId: UUID!, $userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
+  courses(where: { courseId: { eq: $courseId }, userId: { eq: $userId } }) {
     courseId
     name
     code
@@ -231,7 +234,7 @@ query GetCourse($courseId: UUID!, $userId: UUID!) @auth(expr: "userId == auth.ui
 }
 
 # Obtener cursos por usuario (solo para el usuario autenticado)
-query GetCoursesByUser($userId: UUID!) @auth(expr: "userId == auth.uid") {
+query GetCoursesByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
   courses(where: { userId: { eq: $userId } }) {
     courseId
     name
@@ -244,7 +247,7 @@ query GetCoursesByUser($userId: UUID!) @auth(expr: "userId == auth.uid") {
 }
 
 # Obtener cursos por nivel educacional del usuario autenticado
-query GetCoursesByLevel($userId: UUID!, $levelId: UUID!) @auth(expr: "userId == auth.uid") {
+query GetCoursesByLevel($userId: UUID!, $levelId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
   courses(where: { userId: { eq: $userId }, levelId: { eq: $levelId } }) {
     courseId
     name

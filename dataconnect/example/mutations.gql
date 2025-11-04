@@ -11,7 +11,7 @@
 # Crear un nuevo usuario
 mutation CreateUser(
   $userId: UUID!
-  $authId: String!
+  $firebaseId: String!
   $name: String!
   $email: String!
   $role: String!
@@ -20,7 +20,7 @@ mutation CreateUser(
   user_insert(
     data: {
       userId: $userId
-      authId: $authId
+      firebaseId: $firebaseId
       name: $name
       email: $email
       role: $role
@@ -37,7 +37,8 @@ mutation UpdateUser(
   $role: String
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   user_update(
     key: { userId: $userId }
     data: {
@@ -79,7 +80,8 @@ mutation UpdateSubject(
   $code: String
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   subject_update(
     key: { subjectId: $subjectId }
     data: {
@@ -96,7 +98,8 @@ mutation DeactivateSubject(
   $subjectId: UUID!
   $deletedAt: Timestamp!
   $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   subject_update(
     key: { subjectId: $subjectId }
     data: {
@@ -110,8 +113,8 @@ mutation DeactivateSubject(
 # Reactivar una asignatura (undo soft delete)
 mutation ReactivateSubject(
   $subjectId: UUID!
-  $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   subject_update(
     key: { subjectId: $subjectId }
     data: {
@@ -154,7 +157,8 @@ mutation UpdateUnit(
   $subjectId: UUID!
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   unit_update(
     key: { unitId: $unitId }
     data: {
@@ -172,7 +176,8 @@ mutation DeactivateUnit(
   $unitId: UUID!
   $deletedAt: Timestamp!
   $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   unit_update(
     key: { unitId: $unitId }
     data: {
@@ -186,8 +191,8 @@ mutation DeactivateUnit(
 # Reactivar una unidad (undo soft delete)
 mutation ReactivateUnit(
   $unitId: UUID!
-  $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   unit_update(
     key: { unitId: $unitId }
     data: {
@@ -227,7 +232,8 @@ mutation UpdateTopic(
   $name: String!
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   topic_update(
     key: { topicId: $topicId }
     data: {
@@ -245,7 +251,8 @@ mutation DeactivateTopic(
   $topicId: UUID!
   $deletedAt: Timestamp!
   $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   topic_update(
     key: { topicId: $topicId }
     data: {
@@ -259,8 +266,8 @@ mutation DeactivateTopic(
 # Reactivar un tema (undo soft delete)
 mutation ReactivateTopic(
   $topicId: UUID!
-  $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   topic_update(
     key: { topicId: $topicId }
     data: {
@@ -303,7 +310,8 @@ mutation UpdateLevelCategory(
   $description: String
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   levelCategory_update(
     key: { categoryId: $categoryId }
     data: {
@@ -321,7 +329,8 @@ mutation DeactivateLevelCategory(
   $categoryId: UUID!
   $deletedAt: Timestamp!
   $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   levelCategory_update(
     key: { categoryId: $categoryId }
     data: {
@@ -335,8 +344,8 @@ mutation DeactivateLevelCategory(
 # Reactivar una categoría de nivel (undo soft delete)
 mutation ReactivateLevelCategory(
   $categoryId: UUID!
-  $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   levelCategory_update(
     key: { categoryId: $categoryId }
     data: {
@@ -382,7 +391,8 @@ mutation UpdateEducationalLevel(
   $categoryId: UUID
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   educationalLevel_update(
     key: { levelId: $levelId }
     data: {
@@ -401,7 +411,8 @@ mutation DeactivateEducationalLevel(
   $levelId: UUID!
   $deletedAt: Timestamp!
   $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   educationalLevel_update(
     key: { levelId: $levelId }
     data: {
@@ -415,8 +426,8 @@ mutation DeactivateEducationalLevel(
 # Reactivar un nivel educacional (undo soft delete)
 mutation ReactivateEducationalLevel(
   $levelId: UUID!
-  $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   educationalLevel_update(
     key: { levelId: $levelId }
     data: {
@@ -462,7 +473,8 @@ mutation UpdateCourse(
   $userId: UUID
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-) @auth(expr: "updatedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   course_update(
     key: { courseId: $courseId }
     data: {
@@ -481,7 +493,8 @@ mutation DeactivateCourse(
   $courseId: UUID!
   $deletedAt: Timestamp!
   $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   course_update(
     key: { courseId: $courseId }
     data: {
@@ -495,8 +508,8 @@ mutation DeactivateCourse(
 # Reactivar un curso (undo soft delete)
 mutation ReactivateCourse(
   $courseId: UUID!
-  $deletedBy: UUID!
-) @auth(expr: "deletedBy == auth.uid || auth.token.role == 'ADMIN'") {
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
   course_update(
     key: { courseId: $courseId }
     data: {

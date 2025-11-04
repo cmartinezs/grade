@@ -445,7 +445,7 @@ export default function MasterDataTable<T>(
                         📥 Pre-carga de Datos
                       </Button>
                     )}
-                    {/* Botón Crear Curso - siempre que no haya búsqueda */}
+                    {/* Botón Crear - siempre que no haya búsqueda */}
                     {!searchText && (
                       <Button
                         variant="outline-primary"
@@ -453,7 +453,7 @@ export default function MasterDataTable<T>(
                         disabled={isLoading}
                         className="d-flex align-items-center gap-2"
                       >
-                        ➕ Crear Curso
+                        {createButtonIcon} {createButtonLabel}
                       </Button>
                     )}
                     

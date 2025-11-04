@@ -1459,6 +1459,7 @@ The `ListCourses` query requires an argument of type `ListCoursesVariables`, whi
 ```typescript
 export interface ListCoursesVariables {
   userId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1487,13 +1488,14 @@ import { connectorConfig, listCourses, ListCoursesVariables } from '@dataconnect
 // The `ListCourses` query requires an argument of type `ListCoursesVariables`:
 const listCoursesVars: ListCoursesVariables = {
   userId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `listCourses()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await listCourses(listCoursesVars);
 // Variables can be defined inline as well.
-const { data } = await listCourses({ userId: ..., });
+const { data } = await listCourses({ userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1517,12 +1519,13 @@ import { connectorConfig, listCoursesRef, ListCoursesVariables } from '@dataconn
 // The `ListCourses` query requires an argument of type `ListCoursesVariables`:
 const listCoursesVars: ListCoursesVariables = {
   userId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `listCoursesRef()` function to get a reference to the query.
 const ref = listCoursesRef(listCoursesVars);
 // Variables can be defined inline as well.
-const ref = listCoursesRef({ userId: ..., });
+const ref = listCoursesRef({ userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1577,6 +1580,7 @@ The `GetCourse` query requires an argument of type `GetCourseVariables`, which i
 export interface GetCourseVariables {
   courseId: UUIDString;
   userId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1585,7 +1589,7 @@ Recall that executing the `GetCourse` query returns a `QueryPromise` that resolv
 The `data` property is an object of type `GetCourseData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
 export interface GetCourseData {
-  course?: {
+  courses: ({
     courseId: UUIDString;
     name: string;
     code: string;
@@ -1598,7 +1602,7 @@ export interface GetCourseData {
     updatedBy?: UUIDString | null;
     deletedAt?: TimestampString | null;
     deletedBy?: UUIDString | null;
-  } & Course_Key;
+  } & Course_Key)[];
 }
 ```
 ### Using `GetCourse`'s action shortcut function
@@ -1611,24 +1615,25 @@ import { connectorConfig, getCourse, GetCourseVariables } from '@dataconnect/gen
 const getCourseVars: GetCourseVariables = {
   courseId: ..., 
   userId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `getCourse()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await getCourse(getCourseVars);
 // Variables can be defined inline as well.
-const { data } = await getCourse({ courseId: ..., userId: ..., });
+const { data } = await getCourse({ courseId: ..., userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
 const { data } = await getCourse(dataConnect, getCourseVars);
 
-console.log(data.course);
+console.log(data.courses);
 
 // Or, you can use the `Promise` API.
 getCourse(getCourseVars).then((response) => {
   const data = response.data;
-  console.log(data.course);
+  console.log(data.courses);
 });
 ```
 
@@ -1642,12 +1647,13 @@ import { connectorConfig, getCourseRef, GetCourseVariables } from '@dataconnect/
 const getCourseVars: GetCourseVariables = {
   courseId: ..., 
   userId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `getCourseRef()` function to get a reference to the query.
 const ref = getCourseRef(getCourseVars);
 // Variables can be defined inline as well.
-const ref = getCourseRef({ courseId: ..., userId: ..., });
+const ref = getCourseRef({ courseId: ..., userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1657,12 +1663,12 @@ const ref = getCourseRef(dataConnect, getCourseVars);
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeQuery(ref);
 
-console.log(data.course);
+console.log(data.courses);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
-  console.log(data.course);
+  console.log(data.courses);
 });
 ```
 
@@ -1701,6 +1707,7 @@ The `GetCoursesByUser` query requires an argument of type `GetCoursesByUserVaria
 ```typescript
 export interface GetCoursesByUserVariables {
   userId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1729,13 +1736,14 @@ import { connectorConfig, getCoursesByUser, GetCoursesByUserVariables } from '@d
 // The `GetCoursesByUser` query requires an argument of type `GetCoursesByUserVariables`:
 const getCoursesByUserVars: GetCoursesByUserVariables = {
   userId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `getCoursesByUser()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await getCoursesByUser(getCoursesByUserVars);
 // Variables can be defined inline as well.
-const { data } = await getCoursesByUser({ userId: ..., });
+const { data } = await getCoursesByUser({ userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1759,12 +1767,13 @@ import { connectorConfig, getCoursesByUserRef, GetCoursesByUserVariables } from 
 // The `GetCoursesByUser` query requires an argument of type `GetCoursesByUserVariables`:
 const getCoursesByUserVars: GetCoursesByUserVariables = {
   userId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `getCoursesByUserRef()` function to get a reference to the query.
 const ref = getCoursesByUserRef(getCoursesByUserVars);
 // Variables can be defined inline as well.
-const ref = getCoursesByUserRef({ userId: ..., });
+const ref = getCoursesByUserRef({ userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1819,6 +1828,7 @@ The `GetCoursesByLevel` query requires an argument of type `GetCoursesByLevelVar
 export interface GetCoursesByLevelVariables {
   userId: UUIDString;
   levelId: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -1848,13 +1858,14 @@ import { connectorConfig, getCoursesByLevel, GetCoursesByLevelVariables } from '
 const getCoursesByLevelVars: GetCoursesByLevelVariables = {
   userId: ..., 
   levelId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `getCoursesByLevel()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await getCoursesByLevel(getCoursesByLevelVars);
 // Variables can be defined inline as well.
-const { data } = await getCoursesByLevel({ userId: ..., levelId: ..., });
+const { data } = await getCoursesByLevel({ userId: ..., levelId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1879,12 +1890,13 @@ import { connectorConfig, getCoursesByLevelRef, GetCoursesByLevelVariables } fro
 const getCoursesByLevelVars: GetCoursesByLevelVariables = {
   userId: ..., 
   levelId: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `getCoursesByLevelRef()` function to get a reference to the query.
 const ref = getCoursesByLevelRef(getCoursesByLevelVars);
 // Variables can be defined inline as well.
-const ref = getCoursesByLevelRef({ userId: ..., levelId: ..., });
+const ref = getCoursesByLevelRef({ userId: ..., levelId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1953,7 +1965,7 @@ The `CreateUser` mutation requires an argument of type `CreateUserVariables`, wh
 ```typescript
 export interface CreateUserVariables {
   userId: UUIDString;
-  authId: string;
+  firebaseId: string;
   name: string;
   email: string;
   role: string;
@@ -1978,7 +1990,7 @@ import { connectorConfig, createUser, CreateUserVariables } from '@dataconnect/g
 // The `CreateUser` mutation requires an argument of type `CreateUserVariables`:
 const createUserVars: CreateUserVariables = {
   userId: ..., 
-  authId: ..., 
+  firebaseId: ..., 
   name: ..., 
   email: ..., 
   role: ..., 
@@ -1989,7 +2001,7 @@ const createUserVars: CreateUserVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createUser(createUserVars);
 // Variables can be defined inline as well.
-const { data } = await createUser({ userId: ..., authId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
+const { data } = await createUser({ userId: ..., firebaseId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2013,7 +2025,7 @@ import { connectorConfig, createUserRef, CreateUserVariables } from '@dataconnec
 // The `CreateUser` mutation requires an argument of type `CreateUserVariables`:
 const createUserVars: CreateUserVariables = {
   userId: ..., 
-  authId: ..., 
+  firebaseId: ..., 
   name: ..., 
   email: ..., 
   role: ..., 
@@ -2023,7 +2035,7 @@ const createUserVars: CreateUserVariables = {
 // Call the `createUserRef()` function to get a reference to the mutation.
 const ref = createUserRef(createUserVars);
 // Variables can be defined inline as well.
-const ref = createUserRef({ userId: ..., authId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
+const ref = createUserRef({ userId: ..., firebaseId: ..., name: ..., email: ..., role: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2082,6 +2094,7 @@ export interface UpdateUserVariables {
   role?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2107,13 +2120,14 @@ const updateUserVars: UpdateUserVariables = {
   role: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateUser()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateUser(updateUserVars);
 // Variables can be defined inline as well.
-const { data } = await updateUser({ userId: ..., name: ..., email: ..., role: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateUser({ userId: ..., name: ..., email: ..., role: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2142,12 +2156,13 @@ const updateUserVars: UpdateUserVariables = {
   role: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateUserRef()` function to get a reference to the mutation.
 const ref = updateUserRef(updateUserVars);
 // Variables can be defined inline as well.
-const ref = updateUserRef({ userId: ..., name: ..., email: ..., role: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateUserRef({ userId: ..., name: ..., email: ..., role: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2323,6 +2338,7 @@ export interface UpdateSubjectVariables {
   code?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2347,13 +2363,14 @@ const updateSubjectVars: UpdateSubjectVariables = {
   code: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateSubject()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateSubject(updateSubjectVars);
 // Variables can be defined inline as well.
-const { data } = await updateSubject({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateSubject({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2381,12 +2398,13 @@ const updateSubjectVars: UpdateSubjectVariables = {
   code: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateSubjectRef()` function to get a reference to the mutation.
 const ref = updateSubjectRef(updateSubjectVars);
 // Variables can be defined inline as well.
-const ref = updateSubjectRef({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateSubjectRef({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2442,6 +2460,7 @@ export interface DeactivateSubjectVariables {
   subjectId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2464,13 +2483,14 @@ const deactivateSubjectVars: DeactivateSubjectVariables = {
   subjectId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateSubject()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await deactivateSubject(deactivateSubjectVars);
 // Variables can be defined inline as well.
-const { data } = await deactivateSubject({ subjectId: ..., deletedAt: ..., deletedBy: ..., });
+const { data } = await deactivateSubject({ subjectId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2496,12 +2516,13 @@ const deactivateSubjectVars: DeactivateSubjectVariables = {
   subjectId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateSubjectRef()` function to get a reference to the mutation.
 const ref = deactivateSubjectRef(deactivateSubjectVars);
 // Variables can be defined inline as well.
-const ref = deactivateSubjectRef({ subjectId: ..., deletedAt: ..., deletedBy: ..., });
+const ref = deactivateSubjectRef({ subjectId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2555,7 +2576,7 @@ The `ReactivateSubject` mutation requires an argument of type `ReactivateSubject
 ```typescript
 export interface ReactivateSubjectVariables {
   subjectId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2576,14 +2597,14 @@ import { connectorConfig, reactivateSubject, ReactivateSubjectVariables } from '
 // The `ReactivateSubject` mutation requires an argument of type `ReactivateSubjectVariables`:
 const reactivateSubjectVars: ReactivateSubjectVariables = {
   subjectId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateSubject()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await reactivateSubject(reactivateSubjectVars);
 // Variables can be defined inline as well.
-const { data } = await reactivateSubject({ subjectId: ..., deletedBy: ..., });
+const { data } = await reactivateSubject({ subjectId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2607,13 +2628,13 @@ import { connectorConfig, reactivateSubjectRef, ReactivateSubjectVariables } fro
 // The `ReactivateSubject` mutation requires an argument of type `ReactivateSubjectVariables`:
 const reactivateSubjectVars: ReactivateSubjectVariables = {
   subjectId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateSubjectRef()` function to get a reference to the mutation.
 const ref = reactivateSubjectRef(reactivateSubjectVars);
 // Variables can be defined inline as well.
-const ref = reactivateSubjectRef({ subjectId: ..., deletedBy: ..., });
+const ref = reactivateSubjectRef({ subjectId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2793,6 +2814,7 @@ export interface UpdateUnitVariables {
   subjectId: UUIDString;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2818,13 +2840,14 @@ const updateUnitVars: UpdateUnitVariables = {
   subjectId: ..., 
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateUnit()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateUnit(updateUnitVars);
 // Variables can be defined inline as well.
-const { data } = await updateUnit({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateUnit({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2853,12 +2876,13 @@ const updateUnitVars: UpdateUnitVariables = {
   subjectId: ..., 
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateUnitRef()` function to get a reference to the mutation.
 const ref = updateUnitRef(updateUnitVars);
 // Variables can be defined inline as well.
-const ref = updateUnitRef({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateUnitRef({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2914,6 +2938,7 @@ export interface DeactivateUnitVariables {
   unitId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -2936,13 +2961,14 @@ const deactivateUnitVars: DeactivateUnitVariables = {
   unitId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateUnit()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await deactivateUnit(deactivateUnitVars);
 // Variables can be defined inline as well.
-const { data } = await deactivateUnit({ unitId: ..., deletedAt: ..., deletedBy: ..., });
+const { data } = await deactivateUnit({ unitId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2968,12 +2994,13 @@ const deactivateUnitVars: DeactivateUnitVariables = {
   unitId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateUnitRef()` function to get a reference to the mutation.
 const ref = deactivateUnitRef(deactivateUnitVars);
 // Variables can be defined inline as well.
-const ref = deactivateUnitRef({ unitId: ..., deletedAt: ..., deletedBy: ..., });
+const ref = deactivateUnitRef({ unitId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3027,7 +3054,7 @@ The `ReactivateUnit` mutation requires an argument of type `ReactivateUnitVariab
 ```typescript
 export interface ReactivateUnitVariables {
   unitId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3048,14 +3075,14 @@ import { connectorConfig, reactivateUnit, ReactivateUnitVariables } from '@datac
 // The `ReactivateUnit` mutation requires an argument of type `ReactivateUnitVariables`:
 const reactivateUnitVars: ReactivateUnitVariables = {
   unitId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateUnit()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await reactivateUnit(reactivateUnitVars);
 // Variables can be defined inline as well.
-const { data } = await reactivateUnit({ unitId: ..., deletedBy: ..., });
+const { data } = await reactivateUnit({ unitId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3079,13 +3106,13 @@ import { connectorConfig, reactivateUnitRef, ReactivateUnitVariables } from '@da
 // The `ReactivateUnit` mutation requires an argument of type `ReactivateUnitVariables`:
 const reactivateUnitVars: ReactivateUnitVariables = {
   unitId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateUnitRef()` function to get a reference to the mutation.
 const ref = reactivateUnitRef(reactivateUnitVars);
 // Variables can be defined inline as well.
-const ref = reactivateUnitRef({ unitId: ..., deletedBy: ..., });
+const ref = reactivateUnitRef({ unitId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3261,6 +3288,7 @@ export interface UpdateTopicVariables {
   name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3285,13 +3313,14 @@ const updateTopicVars: UpdateTopicVariables = {
   name: ..., 
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateTopic()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateTopic(updateTopicVars);
 // Variables can be defined inline as well.
-const { data } = await updateTopic({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateTopic({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3319,12 +3348,13 @@ const updateTopicVars: UpdateTopicVariables = {
   name: ..., 
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateTopicRef()` function to get a reference to the mutation.
 const ref = updateTopicRef(updateTopicVars);
 // Variables can be defined inline as well.
-const ref = updateTopicRef({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateTopicRef({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3380,6 +3410,7 @@ export interface DeactivateTopicVariables {
   topicId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3402,13 +3433,14 @@ const deactivateTopicVars: DeactivateTopicVariables = {
   topicId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateTopic()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await deactivateTopic(deactivateTopicVars);
 // Variables can be defined inline as well.
-const { data } = await deactivateTopic({ topicId: ..., deletedAt: ..., deletedBy: ..., });
+const { data } = await deactivateTopic({ topicId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3434,12 +3466,13 @@ const deactivateTopicVars: DeactivateTopicVariables = {
   topicId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateTopicRef()` function to get a reference to the mutation.
 const ref = deactivateTopicRef(deactivateTopicVars);
 // Variables can be defined inline as well.
-const ref = deactivateTopicRef({ topicId: ..., deletedAt: ..., deletedBy: ..., });
+const ref = deactivateTopicRef({ topicId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3493,7 +3526,7 @@ The `ReactivateTopic` mutation requires an argument of type `ReactivateTopicVari
 ```typescript
 export interface ReactivateTopicVariables {
   topicId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3514,14 +3547,14 @@ import { connectorConfig, reactivateTopic, ReactivateTopicVariables } from '@dat
 // The `ReactivateTopic` mutation requires an argument of type `ReactivateTopicVariables`:
 const reactivateTopicVars: ReactivateTopicVariables = {
   topicId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateTopic()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await reactivateTopic(reactivateTopicVars);
 // Variables can be defined inline as well.
-const { data } = await reactivateTopic({ topicId: ..., deletedBy: ..., });
+const { data } = await reactivateTopic({ topicId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3545,13 +3578,13 @@ import { connectorConfig, reactivateTopicRef, ReactivateTopicVariables } from '@
 // The `ReactivateTopic` mutation requires an argument of type `ReactivateTopicVariables`:
 const reactivateTopicVars: ReactivateTopicVariables = {
   topicId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateTopicRef()` function to get a reference to the mutation.
 const ref = reactivateTopicRef(reactivateTopicVars);
 // Variables can be defined inline as well.
-const ref = reactivateTopicRef({ topicId: ..., deletedBy: ..., });
+const ref = reactivateTopicRef({ topicId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3731,6 +3764,7 @@ export interface UpdateLevelCategoryVariables {
   description?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3756,13 +3790,14 @@ const updateLevelCategoryVars: UpdateLevelCategoryVariables = {
   description: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateLevelCategory()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateLevelCategory(updateLevelCategoryVars);
 // Variables can be defined inline as well.
-const { data } = await updateLevelCategory({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateLevelCategory({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3791,12 +3826,13 @@ const updateLevelCategoryVars: UpdateLevelCategoryVariables = {
   description: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateLevelCategoryRef()` function to get a reference to the mutation.
 const ref = updateLevelCategoryRef(updateLevelCategoryVars);
 // Variables can be defined inline as well.
-const ref = updateLevelCategoryRef({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateLevelCategoryRef({ categoryId: ..., code: ..., name: ..., description: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3852,6 +3888,7 @@ export interface DeactivateLevelCategoryVariables {
   categoryId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3874,13 +3911,14 @@ const deactivateLevelCategoryVars: DeactivateLevelCategoryVariables = {
   categoryId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateLevelCategory()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await deactivateLevelCategory(deactivateLevelCategoryVars);
 // Variables can be defined inline as well.
-const { data } = await deactivateLevelCategory({ categoryId: ..., deletedAt: ..., deletedBy: ..., });
+const { data } = await deactivateLevelCategory({ categoryId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3906,12 +3944,13 @@ const deactivateLevelCategoryVars: DeactivateLevelCategoryVariables = {
   categoryId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateLevelCategoryRef()` function to get a reference to the mutation.
 const ref = deactivateLevelCategoryRef(deactivateLevelCategoryVars);
 // Variables can be defined inline as well.
-const ref = deactivateLevelCategoryRef({ categoryId: ..., deletedAt: ..., deletedBy: ..., });
+const ref = deactivateLevelCategoryRef({ categoryId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3965,7 +4004,7 @@ The `ReactivateLevelCategory` mutation requires an argument of type `ReactivateL
 ```typescript
 export interface ReactivateLevelCategoryVariables {
   categoryId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -3986,14 +4025,14 @@ import { connectorConfig, reactivateLevelCategory, ReactivateLevelCategoryVariab
 // The `ReactivateLevelCategory` mutation requires an argument of type `ReactivateLevelCategoryVariables`:
 const reactivateLevelCategoryVars: ReactivateLevelCategoryVariables = {
   categoryId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateLevelCategory()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await reactivateLevelCategory(reactivateLevelCategoryVars);
 // Variables can be defined inline as well.
-const { data } = await reactivateLevelCategory({ categoryId: ..., deletedBy: ..., });
+const { data } = await reactivateLevelCategory({ categoryId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4017,13 +4056,13 @@ import { connectorConfig, reactivateLevelCategoryRef, ReactivateLevelCategoryVar
 // The `ReactivateLevelCategory` mutation requires an argument of type `ReactivateLevelCategoryVariables`:
 const reactivateLevelCategoryVars: ReactivateLevelCategoryVariables = {
   categoryId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateLevelCategoryRef()` function to get a reference to the mutation.
 const ref = reactivateLevelCategoryRef(reactivateLevelCategoryVars);
 // Variables can be defined inline as well.
-const ref = reactivateLevelCategoryRef({ categoryId: ..., deletedBy: ..., });
+const ref = reactivateLevelCategoryRef({ categoryId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4207,6 +4246,7 @@ export interface UpdateEducationalLevelVariables {
   categoryId?: UUIDString | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4233,13 +4273,14 @@ const updateEducationalLevelVars: UpdateEducationalLevelVariables = {
   categoryId: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateEducationalLevel()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateEducationalLevel(updateEducationalLevelVars);
 // Variables can be defined inline as well.
-const { data } = await updateEducationalLevel({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateEducationalLevel({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4269,12 +4310,13 @@ const updateEducationalLevelVars: UpdateEducationalLevelVariables = {
   categoryId: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateEducationalLevelRef()` function to get a reference to the mutation.
 const ref = updateEducationalLevelRef(updateEducationalLevelVars);
 // Variables can be defined inline as well.
-const ref = updateEducationalLevelRef({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateEducationalLevelRef({ levelId: ..., code: ..., name: ..., description: ..., categoryId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4330,6 +4372,7 @@ export interface DeactivateEducationalLevelVariables {
   levelId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4352,13 +4395,14 @@ const deactivateEducationalLevelVars: DeactivateEducationalLevelVariables = {
   levelId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateEducationalLevel()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await deactivateEducationalLevel(deactivateEducationalLevelVars);
 // Variables can be defined inline as well.
-const { data } = await deactivateEducationalLevel({ levelId: ..., deletedAt: ..., deletedBy: ..., });
+const { data } = await deactivateEducationalLevel({ levelId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4384,12 +4428,13 @@ const deactivateEducationalLevelVars: DeactivateEducationalLevelVariables = {
   levelId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateEducationalLevelRef()` function to get a reference to the mutation.
 const ref = deactivateEducationalLevelRef(deactivateEducationalLevelVars);
 // Variables can be defined inline as well.
-const ref = deactivateEducationalLevelRef({ levelId: ..., deletedAt: ..., deletedBy: ..., });
+const ref = deactivateEducationalLevelRef({ levelId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4443,7 +4488,7 @@ The `ReactivateEducationalLevel` mutation requires an argument of type `Reactiva
 ```typescript
 export interface ReactivateEducationalLevelVariables {
   levelId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4464,14 +4509,14 @@ import { connectorConfig, reactivateEducationalLevel, ReactivateEducationalLevel
 // The `ReactivateEducationalLevel` mutation requires an argument of type `ReactivateEducationalLevelVariables`:
 const reactivateEducationalLevelVars: ReactivateEducationalLevelVariables = {
   levelId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateEducationalLevel()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await reactivateEducationalLevel(reactivateEducationalLevelVars);
 // Variables can be defined inline as well.
-const { data } = await reactivateEducationalLevel({ levelId: ..., deletedBy: ..., });
+const { data } = await reactivateEducationalLevel({ levelId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4495,13 +4540,13 @@ import { connectorConfig, reactivateEducationalLevelRef, ReactivateEducationalLe
 // The `ReactivateEducationalLevel` mutation requires an argument of type `ReactivateEducationalLevelVariables`:
 const reactivateEducationalLevelVars: ReactivateEducationalLevelVariables = {
   levelId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateEducationalLevelRef()` function to get a reference to the mutation.
 const ref = reactivateEducationalLevelRef(reactivateEducationalLevelVars);
 // Variables can be defined inline as well.
-const ref = reactivateEducationalLevelRef({ levelId: ..., deletedBy: ..., });
+const ref = reactivateEducationalLevelRef({ levelId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4685,6 +4730,7 @@ export interface UpdateCourseVariables {
   userId?: UUIDString | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4711,13 +4757,14 @@ const updateCourseVars: UpdateCourseVariables = {
   userId: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateCourse()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateCourse(updateCourseVars);
 // Variables can be defined inline as well.
-const { data } = await updateCourse({ courseId: ..., name: ..., code: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., });
+const { data } = await updateCourse({ courseId: ..., name: ..., code: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4747,12 +4794,13 @@ const updateCourseVars: UpdateCourseVariables = {
   userId: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `updateCourseRef()` function to get a reference to the mutation.
 const ref = updateCourseRef(updateCourseVars);
 // Variables can be defined inline as well.
-const ref = updateCourseRef({ courseId: ..., name: ..., code: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., });
+const ref = updateCourseRef({ courseId: ..., name: ..., code: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4808,6 +4856,7 @@ export interface DeactivateCourseVariables {
   courseId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4830,13 +4879,14 @@ const deactivateCourseVars: DeactivateCourseVariables = {
   courseId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateCourse()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await deactivateCourse(deactivateCourseVars);
 // Variables can be defined inline as well.
-const { data } = await deactivateCourse({ courseId: ..., deletedAt: ..., deletedBy: ..., });
+const { data } = await deactivateCourse({ courseId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4862,12 +4912,13 @@ const deactivateCourseVars: DeactivateCourseVariables = {
   courseId: ..., 
   deletedAt: ..., 
   deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `deactivateCourseRef()` function to get a reference to the mutation.
 const ref = deactivateCourseRef(deactivateCourseVars);
 // Variables can be defined inline as well.
-const ref = deactivateCourseRef({ courseId: ..., deletedAt: ..., deletedBy: ..., });
+const ref = deactivateCourseRef({ courseId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4921,7 +4972,7 @@ The `ReactivateCourse` mutation requires an argument of type `ReactivateCourseVa
 ```typescript
 export interface ReactivateCourseVariables {
   courseId: UUIDString;
-  deletedBy: UUIDString;
+  firebaseId: string;
 }
 ```
 ### Return Type
@@ -4942,14 +4993,14 @@ import { connectorConfig, reactivateCourse, ReactivateCourseVariables } from '@d
 // The `ReactivateCourse` mutation requires an argument of type `ReactivateCourseVariables`:
 const reactivateCourseVars: ReactivateCourseVariables = {
   courseId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateCourse()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await reactivateCourse(reactivateCourseVars);
 // Variables can be defined inline as well.
-const { data } = await reactivateCourse({ courseId: ..., deletedBy: ..., });
+const { data } = await reactivateCourse({ courseId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4973,13 +5024,13 @@ import { connectorConfig, reactivateCourseRef, ReactivateCourseVariables } from 
 // The `ReactivateCourse` mutation requires an argument of type `ReactivateCourseVariables`:
 const reactivateCourseVars: ReactivateCourseVariables = {
   courseId: ..., 
-  deletedBy: ..., 
+  firebaseId: ..., 
 };
 
 // Call the `reactivateCourseRef()` function to get a reference to the mutation.
 const ref = reactivateCourseRef(reactivateCourseVars);
 // Variables can be defined inline as well.
-const ref = reactivateCourseRef({ courseId: ..., deletedBy: ..., });
+const ref = reactivateCourseRef({ courseId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
