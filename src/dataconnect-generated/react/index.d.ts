@@ -1,57 +1,9 @@
-import { GetUserByEmailData, GetUserByEmailVariables, ListSubjectsData, GetSubjectData, GetSubjectVariables, ListUnitsData, GetUnitData, GetUnitVariables, ListTopicsData, GetTopicData, GetTopicVariables, ListLevelCategoriesData, GetLevelCategoryData, GetLevelCategoryVariables, ListEducationalLevelsData, GetEducationalLevelData, GetEducationalLevelVariables, GetLevelsByCategoryData, GetLevelsByCategoryVariables, ListCoursesData, ListCoursesVariables, GetCourseData, GetCourseVariables, GetCoursesByUserData, GetCoursesByUserVariables, GetCoursesByLevelData, GetCoursesByLevelVariables, CreateUserData, CreateUserVariables, UpdateUserData, UpdateUserVariables, CreateSubjectData, CreateSubjectVariables, UpdateSubjectData, UpdateSubjectVariables, DeactivateSubjectData, DeactivateSubjectVariables, ReactivateSubjectData, ReactivateSubjectVariables, CreateUnitData, CreateUnitVariables, UpdateUnitData, UpdateUnitVariables, DeactivateUnitData, DeactivateUnitVariables, ReactivateUnitData, ReactivateUnitVariables, CreateTopicData, CreateTopicVariables, UpdateTopicData, UpdateTopicVariables, DeactivateTopicData, DeactivateTopicVariables, ReactivateTopicData, ReactivateTopicVariables, CreateLevelCategoryData, CreateLevelCategoryVariables, UpdateLevelCategoryData, UpdateLevelCategoryVariables, DeactivateLevelCategoryData, DeactivateLevelCategoryVariables, ReactivateLevelCategoryData, ReactivateLevelCategoryVariables, CreateEducationalLevelData, CreateEducationalLevelVariables, UpdateEducationalLevelData, UpdateEducationalLevelVariables, DeactivateEducationalLevelData, DeactivateEducationalLevelVariables, ReactivateEducationalLevelData, ReactivateEducationalLevelVariables, CreateCourseData, CreateCourseVariables, UpdateCourseData, UpdateCourseVariables, DeactivateCourseData, DeactivateCourseVariables, ReactivateCourseData, ReactivateCourseVariables } from '../';
+import { CreateUserData, CreateUserVariables, UpdateUserData, UpdateUserVariables, CreateSubjectData, CreateSubjectVariables, UpdateSubjectData, UpdateSubjectVariables, DeactivateSubjectData, DeactivateSubjectVariables, ReactivateSubjectData, ReactivateSubjectVariables, CreateUnitData, CreateUnitVariables, UpdateUnitData, UpdateUnitVariables, DeactivateUnitData, DeactivateUnitVariables, ReactivateUnitData, ReactivateUnitVariables, CreateTopicData, CreateTopicVariables, UpdateTopicData, UpdateTopicVariables, DeactivateTopicData, DeactivateTopicVariables, ReactivateTopicData, ReactivateTopicVariables, CreateLevelCategoryData, CreateLevelCategoryVariables, UpdateLevelCategoryData, UpdateLevelCategoryVariables, DeactivateLevelCategoryData, DeactivateLevelCategoryVariables, ReactivateLevelCategoryData, ReactivateLevelCategoryVariables, CreateEducationalLevelData, CreateEducationalLevelVariables, UpdateEducationalLevelData, UpdateEducationalLevelVariables, DeactivateEducationalLevelData, DeactivateEducationalLevelVariables, ReactivateEducationalLevelData, ReactivateEducationalLevelVariables, CreateCourseData, CreateCourseVariables, UpdateCourseData, UpdateCourseVariables, DeactivateCourseData, DeactivateCourseVariables, ReactivateCourseData, ReactivateCourseVariables, GetUserByEmailData, GetUserByEmailVariables, ListSubjectsData, GetSubjectData, GetSubjectVariables, ListUnitsData, GetUnitData, GetUnitVariables, ListTopicsData, GetTopicData, GetTopicVariables, ListLevelCategoriesData, GetLevelCategoryData, GetLevelCategoryVariables, ListEducationalLevelsData, GetEducationalLevelData, GetEducationalLevelVariables, GetLevelsByCategoryData, GetLevelsByCategoryVariables, ListCoursesData, ListCoursesVariables, GetCourseData, GetCourseVariables, GetCoursesByUserData, GetCoursesByUserVariables, GetCoursesByLevelData, GetCoursesByLevelVariables } from '../';
 import { UseDataConnectQueryResult, useDataConnectQueryOptions, UseDataConnectMutationResult, useDataConnectMutationOptions} from '@tanstack-query-firebase/react/data-connect';
 import { UseQueryResult, UseMutationResult} from '@tanstack/react-query';
 import { DataConnect } from 'firebase/data-connect';
 import { FirebaseError } from 'firebase/app';
 
-
-export function useGetUserByEmail(vars: GetUserByEmailVariables, options?: useDataConnectQueryOptions<GetUserByEmailData>): UseDataConnectQueryResult<GetUserByEmailData, GetUserByEmailVariables>;
-export function useGetUserByEmail(dc: DataConnect, vars: GetUserByEmailVariables, options?: useDataConnectQueryOptions<GetUserByEmailData>): UseDataConnectQueryResult<GetUserByEmailData, GetUserByEmailVariables>;
-
-export function useListSubjects(options?: useDataConnectQueryOptions<ListSubjectsData>): UseDataConnectQueryResult<ListSubjectsData, undefined>;
-export function useListSubjects(dc: DataConnect, options?: useDataConnectQueryOptions<ListSubjectsData>): UseDataConnectQueryResult<ListSubjectsData, undefined>;
-
-export function useGetSubject(vars: GetSubjectVariables, options?: useDataConnectQueryOptions<GetSubjectData>): UseDataConnectQueryResult<GetSubjectData, GetSubjectVariables>;
-export function useGetSubject(dc: DataConnect, vars: GetSubjectVariables, options?: useDataConnectQueryOptions<GetSubjectData>): UseDataConnectQueryResult<GetSubjectData, GetSubjectVariables>;
-
-export function useListUnits(options?: useDataConnectQueryOptions<ListUnitsData>): UseDataConnectQueryResult<ListUnitsData, undefined>;
-export function useListUnits(dc: DataConnect, options?: useDataConnectQueryOptions<ListUnitsData>): UseDataConnectQueryResult<ListUnitsData, undefined>;
-
-export function useGetUnit(vars: GetUnitVariables, options?: useDataConnectQueryOptions<GetUnitData>): UseDataConnectQueryResult<GetUnitData, GetUnitVariables>;
-export function useGetUnit(dc: DataConnect, vars: GetUnitVariables, options?: useDataConnectQueryOptions<GetUnitData>): UseDataConnectQueryResult<GetUnitData, GetUnitVariables>;
-
-export function useListTopics(options?: useDataConnectQueryOptions<ListTopicsData>): UseDataConnectQueryResult<ListTopicsData, undefined>;
-export function useListTopics(dc: DataConnect, options?: useDataConnectQueryOptions<ListTopicsData>): UseDataConnectQueryResult<ListTopicsData, undefined>;
-
-export function useGetTopic(vars: GetTopicVariables, options?: useDataConnectQueryOptions<GetTopicData>): UseDataConnectQueryResult<GetTopicData, GetTopicVariables>;
-export function useGetTopic(dc: DataConnect, vars: GetTopicVariables, options?: useDataConnectQueryOptions<GetTopicData>): UseDataConnectQueryResult<GetTopicData, GetTopicVariables>;
-
-export function useListLevelCategories(options?: useDataConnectQueryOptions<ListLevelCategoriesData>): UseDataConnectQueryResult<ListLevelCategoriesData, undefined>;
-export function useListLevelCategories(dc: DataConnect, options?: useDataConnectQueryOptions<ListLevelCategoriesData>): UseDataConnectQueryResult<ListLevelCategoriesData, undefined>;
-
-export function useGetLevelCategory(vars: GetLevelCategoryVariables, options?: useDataConnectQueryOptions<GetLevelCategoryData>): UseDataConnectQueryResult<GetLevelCategoryData, GetLevelCategoryVariables>;
-export function useGetLevelCategory(dc: DataConnect, vars: GetLevelCategoryVariables, options?: useDataConnectQueryOptions<GetLevelCategoryData>): UseDataConnectQueryResult<GetLevelCategoryData, GetLevelCategoryVariables>;
-
-export function useListEducationalLevels(options?: useDataConnectQueryOptions<ListEducationalLevelsData>): UseDataConnectQueryResult<ListEducationalLevelsData, undefined>;
-export function useListEducationalLevels(dc: DataConnect, options?: useDataConnectQueryOptions<ListEducationalLevelsData>): UseDataConnectQueryResult<ListEducationalLevelsData, undefined>;
-
-export function useGetEducationalLevel(vars: GetEducationalLevelVariables, options?: useDataConnectQueryOptions<GetEducationalLevelData>): UseDataConnectQueryResult<GetEducationalLevelData, GetEducationalLevelVariables>;
-export function useGetEducationalLevel(dc: DataConnect, vars: GetEducationalLevelVariables, options?: useDataConnectQueryOptions<GetEducationalLevelData>): UseDataConnectQueryResult<GetEducationalLevelData, GetEducationalLevelVariables>;
-
-export function useGetLevelsByCategory(vars: GetLevelsByCategoryVariables, options?: useDataConnectQueryOptions<GetLevelsByCategoryData>): UseDataConnectQueryResult<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
-export function useGetLevelsByCategory(dc: DataConnect, vars: GetLevelsByCategoryVariables, options?: useDataConnectQueryOptions<GetLevelsByCategoryData>): UseDataConnectQueryResult<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
-
-export function useListCourses(vars: ListCoursesVariables, options?: useDataConnectQueryOptions<ListCoursesData>): UseDataConnectQueryResult<ListCoursesData, ListCoursesVariables>;
-export function useListCourses(dc: DataConnect, vars: ListCoursesVariables, options?: useDataConnectQueryOptions<ListCoursesData>): UseDataConnectQueryResult<ListCoursesData, ListCoursesVariables>;
-
-export function useGetCourse(vars: GetCourseVariables, options?: useDataConnectQueryOptions<GetCourseData>): UseDataConnectQueryResult<GetCourseData, GetCourseVariables>;
-export function useGetCourse(dc: DataConnect, vars: GetCourseVariables, options?: useDataConnectQueryOptions<GetCourseData>): UseDataConnectQueryResult<GetCourseData, GetCourseVariables>;
-
-export function useGetCoursesByUser(vars: GetCoursesByUserVariables, options?: useDataConnectQueryOptions<GetCoursesByUserData>): UseDataConnectQueryResult<GetCoursesByUserData, GetCoursesByUserVariables>;
-export function useGetCoursesByUser(dc: DataConnect, vars: GetCoursesByUserVariables, options?: useDataConnectQueryOptions<GetCoursesByUserData>): UseDataConnectQueryResult<GetCoursesByUserData, GetCoursesByUserVariables>;
-
-export function useGetCoursesByLevel(vars: GetCoursesByLevelVariables, options?: useDataConnectQueryOptions<GetCoursesByLevelData>): UseDataConnectQueryResult<GetCoursesByLevelData, GetCoursesByLevelVariables>;
-export function useGetCoursesByLevel(dc: DataConnect, vars: GetCoursesByLevelVariables, options?: useDataConnectQueryOptions<GetCoursesByLevelData>): UseDataConnectQueryResult<GetCoursesByLevelData, GetCoursesByLevelVariables>;
 
 export function useCreateUser(options?: useDataConnectMutationOptions<CreateUserData, FirebaseError, CreateUserVariables>): UseDataConnectMutationResult<CreateUserData, CreateUserVariables>;
 export function useCreateUser(dc: DataConnect, options?: useDataConnectMutationOptions<CreateUserData, FirebaseError, CreateUserVariables>): UseDataConnectMutationResult<CreateUserData, CreateUserVariables>;
@@ -130,3 +82,51 @@ export function useDeactivateCourse(dc: DataConnect, options?: useDataConnectMut
 
 export function useReactivateCourse(options?: useDataConnectMutationOptions<ReactivateCourseData, FirebaseError, ReactivateCourseVariables>): UseDataConnectMutationResult<ReactivateCourseData, ReactivateCourseVariables>;
 export function useReactivateCourse(dc: DataConnect, options?: useDataConnectMutationOptions<ReactivateCourseData, FirebaseError, ReactivateCourseVariables>): UseDataConnectMutationResult<ReactivateCourseData, ReactivateCourseVariables>;
+
+export function useGetUserByEmail(vars: GetUserByEmailVariables, options?: useDataConnectQueryOptions<GetUserByEmailData>): UseDataConnectQueryResult<GetUserByEmailData, GetUserByEmailVariables>;
+export function useGetUserByEmail(dc: DataConnect, vars: GetUserByEmailVariables, options?: useDataConnectQueryOptions<GetUserByEmailData>): UseDataConnectQueryResult<GetUserByEmailData, GetUserByEmailVariables>;
+
+export function useListSubjects(options?: useDataConnectQueryOptions<ListSubjectsData>): UseDataConnectQueryResult<ListSubjectsData, undefined>;
+export function useListSubjects(dc: DataConnect, options?: useDataConnectQueryOptions<ListSubjectsData>): UseDataConnectQueryResult<ListSubjectsData, undefined>;
+
+export function useGetSubject(vars: GetSubjectVariables, options?: useDataConnectQueryOptions<GetSubjectData>): UseDataConnectQueryResult<GetSubjectData, GetSubjectVariables>;
+export function useGetSubject(dc: DataConnect, vars: GetSubjectVariables, options?: useDataConnectQueryOptions<GetSubjectData>): UseDataConnectQueryResult<GetSubjectData, GetSubjectVariables>;
+
+export function useListUnits(options?: useDataConnectQueryOptions<ListUnitsData>): UseDataConnectQueryResult<ListUnitsData, undefined>;
+export function useListUnits(dc: DataConnect, options?: useDataConnectQueryOptions<ListUnitsData>): UseDataConnectQueryResult<ListUnitsData, undefined>;
+
+export function useGetUnit(vars: GetUnitVariables, options?: useDataConnectQueryOptions<GetUnitData>): UseDataConnectQueryResult<GetUnitData, GetUnitVariables>;
+export function useGetUnit(dc: DataConnect, vars: GetUnitVariables, options?: useDataConnectQueryOptions<GetUnitData>): UseDataConnectQueryResult<GetUnitData, GetUnitVariables>;
+
+export function useListTopics(options?: useDataConnectQueryOptions<ListTopicsData>): UseDataConnectQueryResult<ListTopicsData, undefined>;
+export function useListTopics(dc: DataConnect, options?: useDataConnectQueryOptions<ListTopicsData>): UseDataConnectQueryResult<ListTopicsData, undefined>;
+
+export function useGetTopic(vars: GetTopicVariables, options?: useDataConnectQueryOptions<GetTopicData>): UseDataConnectQueryResult<GetTopicData, GetTopicVariables>;
+export function useGetTopic(dc: DataConnect, vars: GetTopicVariables, options?: useDataConnectQueryOptions<GetTopicData>): UseDataConnectQueryResult<GetTopicData, GetTopicVariables>;
+
+export function useListLevelCategories(options?: useDataConnectQueryOptions<ListLevelCategoriesData>): UseDataConnectQueryResult<ListLevelCategoriesData, undefined>;
+export function useListLevelCategories(dc: DataConnect, options?: useDataConnectQueryOptions<ListLevelCategoriesData>): UseDataConnectQueryResult<ListLevelCategoriesData, undefined>;
+
+export function useGetLevelCategory(vars: GetLevelCategoryVariables, options?: useDataConnectQueryOptions<GetLevelCategoryData>): UseDataConnectQueryResult<GetLevelCategoryData, GetLevelCategoryVariables>;
+export function useGetLevelCategory(dc: DataConnect, vars: GetLevelCategoryVariables, options?: useDataConnectQueryOptions<GetLevelCategoryData>): UseDataConnectQueryResult<GetLevelCategoryData, GetLevelCategoryVariables>;
+
+export function useListEducationalLevels(options?: useDataConnectQueryOptions<ListEducationalLevelsData>): UseDataConnectQueryResult<ListEducationalLevelsData, undefined>;
+export function useListEducationalLevels(dc: DataConnect, options?: useDataConnectQueryOptions<ListEducationalLevelsData>): UseDataConnectQueryResult<ListEducationalLevelsData, undefined>;
+
+export function useGetEducationalLevel(vars: GetEducationalLevelVariables, options?: useDataConnectQueryOptions<GetEducationalLevelData>): UseDataConnectQueryResult<GetEducationalLevelData, GetEducationalLevelVariables>;
+export function useGetEducationalLevel(dc: DataConnect, vars: GetEducationalLevelVariables, options?: useDataConnectQueryOptions<GetEducationalLevelData>): UseDataConnectQueryResult<GetEducationalLevelData, GetEducationalLevelVariables>;
+
+export function useGetLevelsByCategory(vars: GetLevelsByCategoryVariables, options?: useDataConnectQueryOptions<GetLevelsByCategoryData>): UseDataConnectQueryResult<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+export function useGetLevelsByCategory(dc: DataConnect, vars: GetLevelsByCategoryVariables, options?: useDataConnectQueryOptions<GetLevelsByCategoryData>): UseDataConnectQueryResult<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+
+export function useListCourses(vars: ListCoursesVariables, options?: useDataConnectQueryOptions<ListCoursesData>): UseDataConnectQueryResult<ListCoursesData, ListCoursesVariables>;
+export function useListCourses(dc: DataConnect, vars: ListCoursesVariables, options?: useDataConnectQueryOptions<ListCoursesData>): UseDataConnectQueryResult<ListCoursesData, ListCoursesVariables>;
+
+export function useGetCourse(vars: GetCourseVariables, options?: useDataConnectQueryOptions<GetCourseData>): UseDataConnectQueryResult<GetCourseData, GetCourseVariables>;
+export function useGetCourse(dc: DataConnect, vars: GetCourseVariables, options?: useDataConnectQueryOptions<GetCourseData>): UseDataConnectQueryResult<GetCourseData, GetCourseVariables>;
+
+export function useGetCoursesByUser(vars: GetCoursesByUserVariables, options?: useDataConnectQueryOptions<GetCoursesByUserData>): UseDataConnectQueryResult<GetCoursesByUserData, GetCoursesByUserVariables>;
+export function useGetCoursesByUser(dc: DataConnect, vars: GetCoursesByUserVariables, options?: useDataConnectQueryOptions<GetCoursesByUserData>): UseDataConnectQueryResult<GetCoursesByUserData, GetCoursesByUserVariables>;
+
+export function useGetCoursesByLevel(vars: GetCoursesByLevelVariables, options?: useDataConnectQueryOptions<GetCoursesByLevelData>): UseDataConnectQueryResult<GetCoursesByLevelData, GetCoursesByLevelVariables>;
+export function useGetCoursesByLevel(dc: DataConnect, vars: GetCoursesByLevelVariables, options?: useDataConnectQueryOptions<GetCoursesByLevelData>): UseDataConnectQueryResult<GetCoursesByLevelData, GetCoursesByLevelVariables>;

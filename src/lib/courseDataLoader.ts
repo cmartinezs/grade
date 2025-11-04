@@ -10,10 +10,17 @@ import { educationalLevelStore } from './levelStore';
 
 /**
  * Valida si una cadena es un UUID válido
+ * Acepta UUIDs con y sin guiones:
+ * - Con guiones: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (RFC4122)
+ * - Sin guiones: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (32 caracteres hex)
  */
 function isValidUUID(str: string): boolean {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(str);
+  // Con guiones (RFC4122)
+  const uuidWithDashes = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  // Sin guiones (32 caracteres hexadecimales)
+  const uuidWithoutDashes = /^[0-9a-f]{32}$/i;
+  
+  return uuidWithDashes.test(str) || uuidWithoutDashes.test(str);
 }
 
 /**

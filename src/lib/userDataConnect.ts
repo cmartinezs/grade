@@ -56,7 +56,6 @@ export const createNewUser = async (
     email: string;
     role: string;
   },
-  createdBy: string,
   firebaseUid: string
 ): Promise<UserData | null> => {
   try {
@@ -67,7 +66,7 @@ export const createNewUser = async (
       userId,
       firebaseId: firebaseUid,
       ...userData,
-      createdBy
+      createdBy: userId
     });
     
     // La respuesta contiene la clave del usuario creado
@@ -106,6 +105,7 @@ export const updateUserInfo = async (
       name: updates.name,
       email: updates.email,
       role: updates.role,
+      firebaseId: '', // Empty firebaseId for update (not used in mutation)
       updatedBy: updates.updatedBy,
       updatedAt: updates.updatedAt
     });

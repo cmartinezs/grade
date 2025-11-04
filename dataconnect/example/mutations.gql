@@ -447,6 +447,7 @@ mutation CreateCourse(
   $courseId: UUID!
   $name: String!
   $code: String!
+  $institutionName: String!
   $levelId: UUID!
   $userId: UUID!
   $createdBy: UUID!
@@ -456,6 +457,7 @@ mutation CreateCourse(
       courseId: $courseId
       name: $name
       code: $code
+      institutionName: $institutionName
       levelId: $levelId
       userId: $userId
       createdBy: $createdBy
@@ -467,10 +469,11 @@ mutation CreateCourse(
 # Actualizar un curso
 mutation UpdateCourse(
   $courseId: UUID!
-  $name: String
-  $code: String
-  $levelId: UUID
-  $userId: UUID
+  $name: String!
+  $code: String!
+  $institutionName: String!
+  $levelId: UUID!
+  $userId: UUID!
   $updatedBy: UUID!
   $updatedAt: Timestamp!
   $firebaseId: String!
@@ -480,6 +483,7 @@ mutation UpdateCourse(
     data: {
       name: $name
       code: $code
+      institutionName: $institutionName
       levelId: $levelId
       userId: $userId
       updatedBy: $updatedBy

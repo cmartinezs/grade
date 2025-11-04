@@ -147,6 +147,14 @@ input Course_Data {
   """
   deletedBy_expr: UUID_Expr
   """
+  ✨ Generated from Field `Course`.`institutionName` of type `String!`
+  """
+  institutionName: String
+  """
+  ✨ `_expr` server value variant of `institutionName` (✨ Generated from Field `Course`.`institutionName` of type `String!`)
+  """
+  institutionName_expr: String_Expr
+  """
   ✨ Generated from Field `Course`.`levelId` of type `UUID!`
   """
   levelId: UUID
@@ -240,6 +248,10 @@ input Course_Filter {
   """
   deletedBy: UUID_Filter
   """
+  ✨ Generated from Field `Course`.`institutionName` of type `String!`
+  """
+  institutionName: String_Filter
+  """
   ✨ Generated from Field `Course`.`levelId` of type `UUID!`
   """
   levelId: UUID_Filter
@@ -325,6 +337,10 @@ input Course_Having {
   ✨ Generated from Field `Course`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`institutionName_count` of type `Int!`
+  """
+  institutionName_count: Int_Filter
   """
   ✨ Generated from Field `Course`.`levelId_count` of type `Int!`
   """
@@ -429,6 +445,10 @@ input Course_Order {
   """
   deletedBy: OrderDirection
   """
+  ✨ Generated from Field `Course`.`institutionName` of type `String!`
+  """
+  institutionName: OrderDirection
+  """
   ✨ Generated from Field `Course`.`levelId` of type `UUID!`
   """
   levelId: OrderDirection
@@ -480,6 +500,10 @@ input Course_Order {
   ✨ Generated from Field `Course`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`institutionName_count` of type `Int!`
+  """
+  institutionName_count: OrderDirection
   """
   ✨ Generated from Field `Course`.`levelId_count` of type `Int!`
   """

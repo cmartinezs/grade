@@ -71,6 +71,15 @@ extend type Course {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Course.deletedBy", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Course` table where the `institutionName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  institutionName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Course.institutionName", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Course` table where the `levelId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   levelId_count(

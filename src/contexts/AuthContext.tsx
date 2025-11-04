@@ -138,10 +138,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const firebaseUser = userCredential.user;
       
       // Obtener datos del usuario desde Data Connect
-      const userData = await getUserByEmail(firebaseUser.email || '');
+      let userData = await getUserByEmail(firebaseUser.email || '');
+      
+      // Si no existe el usuario en Data Connect, crearlo automáticamente
+      if (!userData) {
+        console.warn('User profile not found in Data Connect. Creating new user...');
+        try {
+          // Extraer nombre del email (parte antes del @)
+          const emailParts = (firebaseUser.email || '').split('@');
+          const nameParts = emailParts[0].split('.');
+          const firstName = nameParts[0] || 'Usuario';
+          const lastName = nameParts.slice(1).join(' ') || 'Sistema';
+          
+          // Crear usuario en Data Connect con datos genéricos
+          const userId = await createNewUser(
+            {
+              name: `${firstName} ${lastName}`,
+              email: firebaseUser.email || '',
+              role: 'ADMIN', // Role por defecto
+            },
+            firebaseUser.uid
+          );
+          
+          console.log('New user created in Data Connect:', userId);
+          
+          // Obtener los datos del usuario recién creado
+          userData = await getUserByEmail(firebaseUser.email || '');
+        } catch (error) {
+          console.error('Error creating user in Data Connect:', error);
+          return false;
+        }
+      }
       
       if (!userData) {
-        console.error('User profile not found in Data Connect');
+        console.error('Failed to retrieve user data from Data Connect');
         return false;
       }
       
@@ -151,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         lastName: userData.name.split(' ').slice(1).join(' ') || '',
         email: userData.email,
         role: userData.role,
-        institution: undefined,
+        institution: 'Sin Institución',
         firebaseUid: firebaseUser.uid
       };
       
@@ -181,17 +211,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
       
       const firebaseUser = userCredential.user;
-      
-      // Generar UUID para el usuario (será su propio creador)
-      const userId = crypto.randomUUID?.() || `uuid-${Date.now()}`;
-      
+            
       // Guardar datos del usuario en Data Connect
       const fullName = `${userData.firstName} ${userData.lastName}`;
       const userDataConnectUser = await createNewUser({
         name: fullName,
         email: userData.email,
         role: userData.role
-      }, userId, firebaseUser.uid); // El usuario es su propio creador
+      }, firebaseUser.uid); // El usuario es su propio creador
       
       if (!userDataConnectUser) {
         console.error('Failed to create user in Data Connect');

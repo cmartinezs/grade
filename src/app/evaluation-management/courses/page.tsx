@@ -38,6 +38,13 @@ export default function CoursesPage() {
       try {
         // First load from Data-Connect if not already loaded
         // Pass both userId (system UUID) and firebaseUid (auth.uid from Firebase token)
+        console.log('[COURSES PAGE] Loading courses with:', {
+          userId: user.id,
+          firebaseUid: user.firebaseUid,
+          currentPage,
+          searchText
+        });
+        
         await courseStore.loadCourses(user.id, user.firebaseUid);
         
         // Then get paginated results from cache

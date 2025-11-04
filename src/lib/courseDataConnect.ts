@@ -11,6 +11,7 @@ import {
   updateCourse as dcUpdateCourse,
   deactivateCourse as dcDeactivateCourse,
   reactivateCourse as dcReactivateCourse,
+  listCourses as dcListCourses,
 } from '../dataconnect-generated';
 
 // ===================================================================
@@ -20,6 +21,7 @@ import {
 export const createNewCourse = async (
   name: string,
   code: string,
+  institutionName: string,
   levelId: string,
   userId: string,
   createdBy: string,
@@ -31,6 +33,7 @@ export const createNewCourse = async (
       courseId: id,
       name,
       code,
+      institutionName,
       levelId,
       userId,
       createdBy,
@@ -44,8 +47,9 @@ export const createNewCourse = async (
 
 export const updateCourseInfo = async (
   courseId: string,
-  updates: { name?: string; code?: string; levelId?: string; userId?: string },
-  updatedBy: string
+  updates: { name?: string; code?: string; institutionName?: string; levelId?: string; userId?: string },
+  updatedBy: string,
+  firebaseId?: string
 ): Promise<void> => {
   try {
     const updatedAt = new Date().toISOString();
@@ -53,10 +57,12 @@ export const updateCourseInfo = async (
       courseId,
       name: updates.name,
       code: updates.code,
+      institutionName: updates.institutionName,
       levelId: updates.levelId,
       userId: updates.userId,
       updatedBy,
       updatedAt,
+      firebaseId: firebaseId || '',
     });
   } catch (error) {
     console.error(`Error updating course ${courseId}:`, error);
@@ -96,12 +102,12 @@ export const reactivateCourseInfo = async (
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchCoursesFromDataConnect = async (_userId: string, _firebaseId: string): Promise<
   Array<{
     courseId: string;
     name: string;
     code: string;
+    institutionName: string;
     levelId: string;
     userId: string;
     active: boolean;
@@ -114,12 +120,42 @@ export const fetchCoursesFromDataConnect = async (_userId: string, _firebaseId: 
   }>
 > => {
   try {
-    // TODO: Implement course listing once Data-Connect query parsing issues are resolved
-    // For now, return empty array - courses will be loaded individually as needed
-    console.warn('Course listing from Data-Connect not yet available. Using empty list.');
+    console.log('[FETCH COURSES] Received parameters:', {
+      userId: _userId,
+      firebaseId: _firebaseId
+    });
+    
+    const result = await (dcListCourses as any)({
+      userId: _userId,
+      firebaseId: _firebaseId,
+    });
+
+    console.log('[FETCH COURSES] Result from Data-Connect:', result);
+    
+    if (result?.data?.courses) {
+      const courses = result.data.courses.map((course: any) => ({
+        courseId: course.courseId,
+        name: course.name,
+        code: course.code,
+        institutionName: course.institutionName,
+        levelId: course.levelId,
+        userId: course.userId,
+        active: course.active,
+        createdAt: course.createdAt,
+        createdBy: course.createdBy,
+        updatedAt: course.updatedAt,
+        updatedBy: course.updatedBy,
+        deletedAt: course.deletedAt,
+        deletedBy: course.deletedBy,
+      }));
+      console.log(`[FETCH COURSES] Successfully fetched ${courses.length} courses`);
+      return courses;
+    }
+    
+    console.warn('[FETCH COURSES] No courses found or invalid response structure');
     return [];
   } catch (error) {
-    console.error('Error fetching courses from Data Connect:', error);
+    console.error('[FETCH COURSES] Error fetching courses from Data Connect:', error);
     return [];
   }
 };

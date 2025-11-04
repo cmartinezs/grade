@@ -55,13 +55,24 @@ class CourseStore {
     }
 
     try {
+      console.log('[COURSE STORE] Calling fetchCoursesFromDataConnect with:', {
+        userId,
+        firebaseUid
+      });
+      
       const data = await fetchCoursesFromDataConnect(userId, firebaseUid);
+      
+      console.log('[COURSE STORE] Data received from Data-Connect:', {
+        count: data.length,
+        data: data
+      });
       
       // Convert from Data-Connect format to Course format
       const courses: Course[] = data.map((course: {
         courseId: string;
         name: string;
         code: string;
+        institutionName: string;
         levelId: string;
         userId: string;
         active: boolean;
@@ -76,7 +87,7 @@ class CourseStore {
         name: course.name,
         code: course.code,
         levelId: course.levelId,
-        institution: '', // Data-Connect doesn't have institution field yet
+        institution: course.institutionName,
         active: course.active !== false,
         created_at: new Date(course.createdAt),
         created_by: course.createdBy || 'SYSTEM',
@@ -192,6 +203,7 @@ class CourseStore {
     const courseId = await createNewCourse(
       input.name.trim(),
       input.code.trim().toUpperCase(),
+      input.institution.trim(),
       input.levelId,
       currentUser,
       currentUser
@@ -254,7 +266,8 @@ class CourseStore {
   async updateCourse(
     courseId: string,
     input: EditCourseInput,
-    currentUser: string
+    currentUser: string,
+    firebaseId?: string
   ): Promise<Course> {
     const courses = this.loadCoursesSync();
     const courseIndex = courses.findIndex(c => c.course_id === courseId && !c.deleted_at);
@@ -287,9 +300,11 @@ class CourseStore {
       {
         name: input.name.trim(),
         code: input.code.trim().toUpperCase(),
+        institutionName: input.institution.trim(),
         levelId: input.levelId,
       },
-      currentUser
+      currentUser,
+      firebaseId
     );
 
     // RN-2: Registrar en historial de auditoría

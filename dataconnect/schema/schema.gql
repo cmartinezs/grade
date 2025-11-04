@@ -344,6 +344,9 @@ type Course @table(name: "courses", key: "courseId") {
   # Código del curso (ej. 1_Basico_A, 2_Medio_B)
   code: String! @unique
   
+  # Institución educativa a la que pertenece el curso
+  institutionName: String! @col(name: "institution_name")
+  
   # ID del nivel educacional
   levelId: UUID! @col(name: "level_fk")
   
