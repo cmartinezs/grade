@@ -97,6 +97,7 @@ export default function RegisterPage() {
     // Validación de coincidencia de emails
     if (formData.email.trim() && formData.confirmEmail.trim() && formData.email !== formData.confirmEmail) {
       newErrors.email = 'Los emails no coinciden';
+      newErrors.confirmEmail = 'Los emails no coinciden';
     }
 
     // Validación de contraseña
@@ -135,7 +136,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const success = await register({
+      const result = await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -143,13 +144,21 @@ export default function RegisterPage() {
         role: formData.role
       });
       
-      if (success) {
+      if (result.success) {
         // Redirigir al dashboard después de un breve delay
         setTimeout(() => {
           router.push('/dashboard');
         }, 500);
       } else {
-        setErrors({ submit: 'Error en el registro. Inténtalo nuevamente.' });
+        // Si es error de email en uso, solo marcar el campo sin mensaje (el error aparece en el submit alert)
+        if (result.errorCode === 'auth/email-already-in-use') {
+          setErrors({ 
+            submit: result.error || 'Error en el registro. Inténtalo nuevamente.',
+            email: '' // Solo marcar el campo en rojo, sin mensaje
+          });
+        } else {
+          setErrors({ submit: result.error || 'Error en el registro. Inténtalo nuevamente.' });
+        }
       }
       
     } catch (error) {
@@ -233,7 +242,7 @@ export default function RegisterPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Email <span className="text-danger">*</span></Form.Label>
                       <Form.Control
-                        type="email"
+                        type="text"
                         name="email"
                         placeholder="tu@email.com"
                         value={formData.email}
@@ -251,7 +260,7 @@ export default function RegisterPage() {
                     <Form.Group className="mb-3">
                       <Form.Label>Confirmar Email <span className="text-danger">*</span></Form.Label>
                       <Form.Control
-                        type="email"
+                        type="text"
                         name="confirmEmail"
                         placeholder="Repite tu email"
                         value={formData.confirmEmail}

@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import { getUserByEmail, createNewUser } from '@/lib/userDataConnect';
 import { UserRole } from '@/types/role';
+import { handleFirebaseError } from '@/lib/firebaseErrors';
 
 // Tipos
 interface User {
@@ -25,8 +26,8 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isInitializing: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: RegisterData) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; errorCode?: string }>;
+  register: (userData: RegisterData) => Promise<{ success: boolean; error?: string; errorCode?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -129,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
   
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; errorCode?: string }> => {
     try {
       setLoading(true);
       setLoadingMessage('Iniciando sesión...');
@@ -167,13 +168,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           userData = await getUserByEmail(firebaseUser.email || '');
         } catch (error) {
           console.error('Error creating user in Data Connect:', error);
-          return false;
+          return { success: false, error: 'Error al crear el perfil del usuario.' };
         }
       }
       
       if (!userData) {
         console.error('Failed to retrieve user data from Data Connect');
-        return false;
+        return { success: false, error: 'Error al obtener los datos del usuario.' };
       }
       
       const user: User = {
@@ -191,15 +192,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('authToken', await firebaseUser.getIdToken());
       // Establecer cookie para el middleware
       document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
-      return true;
+      return { success: true };
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      const { code, message } = handleFirebaseError(error);
+      return { success: false, error: message, errorCode: code };
     } finally {
       setLoading(false);
     }
   };
-  const register = async (userData: RegisterData): Promise<boolean> => {
+  const register = async (userData: RegisterData): Promise<{ success: boolean; error?: string; errorCode?: string }> => {
     try {
       setLoading(true);
       setLoadingMessage('Creando cuenta...');
@@ -225,7 +227,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('Failed to create user in Data Connect');
         // Eliminar usuario de Firebase si falla Data Connect
         await firebaseUser.delete();
-        return false;
+        return { success: false, error: 'Error al crear el perfil del usuario. Por favor, intenta nuevamente.' };
       }
       
       // Crear objeto de usuario local
@@ -244,10 +246,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('authToken', await firebaseUser.getIdToken());
       // Establecer cookie para el middleware
       document.cookie = 'authenticated=true; path=/; max-age=86400'; // 24 horas
-      return true;
+      return { success: true };
     } catch (error) {
       console.error('Register error:', error);
-      return false;
+      const { code, message } = handleFirebaseError(error);
+      return { success: false, error: message, errorCode: code };
     } finally {
       setLoading(false);
     }

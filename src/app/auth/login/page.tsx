@@ -37,9 +37,9 @@ export default function LoginPage() {
     e.preventDefault();
     
     try {
-      const success = await login(formData.email, formData.password);
+      const result = await login(formData.email, formData.password);
       
-      if (success) {
+      if (result.success) {
         setAlertType('success');
         setAlertMessage('¡Login exitoso! Redirigiendo...');
         setShowAlert(true);
@@ -50,7 +50,7 @@ export default function LoginPage() {
         }, 1500);
       } else {
         setAlertType('danger');
-        setAlertMessage('Error en las credenciales. Inténtalo nuevamente.');
+        setAlertMessage(result.error || 'Error en las credenciales. Inténtalo nuevamente.');
         setShowAlert(true);
       }
       
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
-                    type="email"
+                    type="text"
                     name="email"
                     placeholder="tu@email.com"
                     value={formData.email}
