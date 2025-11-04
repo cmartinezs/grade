@@ -8,6 +8,7 @@ import {
   signOut
 } from 'firebase/auth';
 import { getUserByEmail, createNewUser } from '@/lib/userDataConnect';
+import { UserRole } from '@/types/role';
 
 // Tipos
 interface User {
@@ -15,7 +16,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: UserRole;
   institution?: string;
   firebaseUid: string;
 }
@@ -36,7 +37,7 @@ interface RegisterData {
   email: string;
   password: string;
   institution?: string;
-  role: string;
+  role: UserRole;
 }
 
 // Context
@@ -155,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             {
               name: `${firstName} ${lastName}`,
               email: firebaseUser.email || '',
-              role: 'ADMIN', // Role por defecto
+              role: UserRole.ADMIN, // Role por defecto
             },
             firebaseUser.uid
           );

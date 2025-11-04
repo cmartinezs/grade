@@ -4,6 +4,7 @@
  */
 
 import { generateUUID } from './uuid';
+import { UserRole } from '@/types/role';
 import {
   getUserByEmail as dcGetUserByEmail,
   createUser as dcCreateUser,
@@ -15,7 +16,7 @@ export interface UserData {
   userId: string;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
   createdAt: string;
   updatedAt?: string;
   updatedBy?: string;
@@ -31,11 +32,13 @@ export const getUserByEmail = async (email: string): Promise<UserData | null> =>
     const user = result.data.users[0];
     if (!user) return null;
     
+    const role = user.role as UserRole;
+    
     return {
       userId: user.userId,
       name: user.name,
       email: user.email,
-      role: user.role,
+      role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt ?? undefined,
       updatedBy: user.updatedBy ?? undefined,
@@ -54,7 +57,7 @@ export const createNewUser = async (
   userData: {
     name: string;
     email: string;
-    role: string;
+    role: UserRole;
   },
   firebaseUid: string
 ): Promise<UserData | null> => {

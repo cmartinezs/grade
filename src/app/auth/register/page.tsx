@@ -6,11 +6,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLoading } from '@/contexts/LoadingContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { UserRole, ROLE_OPTIONS } from '@/types/role';
 
 export default function RegisterPage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, register } = useAuth();
   const router = useRouter();
-  const { isLoading, setLoading, setLoadingMessage } = useLoading();
+  const { isLoading } = useLoading();
 
   // Redirigir a dashboard si el usuario ya está autenticado
   useEffect(() => {
@@ -20,19 +21,16 @@ export default function RegisterPage() {
   }, [isAuthenticated, router]);
 
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     confirmEmail: '',
     password: '',
     confirmPassword: '',
-    roles: {
-      docente: true,
-      coordinador: true
-    },
+    role: UserRole.DOCENTE,
     acceptTerms: false
   });
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState<'success' | 'danger'>('success');
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,20 +38,10 @@ export default function RegisterPage() {
     const { name, value, type } = e.target;
     const checked = e.target.checked;
     
-    if (name === 'docente' || name === 'coordinador') {
-      setFormData({
-        ...formData,
-        roles: {
-          ...formData.roles,
-          [name]: checked
-        }
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: type === 'checkbox' ? checked : value
-      });
-    }
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
 
     // Calcular fuerza de contraseña
     if (name === 'password') {
@@ -83,63 +71,90 @@ export default function RegisterPage() {
     return 'Fuerte';
   };
 
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    // Validación de nombre
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'Por favor, ingresa tu nombre';
+    }
+
+    // Validación de apellido
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Por favor, ingresa tu apellido';
+    }
+
+    // Validación de email
+    if (!formData.email.trim()) {
+      newErrors.email = 'Por favor, ingresa tu email';
+    }
+
+    // Validación de confirmación de email
+    if (!formData.confirmEmail.trim()) {
+      newErrors.confirmEmail = 'Por favor, confirma tu email';
+    }
+
+    // Validación de coincidencia de emails
+    if (formData.email.trim() && formData.confirmEmail.trim() && formData.email !== formData.confirmEmail) {
+      newErrors.email = 'Los emails no coinciden';
+    }
+
+    // Validación de contraseña
+    if (!formData.password.trim()) {
+      newErrors.password = 'Por favor, ingresa una contraseña';
+    }
+
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
+    }
+
+    // Validación de confirmación de contraseña
+    if (!formData.confirmPassword.trim()) {
+      newErrors.confirmPassword = 'Por favor, confirma tu contraseña';
+    }
+
+    // Validación de coincidencia de contraseñas
+    if (formData.password.trim() && formData.confirmPassword.trim() && formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+
+    // Validación de términos
+    if (!formData.acceptTerms) {
+      newErrors.acceptTerms = 'Debes aceptar los términos y condiciones';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.email !== formData.confirmEmail) {
-      setAlertType('danger');
-      setAlertMessage('Los emails no coinciden');
-      setShowAlert(true);
+    if (!validateForm()) {
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setAlertType('danger');
-      setAlertMessage('Las contraseñas no coinciden');
-      setShowAlert(true);
-      return;
-    }
-
-    if (!formData.roles.docente && !formData.roles.coordinador) {
-      setAlertType('danger');
-      setAlertMessage('Debes seleccionar al menos un rol');
-      setShowAlert(true);
-      return;
-    }
-
-    if (!formData.acceptTerms) {
-      setAlertType('danger');
-      setAlertMessage('Debes aceptar los términos y condiciones');
-      setShowAlert(true);
-      return;
-    }
-
-    setLoading(true);
-    setLoadingMessage('Creando tu cuenta...');
-    
     try {
-      // Simular delay de registro
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const success = await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
       
-      setAlertType('success');
-      setAlertMessage('¡Registro exitoso! Redirigiendo al login...');
-      setShowAlert(true);
-      
-      // Cambiar mensaje de loading
-      setLoadingMessage('Redirigiendo...');
-      
-      // Redirigir al login después de un breve delay
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 1500);
+      if (success) {
+        // Redirigir al dashboard después de un breve delay
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 500);
+      } else {
+        setErrors({ submit: 'Error en el registro. Inténtalo nuevamente.' });
+      }
       
     } catch (error) {
       console.error('Error en registro:', error);
-      setAlertType('danger');
-      setAlertMessage('Error del servidor. Inténtalo más tarde.');
-      setShowAlert(true);
-    } finally {
-      setLoading(false);
+      setErrors({ submit: 'Error del servidor. Inténtalo más tarde.' });
     }
   };
 
@@ -165,86 +180,133 @@ export default function RegisterPage() {
                 <p className="text-muted mb-0">Solo toma 1 minuto. Completa tu perfil después.</p>
               </div>
 
-              {showAlert && (
-                <Alert variant={alertType} onClose={() => setShowAlert(false)} dismissible>
-                  {alertMessage}
+              {errors.submit && (
+                <Alert variant="danger" className="mb-3">
+                  {errors.submit}
                 </Alert>
               )}
 
               <Form onSubmit={handleSubmit}>
+                {/* Fila 0: Nombre y Apellido */}
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Nombre <span className="text-danger">*</span></Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="firstName"
+                        placeholder="Tu nombre"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        isInvalid={!!errors.firstName}
+                      />
+                      {errors.firstName && (
+                        <Form.Control.Feedback type="invalid" className="d-block">
+                          {errors.firstName}
+                        </Form.Control.Feedback>
+                      )}
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Apellido <span className="text-danger">*</span></Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="lastName"
+                        placeholder="Tu apellido"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        isInvalid={!!errors.lastName}
+                      />
+                      {errors.lastName && (
+                        <Form.Control.Feedback type="invalid" className="d-block">
+                          {errors.lastName}
+                        </Form.Control.Feedback>
+                      )}
+                    </Form.Group>
+                  </Col>
+                </Row>
+
                 {/* Fila 1: Email y Confirmación de Email */}
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Email *</Form.Label>
+                      <Form.Label>Email <span className="text-danger">*</span></Form.Label>
                       <Form.Control
                         type="email"
                         name="email"
                         placeholder="tu@email.com"
                         value={formData.email}
                         onChange={handleChange}
-                        required
+                        isInvalid={!!errors.email}
                       />
+                      {errors.email && (
+                        <Form.Control.Feedback type="invalid" className="d-block">
+                          {errors.email}
+                        </Form.Control.Feedback>
+                      )}
                     </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Confirmar Email *</Form.Label>
+                      <Form.Label>Confirmar Email <span className="text-danger">*</span></Form.Label>
                       <Form.Control
                         type="email"
                         name="confirmEmail"
                         placeholder="Repite tu email"
                         value={formData.confirmEmail}
                         onChange={handleChange}
-                        required
+                        isInvalid={!!errors.confirmEmail}
                       />
+                      {errors.confirmEmail && (
+                        <Form.Control.Feedback type="invalid" className="d-block">
+                          {errors.confirmEmail}
+                        </Form.Control.Feedback>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
 
-                {/* Fila 2: Roles */}
+                {/* Fila 2: Rol */}
                 <Form.Group className="mb-3">
-                  <Form.Label>Rol(es) *</Form.Label>
-                  <div className="mt-2">
-                    <Row>
-                      <Col md={6}>
-                        <Form.Check
-                          type="checkbox"
-                          name="docente"
-                          id="docente"
-                          label="Docente"
-                          checked={formData.roles.docente}
-                          onChange={handleChange}
-                        />
-                      </Col>
-                      <Col md={6}>
-                        <Form.Check
-                          type="checkbox"
-                          name="coordinador"
-                          id="coordinador"
-                          label="Coordinador"
-                          checked={formData.roles.coordinador}
-                          onChange={handleChange}
-                        />
-                      </Col>
-                    </Row>
-                    <small className="text-muted">Puedes seleccionar ambos roles si aplica</small>
-                  </div>
+                  <Form.Label>Rol <span className="text-danger">*</span></Form.Label>
+                  <Form.Select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    isInvalid={!!errors.role}
+                  >
+                    {ROLE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label} - {option.description}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  {errors.role && (
+                    <Form.Control.Feedback type="invalid" className="d-block">
+                      {errors.role}
+                    </Form.Control.Feedback>
+                  )}
                 </Form.Group>
 
                 {/* Fila 3: Contraseñas */}
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Contraseña *</Form.Label>
+                      <Form.Label>Contraseña <span className="text-danger">*</span></Form.Label>
                       <Form.Control
                         type="password"
                         name="password"
                         placeholder="Mínimo 8 caracteres"
                         value={formData.password}
                         onChange={handleChange}
-                        required
+                        isInvalid={!!errors.password}
                       />
+                      {errors.password && (
+                        <Form.Control.Feedback type="invalid" className="d-block">
+                          {errors.password}
+                        </Form.Control.Feedback>
+                      )}
                       {formData.password && (
                         <div className="mt-1">
                           <div className="d-flex justify-content-between align-items-center mb-1">
@@ -264,23 +326,29 @@ export default function RegisterPage() {
                   </Col>
                   <Col md={6}>
                     <Form.Group className="mb-4">
-                      <Form.Label>Confirmar Contraseña *</Form.Label>
+                      <Form.Label>Confirmar Contraseña <span className="text-danger">*</span></Form.Label>
                       <Form.Control
                         type="password"
                         name="confirmPassword"
                         placeholder="Repite tu contraseña"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        required
+                        isInvalid={!!errors.confirmPassword}
                       />
+                      {errors.confirmPassword && (
+                        <Form.Control.Feedback type="invalid" className="d-block">
+                          {errors.confirmPassword}
+                        </Form.Control.Feedback>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
 
                 <Form.Group className="mb-3">
                   <Form.Check
-                    type="checkbox"
+                    type="switch"
                     name="acceptTerms"
+                    id="acceptTerms"
                     checked={formData.acceptTerms}
                     onChange={handleChange}
                     label={
@@ -295,8 +363,12 @@ export default function RegisterPage() {
                         </Link>
                       </small>
                     }
-                    required
                   />
+                  {errors.acceptTerms && (
+                    <div className="text-danger small d-block mt-2">
+                      {errors.acceptTerms}
+                    </div>
+                  )}
                 </Form.Group>
 
                 <Button 
