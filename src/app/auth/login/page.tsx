@@ -46,7 +46,7 @@ export default function LoginPage() {
         
         // Redirigir al dashboard después de un breve delay
         setTimeout(() => {
-          router.push('/questions-bank');
+          router.push('/dashboard');
         }, 1500);
       } else {
         setAlertType('danger');
