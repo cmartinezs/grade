@@ -159,6 +159,24 @@ extend type Difficulty {
   """
   _count: Int! @fdc_generated(from: "Difficulty.", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Difficulty` table where the `active` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  active_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Difficulty.active", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Difficulty` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Difficulty.description", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Difficulty` table where the `difficultyId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   difficultyId_count(
@@ -808,6 +826,15 @@ extend type QuestionType {
   """
   _count: Int! @fdc_generated(from: "QuestionType.", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `QuestionType` table where the `active` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  active_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionType.active", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `QuestionType` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   code_count(
@@ -816,6 +843,15 @@ extend type QuestionType {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "QuestionType.code", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `QuestionType` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionType.description", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `QuestionType` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """

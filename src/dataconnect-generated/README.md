@@ -72,6 +72,12 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateQuestionOption*](#createquestionoption)
   - [*UpdateQuestionOption*](#updatequestionoption)
   - [*DeleteQuestionOption*](#deletequestionoption)
+  - [*CreateQuestionType*](#createquestiontype)
+  - [*DeactivateQuestionType*](#deactivatequestiontype)
+  - [*ReactivateQuestionType*](#reactivatequestiontype)
+  - [*CreateDifficulty*](#createdifficulty)
+  - [*DeactivateDifficulty*](#deactivatedifficulty)
+  - [*ReactivateDifficulty*](#reactivatedifficulty)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `example`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -1978,7 +1984,9 @@ export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
     level: string;
-    weight?: number | null;
+    weight: number;
+    description?: string | null;
+    active: boolean;
   } & Difficulty_Key)[];
 }
 ```
@@ -2079,7 +2087,9 @@ export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
     level: string;
-    weight?: number | null;
+    weight: number;
+    description?: string | null;
+    active: boolean;
   } & Difficulty_Key;
 }
 ```
@@ -2187,6 +2197,8 @@ export interface ListQuestionTypesData {
     questionTypeId: UUIDString;
     code: string;
     name: string;
+    description?: string | null;
+    active: boolean;
   } & QuestionType_Key)[];
 }
 ```
@@ -2288,6 +2300,8 @@ export interface GetQuestionTypeData {
     questionTypeId: UUIDString;
     code: string;
     name: string;
+    description?: string | null;
+    active: boolean;
   } & QuestionType_Key;
 }
 ```
@@ -2401,6 +2415,8 @@ export interface GetQuestionTypeByCodeData {
     questionTypeId: UUIDString;
     code: string;
     name: string;
+    description?: string | null;
+    active: boolean;
   } & QuestionType_Key)[];
 }
 ```
@@ -7311,6 +7327,681 @@ console.log(data.questionOption_delete);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.questionOption_delete);
+});
+```
+
+## CreateQuestionType
+You can execute the `CreateQuestionType` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+createQuestionType(vars: CreateQuestionTypeVariables): MutationPromise<CreateQuestionTypeData, CreateQuestionTypeVariables>;
+
+interface CreateQuestionTypeRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuestionTypeVariables): MutationRef<CreateQuestionTypeData, CreateQuestionTypeVariables>;
+}
+export const createQuestionTypeRef: CreateQuestionTypeRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createQuestionType(dc: DataConnect, vars: CreateQuestionTypeVariables): MutationPromise<CreateQuestionTypeData, CreateQuestionTypeVariables>;
+
+interface CreateQuestionTypeRef {
+  ...
+  (dc: DataConnect, vars: CreateQuestionTypeVariables): MutationRef<CreateQuestionTypeData, CreateQuestionTypeVariables>;
+}
+export const createQuestionTypeRef: CreateQuestionTypeRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuestionTypeRef:
+```typescript
+const name = createQuestionTypeRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateQuestionType` mutation requires an argument of type `CreateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  active: boolean;
+}
+```
+### Return Type
+Recall that executing the `CreateQuestionType` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateQuestionTypeData {
+  questionType_insert: QuestionType_Key;
+}
+```
+### Using `CreateQuestionType`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createQuestionType, CreateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `CreateQuestionType` mutation requires an argument of type `CreateQuestionTypeVariables`:
+const createQuestionTypeVars: CreateQuestionTypeVariables = {
+  questionTypeId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  active: ..., 
+};
+
+// Call the `createQuestionType()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createQuestionType(createQuestionTypeVars);
+// Variables can be defined inline as well.
+const { data } = await createQuestionType({ questionTypeId: ..., code: ..., name: ..., description: ..., active: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createQuestionType(dataConnect, createQuestionTypeVars);
+
+console.log(data.questionType_insert);
+
+// Or, you can use the `Promise` API.
+createQuestionType(createQuestionTypeVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_insert);
+});
+```
+
+### Using `CreateQuestionType`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createQuestionTypeRef, CreateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `CreateQuestionType` mutation requires an argument of type `CreateQuestionTypeVariables`:
+const createQuestionTypeVars: CreateQuestionTypeVariables = {
+  questionTypeId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  active: ..., 
+};
+
+// Call the `createQuestionTypeRef()` function to get a reference to the mutation.
+const ref = createQuestionTypeRef(createQuestionTypeVars);
+// Variables can be defined inline as well.
+const ref = createQuestionTypeRef({ questionTypeId: ..., code: ..., name: ..., description: ..., active: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createQuestionTypeRef(dataConnect, createQuestionTypeVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionType_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_insert);
+});
+```
+
+## DeactivateQuestionType
+You can execute the `DeactivateQuestionType` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+deactivateQuestionType(vars: DeactivateQuestionTypeVariables): MutationPromise<DeactivateQuestionTypeData, DeactivateQuestionTypeVariables>;
+
+interface DeactivateQuestionTypeRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateQuestionTypeVariables): MutationRef<DeactivateQuestionTypeData, DeactivateQuestionTypeVariables>;
+}
+export const deactivateQuestionTypeRef: DeactivateQuestionTypeRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deactivateQuestionType(dc: DataConnect, vars: DeactivateQuestionTypeVariables): MutationPromise<DeactivateQuestionTypeData, DeactivateQuestionTypeVariables>;
+
+interface DeactivateQuestionTypeRef {
+  ...
+  (dc: DataConnect, vars: DeactivateQuestionTypeVariables): MutationRef<DeactivateQuestionTypeData, DeactivateQuestionTypeVariables>;
+}
+export const deactivateQuestionTypeRef: DeactivateQuestionTypeRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deactivateQuestionTypeRef:
+```typescript
+const name = deactivateQuestionTypeRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeactivateQuestionType` mutation requires an argument of type `DeactivateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeactivateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeactivateQuestionType` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeactivateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeactivateQuestionTypeData {
+  questionType_update?: QuestionType_Key | null;
+}
+```
+### Using `DeactivateQuestionType`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deactivateQuestionType, DeactivateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `DeactivateQuestionType` mutation requires an argument of type `DeactivateQuestionTypeVariables`:
+const deactivateQuestionTypeVars: DeactivateQuestionTypeVariables = {
+  questionTypeId: ..., 
+};
+
+// Call the `deactivateQuestionType()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deactivateQuestionType(deactivateQuestionTypeVars);
+// Variables can be defined inline as well.
+const { data } = await deactivateQuestionType({ questionTypeId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deactivateQuestionType(dataConnect, deactivateQuestionTypeVars);
+
+console.log(data.questionType_update);
+
+// Or, you can use the `Promise` API.
+deactivateQuestionType(deactivateQuestionTypeVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_update);
+});
+```
+
+### Using `DeactivateQuestionType`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deactivateQuestionTypeRef, DeactivateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `DeactivateQuestionType` mutation requires an argument of type `DeactivateQuestionTypeVariables`:
+const deactivateQuestionTypeVars: DeactivateQuestionTypeVariables = {
+  questionTypeId: ..., 
+};
+
+// Call the `deactivateQuestionTypeRef()` function to get a reference to the mutation.
+const ref = deactivateQuestionTypeRef(deactivateQuestionTypeVars);
+// Variables can be defined inline as well.
+const ref = deactivateQuestionTypeRef({ questionTypeId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deactivateQuestionTypeRef(dataConnect, deactivateQuestionTypeVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionType_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_update);
+});
+```
+
+## ReactivateQuestionType
+You can execute the `ReactivateQuestionType` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+reactivateQuestionType(vars: ReactivateQuestionTypeVariables): MutationPromise<ReactivateQuestionTypeData, ReactivateQuestionTypeVariables>;
+
+interface ReactivateQuestionTypeRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateQuestionTypeVariables): MutationRef<ReactivateQuestionTypeData, ReactivateQuestionTypeVariables>;
+}
+export const reactivateQuestionTypeRef: ReactivateQuestionTypeRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+reactivateQuestionType(dc: DataConnect, vars: ReactivateQuestionTypeVariables): MutationPromise<ReactivateQuestionTypeData, ReactivateQuestionTypeVariables>;
+
+interface ReactivateQuestionTypeRef {
+  ...
+  (dc: DataConnect, vars: ReactivateQuestionTypeVariables): MutationRef<ReactivateQuestionTypeData, ReactivateQuestionTypeVariables>;
+}
+export const reactivateQuestionTypeRef: ReactivateQuestionTypeRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the reactivateQuestionTypeRef:
+```typescript
+const name = reactivateQuestionTypeRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ReactivateQuestionType` mutation requires an argument of type `ReactivateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ReactivateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ReactivateQuestionType` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ReactivateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ReactivateQuestionTypeData {
+  questionType_update?: QuestionType_Key | null;
+}
+```
+### Using `ReactivateQuestionType`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, reactivateQuestionType, ReactivateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `ReactivateQuestionType` mutation requires an argument of type `ReactivateQuestionTypeVariables`:
+const reactivateQuestionTypeVars: ReactivateQuestionTypeVariables = {
+  questionTypeId: ..., 
+};
+
+// Call the `reactivateQuestionType()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await reactivateQuestionType(reactivateQuestionTypeVars);
+// Variables can be defined inline as well.
+const { data } = await reactivateQuestionType({ questionTypeId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await reactivateQuestionType(dataConnect, reactivateQuestionTypeVars);
+
+console.log(data.questionType_update);
+
+// Or, you can use the `Promise` API.
+reactivateQuestionType(reactivateQuestionTypeVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_update);
+});
+```
+
+### Using `ReactivateQuestionType`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, reactivateQuestionTypeRef, ReactivateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `ReactivateQuestionType` mutation requires an argument of type `ReactivateQuestionTypeVariables`:
+const reactivateQuestionTypeVars: ReactivateQuestionTypeVariables = {
+  questionTypeId: ..., 
+};
+
+// Call the `reactivateQuestionTypeRef()` function to get a reference to the mutation.
+const ref = reactivateQuestionTypeRef(reactivateQuestionTypeVars);
+// Variables can be defined inline as well.
+const ref = reactivateQuestionTypeRef({ questionTypeId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = reactivateQuestionTypeRef(dataConnect, reactivateQuestionTypeVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionType_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_update);
+});
+```
+
+## CreateDifficulty
+You can execute the `CreateDifficulty` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+createDifficulty(vars: CreateDifficultyVariables): MutationPromise<CreateDifficultyData, CreateDifficultyVariables>;
+
+interface CreateDifficultyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateDifficultyVariables): MutationRef<CreateDifficultyData, CreateDifficultyVariables>;
+}
+export const createDifficultyRef: CreateDifficultyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createDifficulty(dc: DataConnect, vars: CreateDifficultyVariables): MutationPromise<CreateDifficultyData, CreateDifficultyVariables>;
+
+interface CreateDifficultyRef {
+  ...
+  (dc: DataConnect, vars: CreateDifficultyVariables): MutationRef<CreateDifficultyData, CreateDifficultyVariables>;
+}
+export const createDifficultyRef: CreateDifficultyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createDifficultyRef:
+```typescript
+const name = createDifficultyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateDifficulty` mutation requires an argument of type `CreateDifficultyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateDifficultyVariables {
+  difficultyId: UUIDString;
+  level: string;
+  weight: number;
+  description?: string | null;
+}
+```
+### Return Type
+Recall that executing the `CreateDifficulty` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateDifficultyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateDifficultyData {
+  difficulty_insert: Difficulty_Key;
+}
+```
+### Using `CreateDifficulty`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createDifficulty, CreateDifficultyVariables } from '@dataconnect/generated';
+
+// The `CreateDifficulty` mutation requires an argument of type `CreateDifficultyVariables`:
+const createDifficultyVars: CreateDifficultyVariables = {
+  difficultyId: ..., 
+  level: ..., 
+  weight: ..., 
+  description: ..., // optional
+};
+
+// Call the `createDifficulty()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createDifficulty(createDifficultyVars);
+// Variables can be defined inline as well.
+const { data } = await createDifficulty({ difficultyId: ..., level: ..., weight: ..., description: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createDifficulty(dataConnect, createDifficultyVars);
+
+console.log(data.difficulty_insert);
+
+// Or, you can use the `Promise` API.
+createDifficulty(createDifficultyVars).then((response) => {
+  const data = response.data;
+  console.log(data.difficulty_insert);
+});
+```
+
+### Using `CreateDifficulty`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createDifficultyRef, CreateDifficultyVariables } from '@dataconnect/generated';
+
+// The `CreateDifficulty` mutation requires an argument of type `CreateDifficultyVariables`:
+const createDifficultyVars: CreateDifficultyVariables = {
+  difficultyId: ..., 
+  level: ..., 
+  weight: ..., 
+  description: ..., // optional
+};
+
+// Call the `createDifficultyRef()` function to get a reference to the mutation.
+const ref = createDifficultyRef(createDifficultyVars);
+// Variables can be defined inline as well.
+const ref = createDifficultyRef({ difficultyId: ..., level: ..., weight: ..., description: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createDifficultyRef(dataConnect, createDifficultyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.difficulty_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.difficulty_insert);
+});
+```
+
+## DeactivateDifficulty
+You can execute the `DeactivateDifficulty` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+deactivateDifficulty(vars: DeactivateDifficultyVariables): MutationPromise<DeactivateDifficultyData, DeactivateDifficultyVariables>;
+
+interface DeactivateDifficultyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateDifficultyVariables): MutationRef<DeactivateDifficultyData, DeactivateDifficultyVariables>;
+}
+export const deactivateDifficultyRef: DeactivateDifficultyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deactivateDifficulty(dc: DataConnect, vars: DeactivateDifficultyVariables): MutationPromise<DeactivateDifficultyData, DeactivateDifficultyVariables>;
+
+interface DeactivateDifficultyRef {
+  ...
+  (dc: DataConnect, vars: DeactivateDifficultyVariables): MutationRef<DeactivateDifficultyData, DeactivateDifficultyVariables>;
+}
+export const deactivateDifficultyRef: DeactivateDifficultyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deactivateDifficultyRef:
+```typescript
+const name = deactivateDifficultyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeactivateDifficulty` mutation requires an argument of type `DeactivateDifficultyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeactivateDifficultyVariables {
+  difficultyId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeactivateDifficulty` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeactivateDifficultyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeactivateDifficultyData {
+  difficulty_update?: Difficulty_Key | null;
+}
+```
+### Using `DeactivateDifficulty`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deactivateDifficulty, DeactivateDifficultyVariables } from '@dataconnect/generated';
+
+// The `DeactivateDifficulty` mutation requires an argument of type `DeactivateDifficultyVariables`:
+const deactivateDifficultyVars: DeactivateDifficultyVariables = {
+  difficultyId: ..., 
+};
+
+// Call the `deactivateDifficulty()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deactivateDifficulty(deactivateDifficultyVars);
+// Variables can be defined inline as well.
+const { data } = await deactivateDifficulty({ difficultyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deactivateDifficulty(dataConnect, deactivateDifficultyVars);
+
+console.log(data.difficulty_update);
+
+// Or, you can use the `Promise` API.
+deactivateDifficulty(deactivateDifficultyVars).then((response) => {
+  const data = response.data;
+  console.log(data.difficulty_update);
+});
+```
+
+### Using `DeactivateDifficulty`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deactivateDifficultyRef, DeactivateDifficultyVariables } from '@dataconnect/generated';
+
+// The `DeactivateDifficulty` mutation requires an argument of type `DeactivateDifficultyVariables`:
+const deactivateDifficultyVars: DeactivateDifficultyVariables = {
+  difficultyId: ..., 
+};
+
+// Call the `deactivateDifficultyRef()` function to get a reference to the mutation.
+const ref = deactivateDifficultyRef(deactivateDifficultyVars);
+// Variables can be defined inline as well.
+const ref = deactivateDifficultyRef({ difficultyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deactivateDifficultyRef(dataConnect, deactivateDifficultyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.difficulty_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.difficulty_update);
+});
+```
+
+## ReactivateDifficulty
+You can execute the `ReactivateDifficulty` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+reactivateDifficulty(vars: ReactivateDifficultyVariables): MutationPromise<ReactivateDifficultyData, ReactivateDifficultyVariables>;
+
+interface ReactivateDifficultyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateDifficultyVariables): MutationRef<ReactivateDifficultyData, ReactivateDifficultyVariables>;
+}
+export const reactivateDifficultyRef: ReactivateDifficultyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+reactivateDifficulty(dc: DataConnect, vars: ReactivateDifficultyVariables): MutationPromise<ReactivateDifficultyData, ReactivateDifficultyVariables>;
+
+interface ReactivateDifficultyRef {
+  ...
+  (dc: DataConnect, vars: ReactivateDifficultyVariables): MutationRef<ReactivateDifficultyData, ReactivateDifficultyVariables>;
+}
+export const reactivateDifficultyRef: ReactivateDifficultyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the reactivateDifficultyRef:
+```typescript
+const name = reactivateDifficultyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ReactivateDifficulty` mutation requires an argument of type `ReactivateDifficultyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ReactivateDifficultyVariables {
+  difficultyId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ReactivateDifficulty` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ReactivateDifficultyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ReactivateDifficultyData {
+  difficulty_update?: Difficulty_Key | null;
+}
+```
+### Using `ReactivateDifficulty`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, reactivateDifficulty, ReactivateDifficultyVariables } from '@dataconnect/generated';
+
+// The `ReactivateDifficulty` mutation requires an argument of type `ReactivateDifficultyVariables`:
+const reactivateDifficultyVars: ReactivateDifficultyVariables = {
+  difficultyId: ..., 
+};
+
+// Call the `reactivateDifficulty()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await reactivateDifficulty(reactivateDifficultyVars);
+// Variables can be defined inline as well.
+const { data } = await reactivateDifficulty({ difficultyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await reactivateDifficulty(dataConnect, reactivateDifficultyVars);
+
+console.log(data.difficulty_update);
+
+// Or, you can use the `Promise` API.
+reactivateDifficulty(reactivateDifficultyVars).then((response) => {
+  const data = response.data;
+  console.log(data.difficulty_update);
+});
+```
+
+### Using `ReactivateDifficulty`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, reactivateDifficultyRef, ReactivateDifficultyVariables } from '@dataconnect/generated';
+
+// The `ReactivateDifficulty` mutation requires an argument of type `ReactivateDifficultyVariables`:
+const reactivateDifficultyVars: ReactivateDifficultyVariables = {
+  difficultyId: ..., 
+};
+
+// Call the `reactivateDifficultyRef()` function to get a reference to the mutation.
+const ref = reactivateDifficultyRef(reactivateDifficultyVars);
+// Variables can be defined inline as well.
+const ref = reactivateDifficultyRef({ difficultyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = reactivateDifficultyRef(dataConnect, reactivateDifficultyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.difficulty_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.difficulty_update);
 });
 ```
 

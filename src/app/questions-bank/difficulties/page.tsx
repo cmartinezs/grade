@@ -1,263 +1,178 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Table,
-  Form,
-  Modal,
-  Alert,
-  Spinner,
-} from 'react-bootstrap';
+import React, { useState, useMemo } from 'react';
+import { Modal, Form, Spinner, Alert } from 'react-bootstrap';
+import MasterDataTable, {
+  ColumnConfig,
+  ActionButton,
+} from '@/components/MasterDataTable';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import type { Difficulty } from '@/lib/masterDataConnect';
+import { useDifficulties } from '@/hooks/useDifficulties';
 
-interface Difficulty {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
-  level?: number;
-  createdAt?: string;
-  createdBy?: string;
-}
+const PAGE_SIZE = 10;
+
 
 export default function DifficultiesPage() {
-  const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { difficulties, loading, error: hookError, creating, create } =
+    useDifficulties();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    code: '',
-    name: '',
+    level: '',
+    weight: 1,
     description: '',
-    level: 1,
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
 
-  // Load difficulties on mount
-  useEffect(() => {
-    loadDifficulties();
-  }, []);
+  // Filter items by search text
+  const filteredItems = useMemo(() => {
+    return difficulties.filter((difficulty) => {
+      const searchLower = searchText.toLowerCase();
+      return (
+        difficulty.level.toLowerCase().includes(searchLower) ||
+        (difficulty.description?.toLowerCase().includes(searchLower) ?? false)
+      );
+    });
+  }, [difficulties, searchText]);
 
-  const loadDifficulties = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // TODO: Replace with Data Connect query when ready
-      // const response = await fetch('/api/difficulties');
-      // const data = await response.json();
-      // setDifficulties(data);
-
-      // Placeholder data for now
-      setDifficulties([
-        {
-          id: '1',
-          code: 'EASY',
-          name: 'Fácil',
-          description: 'Pregunta de dificultad baja',
-          level: 1,
-        },
-        {
-          id: '2',
-          code: 'MEDIUM',
-          name: 'Medio',
-          description: 'Pregunta de dificultad media',
-          level: 2,
-        },
-        {
-          id: '3',
-          code: 'HARD',
-          name: 'Difícil',
-          description: 'Pregunta de dificultad alta',
-          level: 3,
-        },
-        {
-          id: '4',
-          code: 'EXPERT',
-          name: 'Experto',
-          description: 'Pregunta de dificultad muy alta',
-          level: 4,
-        },
-      ]);
-    } catch (err) {
-      setError('Error al cargar los niveles de dificultad');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Paginate filtered items
+  const startIdx = (currentPage - 1) * PAGE_SIZE;
+  const paginatedItems = filteredItems.slice(startIdx, startIdx + PAGE_SIZE);
+  const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE);
 
   const handleOpenModal = (difficulty?: Difficulty) => {
     if (difficulty) {
-      setEditingId(difficulty.id);
+      setEditingId(difficulty.difficultyId);
       setFormData({
-        code: difficulty.code,
-        name: difficulty.name,
+        level: difficulty.level,
+        weight: difficulty.weight || 1,
         description: difficulty.description || '',
-        level: difficulty.level || 1,
       });
     } else {
       setEditingId(null);
-      setFormData({ code: '', name: '', description: '', level: 1 });
+      setFormData({ level: '', weight: 1, description: '' });
     }
+    setLocalError(null);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingId(null);
-    setFormData({ code: '', name: '', description: '', level: 1 });
+    setFormData({ level: '', weight: 1, description: '' });
+    setLocalError(null);
+    setSubmitting(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+    setSubmitting(true);
+
     try {
-      // TODO: Replace with Data Connect mutation
       if (editingId) {
-        // UPDATE mutation
-        setDifficulties(
-          difficulties.map((d) =>
-            d.id === editingId ? { ...d, ...formData } : d
-          )
-        );
-      } else {
-        // CREATE mutation
-        const newDifficulty: Difficulty = {
-          id: Date.now().toString(),
-          ...formData,
-        };
-        setDifficulties([...difficulties, newDifficulty]);
+        setLocalError('Edición no implementada aún');
+        setSubmitting(false);
+        return;
       }
+
+      await create(
+        formData.level,
+        formData.weight,
+        formData.description
+      );
       handleCloseModal();
     } catch (err) {
-      setError('Error al guardar el nivel de dificultad');
-      console.error(err);
+      const message = err instanceof Error ? err.message : 'Error desconocido';
+      setLocalError(message);
+      setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('¿Está seguro de que desea eliminar este nivel de dificultad?')) {
-      try {
-        // TODO: Replace with Data Connect mutation
-        setDifficulties(difficulties.filter((d) => d.id !== id));
-      } catch (err) {
-        setError('Error al eliminar el nivel de dificultad');
-        console.error(err);
-      }
-    }
-  };
+  const columns: ColumnConfig<Difficulty>[] = [
+    {
+      key: 'level',
+      label: 'Nivel',
+      render: (value) => <strong>{String(value)}</strong>,
+      width: '150px',
+      sortable: true,
+    },
+    {
+      key: 'weight',
+      label: 'Peso',
+      render: (value) => (
+        <span className="badge bg-info" style={{ fontSize: '1rem' }}>
+          {String(value)}
+        </span>
+      ),
+      width: '100px',
+      sortable: true,
+    },
+    {
+      key: 'description',
+      label: 'Descripción',
+      render: (value) => (
+        <span className="text-muted">{String(value) || '—'}</span>
+      ),
+    },
+  ];
+
+  const actions: ActionButton<Difficulty>[] = [
+    {
+      icon: '✏️',
+      label: 'Editar',
+      onClick: (difficulty) => handleOpenModal(difficulty),
+      variant: 'outline-primary',
+      title: 'Editar nivel de dificultad',
+    },
+    {
+      icon: '🗑️',
+      label: 'Eliminar',
+      onClick: (difficulty) => {
+        console.log('Delete:', difficulty.difficultyId);
+        // TODO: Implementar DELETE
+      },
+      variant: 'outline-danger',
+      title: 'Eliminar nivel de dificultad',
+    },
+  ];
+
+  const displayError = localError || hookError;
 
   return (
     <ProtectedRoute>
-      <Container className="mt-4">
-        {/* Header */}
-        <Row className="mb-4">
-          <Col>
-            <h2>Gestión de Niveles de Dificultad</h2>
-            <p className="text-muted">
-              Administre los niveles de dificultad disponibles en el sistema
-            </p>
-          </Col>
-        </Row>
+      <MasterDataTable<Difficulty>
+        items={paginatedItems}
+        totalItems={filteredItems.length}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        isLoading={loading}
+        title="📈 Gestión de Niveles de Dificultad"
+        description="Define los niveles de dificultad que pueden asignarse a preguntas"
+        columns={columns}
+        actions={actions}
+        searchText={searchText}
+        onSearchChange={(text) => {
+          setSearchText(text);
+          setCurrentPage(1);
+        }}
+        onPageChange={setCurrentPage}
+        searchPlaceholder="Buscar por nombre o descripción..."
+        onCreateClick={() => handleOpenModal()}
+        createButtonLabel="Crear Nivel"
+        createButtonIcon="➕"
+        emptyMessage="No hay niveles de dificultad registrados"
+        emptyIcon="📭"
+      />
 
-        {/* Error Alert */}
-        {error && (
-          <Row className="mb-3">
-            <Col>
-              <Alert variant="danger" onClose={() => setError(null)} dismissible>
-                {error}
-              </Alert>
-            </Col>
-          </Row>
-        )}
-
-        {/* Create Button */}
-        <Row className="mb-3">
-          <Col>
-            <Button
-              variant="primary"
-              onClick={() => handleOpenModal()}
-            >
-              ➕ Crear Nuevo Nivel de Dificultad
-            </Button>
-          </Col>
-        </Row>
-
-        {/* Difficulties Table */}
-        <Row>
-          <Col>
-            <Card>
-              <Card.Body>
-                {loading ? (
-                  <div className="text-center py-5">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Cargando...</span>
-                    </Spinner>
-                  </div>
-                ) : difficulties.length === 0 ? (
-                  <div className="text-center py-5">
-                    <p className="text-muted">
-                      No hay niveles de dificultad registrados
-                    </p>
-                  </div>
-                ) : (
-                  <Table striped hover responsive>
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Nivel</th>
-                        <th>Descripción</th>
-                        <th style={{ width: '150px' }}>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {difficulties
-                        .sort((a, b) => (a.level || 0) - (b.level || 0))
-                        .map((difficulty) => (
-                          <tr key={difficulty.id}>
-                            <td>
-                              <code>{difficulty.code}</code>
-                            </td>
-                            <td>{difficulty.name}</td>
-                            <td>
-                              <span className="badge bg-info">
-                                {difficulty.level || '—'}
-                              </span>
-                            </td>
-                            <td>{difficulty.description || '—'}</td>
-                            <td>
-                              <Button
-                                variant="outline-primary"
-                                size="sm"
-                                onClick={() => handleOpenModal(difficulty)}
-                                className="me-2"
-                              >
-                                ✏️
-                              </Button>
-                              <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => handleDelete(difficulty.id)}
-                              >
-                                🗑️
-                              </Button>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </Table>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Create/Edit Modal */}
+      {/* Create/Edit Modal */}
+      {showModal && (
         <Modal show={showModal} onHide={handleCloseModal} centered>
           <Modal.Header closeButton>
             <Modal.Title>
@@ -268,54 +183,54 @@ export default function DifficultiesPage() {
           </Modal.Header>
           <Form onSubmit={handleSubmit}>
             <Modal.Body>
+              {displayError && (
+                <Alert
+                  variant="danger"
+                  onClose={() => setLocalError(null)}
+                  dismissible
+                >
+                  {displayError}
+                </Alert>
+              )}
+
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Código <span style={{ color: 'red' }}>*</span>
+                  Nivel <span style={{ color: 'red' }}>*</span>
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="ej: EASY"
-                  value={formData.code}
+                  placeholder="ej: Fácil"
+                  value={formData.level}
                   onChange={(e) =>
-                    setFormData({ ...formData, code: e.target.value })
+                    setFormData({ ...formData, level: e.target.value })
                   }
                   required
+                  disabled={submitting}
                 />
                 <Form.Text className="text-muted">
-                  Código único para identificar el nivel (máx 10 caracteres)
+                  Nombre del nivel de dificultad
                 </Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Nombre <span style={{ color: 'red' }}>*</span>
+                  Peso <span style={{ color: 'red' }}>*</span>
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="ej: Fácil"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Nivel</Form.Label>
                 <Form.Control
                   type="number"
                   min="1"
-                  value={formData.level}
+                  value={formData.weight}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      level: parseInt(e.target.value) || 1,
+                      weight: parseInt(e.target.value) || 1,
                     })
                   }
+                  required
+                  disabled={submitting}
                 />
                 <Form.Text className="text-muted">
-                  Número que ordena los niveles (1 = más fácil, 4 = más difícil)
+                  Número que ordena los niveles (1 = más fácil, mayor = más difícil)
                 </Form.Text>
               </Form.Group>
 
@@ -326,23 +241,52 @@ export default function DifficultiesPage() {
                   placeholder="Descripción del nivel de dificultad"
                   value={formData.description}
                   onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
+                    setFormData({
+                      ...formData,
+                      description: e.target.value,
+                    })
                   }
                   rows={3}
+                  disabled={submitting}
                 />
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseModal}
+                disabled={submitting}
+              >
                 Cancelar
-              </Button>
-              <Button variant="primary" type="submit">
-                {editingId ? 'Guardar Cambios' : 'Crear'}
-              </Button>
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={submitting || creating}
+              >
+                {submitting || creating ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Guardando...
+                  </>
+                ) : editingId ? (
+                  'Guardar Cambios'
+                ) : (
+                  'Crear'
+                )}
+              </button>
             </Modal.Footer>
           </Form>
         </Modal>
-      </Container>
+      )}
     </ProtectedRoute>
   );
 }

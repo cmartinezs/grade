@@ -273,6 +273,8 @@ query ListDifficulties @auth(level: USER) {
     difficultyId
     level
     weight
+    description
+    active
   }
 }
 
@@ -282,6 +284,8 @@ query GetDifficulty($difficultyId: UUID!) @auth(level: USER) {
     difficultyId
     level
     weight
+    description
+    active
   }
 }
 
@@ -291,6 +295,8 @@ query ListQuestionTypes @auth(level: USER) {
     questionTypeId
     code
     name
+    description
+    active
   }
 }
 
@@ -300,6 +306,8 @@ query GetQuestionType($questionTypeId: UUID!) @auth(level: USER) {
     questionTypeId
     code
     name
+    description
+    active
   }
 }
 
@@ -309,6 +317,8 @@ query GetQuestionTypeByCode($code: String!) @auth(level: USER) {
     questionTypeId
     code
     name
+    description
+    active
   }
 }
 

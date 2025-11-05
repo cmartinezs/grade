@@ -692,3 +692,91 @@ mutation DeleteQuestionOption(
     key: { questionOptionId: $questionOptionId }
   )
 }
+
+# Crear un nuevo tipo de pregunta
+mutation CreateQuestionType(
+  $questionTypeId: UUID!
+  $code: String!
+  $name: String!
+  $description: String
+  $active: Boolean!
+) @auth(level: USER) {
+  questionType_insert(
+    data: {
+      questionTypeId: $questionTypeId
+      code: $code
+      name: $name
+      description: $description
+      active: $active
+    }
+  )
+}
+
+# Desctivar un tipo de pregunta
+mutation DeactivateQuestionType(
+  $questionTypeId: UUID!
+) @auth(level: USER) {
+  questionType_update(
+    key: { questionTypeId: $questionTypeId }
+    data: {
+      active: false
+    }
+  )
+}
+
+# Reactivar un tipo de pregunta
+mutation ReactivateQuestionType(
+  $questionTypeId: UUID!
+) @auth(level: USER) {
+  questionType_update(
+    key: { questionTypeId: $questionTypeId }
+    data: {
+      active: true
+    }
+  )
+}
+
+# Crear una dificultad
+mutation CreateDifficulty(
+  $difficultyId: UUID!
+  $level: String!
+  $weight: Int!
+  $description: String
+) @auth(level: USER) {
+  difficulty_insert(
+    data: {
+      difficultyId: $difficultyId
+      level: $level
+      weight: $weight
+      description: $description
+    }
+  )
+}
+
+# Desctivar una dificultad
+mutation DeactivateDifficulty(
+  $difficultyId: UUID!
+) @auth(level: USER) {
+  difficulty_update(
+    key: { difficultyId: $difficultyId }
+    data: {
+      active: false
+    }
+  )
+}
+
+# Reactivar una dificultad
+mutation ReactivateDifficulty(
+  $difficultyId: UUID!
+) @auth(level: USER) {
+  difficulty_update(
+    key: { difficultyId: $difficultyId }
+    data: {
+      active: true
+    }
+  )
+}
+
+# ===================================================================
+# FIN DE ARCHIVO
+# ===================================================================

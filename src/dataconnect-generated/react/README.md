@@ -79,6 +79,12 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*CreateQuestionOption*](#createquestionoption)
   - [*UpdateQuestionOption*](#updatequestionoption)
   - [*DeleteQuestionOption*](#deletequestionoption)
+  - [*CreateQuestionType*](#createquestiontype)
+  - [*DeactivateQuestionType*](#deactivatequestiontype)
+  - [*ReactivateQuestionType*](#reactivatequestiontype)
+  - [*CreateDifficulty*](#createdifficulty)
+  - [*DeactivateDifficulty*](#deactivatedifficulty)
+  - [*ReactivateDifficulty*](#reactivatedifficulty)
 
 # TanStack Query Firebase & TanStack React Query
 This SDK provides [React](https://react.dev/) hooks generated specific to your application, for the operations found in the connector `example`. These hooks are generated using [TanStack Query Firebase](https://react-query-firebase.invertase.dev/) by our partners at Invertase, a library built on top of [TanStack React Query v5](https://tanstack.com/query/v5/docs/framework/react/overview).
@@ -1601,7 +1607,9 @@ export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
     level: string;
-    weight?: number | null;
+    weight: number;
+    description?: string | null;
+    active: boolean;
   } & Difficulty_Key)[];
 }
 ```
@@ -1680,7 +1688,9 @@ export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
     level: string;
-    weight?: number | null;
+    weight: number;
+    description?: string | null;
+    active: boolean;
   } & Difficulty_Key;
 }
 ```
@@ -1761,6 +1771,8 @@ export interface ListQuestionTypesData {
     questionTypeId: UUIDString;
     code: string;
     name: string;
+    description?: string | null;
+    active: boolean;
   } & QuestionType_Key)[];
 }
 ```
@@ -1840,6 +1852,8 @@ export interface GetQuestionTypeData {
     questionTypeId: UUIDString;
     code: string;
     name: string;
+    description?: string | null;
+    active: boolean;
   } & QuestionType_Key;
 }
 ```
@@ -1926,6 +1940,8 @@ export interface GetQuestionTypeByCodeData {
     questionTypeId: UUIDString;
     code: string;
     name: string;
+    description?: string | null;
+    active: boolean;
   } & QuestionType_Key)[];
 }
 ```
@@ -6026,6 +6042,584 @@ export default function DeleteQuestionOptionComponent() {
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
     console.log(mutation.data.questionOption_delete);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CreateQuestionType
+You can execute the `CreateQuestionType` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useCreateQuestionType(options?: useDataConnectMutationOptions<CreateQuestionTypeData, FirebaseError, CreateQuestionTypeVariables>): UseDataConnectMutationResult<CreateQuestionTypeData, CreateQuestionTypeVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useCreateQuestionType(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuestionTypeData, FirebaseError, CreateQuestionTypeVariables>): UseDataConnectMutationResult<CreateQuestionTypeData, CreateQuestionTypeVariables>;
+```
+
+### Variables
+The `CreateQuestionType` Mutation requires an argument of type `CreateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CreateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  active: boolean;
+}
+```
+### Return Type
+Recall that calling the `CreateQuestionType` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateQuestionType` Mutation is of type `CreateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CreateQuestionTypeData {
+  questionType_insert: QuestionType_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `CreateQuestionType`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CreateQuestionTypeVariables } from '@dataconnect/generated';
+import { useCreateQuestionType } from '@dataconnect/generated/react'
+
+export default function CreateQuestionTypeComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useCreateQuestionType();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useCreateQuestionType(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateQuestionType(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateQuestionType(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useCreateQuestionType` Mutation requires an argument of type `CreateQuestionTypeVariables`:
+  const createQuestionTypeVars: CreateQuestionTypeVariables = {
+    questionTypeId: ..., 
+    code: ..., 
+    name: ..., 
+    description: ..., // optional
+    active: ..., 
+  };
+  mutation.mutate(createQuestionTypeVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ questionTypeId: ..., code: ..., name: ..., description: ..., active: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(createQuestionTypeVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.questionType_insert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## DeactivateQuestionType
+You can execute the `DeactivateQuestionType` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useDeactivateQuestionType(options?: useDataConnectMutationOptions<DeactivateQuestionTypeData, FirebaseError, DeactivateQuestionTypeVariables>): UseDataConnectMutationResult<DeactivateQuestionTypeData, DeactivateQuestionTypeVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useDeactivateQuestionType(dc: DataConnect, options?: useDataConnectMutationOptions<DeactivateQuestionTypeData, FirebaseError, DeactivateQuestionTypeVariables>): UseDataConnectMutationResult<DeactivateQuestionTypeData, DeactivateQuestionTypeVariables>;
+```
+
+### Variables
+The `DeactivateQuestionType` Mutation requires an argument of type `DeactivateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface DeactivateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `DeactivateQuestionType` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeactivateQuestionType` Mutation is of type `DeactivateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface DeactivateQuestionTypeData {
+  questionType_update?: QuestionType_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `DeactivateQuestionType`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, DeactivateQuestionTypeVariables } from '@dataconnect/generated';
+import { useDeactivateQuestionType } from '@dataconnect/generated/react'
+
+export default function DeactivateQuestionTypeComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useDeactivateQuestionType();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useDeactivateQuestionType(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeactivateQuestionType(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeactivateQuestionType(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useDeactivateQuestionType` Mutation requires an argument of type `DeactivateQuestionTypeVariables`:
+  const deactivateQuestionTypeVars: DeactivateQuestionTypeVariables = {
+    questionTypeId: ..., 
+  };
+  mutation.mutate(deactivateQuestionTypeVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ questionTypeId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(deactivateQuestionTypeVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.questionType_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ReactivateQuestionType
+You can execute the `ReactivateQuestionType` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useReactivateQuestionType(options?: useDataConnectMutationOptions<ReactivateQuestionTypeData, FirebaseError, ReactivateQuestionTypeVariables>): UseDataConnectMutationResult<ReactivateQuestionTypeData, ReactivateQuestionTypeVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useReactivateQuestionType(dc: DataConnect, options?: useDataConnectMutationOptions<ReactivateQuestionTypeData, FirebaseError, ReactivateQuestionTypeVariables>): UseDataConnectMutationResult<ReactivateQuestionTypeData, ReactivateQuestionTypeVariables>;
+```
+
+### Variables
+The `ReactivateQuestionType` Mutation requires an argument of type `ReactivateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ReactivateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `ReactivateQuestionType` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ReactivateQuestionType` Mutation is of type `ReactivateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ReactivateQuestionTypeData {
+  questionType_update?: QuestionType_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `ReactivateQuestionType`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ReactivateQuestionTypeVariables } from '@dataconnect/generated';
+import { useReactivateQuestionType } from '@dataconnect/generated/react'
+
+export default function ReactivateQuestionTypeComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useReactivateQuestionType();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useReactivateQuestionType(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useReactivateQuestionType(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useReactivateQuestionType(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useReactivateQuestionType` Mutation requires an argument of type `ReactivateQuestionTypeVariables`:
+  const reactivateQuestionTypeVars: ReactivateQuestionTypeVariables = {
+    questionTypeId: ..., 
+  };
+  mutation.mutate(reactivateQuestionTypeVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ questionTypeId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(reactivateQuestionTypeVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.questionType_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CreateDifficulty
+You can execute the `CreateDifficulty` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useCreateDifficulty(options?: useDataConnectMutationOptions<CreateDifficultyData, FirebaseError, CreateDifficultyVariables>): UseDataConnectMutationResult<CreateDifficultyData, CreateDifficultyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useCreateDifficulty(dc: DataConnect, options?: useDataConnectMutationOptions<CreateDifficultyData, FirebaseError, CreateDifficultyVariables>): UseDataConnectMutationResult<CreateDifficultyData, CreateDifficultyVariables>;
+```
+
+### Variables
+The `CreateDifficulty` Mutation requires an argument of type `CreateDifficultyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CreateDifficultyVariables {
+  difficultyId: UUIDString;
+  level: string;
+  weight: number;
+  description?: string | null;
+}
+```
+### Return Type
+Recall that calling the `CreateDifficulty` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateDifficulty` Mutation is of type `CreateDifficultyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CreateDifficultyData {
+  difficulty_insert: Difficulty_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `CreateDifficulty`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CreateDifficultyVariables } from '@dataconnect/generated';
+import { useCreateDifficulty } from '@dataconnect/generated/react'
+
+export default function CreateDifficultyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useCreateDifficulty();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useCreateDifficulty(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateDifficulty(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateDifficulty(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useCreateDifficulty` Mutation requires an argument of type `CreateDifficultyVariables`:
+  const createDifficultyVars: CreateDifficultyVariables = {
+    difficultyId: ..., 
+    level: ..., 
+    weight: ..., 
+    description: ..., // optional
+  };
+  mutation.mutate(createDifficultyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ difficultyId: ..., level: ..., weight: ..., description: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(createDifficultyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.difficulty_insert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## DeactivateDifficulty
+You can execute the `DeactivateDifficulty` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useDeactivateDifficulty(options?: useDataConnectMutationOptions<DeactivateDifficultyData, FirebaseError, DeactivateDifficultyVariables>): UseDataConnectMutationResult<DeactivateDifficultyData, DeactivateDifficultyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useDeactivateDifficulty(dc: DataConnect, options?: useDataConnectMutationOptions<DeactivateDifficultyData, FirebaseError, DeactivateDifficultyVariables>): UseDataConnectMutationResult<DeactivateDifficultyData, DeactivateDifficultyVariables>;
+```
+
+### Variables
+The `DeactivateDifficulty` Mutation requires an argument of type `DeactivateDifficultyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface DeactivateDifficultyVariables {
+  difficultyId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `DeactivateDifficulty` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeactivateDifficulty` Mutation is of type `DeactivateDifficultyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface DeactivateDifficultyData {
+  difficulty_update?: Difficulty_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `DeactivateDifficulty`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, DeactivateDifficultyVariables } from '@dataconnect/generated';
+import { useDeactivateDifficulty } from '@dataconnect/generated/react'
+
+export default function DeactivateDifficultyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useDeactivateDifficulty();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useDeactivateDifficulty(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeactivateDifficulty(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeactivateDifficulty(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useDeactivateDifficulty` Mutation requires an argument of type `DeactivateDifficultyVariables`:
+  const deactivateDifficultyVars: DeactivateDifficultyVariables = {
+    difficultyId: ..., 
+  };
+  mutation.mutate(deactivateDifficultyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ difficultyId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(deactivateDifficultyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.difficulty_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ReactivateDifficulty
+You can execute the `ReactivateDifficulty` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useReactivateDifficulty(options?: useDataConnectMutationOptions<ReactivateDifficultyData, FirebaseError, ReactivateDifficultyVariables>): UseDataConnectMutationResult<ReactivateDifficultyData, ReactivateDifficultyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useReactivateDifficulty(dc: DataConnect, options?: useDataConnectMutationOptions<ReactivateDifficultyData, FirebaseError, ReactivateDifficultyVariables>): UseDataConnectMutationResult<ReactivateDifficultyData, ReactivateDifficultyVariables>;
+```
+
+### Variables
+The `ReactivateDifficulty` Mutation requires an argument of type `ReactivateDifficultyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ReactivateDifficultyVariables {
+  difficultyId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `ReactivateDifficulty` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ReactivateDifficulty` Mutation is of type `ReactivateDifficultyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ReactivateDifficultyData {
+  difficulty_update?: Difficulty_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `ReactivateDifficulty`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ReactivateDifficultyVariables } from '@dataconnect/generated';
+import { useReactivateDifficulty } from '@dataconnect/generated/react'
+
+export default function ReactivateDifficultyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useReactivateDifficulty();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useReactivateDifficulty(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useReactivateDifficulty(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useReactivateDifficulty(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useReactivateDifficulty` Mutation requires an argument of type `ReactivateDifficultyVariables`:
+  const reactivateDifficultyVars: ReactivateDifficultyVariables = {
+    difficultyId: ..., 
+  };
+  mutation.mutate(reactivateDifficultyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ difficultyId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(reactivateDifficultyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.difficulty_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }

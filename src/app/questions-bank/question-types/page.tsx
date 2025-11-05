@@ -1,83 +1,54 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Table,
-  Form,
-  Modal,
-  Alert,
-  Spinner,
-} from 'react-bootstrap';
+import React, { useState, useMemo } from 'react';
+import { Modal, Form, Spinner, Alert } from 'react-bootstrap';
+import MasterDataTable, {
+  ColumnConfig,
+  ActionButton,
+} from '@/components/MasterDataTable';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import type { QuestionType } from '@/lib/masterDataConnect';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 
-interface QuestionType {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
-  createdAt?: string;
-  createdBy?: string;
-}
+const PAGE_SIZE = 10;
+
 
 export default function QuestionTypesPage() {
-  const [questionTypes, setQuestionTypes] = useState<QuestionType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { questionTypes, loading, error: hookError, creating, create } =
+    useQuestionTypes();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ code: '', name: '', description: '' });
+  const [formData, setFormData] = useState({
+    code: '',
+    name: '',
+    description: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
 
-  // Load question types on mount
-  useEffect(() => {
-    loadQuestionTypes();
-  }, []);
+  // Filter items by search text
+  const filteredItems = useMemo(() => {
+    return questionTypes.filter((type) => {
+      const searchLower = searchText.toLowerCase();
+      return (
+        type.code.toLowerCase().includes(searchLower) ||
+        type.name.toLowerCase().includes(searchLower) ||
+        (type.description?.toLowerCase().includes(searchLower) ?? false)
+      );
+    });
+  }, [questionTypes, searchText]);
 
-  const loadQuestionTypes = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // TODO: Replace with Data Connect query when ready
-      // const response = await fetch('/api/question-types');
-      // const data = await response.json();
-      // setQuestionTypes(data);
-
-      // Placeholder data for now
-      setQuestionTypes([
-        {
-          id: '1',
-          code: 'MC',
-          name: 'Opción Múltiple',
-          description: 'Pregunta con múltiples opciones de respuesta',
-        },
-        {
-          id: '2',
-          code: 'VF',
-          name: 'Verdadero/Falso',
-          description: 'Pregunta de verdadero o falso',
-        },
-        {
-          id: '3',
-          code: 'SA',
-          name: 'Respuesta Corta',
-          description: 'Pregunta que requiere una respuesta corta',
-        },
-      ]);
-    } catch (err) {
-      setError('Error al cargar los tipos de preguntas');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Paginate filtered items
+  const startIdx = (currentPage - 1) * PAGE_SIZE;
+  const paginatedItems = filteredItems.slice(startIdx, startIdx + PAGE_SIZE);
+  const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE);
 
   const handleOpenModal = (type?: QuestionType) => {
     if (type) {
-      setEditingId(type.id);
+      setEditingId(type.questionTypeId);
       setFormData({
         code: type.code,
         name: type.name,
@@ -87,6 +58,7 @@ export default function QuestionTypesPage() {
       setEditingId(null);
       setFormData({ code: '', name: '', description: '' });
     }
+    setLocalError(null);
     setShowModal(true);
   };
 
@@ -94,157 +66,127 @@ export default function QuestionTypesPage() {
     setShowModal(false);
     setEditingId(null);
     setFormData({ code: '', name: '', description: '' });
+    setLocalError(null);
+    setSubmitting(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+    setSubmitting(true);
+
     try {
-      // TODO: Replace with Data Connect mutation
       if (editingId) {
-        // UPDATE mutation
-        setQuestionTypes(
-          questionTypes.map((qt) =>
-            qt.id === editingId
-              ? { ...qt, ...formData }
-              : qt
-          )
-        );
-      } else {
-        // CREATE mutation
-        const newType: QuestionType = {
-          id: Date.now().toString(),
-          ...formData,
-        };
-        setQuestionTypes([...questionTypes, newType]);
+        setLocalError('Edición no implementada aún');
+        setSubmitting(false);
+        return;
       }
+
+      await create(formData.code, formData.name, formData.description);
       handleCloseModal();
     } catch (err) {
-      setError('Error al guardar el tipo de pregunta');
-      console.error(err);
+      const message = err instanceof Error ? err.message : 'Error desconocido';
+      setLocalError(message);
+      setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('¿Está seguro de que desea eliminar este tipo de pregunta?')) {
-      try {
-        // TODO: Replace with Data Connect mutation
-        setQuestionTypes(questionTypes.filter((qt) => qt.id !== id));
-      } catch (err) {
-        setError('Error al eliminar el tipo de pregunta');
-        console.error(err);
-      }
-    }
-  };
+  const columns: ColumnConfig<QuestionType>[] = [
+    {
+      key: 'code',
+      label: 'Código',
+      render: (value) => (
+        <code className="text-primary" style={{ fontWeight: 'bold' }}>
+          {String(value)}
+        </code>
+      ),
+      width: '120px',
+      sortable: true,
+    },
+    {
+      key: 'name',
+      label: 'Nombre',
+      render: (value) => <strong>{String(value)}</strong>,
+      sortable: true,
+    },
+    {
+      key: 'description',
+      label: 'Descripción',
+      render: (value) => (
+        <span className="text-muted">{String(value) || '—'}</span>
+      ),
+    },
+  ];
+
+  const actions: ActionButton<QuestionType>[] = [
+    {
+      icon: '✏️',
+      label: 'Editar',
+      onClick: (type) => handleOpenModal(type),
+      variant: 'outline-primary',
+      title: 'Editar tipo de pregunta',
+    },
+    {
+      icon: '🗑️',
+      label: 'Eliminar',
+      onClick: (type) => {
+        console.log('Delete:', type.questionTypeId);
+        // TODO: Implementar DELETE
+      },
+      variant: 'outline-danger',
+      title: 'Eliminar tipo de pregunta',
+    },
+  ];
+
+  const displayError = localError || hookError;
 
   return (
     <ProtectedRoute>
-      <Container className="mt-4">
-        {/* Header */}
-        <Row className="mb-4">
-          <Col>
-            <h2>Gestión de Tipos de Preguntas</h2>
-            <p className="text-muted">
-              Administre los tipos de preguntas disponibles en el sistema
-            </p>
-          </Col>
-        </Row>
+      <MasterDataTable<QuestionType>
+        items={paginatedItems}
+        totalItems={filteredItems.length}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        isLoading={loading}
+        title="🏷️ Gestión de Tipos de Preguntas"
+        description="Define los tipos de preguntas que pueden ser creadas en el banco"
+        columns={columns}
+        actions={actions}
+        searchText={searchText}
+        onSearchChange={(text) => {
+          setSearchText(text);
+          setCurrentPage(1);
+        }}
+        onPageChange={setCurrentPage}
+        searchPlaceholder="Buscar por código, nombre o descripción..."
+        onCreateClick={() => handleOpenModal()}
+        createButtonLabel="Crear Tipo"
+        createButtonIcon="➕"
+        emptyMessage="No hay tipos de preguntas registrados"
+        emptyIcon="📭"
+      />
 
-        {/* Error Alert */}
-        {error && (
-          <Row className="mb-3">
-            <Col>
-              <Alert variant="danger" onClose={() => setError(null)} dismissible>
-                {error}
-              </Alert>
-            </Col>
-          </Row>
-        )}
-
-        {/* Create Button */}
-        <Row className="mb-3">
-          <Col>
-            <Button
-              variant="primary"
-              onClick={() => handleOpenModal()}
-            >
-              ➕ Crear Nuevo Tipo de Pregunta
-            </Button>
-          </Col>
-        </Row>
-
-        {/* Question Types Table */}
-        <Row>
-          <Col>
-            <Card>
-              <Card.Body>
-                {loading ? (
-                  <div className="text-center py-5">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Cargando...</span>
-                    </Spinner>
-                  </div>
-                ) : questionTypes.length === 0 ? (
-                  <div className="text-center py-5">
-                    <p className="text-muted">
-                      No hay tipos de preguntas registrados
-                    </p>
-                  </div>
-                ) : (
-                  <Table striped hover responsive>
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th style={{ width: '150px' }}>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {questionTypes.map((type) => (
-                        <tr key={type.id}>
-                          <td>
-                            <code>{type.code}</code>
-                          </td>
-                          <td>{type.name}</td>
-                          <td>{type.description || '—'}</td>
-                          <td>
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              onClick={() => handleOpenModal(type)}
-                              className="me-2"
-                            >
-                              ✏️
-                            </Button>
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => handleDelete(type.id)}
-                            >
-                              🗑️
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Create/Edit Modal */}
+      {/* Create/Edit Modal */}
+      {showModal && (
         <Modal show={showModal} onHide={handleCloseModal} centered>
           <Modal.Header closeButton>
             <Modal.Title>
-              {editingId
-                ? 'Editar Tipo de Pregunta'
-                : 'Crear Nuevo Tipo de Pregunta'}
+              {editingId ? 'Editar Tipo de Pregunta' : 'Crear Nuevo Tipo'}
             </Modal.Title>
           </Modal.Header>
           <Form onSubmit={handleSubmit}>
             <Modal.Body>
+              {displayError && (
+                <Alert
+                  variant="danger"
+                  onClose={() => setLocalError(null)}
+                  dismissible
+                >
+                  {displayError}
+                </Alert>
+              )}
+
               <Form.Group className="mb-3">
                 <Form.Label>
                   Código <span style={{ color: 'red' }}>*</span>
@@ -257,9 +199,10 @@ export default function QuestionTypesPage() {
                     setFormData({ ...formData, code: e.target.value })
                   }
                   required
+                  disabled={submitting}
                 />
                 <Form.Text className="text-muted">
-                  Código único corto para identificar el tipo (máx 10 caracteres)
+                  Identificador único del tipo (ej: MC, TF, SA)
                 </Form.Text>
               </Form.Group>
 
@@ -269,12 +212,13 @@ export default function QuestionTypesPage() {
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="ej: Opción Múltiple"
+                  placeholder="ej: Selección Múltiple"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
+                  disabled={submitting}
                 />
               </Form.Group>
 
@@ -285,23 +229,53 @@ export default function QuestionTypesPage() {
                   placeholder="Descripción del tipo de pregunta"
                   value={formData.description}
                   onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
+                    setFormData({
+                      ...formData,
+                      description: e.target.value,
+                    })
                   }
                   rows={3}
+                  disabled={submitting}
                 />
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseModal}
+                disabled={submitting}
+              >
                 Cancelar
-              </Button>
-              <Button variant="primary" type="submit">
-                {editingId ? 'Guardar Cambios' : 'Crear'}
-              </Button>
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={submitting || creating}
+              >
+                {submitting || creating ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Guardando...
+                  </>
+                ) : editingId ? (
+                  'Guardar Cambios'
+                ) : (
+                  'Crear'
+                )}
+              </button>
             </Modal.Footer>
           </Form>
         </Modal>
-      </Container>
+      )}
     </ProtectedRoute>
   );
 }
+

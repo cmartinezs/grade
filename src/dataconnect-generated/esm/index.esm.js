@@ -380,6 +380,72 @@ export function deleteQuestionOption(dcOrVars, vars) {
   return executeMutation(deleteQuestionOptionRef(dcOrVars, vars));
 }
 
+export const createQuestionTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuestionType', inputVars);
+}
+createQuestionTypeRef.operationName = 'CreateQuestionType';
+
+export function createQuestionType(dcOrVars, vars) {
+  return executeMutation(createQuestionTypeRef(dcOrVars, vars));
+}
+
+export const deactivateQuestionTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateQuestionType', inputVars);
+}
+deactivateQuestionTypeRef.operationName = 'DeactivateQuestionType';
+
+export function deactivateQuestionType(dcOrVars, vars) {
+  return executeMutation(deactivateQuestionTypeRef(dcOrVars, vars));
+}
+
+export const reactivateQuestionTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateQuestionType', inputVars);
+}
+reactivateQuestionTypeRef.operationName = 'ReactivateQuestionType';
+
+export function reactivateQuestionType(dcOrVars, vars) {
+  return executeMutation(reactivateQuestionTypeRef(dcOrVars, vars));
+}
+
+export const createDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateDifficulty', inputVars);
+}
+createDifficultyRef.operationName = 'CreateDifficulty';
+
+export function createDifficulty(dcOrVars, vars) {
+  return executeMutation(createDifficultyRef(dcOrVars, vars));
+}
+
+export const deactivateDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateDifficulty', inputVars);
+}
+deactivateDifficultyRef.operationName = 'DeactivateDifficulty';
+
+export function deactivateDifficulty(dcOrVars, vars) {
+  return executeMutation(deactivateDifficultyRef(dcOrVars, vars));
+}
+
+export const reactivateDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateDifficulty', inputVars);
+}
+reactivateDifficultyRef.operationName = 'ReactivateDifficulty';
+
+export function reactivateDifficulty(dcOrVars, vars) {
+  return executeMutation(reactivateDifficultyRef(dcOrVars, vars));
+}
+
 export const getUserByEmailRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

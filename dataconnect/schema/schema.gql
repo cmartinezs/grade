@@ -149,6 +149,12 @@ type QuestionType @table(name: "question_types", key: "questionTypeId") {
   
   # Nombre del tipo de pregunta
   name: String!
+
+  # Descripción del tipo de pregunta
+  description: String
+  
+  # Indicador de activo/inactivo
+  active: Boolean! @default(value: true)
 }
 
 type Difficulty @table(name: "difficulties", key: "difficultyId") {
@@ -159,7 +165,13 @@ type Difficulty @table(name: "difficulties", key: "difficultyId") {
   level: String!
   
   # Peso o ponderador opcional
-  weight: Int
+  weight: Int!
+
+  # Descripción del tipo de pregunta
+  description: String
+  
+  # Indicador de activo/inactivo
+  active: Boolean! @default(value: true)
 }
 
 type Question @table(name: "questions", key: "questionId") {

@@ -1,0 +1,91 @@
+/**
+ * useQuestionTypes Hook
+ * Hook para gestionar tipos de preguntas desde Data Connect
+ * Sigue el patrón: componente -> hooks -> lib (masterDataConnect) -> dataconnect-generated
+ */
+
+import { useState, useCallback, useEffect } from 'react';
+import {
+  fetchAllQuestionTypes,
+  createNewQuestionType,
+  QuestionType,
+} from '@/lib/masterDataConnect';
+
+interface UseQuestionTypesResult {
+  questionTypes: QuestionType[];
+  loading: boolean;
+  error: string | null;
+  creating: boolean;
+  create: (code: string, name: string, description?: string) => Promise<QuestionType>;
+  refetch: () => Promise<void>;
+}
+
+export const useQuestionTypes = (): UseQuestionTypesResult => {
+  const [questionTypes, setQuestionTypes] = useState<QuestionType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
+
+  // Cargar tipos de preguntas
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchAllQuestionTypes();
+        setQuestionTypes(data);
+      } catch (err) {
+        console.error('Error loading question types:', err);
+        setError(err instanceof Error ? err.message : 'Error al cargar los tipos de preguntas');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Crear nuevo tipo de pregunta
+  const create = useCallback(
+    async (code: string, name: string, description?: string): Promise<QuestionType> => {
+      try {
+        setCreating(true);
+        setError(null);
+        const newType = await createNewQuestionType(code, name, description);
+        setQuestionTypes((prev) => [...prev, newType]);
+        return newType;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Error al crear el tipo de pregunta';
+        setError(errorMsg);
+        throw err;
+      } finally {
+        setCreating(false);
+      }
+    },
+    []
+  );
+
+  // Recargar datos
+  const refetch = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchAllQuestionTypes();
+      setQuestionTypes(data);
+    } catch (err) {
+      console.error('Error refetching question types:', err);
+      setError(err instanceof Error ? err.message : 'Error al recargar los tipos de preguntas');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return {
+    questionTypes,
+    loading,
+    error,
+    creating,
+    create,
+    refetch,
+  };
+};
