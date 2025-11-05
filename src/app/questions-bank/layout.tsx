@@ -40,6 +40,16 @@ const qbMenu = [
         href: '/questions-bank/taxonomy' 
       },
       { 
+        label: 'Tipos de Preguntas', 
+        icon: '🏷️',
+        href: '/questions-bank/question-types' 
+      },
+      { 
+        label: 'Niveles de Dificultad', 
+        icon: '📈',
+        href: '/questions-bank/difficulties' 
+      },
+      { 
         label: 'Configuración', 
         icon: '⚙️',
         href: '/questions-bank/settings' 

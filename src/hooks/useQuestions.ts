@@ -28,7 +28,7 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadQuestions = useCallback(() => {
+  useEffect(() => {
     try {
       setLoading(true);
       setError(null);
@@ -75,16 +75,59 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [
+    filters?.searchText,
+    filters?.type,
+    filters?.difficulty_fk,
+    filters?.subject_fk,
+    filters?.includeInactive,
+  ]);
 
-  useEffect(() => {
-    loadQuestions();
-  }, [loadQuestions]);
+  const refetch = useCallback(() => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const queryFilters: {
+        type?: QuestionType;
+        difficulty_fk?: DifficultyLevel;
+        subject_fk?: string;
+        includeInactive?: boolean;
+      } = {
+        includeInactive: filters?.includeInactive ?? true,
+      };
+
+      if (filters?.type && String(filters.type).length > 0) {
+        queryFilters.type = filters.type as QuestionType;
+      }
+
+      if (filters?.difficulty_fk && String(filters.difficulty_fk).length > 0) {
+        queryFilters.difficulty_fk = filters.difficulty_fk as DifficultyLevel;
+      }
+
+      if (filters?.subject_fk) {
+        queryFilters.subject_fk = filters.subject_fk;
+      }
+
+      const results = questionStore.searchQuestionsGrouped(
+        filters?.searchText || '',
+        queryFilters
+      );
+
+      setQuestions(results);
+    } catch (err) {
+      console.error('Error refetching questions:', err);
+      setError(err instanceof Error ? err.message : 'Error cargando preguntas');
+      setQuestions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [filters]);
 
   return {
     questions,
     loading,
     error,
-    refetch: loadQuestions,
+    refetch,
   };
 };
