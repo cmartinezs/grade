@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Row, Col, Card, Button, Badge, Form, InputGroup, Dropdown, ButtonGroup } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from '@/components/CreateQuestionModal';
@@ -10,8 +10,9 @@ import CloneQuestionModal from '@/components/CloneQuestionModal';
 import RetireQuestionModal from '@/components/RetireQuestionModal';
 import ReactivateQuestionModal from '@/components/ReactivateQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { QuestionWithDetails, QuestionType, DifficultyLevel } from '@/types/question';
-import { getAllSubjects } from '@/lib/taxonomyStore';
+import type { QuestionType, DifficultyLevel } from '@/types/question';
+import { useTaxonomy } from '@/hooks/useTaxonomy';
+import { useQuestions } from '@/hooks/useQuestions';
 
 export default function QuestionsBankPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -24,51 +25,29 @@ export default function QuestionsBankPage() {
   const [editMode, setEditMode] = useState<'edit' | 'version'>('version');
   const [isRetiring, setIsRetiring] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
-  const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState<QuestionType | ''>('');
   const [filterDifficulty, setFilterDifficulty] = useState<DifficultyLevel | ''>('');
   const [filterSubject, setFilterSubject] = useState('');
   const [showInactive, setShowInactive] = useState(true);
 
-  const subjects = getAllSubjects().filter(s => s.active && !s.deleted_at);
+  // Load subjects from Data Connect
+  const { subjects: allSubjects } = useTaxonomy();
+  const subjects = allSubjects.filter((s) => s.active && !s.deleted_at);
+
+  // Load questions with current filters from Data Connect (with fallback to local store)
+  const { questions, refetch } = useQuestions({
+    searchText,
+    type: filterType,
+    difficulty_fk: filterDifficulty,
+    subject_fk: filterSubject,
+    includeInactive: showInactive,
+  });
+
   const difficultyLevels = questionStore.getDifficultyLevels();
 
-  useEffect(() => {
-    const filters: {
-      type?: QuestionType;
-      difficulty_fk?: DifficultyLevel;
-      subject_fk?: string;
-      includeInactive?: boolean;
-    } = {
-      includeInactive: showInactive
-    };
-    
-    if (filterType) filters.type = filterType;
-    if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
-    if (filterSubject) filters.subject_fk = filterSubject;
-
-    const results = questionStore.searchQuestionsGrouped(searchText, filters);
-    
-    setQuestions(results);
-  }, [searchText, filterType, filterDifficulty, filterSubject, showInactive]);
-
   const loadQuestions = () => {
-    const filters: {
-      type?: QuestionType;
-      difficulty_fk?: DifficultyLevel;
-      subject_fk?: string;
-      includeInactive?: boolean;
-    } = {
-      includeInactive: showInactive
-    };
-    
-    if (filterType) filters.type = filterType;
-    if (filterDifficulty) filters.difficulty_fk = filterDifficulty;
-    if (filterSubject) filters.subject_fk = filterSubject;
-
-    const results = questionStore.searchQuestionsGrouped(searchText, filters);
-    setQuestions(results);
+    refetch();
   };
 
   const handleCreateSuccess = () => {

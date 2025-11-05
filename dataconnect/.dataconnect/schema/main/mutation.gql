@@ -36,15 +36,6 @@ extend type Mutation {
     data: LevelCategory_Data!
   ): LevelCategory_KeyOutput! @fdc_generated(from: "LevelCategory", purpose: INSERT_SINGLE)
   """
-  ✨ Insert a single `Outcome` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
-  """
-  outcome_insert(
-    """
-    Data object to insert into the table.
-    """
-    data: Outcome_Data!
-  ): Outcome_KeyOutput! @fdc_generated(from: "Outcome", purpose: INSERT_SINGLE)
-  """
   ✨ Insert a single `Question` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   question_insert(
@@ -143,15 +134,6 @@ extend type Mutation {
     """
     data: [LevelCategory_Data!]!
   ): [LevelCategory_KeyOutput!]! @fdc_generated(from: "LevelCategory", purpose: INSERT_MULTIPLE)
-  """
-  ✨ Insert `Outcome` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
-  """
-  outcome_insertMany(
-    """
-    List of data objects to insert into the table.
-    """
-    data: [Outcome_Data!]!
-  ): [Outcome_KeyOutput!]! @fdc_generated(from: "Outcome", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Question` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -252,15 +234,6 @@ extend type Mutation {
     data: LevelCategory_Data!
   ): LevelCategory_KeyOutput! @fdc_generated(from: "LevelCategory", purpose: UPSERT_SINGLE)
   """
-  ✨ Insert or update a single `Outcome` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Outcome`.
-  """
-  outcome_upsert(
-    """
-    Data object to insert or update if it already exists.
-    """
-    data: Outcome_Data!
-  ): Outcome_KeyOutput! @fdc_generated(from: "Outcome", purpose: UPSERT_SINGLE)
-  """
   ✨ Insert or update a single `Question` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Question`.
   """
   question_upsert(
@@ -359,15 +332,6 @@ extend type Mutation {
     """
     data: [LevelCategory_Data!]!
   ): [LevelCategory_KeyOutput!]! @fdc_generated(from: "LevelCategory", purpose: UPSERT_MULTIPLE)
-  """
-  ✨ Insert or update `Outcome` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Outcome`.
-  """
-  outcome_upsertMany(
-    """
-    List of data objects to insert or update if it already exists.
-    """
-    data: [Outcome_Data!]!
-  ): [Outcome_KeyOutput!]! @fdc_generated(from: "Outcome", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Question` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Question`.
   """
@@ -507,25 +471,6 @@ extend type Mutation {
     """
     data: LevelCategory_Data!
   ): LevelCategory_KeyOutput @fdc_generated(from: "LevelCategory", purpose: UPDATE_SINGLE)
-  """
-  ✨ Update a single `Outcome` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Outcome` or `null` if not found.
-  """
-  outcome_update(
-    """
-    The key used to identify the object.
-    """
-    key: Outcome_Key
-
-    """
-    Fetch the first row based on the filters and ordering.
-    """
-    first: Outcome_FirstRow
-
-    """
-    Data object containing fields to be updated.
-    """
-    data: Outcome_Data!
-  ): Outcome_KeyOutput @fdc_generated(from: "Outcome", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Question` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Question` or `null` if not found.
   """
@@ -736,25 +681,6 @@ extend type Mutation {
     data: LevelCategory_Data!
   ): Int! @fdc_generated(from: "LevelCategory", purpose: UPDATE_MULTIPLE)
   """
-  ✨ Update `Outcome` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
-  """
-  outcome_updateMany(
-    """
-    Filter condition to specify which rows to update.
-    """
-    where: Outcome_Filter
-
-    """
-    Set to true to update all rows.
-    """
-    all: Boolean = false
-
-    """
-    Data object containing fields to update.
-    """
-    data: Outcome_Data!
-  ): Int! @fdc_generated(from: "Outcome", purpose: UPDATE_MULTIPLE)
-  """
   ✨ Update `Question` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   question_updateMany(
@@ -944,20 +870,6 @@ extend type Mutation {
     first: LevelCategory_FirstRow
   ): LevelCategory_KeyOutput @fdc_generated(from: "LevelCategory", purpose: DELETE_SINGLE)
   """
-  ✨ Delete a single `Outcome` based on `id`, `key` or `first` and return its key (or `null` if not found).
-  """
-  outcome_delete(
-    """
-    The key used to identify the object.
-    """
-    key: Outcome_Key
-
-    """
-    Fetch the first row based on the filters and ordering.
-    """
-    first: Outcome_FirstRow
-  ): Outcome_KeyOutput @fdc_generated(from: "Outcome", purpose: DELETE_SINGLE)
-  """
   ✨ Delete a single `Question` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   question_delete(
@@ -1111,20 +1023,6 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "LevelCategory", purpose: DELETE_MULTIPLE)
-  """
-  ✨ Delete `Outcome` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
-  """
-  outcome_deleteMany(
-    """
-    Filter condition to specify which rows to delete.
-    """
-    where: Outcome_Filter
-
-    """
-    Set to true to delete all rows.
-    """
-    all: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Question` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

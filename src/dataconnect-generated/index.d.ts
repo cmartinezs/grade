@@ -54,6 +54,51 @@ export interface CreateLevelCategoryVariables {
   createdBy: UUIDString;
 }
 
+export interface CreateQuestionData {
+  question_insert: Question_Key;
+}
+
+export interface CreateQuestionOptionData {
+  questionOption_insert: QuestionOption_Key;
+}
+
+export interface CreateQuestionOptionVariables {
+  questionOptionId: UUIDString;
+  text: string;
+  isCorrect: boolean;
+  position: number;
+  score?: number | null;
+  questionId: UUIDString;
+}
+
+export interface CreateQuestionVariables {
+  questionId: UUIDString;
+  text: string;
+  topicId: UUIDString;
+  difficultyId: UUIDString;
+  questionTypeId: UUIDString;
+  userId: UUIDString;
+  isPublic: boolean;
+  firebaseId: string;
+}
+
+export interface CreateQuestionVersionData {
+  question_insert: Question_Key;
+}
+
+export interface CreateQuestionVersionVariables {
+  questionId: UUIDString;
+  text: string;
+  topicId: UUIDString;
+  difficultyId: UUIDString;
+  questionTypeId: UUIDString;
+  userId: UUIDString;
+  isPublic: boolean;
+  version: number;
+  originalQuestionId: UUIDString;
+  firebaseId: string;
+}
+
 export interface CreateSubjectData {
   subject_insert: Subject_Key;
 }
@@ -134,6 +179,18 @@ export interface DeactivateLevelCategoryVariables {
   firebaseId: string;
 }
 
+export interface DeactivateQuestionData {
+  question_update?: Question_Key | null;
+}
+
+export interface DeactivateQuestionVariables {
+  questionId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+  userId: UUIDString;
+  firebaseId: string;
+}
+
 export interface DeactivateSubjectData {
   subject_update?: Subject_Key | null;
 }
@@ -165,6 +222,14 @@ export interface DeactivateUnitVariables {
   deletedAt: TimestampString;
   deletedBy: UUIDString;
   firebaseId: string;
+}
+
+export interface DeleteQuestionOptionData {
+  questionOption_delete?: QuestionOption_Key | null;
+}
+
+export interface DeleteQuestionOptionVariables {
+  questionOptionId: UUIDString;
 }
 
 export interface Difficulty_Key {
@@ -238,6 +303,18 @@ export interface GetCoursesByUserVariables {
   firebaseId: string;
 }
 
+export interface GetDifficultyData {
+  difficulty?: {
+    difficultyId: UUIDString;
+    level: string;
+    weight?: number | null;
+  } & Difficulty_Key;
+}
+
+export interface GetDifficultyVariables {
+  difficultyId: UUIDString;
+}
+
 export interface GetEducationalLevelData {
   educationalLevel?: {
     levelId: UUIDString;
@@ -292,6 +369,70 @@ export interface GetLevelsByCategoryData {
 
 export interface GetLevelsByCategoryVariables {
   categoryId: UUIDString;
+}
+
+export interface GetQuestionData {
+  questions: ({
+    questionId: UUIDString;
+    text: string;
+    active: boolean;
+    version: number;
+    originalQuestionId?: UUIDString | null;
+    topicId: UUIDString;
+    difficultyId: UUIDString;
+    questionTypeId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & Question_Key)[];
+}
+
+export interface GetQuestionOptionsData {
+  questionOptions: ({
+    questionOptionId: UUIDString;
+    text: string;
+    isCorrect: boolean;
+    position: number;
+    score?: number | null;
+    questionId: UUIDString;
+  } & QuestionOption_Key)[];
+}
+
+export interface GetQuestionOptionsVariables {
+  questionId: UUIDString;
+}
+
+export interface GetQuestionTypeByCodeData {
+  questionTypes: ({
+    questionTypeId: UUIDString;
+    code: string;
+    name: string;
+  } & QuestionType_Key)[];
+}
+
+export interface GetQuestionTypeByCodeVariables {
+  code: string;
+}
+
+export interface GetQuestionTypeData {
+  questionType?: {
+    questionTypeId: UUIDString;
+    code: string;
+    name: string;
+  } & QuestionType_Key;
+}
+
+export interface GetQuestionTypeVariables {
+  questionTypeId: UUIDString;
+}
+
+export interface GetQuestionVariables {
+  questionId: UUIDString;
+  userId: UUIDString;
+  firebaseId: string;
 }
 
 export interface GetSubjectData {
@@ -391,6 +532,14 @@ export interface ListCoursesVariables {
   firebaseId: string;
 }
 
+export interface ListDifficultiesData {
+  difficulties: ({
+    difficultyId: UUIDString;
+    level: string;
+    weight?: number | null;
+  } & Difficulty_Key)[];
+}
+
 export interface ListEducationalLevelsData {
   educationalLevels: ({
     levelId: UUIDString;
@@ -412,6 +561,91 @@ export interface ListLevelCategoriesData {
     active: boolean;
     createdAt: TimestampString;
   } & LevelCategory_Key)[];
+}
+
+export interface ListPublicQuestionsByDifficultyData {
+  questions: ({
+    questionId: UUIDString;
+    text: string;
+    active: boolean;
+    version: number;
+    topicId: UUIDString;
+    difficultyId: UUIDString;
+    questionTypeId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+  } & Question_Key)[];
+}
+
+export interface ListPublicQuestionsByDifficultyVariables {
+  difficultyId: UUIDString;
+}
+
+export interface ListPublicQuestionsByTypeData {
+  questions: ({
+    questionId: UUIDString;
+    text: string;
+    active: boolean;
+    version: number;
+    topicId: UUIDString;
+    difficultyId: UUIDString;
+    questionTypeId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+  } & Question_Key)[];
+}
+
+export interface ListPublicQuestionsByTypeVariables {
+  questionTypeId: UUIDString;
+}
+
+export interface ListPublicQuestionsData {
+  questions: ({
+    questionId: UUIDString;
+    text: string;
+    active: boolean;
+    version: number;
+    topicId: UUIDString;
+    difficultyId: UUIDString;
+    questionTypeId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+  } & Question_Key)[];
+}
+
+export interface ListQuestionTypesData {
+  questionTypes: ({
+    questionTypeId: UUIDString;
+    code: string;
+    name: string;
+  } & QuestionType_Key)[];
+}
+
+export interface ListQuestionsByUserData {
+  questions: ({
+    questionId: UUIDString;
+    text: string;
+    active: boolean;
+    version: number;
+    originalQuestionId?: UUIDString | null;
+    topicId: UUIDString;
+    difficultyId: UUIDString;
+    questionTypeId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & Question_Key)[];
+}
+
+export interface ListQuestionsByUserVariables {
+  userId: UUIDString;
+  firebaseId: string;
 }
 
 export interface ListSubjectsData {
@@ -442,11 +676,6 @@ export interface ListUnitsData {
     active: boolean;
     createdAt: TimestampString;
   } & Unit_Key)[];
-}
-
-export interface Outcome_Key {
-  outcomeId: UUIDString;
-  __typename?: 'Outcome_Key';
 }
 
 export interface QuestionOption_Key {
@@ -488,6 +717,16 @@ export interface ReactivateLevelCategoryData {
 
 export interface ReactivateLevelCategoryVariables {
   categoryId: UUIDString;
+  firebaseId: string;
+}
+
+export interface ReactivateQuestionData {
+  question_update?: Question_Key | null;
+}
+
+export interface ReactivateQuestionVariables {
+  questionId: UUIDString;
+  userId: UUIDString;
   firebaseId: string;
 }
 
@@ -575,6 +814,35 @@ export interface UpdateLevelCategoryVariables {
   description?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
+  firebaseId: string;
+}
+
+export interface UpdateQuestionData {
+  question_update?: Question_Key | null;
+}
+
+export interface UpdateQuestionOptionData {
+  questionOption_update?: QuestionOption_Key | null;
+}
+
+export interface UpdateQuestionOptionVariables {
+  questionOptionId: UUIDString;
+  text?: string | null;
+  isCorrect?: boolean | null;
+  position?: number | null;
+  score?: number | null;
+}
+
+export interface UpdateQuestionVariables {
+  questionId: UUIDString;
+  text?: string | null;
+  topicId?: UUIDString | null;
+  difficultyId?: UUIDString | null;
+  questionTypeId?: UUIDString | null;
+  isPublic?: boolean | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  userId: UUIDString;
   firebaseId: string;
 }
 
@@ -949,6 +1217,102 @@ export const reactivateCourseRef: ReactivateCourseRef;
 export function reactivateCourse(vars: ReactivateCourseVariables): MutationPromise<ReactivateCourseData, ReactivateCourseVariables>;
 export function reactivateCourse(dc: DataConnect, vars: ReactivateCourseVariables): MutationPromise<ReactivateCourseData, ReactivateCourseVariables>;
 
+interface CreateQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuestionVariables): MutationRef<CreateQuestionData, CreateQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateQuestionVariables): MutationRef<CreateQuestionData, CreateQuestionVariables>;
+  operationName: string;
+}
+export const createQuestionRef: CreateQuestionRef;
+
+export function createQuestion(vars: CreateQuestionVariables): MutationPromise<CreateQuestionData, CreateQuestionVariables>;
+export function createQuestion(dc: DataConnect, vars: CreateQuestionVariables): MutationPromise<CreateQuestionData, CreateQuestionVariables>;
+
+interface CreateQuestionVersionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuestionVersionVariables): MutationRef<CreateQuestionVersionData, CreateQuestionVersionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateQuestionVersionVariables): MutationRef<CreateQuestionVersionData, CreateQuestionVersionVariables>;
+  operationName: string;
+}
+export const createQuestionVersionRef: CreateQuestionVersionRef;
+
+export function createQuestionVersion(vars: CreateQuestionVersionVariables): MutationPromise<CreateQuestionVersionData, CreateQuestionVersionVariables>;
+export function createQuestionVersion(dc: DataConnect, vars: CreateQuestionVersionVariables): MutationPromise<CreateQuestionVersionData, CreateQuestionVersionVariables>;
+
+interface UpdateQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionVariables): MutationRef<UpdateQuestionData, UpdateQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuestionVariables): MutationRef<UpdateQuestionData, UpdateQuestionVariables>;
+  operationName: string;
+}
+export const updateQuestionRef: UpdateQuestionRef;
+
+export function updateQuestion(vars: UpdateQuestionVariables): MutationPromise<UpdateQuestionData, UpdateQuestionVariables>;
+export function updateQuestion(dc: DataConnect, vars: UpdateQuestionVariables): MutationPromise<UpdateQuestionData, UpdateQuestionVariables>;
+
+interface DeactivateQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateQuestionVariables): MutationRef<DeactivateQuestionData, DeactivateQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeactivateQuestionVariables): MutationRef<DeactivateQuestionData, DeactivateQuestionVariables>;
+  operationName: string;
+}
+export const deactivateQuestionRef: DeactivateQuestionRef;
+
+export function deactivateQuestion(vars: DeactivateQuestionVariables): MutationPromise<DeactivateQuestionData, DeactivateQuestionVariables>;
+export function deactivateQuestion(dc: DataConnect, vars: DeactivateQuestionVariables): MutationPromise<DeactivateQuestionData, DeactivateQuestionVariables>;
+
+interface ReactivateQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateQuestionVariables): MutationRef<ReactivateQuestionData, ReactivateQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReactivateQuestionVariables): MutationRef<ReactivateQuestionData, ReactivateQuestionVariables>;
+  operationName: string;
+}
+export const reactivateQuestionRef: ReactivateQuestionRef;
+
+export function reactivateQuestion(vars: ReactivateQuestionVariables): MutationPromise<ReactivateQuestionData, ReactivateQuestionVariables>;
+export function reactivateQuestion(dc: DataConnect, vars: ReactivateQuestionVariables): MutationPromise<ReactivateQuestionData, ReactivateQuestionVariables>;
+
+interface CreateQuestionOptionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuestionOptionVariables): MutationRef<CreateQuestionOptionData, CreateQuestionOptionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateQuestionOptionVariables): MutationRef<CreateQuestionOptionData, CreateQuestionOptionVariables>;
+  operationName: string;
+}
+export const createQuestionOptionRef: CreateQuestionOptionRef;
+
+export function createQuestionOption(vars: CreateQuestionOptionVariables): MutationPromise<CreateQuestionOptionData, CreateQuestionOptionVariables>;
+export function createQuestionOption(dc: DataConnect, vars: CreateQuestionOptionVariables): MutationPromise<CreateQuestionOptionData, CreateQuestionOptionVariables>;
+
+interface UpdateQuestionOptionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionOptionVariables): MutationRef<UpdateQuestionOptionData, UpdateQuestionOptionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuestionOptionVariables): MutationRef<UpdateQuestionOptionData, UpdateQuestionOptionVariables>;
+  operationName: string;
+}
+export const updateQuestionOptionRef: UpdateQuestionOptionRef;
+
+export function updateQuestionOption(vars: UpdateQuestionOptionVariables): MutationPromise<UpdateQuestionOptionData, UpdateQuestionOptionVariables>;
+export function updateQuestionOption(dc: DataConnect, vars: UpdateQuestionOptionVariables): MutationPromise<UpdateQuestionOptionData, UpdateQuestionOptionVariables>;
+
+interface DeleteQuestionOptionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuestionOptionVariables): MutationRef<DeleteQuestionOptionData, DeleteQuestionOptionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteQuestionOptionVariables): MutationRef<DeleteQuestionOptionData, DeleteQuestionOptionVariables>;
+  operationName: string;
+}
+export const deleteQuestionOptionRef: DeleteQuestionOptionRef;
+
+export function deleteQuestionOption(vars: DeleteQuestionOptionVariables): MutationPromise<DeleteQuestionOptionData, DeleteQuestionOptionVariables>;
+export function deleteQuestionOption(dc: DataConnect, vars: DeleteQuestionOptionVariables): MutationPromise<DeleteQuestionOptionData, DeleteQuestionOptionVariables>;
+
 interface GetUserByEmailRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
@@ -1140,4 +1504,136 @@ export const getCoursesByLevelRef: GetCoursesByLevelRef;
 
 export function getCoursesByLevel(vars: GetCoursesByLevelVariables): QueryPromise<GetCoursesByLevelData, GetCoursesByLevelVariables>;
 export function getCoursesByLevel(dc: DataConnect, vars: GetCoursesByLevelVariables): QueryPromise<GetCoursesByLevelData, GetCoursesByLevelVariables>;
+
+interface ListDifficultiesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListDifficultiesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListDifficultiesData, undefined>;
+  operationName: string;
+}
+export const listDifficultiesRef: ListDifficultiesRef;
+
+export function listDifficulties(): QueryPromise<ListDifficultiesData, undefined>;
+export function listDifficulties(dc: DataConnect): QueryPromise<ListDifficultiesData, undefined>;
+
+interface GetDifficultyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetDifficultyVariables): QueryRef<GetDifficultyData, GetDifficultyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetDifficultyVariables): QueryRef<GetDifficultyData, GetDifficultyVariables>;
+  operationName: string;
+}
+export const getDifficultyRef: GetDifficultyRef;
+
+export function getDifficulty(vars: GetDifficultyVariables): QueryPromise<GetDifficultyData, GetDifficultyVariables>;
+export function getDifficulty(dc: DataConnect, vars: GetDifficultyVariables): QueryPromise<GetDifficultyData, GetDifficultyVariables>;
+
+interface ListQuestionTypesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuestionTypesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListQuestionTypesData, undefined>;
+  operationName: string;
+}
+export const listQuestionTypesRef: ListQuestionTypesRef;
+
+export function listQuestionTypes(): QueryPromise<ListQuestionTypesData, undefined>;
+export function listQuestionTypes(dc: DataConnect): QueryPromise<ListQuestionTypesData, undefined>;
+
+interface GetQuestionTypeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionTypeVariables): QueryRef<GetQuestionTypeData, GetQuestionTypeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionTypeVariables): QueryRef<GetQuestionTypeData, GetQuestionTypeVariables>;
+  operationName: string;
+}
+export const getQuestionTypeRef: GetQuestionTypeRef;
+
+export function getQuestionType(vars: GetQuestionTypeVariables): QueryPromise<GetQuestionTypeData, GetQuestionTypeVariables>;
+export function getQuestionType(dc: DataConnect, vars: GetQuestionTypeVariables): QueryPromise<GetQuestionTypeData, GetQuestionTypeVariables>;
+
+interface GetQuestionTypeByCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionTypeByCodeVariables): QueryRef<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryRef<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+  operationName: string;
+}
+export const getQuestionTypeByCodeRef: GetQuestionTypeByCodeRef;
+
+export function getQuestionTypeByCode(vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+export function getQuestionTypeByCode(dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+
+interface ListQuestionsByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListQuestionsByUserVariables): QueryRef<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListQuestionsByUserVariables): QueryRef<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+  operationName: string;
+}
+export const listQuestionsByUserRef: ListQuestionsByUserRef;
+
+export function listQuestionsByUser(vars: ListQuestionsByUserVariables): QueryPromise<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+export function listQuestionsByUser(dc: DataConnect, vars: ListQuestionsByUserVariables): QueryPromise<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+
+interface GetQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionVariables): QueryRef<GetQuestionData, GetQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionVariables): QueryRef<GetQuestionData, GetQuestionVariables>;
+  operationName: string;
+}
+export const getQuestionRef: GetQuestionRef;
+
+export function getQuestion(vars: GetQuestionVariables): QueryPromise<GetQuestionData, GetQuestionVariables>;
+export function getQuestion(dc: DataConnect, vars: GetQuestionVariables): QueryPromise<GetQuestionData, GetQuestionVariables>;
+
+interface ListPublicQuestionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListPublicQuestionsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListPublicQuestionsData, undefined>;
+  operationName: string;
+}
+export const listPublicQuestionsRef: ListPublicQuestionsRef;
+
+export function listPublicQuestions(): QueryPromise<ListPublicQuestionsData, undefined>;
+export function listPublicQuestions(dc: DataConnect): QueryPromise<ListPublicQuestionsData, undefined>;
+
+interface ListPublicQuestionsByDifficultyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListPublicQuestionsByDifficultyVariables): QueryRef<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListPublicQuestionsByDifficultyVariables): QueryRef<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+  operationName: string;
+}
+export const listPublicQuestionsByDifficultyRef: ListPublicQuestionsByDifficultyRef;
+
+export function listPublicQuestionsByDifficulty(vars: ListPublicQuestionsByDifficultyVariables): QueryPromise<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+export function listPublicQuestionsByDifficulty(dc: DataConnect, vars: ListPublicQuestionsByDifficultyVariables): QueryPromise<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+
+interface ListPublicQuestionsByTypeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListPublicQuestionsByTypeVariables): QueryRef<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListPublicQuestionsByTypeVariables): QueryRef<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+  operationName: string;
+}
+export const listPublicQuestionsByTypeRef: ListPublicQuestionsByTypeRef;
+
+export function listPublicQuestionsByType(vars: ListPublicQuestionsByTypeVariables): QueryPromise<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+export function listPublicQuestionsByType(dc: DataConnect, vars: ListPublicQuestionsByTypeVariables): QueryPromise<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+
+interface GetQuestionOptionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionOptionsVariables): QueryRef<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionOptionsVariables): QueryRef<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+  operationName: string;
+}
+export const getQuestionOptionsRef: GetQuestionOptionsRef;
+
+export function getQuestionOptions(vars: GetQuestionOptionsVariables): QueryPromise<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+export function getQuestionOptions(dc: DataConnect, vars: GetQuestionOptionsVariables): QueryPromise<GetQuestionOptionsData, GetQuestionOptionsVariables>;
 

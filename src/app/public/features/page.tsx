@@ -160,7 +160,7 @@ export default function PublicFeatures() {
         {/* Comparación */}
         <Row className="mt-5">
           <Col>
-            <h3 className="text-center mb-4">📊 ¿Por qué elegir Grade Question Bank?</h3>
+            <h3 className="text-center mb-4">📊 ¿Por qué elegir GRADE: Generación y Registro Automatizado De Evaluaciones?</h3>
             <Card>
               <Card.Body>
                 <Row className="text-center">

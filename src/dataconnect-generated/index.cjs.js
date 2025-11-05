@@ -319,6 +319,102 @@ exports.reactivateCourse = function reactivateCourse(dcOrVars, vars) {
   return executeMutation(reactivateCourseRef(dcOrVars, vars));
 };
 
+const createQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuestion', inputVars);
+}
+createQuestionRef.operationName = 'CreateQuestion';
+exports.createQuestionRef = createQuestionRef;
+
+exports.createQuestion = function createQuestion(dcOrVars, vars) {
+  return executeMutation(createQuestionRef(dcOrVars, vars));
+};
+
+const createQuestionVersionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuestionVersion', inputVars);
+}
+createQuestionVersionRef.operationName = 'CreateQuestionVersion';
+exports.createQuestionVersionRef = createQuestionVersionRef;
+
+exports.createQuestionVersion = function createQuestionVersion(dcOrVars, vars) {
+  return executeMutation(createQuestionVersionRef(dcOrVars, vars));
+};
+
+const updateQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuestion', inputVars);
+}
+updateQuestionRef.operationName = 'UpdateQuestion';
+exports.updateQuestionRef = updateQuestionRef;
+
+exports.updateQuestion = function updateQuestion(dcOrVars, vars) {
+  return executeMutation(updateQuestionRef(dcOrVars, vars));
+};
+
+const deactivateQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateQuestion', inputVars);
+}
+deactivateQuestionRef.operationName = 'DeactivateQuestion';
+exports.deactivateQuestionRef = deactivateQuestionRef;
+
+exports.deactivateQuestion = function deactivateQuestion(dcOrVars, vars) {
+  return executeMutation(deactivateQuestionRef(dcOrVars, vars));
+};
+
+const reactivateQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateQuestion', inputVars);
+}
+reactivateQuestionRef.operationName = 'ReactivateQuestion';
+exports.reactivateQuestionRef = reactivateQuestionRef;
+
+exports.reactivateQuestion = function reactivateQuestion(dcOrVars, vars) {
+  return executeMutation(reactivateQuestionRef(dcOrVars, vars));
+};
+
+const createQuestionOptionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuestionOption', inputVars);
+}
+createQuestionOptionRef.operationName = 'CreateQuestionOption';
+exports.createQuestionOptionRef = createQuestionOptionRef;
+
+exports.createQuestionOption = function createQuestionOption(dcOrVars, vars) {
+  return executeMutation(createQuestionOptionRef(dcOrVars, vars));
+};
+
+const updateQuestionOptionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuestionOption', inputVars);
+}
+updateQuestionOptionRef.operationName = 'UpdateQuestionOption';
+exports.updateQuestionOptionRef = updateQuestionOptionRef;
+
+exports.updateQuestionOption = function updateQuestionOption(dcOrVars, vars) {
+  return executeMutation(updateQuestionOptionRef(dcOrVars, vars));
+};
+
+const deleteQuestionOptionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteQuestionOption', inputVars);
+}
+deleteQuestionOptionRef.operationName = 'DeleteQuestionOption';
+exports.deleteQuestionOptionRef = deleteQuestionOptionRef;
+
+exports.deleteQuestionOption = function deleteQuestionOption(dcOrVars, vars) {
+  return executeMutation(deleteQuestionOptionRef(dcOrVars, vars));
+};
+
 const getUserByEmailRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -509,4 +605,136 @@ exports.getCoursesByLevelRef = getCoursesByLevelRef;
 
 exports.getCoursesByLevel = function getCoursesByLevel(dcOrVars, vars) {
   return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
+};
+
+const listDifficultiesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListDifficulties');
+}
+listDifficultiesRef.operationName = 'ListDifficulties';
+exports.listDifficultiesRef = listDifficultiesRef;
+
+exports.listDifficulties = function listDifficulties(dc) {
+  return executeQuery(listDifficultiesRef(dc));
+};
+
+const getDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetDifficulty', inputVars);
+}
+getDifficultyRef.operationName = 'GetDifficulty';
+exports.getDifficultyRef = getDifficultyRef;
+
+exports.getDifficulty = function getDifficulty(dcOrVars, vars) {
+  return executeQuery(getDifficultyRef(dcOrVars, vars));
+};
+
+const listQuestionTypesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuestionTypes');
+}
+listQuestionTypesRef.operationName = 'ListQuestionTypes';
+exports.listQuestionTypesRef = listQuestionTypesRef;
+
+exports.listQuestionTypes = function listQuestionTypes(dc) {
+  return executeQuery(listQuestionTypesRef(dc));
+};
+
+const getQuestionTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionType', inputVars);
+}
+getQuestionTypeRef.operationName = 'GetQuestionType';
+exports.getQuestionTypeRef = getQuestionTypeRef;
+
+exports.getQuestionType = function getQuestionType(dcOrVars, vars) {
+  return executeQuery(getQuestionTypeRef(dcOrVars, vars));
+};
+
+const getQuestionTypeByCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionTypeByCode', inputVars);
+}
+getQuestionTypeByCodeRef.operationName = 'GetQuestionTypeByCode';
+exports.getQuestionTypeByCodeRef = getQuestionTypeByCodeRef;
+
+exports.getQuestionTypeByCode = function getQuestionTypeByCode(dcOrVars, vars) {
+  return executeQuery(getQuestionTypeByCodeRef(dcOrVars, vars));
+};
+
+const listQuestionsByUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuestionsByUser', inputVars);
+}
+listQuestionsByUserRef.operationName = 'ListQuestionsByUser';
+exports.listQuestionsByUserRef = listQuestionsByUserRef;
+
+exports.listQuestionsByUser = function listQuestionsByUser(dcOrVars, vars) {
+  return executeQuery(listQuestionsByUserRef(dcOrVars, vars));
+};
+
+const getQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestion', inputVars);
+}
+getQuestionRef.operationName = 'GetQuestion';
+exports.getQuestionRef = getQuestionRef;
+
+exports.getQuestion = function getQuestion(dcOrVars, vars) {
+  return executeQuery(getQuestionRef(dcOrVars, vars));
+};
+
+const listPublicQuestionsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListPublicQuestions');
+}
+listPublicQuestionsRef.operationName = 'ListPublicQuestions';
+exports.listPublicQuestionsRef = listPublicQuestionsRef;
+
+exports.listPublicQuestions = function listPublicQuestions(dc) {
+  return executeQuery(listPublicQuestionsRef(dc));
+};
+
+const listPublicQuestionsByDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListPublicQuestionsByDifficulty', inputVars);
+}
+listPublicQuestionsByDifficultyRef.operationName = 'ListPublicQuestionsByDifficulty';
+exports.listPublicQuestionsByDifficultyRef = listPublicQuestionsByDifficultyRef;
+
+exports.listPublicQuestionsByDifficulty = function listPublicQuestionsByDifficulty(dcOrVars, vars) {
+  return executeQuery(listPublicQuestionsByDifficultyRef(dcOrVars, vars));
+};
+
+const listPublicQuestionsByTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListPublicQuestionsByType', inputVars);
+}
+listPublicQuestionsByTypeRef.operationName = 'ListPublicQuestionsByType';
+exports.listPublicQuestionsByTypeRef = listPublicQuestionsByTypeRef;
+
+exports.listPublicQuestionsByType = function listPublicQuestionsByType(dcOrVars, vars) {
+  return executeQuery(listPublicQuestionsByTypeRef(dcOrVars, vars));
+};
+
+const getQuestionOptionsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionOptions', inputVars);
+}
+getQuestionOptionsRef.operationName = 'GetQuestionOptions';
+exports.getQuestionOptionsRef = getQuestionOptionsRef;
+
+exports.getQuestionOptions = function getQuestionOptions(dcOrVars, vars) {
+  return executeQuery(getQuestionOptionsRef(dcOrVars, vars));
 };

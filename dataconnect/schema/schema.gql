@@ -162,38 +162,6 @@ type Difficulty @table(name: "difficulties", key: "difficultyId") {
   weight: Int
 }
 
-type Outcome @table(name: "outcomes", key: "outcomeId") {
-  # Identificador único del resultado de aprendizaje
-  outcomeId: UUID! @col(name: "outcome_id")
-  
-  # Código del resultado (ej. LO-SCI-5.2)
-  code: String!
-  
-  # Descripción del resultado de aprendizaje
-  description: String!
-  
-  # ID de la asignatura relacionada
-  subjectId: UUID @col(name: "subject_fk")
-  
-  # Fecha de creación
-  createdAt: Timestamp! @col(name: "created_at")
-  
-  # ID del usuario creador
-  createdBy: UUID! @col(name: "created_by")
-  
-  # Fecha de última actualización
-  updatedAt: Timestamp @col(name: "updated_at")
-  
-  # ID del usuario que realizó la última actualización
-  updatedBy: UUID @col(name: "updated_by")
-  
-  # Fecha de eliminación (soft delete)
-  deletedAt: Timestamp @col(name: "deleted_at")
-  
-  # ID del usuario que realizó la eliminación
-  deletedBy: UUID @col(name: "deleted_by")
-}
-
 type Question @table(name: "questions", key: "questionId") {
   # Identificador único de la pregunta
   questionId: UUID! @col(name: "question_id")
@@ -216,17 +184,17 @@ type Question @table(name: "questions", key: "questionId") {
   # ID del nivel de dificultad
   difficultyId: UUID! @col(name: "difficulty_fk")
   
-  # ID del resultado de aprendizaje asociado
-  outcomeId: UUID @col(name: "outcome_fk")
-  
   # ID del tipo de pregunta
   questionTypeId: UUID! @col(name: "question_type_fk")
   
   # ID del usuario creador
   userId: UUID! @col(name: "user_fk")
+
+  # Indicador de pregunta pública o privada
+  isPublic: Boolean! @default(value: false)
   
   # Fecha de creación
-  createdAt: Timestamp! @col(name: "created_at")
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
   
   # Fecha de última actualización
   updatedAt: Timestamp @col(name: "updated_at")

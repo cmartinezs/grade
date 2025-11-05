@@ -175,7 +175,7 @@ export default function RegisterPage() {
           {/* Logo y enlace de vuelta */}
           <div className="text-center mb-4">
             <Link href="/" className="text-decoration-none">
-              <h1 className="text-primary">📚 Grade Question Bank</h1>
+              <h1 className="text-primary">📚 GRADE: Generación y Registro Automatizado De Evaluaciones</h1>
             </Link>
             <Link href="/" className="text-decoration-none text-muted">
               <small>← Volver al inicio</small>

@@ -23,12 +23,6 @@ It has the same format as `LevelCategory_Key`, but is only used as mutation retu
 """
 scalar LevelCategory_KeyOutput
 """
-✨ `Outcome_KeyOutput` returns the primary key fields of table type `Outcome`.
-
-It has the same format as `Outcome_Key`, but is only used as mutation return value.
-"""
-scalar Outcome_KeyOutput
-"""
 ✨ `Question_KeyOutput` returns the primary key fields of table type `Question`.
 
 It has the same format as `Question_Key`, but is only used as mutation return value.
@@ -1639,413 +1633,6 @@ input LevelCategory_Order {
   updatedAt_max: OrderDirection
 }
 """
-✨ Generated data input type for table 'Outcome'. It includes all necessary fields for creating or upserting rows into table.
-"""
-input Outcome_Data {
-  """
-  ✨ Generated from Field `Outcome`.`outcomeId` of type `UUID!`
-  """
-  outcomeId: UUID
-  """
-  ✨ `_expr` server value variant of `outcomeId` (✨ Generated from Field `Outcome`.`outcomeId` of type `UUID!`)
-  """
-  outcomeId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Outcome`.`code` of type `String!`
-  """
-  code: String
-  """
-  ✨ `_expr` server value variant of `code` (✨ Generated from Field `Outcome`.`code` of type `String!`)
-  """
-  code_expr: String_Expr
-  """
-  ✨ Generated from Field `Outcome`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Outcome`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Outcome`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
-  """
-  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Outcome`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_update: [Timestamp_Update!]
-  """
-  ✨ Generated from Field `Outcome`.`createdBy` of type `UUID!`
-  """
-  createdBy: UUID
-  """
-  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Outcome`.`createdBy` of type `UUID!`)
-  """
-  createdBy_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt` of type `Timestamp`
-  """
-  deletedAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `Outcome`.`deletedAt` of type `Timestamp`)
-  """
-  deletedAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `Outcome`.`deletedAt` of type `Timestamp`)
-  """
-  deletedAt_time: Timestamp_Relative
-  """
-  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `Outcome`.`deletedAt` of type `Timestamp`)
-  """
-  deletedAt_update: [Timestamp_Update!]
-  """
-  ✨ Generated from Field `Outcome`.`deletedBy` of type `UUID`
-  """
-  deletedBy: UUID
-  """
-  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `Outcome`.`deletedBy` of type `UUID`)
-  """
-  deletedBy_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Outcome`.`description` of type `String!`
-  """
-  description: String
-  """
-  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Outcome`.`description` of type `String!`)
-  """
-  description_expr: String_Expr
-  """
-  ✨ Generated from Field `Outcome`.`subjectId` of type `UUID`
-  """
-  subjectId: UUID
-  """
-  ✨ `_expr` server value variant of `subjectId` (✨ Generated from Field `Outcome`.`subjectId` of type `UUID`)
-  """
-  subjectId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt` of type `Timestamp`
-  """
-  updatedAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Outcome`.`updatedAt` of type `Timestamp`)
-  """
-  updatedAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Outcome`.`updatedAt` of type `Timestamp`)
-  """
-  updatedAt_time: Timestamp_Relative
-  """
-  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Outcome`.`updatedAt` of type `Timestamp`)
-  """
-  updatedAt_update: [Timestamp_Update!]
-  """
-  ✨ Generated from Field `Outcome`.`updatedBy` of type `UUID`
-  """
-  updatedBy: UUID
-  """
-  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `Outcome`.`updatedBy` of type `UUID`)
-  """
-  updatedBy_expr: UUID_Expr
-}
-"""
-✨ Generated filter input type for table 'Outcome'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
-"""
-input Outcome_Filter {
-  """
-  Apply multiple filter conditions using `AND` logic.
-  """
-  _and: [Outcome_Filter!]
-  """
-  Negate the result of the provided filter condition.
-  """
-  _not: Outcome_Filter
-  """
-  Apply multiple filter conditions using `OR` logic.
-  """
-  _or: [Outcome_Filter!]
-  """
-  ✨ Generated from Field `Outcome`.`outcomeId` of type `UUID!`
-  """
-  outcomeId: UUID_Filter
-  """
-  ✨ Generated from Field `Outcome`.`code` of type `String!`
-  """
-  code: String_Filter
-  """
-  ✨ Generated from Field `Outcome`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`createdBy` of type `UUID!`
-  """
-  createdBy: UUID_Filter
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt` of type `Timestamp`
-  """
-  deletedAt: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`deletedBy` of type `UUID`
-  """
-  deletedBy: UUID_Filter
-  """
-  ✨ Generated from Field `Outcome`.`description` of type `String!`
-  """
-  description: String_Filter
-  """
-  ✨ Generated from Field `Outcome`.`subjectId` of type `UUID`
-  """
-  subjectId: UUID_Filter
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt` of type `Timestamp`
-  """
-  updatedAt: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`updatedBy` of type `UUID`
-  """
-  updatedBy: UUID_Filter
-}
-"""
-✨ Generated first-row input type for table 'Outcome'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
-"""
-input Outcome_FirstRow {
-  """
-  Order the result by the specified fields.
-  """
-  orderBy: [Outcome_Order!]
-  """
-  Filters rows based on the specified conditions.
-  """
-  where: Outcome_Filter
-}
-"""
-✨ Generated having input type for table 'Outcome'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
-"""
-input Outcome_Having {
-  """
-  Apply multiple Having conditions using `AND` logic.
-  """
-  _and: [Outcome_Having!]
-  """
-  Whether to apply DISTINCT to the aggregate function.
-  """
-  _distinct: Boolean
-  """
-  Negate the result of the provided Having condition.
-  """
-  _not: Outcome_Having
-  """
-  Apply multiple Having conditions using `OR` logic.
-  """
-  _or: [Outcome_Having!]
-  """
-  ✨ Generated from Field `Outcome`.`_count` of type `Int!`
-  """
-  _count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`code_count` of type `Int!`
-  """
-  code_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`createdAt_count` of type `Int!`
-  """
-  createdAt_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`createdBy_count` of type `Int!`
-  """
-  createdBy_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt_count` of type `Int!`
-  """
-  deletedAt_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`deletedBy_count` of type `Int!`
-  """
-  deletedBy_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`description_count` of type `Int!`
-  """
-  description_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`outcomeId_count` of type `Int!`
-  """
-  outcomeId_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`subjectId_count` of type `Int!`
-  """
-  subjectId_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt_count` of type `Int!`
-  """
-  updatedAt_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`updatedBy_count` of type `Int!`
-  """
-  updatedBy_count: Int_Filter
-  """
-  ✨ Generated from Field `Outcome`.`createdAt_min` of type `Timestamp`
-  """
-  createdAt_min: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt_min` of type `Timestamp`
-  """
-  deletedAt_min: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt_min` of type `Timestamp`
-  """
-  updatedAt_min: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`createdAt_max` of type `Timestamp`
-  """
-  createdAt_max: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt_max` of type `Timestamp`
-  """
-  deletedAt_max: Timestamp_Filter
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt_max` of type `Timestamp`
-  """
-  updatedAt_max: Timestamp_Filter
-}
-"""
-✨ Generated key input type for table 'Outcome'. It represents the primary key fields used to uniquely identify a row in the table.
-"""
-input Outcome_Key {
-  """
-  ✨ Generated from Field `Outcome`.`outcomeId` of type `UUID!`
-  """
-  outcomeId: UUID
-  """
-  ✨ `_expr` server value variant of `outcomeId` (✨ Generated from Field `Outcome`.`outcomeId` of type `UUID!`)
-  """
-  outcomeId_expr: UUID_Expr
-}
-"""
-✨ Generated list filter input type for table 'Outcome'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
-"""
-input Outcome_ListFilter {
-  """
-  The desired number of objects that match the condition (defaults to at least one).
-  """
-  count: Int_Filter = {gt:0}
-  """
-  Condition of the related objects to filter for.
-  """
-  exist: Outcome_Filter
-}
-"""
-✨ Generated order input type for table 'Outcome'. This input defines the sorting order of rows in query results based on one or more fields.
-"""
-input Outcome_Order {
-  """
-  ✨ Generated from Field `Outcome`.`outcomeId` of type `UUID!`
-  """
-  outcomeId: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`code` of type `String!`
-  """
-  code: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`createdBy` of type `UUID!`
-  """
-  createdBy: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt` of type `Timestamp`
-  """
-  deletedAt: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`deletedBy` of type `UUID`
-  """
-  deletedBy: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`description` of type `String!`
-  """
-  description: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`subjectId` of type `UUID`
-  """
-  subjectId: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt` of type `Timestamp`
-  """
-  updatedAt: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`updatedBy` of type `UUID`
-  """
-  updatedBy: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`_count` of type `Int!`
-  """
-  _count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`code_count` of type `Int!`
-  """
-  code_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`createdAt_count` of type `Int!`
-  """
-  createdAt_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`createdBy_count` of type `Int!`
-  """
-  createdBy_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt_count` of type `Int!`
-  """
-  deletedAt_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`deletedBy_count` of type `Int!`
-  """
-  deletedBy_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`description_count` of type `Int!`
-  """
-  description_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`outcomeId_count` of type `Int!`
-  """
-  outcomeId_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`subjectId_count` of type `Int!`
-  """
-  subjectId_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt_count` of type `Int!`
-  """
-  updatedAt_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`updatedBy_count` of type `Int!`
-  """
-  updatedBy_count: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`createdAt_min` of type `Timestamp`
-  """
-  createdAt_min: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt_min` of type `Timestamp`
-  """
-  deletedAt_min: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt_min` of type `Timestamp`
-  """
-  updatedAt_min: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`createdAt_max` of type `Timestamp`
-  """
-  createdAt_max: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`deletedAt_max` of type `Timestamp`
-  """
-  deletedAt_max: OrderDirection
-  """
-  ✨ Generated from Field `Outcome`.`updatedAt_max` of type `Timestamp`
-  """
-  updatedAt_max: OrderDirection
-}
-"""
 ✨ Generated data input type for table 'Question'. It includes all necessary fields for creating or upserting rows into table.
 """
 input Question_Data {
@@ -2114,6 +1701,14 @@ input Question_Data {
   """
   difficultyId_expr: UUID_Expr
   """
+  ✨ Generated from Field `Question`.`isPublic` of type `Boolean!`
+  """
+  isPublic: Boolean
+  """
+  ✨ `_expr` server value variant of `isPublic` (✨ Generated from Field `Question`.`isPublic` of type `Boolean!`)
+  """
+  isPublic_expr: Boolean_Expr
+  """
   ✨ Generated from Field `Question`.`originalQuestionId` of type `UUID`
   """
   originalQuestionId: UUID
@@ -2121,14 +1716,6 @@ input Question_Data {
   ✨ `_expr` server value variant of `originalQuestionId` (✨ Generated from Field `Question`.`originalQuestionId` of type `UUID`)
   """
   originalQuestionId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Question`.`outcomeId` of type `UUID`
-  """
-  outcomeId: UUID
-  """
-  ✨ `_expr` server value variant of `outcomeId` (✨ Generated from Field `Question`.`outcomeId` of type `UUID`)
-  """
-  outcomeId_expr: UUID_Expr
   """
   ✨ Generated from Field `Question`.`questionTypeId` of type `UUID!`
   """
@@ -2239,13 +1826,13 @@ input Question_Filter {
   """
   difficultyId: UUID_Filter
   """
+  ✨ Generated from Field `Question`.`isPublic` of type `Boolean!`
+  """
+  isPublic: Boolean_Filter
+  """
   ✨ Generated from Field `Question`.`originalQuestionId` of type `UUID`
   """
   originalQuestionId: UUID_Filter
-  """
-  ✨ Generated from Field `Question`.`outcomeId` of type `UUID`
-  """
-  outcomeId: UUID_Filter
   """
   ✨ Generated from Field `Question`.`questionTypeId` of type `UUID!`
   """
@@ -2333,13 +1920,13 @@ input Question_Having {
   """
   difficultyId_count: Int_Filter
   """
+  ✨ Generated from Field `Question`.`isPublic_count` of type `Int!`
+  """
+  isPublic_count: Int_Filter
+  """
   ✨ Generated from Field `Question`.`originalQuestionId_count` of type `Int!`
   """
   originalQuestionId_count: Int_Filter
-  """
-  ✨ Generated from Field `Question`.`outcomeId_count` of type `Int!`
-  """
-  outcomeId_count: Int_Filter
   """
   ✨ Generated from Field `Question`.`questionId_count` of type `Int!`
   """
@@ -2468,13 +2055,13 @@ input Question_Order {
   """
   difficultyId: OrderDirection
   """
+  ✨ Generated from Field `Question`.`isPublic` of type `Boolean!`
+  """
+  isPublic: OrderDirection
+  """
   ✨ Generated from Field `Question`.`originalQuestionId` of type `UUID`
   """
   originalQuestionId: OrderDirection
-  """
-  ✨ Generated from Field `Question`.`outcomeId` of type `UUID`
-  """
-  outcomeId: OrderDirection
   """
   ✨ Generated from Field `Question`.`questionTypeId` of type `UUID!`
   """
@@ -2528,13 +2115,13 @@ input Question_Order {
   """
   difficultyId_count: OrderDirection
   """
+  ✨ Generated from Field `Question`.`isPublic_count` of type `Int!`
+  """
+  isPublic_count: OrderDirection
+  """
   ✨ Generated from Field `Question`.`originalQuestionId_count` of type `Int!`
   """
   originalQuestionId_count: OrderDirection
-  """
-  ✨ Generated from Field `Question`.`outcomeId_count` of type `Int!`
-  """
-  outcomeId_count: OrderDirection
   """
   ✨ Generated from Field `Question`.`questionId_count` of type `Int!`
   """

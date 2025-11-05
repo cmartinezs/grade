@@ -487,130 +487,6 @@ extend type LevelCategory {
   """
   updatedAt_max: Timestamp @fdc_generated(from: "LevelCategory.updatedAt", purpose: QUERY_MAX)
 }
-extend type Outcome {
-  """
-  Implicit metadata field that cannot be written. It provides extra information about query results.
-  """
-  _metadata: _Metadata @fdc_generated(from: "Outcome", purpose: METADATA_FIELD)
-  """
-  ✨ Count the number of rows in the `Outcome` table.
-  """
-  _count: Int! @fdc_generated(from: "Outcome.", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  code_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.code", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  createdAt_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.createdAt", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  createdBy_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.createdBy", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `deletedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  deletedAt_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.deletedAt", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `deletedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  deletedBy_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.deletedBy", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  description_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.description", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `outcomeId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  outcomeId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.outcomeId", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `subjectId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  subjectId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.subjectId", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  updatedAt_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.updatedAt", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Outcome` table where the `updatedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  updatedBy_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Outcome.updatedBy", purpose: QUERY_COUNT)
-  """
-  ✨ Minimum of the `createdAt` field in the `Outcome` table.
-  """
-  createdAt_min: Timestamp @fdc_generated(from: "Outcome.createdAt", purpose: QUERY_MIN)
-  """
-  ✨ Minimum of the `deletedAt` field in the `Outcome` table.
-  """
-  deletedAt_min: Timestamp @fdc_generated(from: "Outcome.deletedAt", purpose: QUERY_MIN)
-  """
-  ✨ Minimum of the `updatedAt` field in the `Outcome` table.
-  """
-  updatedAt_min: Timestamp @fdc_generated(from: "Outcome.updatedAt", purpose: QUERY_MIN)
-  """
-  ✨ Maximum of the `createdAt` field in the `Outcome` table.
-  """
-  createdAt_max: Timestamp @fdc_generated(from: "Outcome.createdAt", purpose: QUERY_MAX)
-  """
-  ✨ Maximum of the `deletedAt` field in the `Outcome` table.
-  """
-  deletedAt_max: Timestamp @fdc_generated(from: "Outcome.deletedAt", purpose: QUERY_MAX)
-  """
-  ✨ Maximum of the `updatedAt` field in the `Outcome` table.
-  """
-  updatedAt_max: Timestamp @fdc_generated(from: "Outcome.updatedAt", purpose: QUERY_MAX)
-}
 extend type Question {
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
@@ -666,6 +542,15 @@ extend type Question {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Question.difficultyId", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Question` table where the `isPublic` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isPublic_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Question.isPublic", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Question` table where the `originalQuestionId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   originalQuestionId_count(
@@ -674,15 +559,6 @@ extend type Question {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Question.originalQuestionId", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Question` table where the `outcomeId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  outcomeId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Question.outcomeId", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Question` table where the `questionId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """

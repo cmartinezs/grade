@@ -25,7 +25,8 @@ import {
   QuestionValidationError,
 } from '@/types/question';
 import { QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { getAllSubjects, getAllUnits, getAllTopics } from '@/lib/taxonomyStore';
+import { useTaxonomy } from '@/hooks/useTaxonomy';
+import type { Subject, Unit, Topic } from '@/types/taxonomy';
 
 interface QuestionFormFieldsProps {
   // Question Type
@@ -86,13 +87,16 @@ export default function QuestionFormFields({
   showDifficultyAsRadio = false,
 }: QuestionFormFieldsProps) {
   
-  // Load taxonomy data
-  const subjects = getAllSubjects().filter(s => s.active && !s.deleted_at);
-  const units = selectedSubject
-    ? getAllUnits().filter(u => u.subject_fk === selectedSubject && u.active && !u.deleted_at)
+  // Load taxonomy data from Data Connect
+  const { subjects: allSubjects, units: allUnits, topics: allTopics } = useTaxonomy();
+  
+  // Filter active items
+  const subjects: Subject[] = allSubjects.filter((s) => s.active && !s.deleted_at);
+  const units: Unit[] = selectedSubject
+    ? allUnits.filter((u) => u.subject_fk === selectedSubject && u.active && !u.deleted_at)
     : [];
-  const topics = selectedUnit
-    ? getAllTopics().filter(t => t.unit_fk === selectedUnit && t.active && !t.deleted_at)
+  const topics: Topic[] = selectedUnit
+    ? allTopics.filter((t) => t.unit_fk === selectedUnit && t.active && !t.deleted_at)
     : [];
 
   // Get difficulty levels from store

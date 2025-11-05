@@ -524,3 +524,171 @@ mutation ReactivateCourse(
   )
 }
 
+# ===================================================================
+# PREGUNTAS (Questions)
+# ===================================================================
+
+# Crear una nueva pregunta
+mutation CreateQuestion(
+  $questionId: UUID!
+  $text: String!
+  $topicId: UUID!
+  $difficultyId: UUID!
+  $questionTypeId: UUID!
+  $userId: UUID!
+  $isPublic: Boolean!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  question_insert(
+    data: {
+      questionId: $questionId
+      text: $text
+      topicId: $topicId
+      difficultyId: $difficultyId
+      questionTypeId: $questionTypeId
+      userId: $userId
+      isPublic: $isPublic
+      active: true
+      version: 1
+    }
+  )
+}
+
+# Crear una nueva versión de una pregunta
+mutation CreateQuestionVersion(
+  $questionId: UUID!
+  $text: String!
+  $topicId: UUID!
+  $difficultyId: UUID!
+  $questionTypeId: UUID!
+  $userId: UUID!
+  $isPublic: Boolean!
+  $version: Int!
+  $originalQuestionId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  question_insert(
+    data: {
+      questionId: $questionId
+      text: $text
+      topicId: $topicId
+      difficultyId: $difficultyId
+      questionTypeId: $questionTypeId
+      userId: $userId
+      isPublic: $isPublic
+      active: true
+      version: $version
+      originalQuestionId: $originalQuestionId
+    }
+  )
+}
+
+# Actualizar una pregunta
+mutation UpdateQuestion(
+  $questionId: UUID!
+  $text: String
+  $topicId: UUID
+  $difficultyId: UUID
+  $questionTypeId: UUID
+  $isPublic: Boolean
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+  $userId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  question_update(
+    key: { questionId: $questionId }
+    data: {
+      text: $text
+      topicId: $topicId
+      difficultyId: $difficultyId
+      questionTypeId: $questionTypeId
+      isPublic: $isPublic
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar una pregunta (soft delete)
+mutation DeactivateQuestion(
+  $questionId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+  $userId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  question_update(
+    key: { questionId: $questionId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar una pregunta (undo soft delete)
+mutation ReactivateQuestion(
+  $questionId: UUID!
+  $userId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  question_update(
+    key: { questionId: $questionId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# Crear una opción de pregunta
+mutation CreateQuestionOption(
+  $questionOptionId: UUID!
+  $text: String!
+  $isCorrect: Boolean!
+  $position: Int!
+  $score: Float
+  $questionId: UUID!
+) @auth(level: USER) {
+  questionOption_insert(
+    data: {
+      questionOptionId: $questionOptionId
+      text: $text
+      isCorrect: $isCorrect
+      position: $position
+      score: $score
+      questionId: $questionId
+    }
+  )
+}
+
+# Actualizar una opción de pregunta
+mutation UpdateQuestionOption(
+  $questionOptionId: UUID!
+  $text: String
+  $isCorrect: Boolean
+  $position: Int
+  $score: Float
+) @auth(level: USER) {
+  questionOption_update(
+    key: { questionOptionId: $questionOptionId }
+    data: {
+      text: $text
+      isCorrect: $isCorrect
+      position: $position
+      score: $score
+    }
+  )
+}
+
+# Eliminar una opción de pregunta
+mutation DeleteQuestionOption(
+  $questionOptionId: UUID!
+) @auth(level: USER) {
+  questionOption_delete(
+    key: { questionOptionId: $questionOptionId }
+  )
+}

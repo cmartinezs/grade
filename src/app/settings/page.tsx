@@ -20,7 +20,7 @@ export default function SettingsPage() {
               <Card>
                 <Card.Body>
                   <h5>⚙️ Configuración General</h5>
-                  <p>Personaliza tu experiencia en Grade Question Bank.</p>
+                  <p>Personaliza tu experiencia en GRADE: Generación y Registro Automatizado De Evaluaciones.</p>
                   <Button variant="primary">💾 Guardar Cambios</Button>
                 </Card.Body>
               </Card>

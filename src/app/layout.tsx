@@ -5,7 +5,7 @@ import { LoadingProvider } from '@/contexts/LoadingContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 
 export const metadata: Metadata = {
-  title: "Grade Question Bank - Web App",
+  title: "GRADE: Generación y Registro Automatizado De Evaluaciones - Web App",
   description: "Banco de preguntas para evaluaciones académicas",
 };
 

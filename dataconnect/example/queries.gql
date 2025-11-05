@@ -263,3 +263,151 @@ query GetCoursesByLevel($userId: UUID!, $levelId: UUID!, $firebaseId: String!) @
   }
 }
 
+# ===================================================================
+# PREGUNTAS (Questions)
+# ===================================================================
+
+# Listar todas las dificultades disponibles
+query ListDifficulties @auth(level: USER) {
+  difficulties {
+    difficultyId
+    level
+    weight
+  }
+}
+
+# Obtener una dificultad por ID
+query GetDifficulty($difficultyId: UUID!) @auth(level: USER) {
+  difficulty(key: { difficultyId: $difficultyId }) {
+    difficultyId
+    level
+    weight
+  }
+}
+
+# Listar todos los tipos de pregunta disponibles
+query ListQuestionTypes @auth(level: USER) {
+  questionTypes {
+    questionTypeId
+    code
+    name
+  }
+}
+
+# Obtener un tipo de pregunta por ID
+query GetQuestionType($questionTypeId: UUID!) @auth(level: USER) {
+  questionType(key: { questionTypeId: $questionTypeId }) {
+    questionTypeId
+    code
+    name
+  }
+}
+
+# Obtener un tipo de pregunta por código
+query GetQuestionTypeByCode($code: String!) @auth(level: USER) {
+  questionTypes(where: { code: { eq: $code } }) {
+    questionTypeId
+    code
+    name
+  }
+}
+
+# Listar preguntas del usuario autenticado
+query ListQuestionsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
+  questions(where: { userId: { eq: $userId } }) {
+    questionId
+    text
+    active
+    version
+    originalQuestionId
+    topicId
+    difficultyId
+    questionTypeId
+    userId
+    createdAt
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# Obtener una pregunta por ID (solo del usuario autenticado)
+query GetQuestion($questionId: UUID!, $userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
+  questions(where: { questionId: { eq: $questionId }, userId: { eq: $userId } }) {
+    questionId
+    text
+    active
+    version
+    originalQuestionId
+    topicId
+    difficultyId
+    questionTypeId
+    userId
+    createdAt
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# Listar preguntas públicas (disponibles para todos)
+query ListPublicQuestions @auth(level: USER) {
+  questions(where: { isPublic: { eq: true }, active: { eq: true } }) {
+    questionId
+    text
+    active
+    version
+    topicId
+    difficultyId
+    questionTypeId
+    userId
+    createdAt
+    updatedAt
+  }
+}
+
+# Listar preguntas públicas filtradas por dificultad
+query ListPublicQuestionsByDifficulty($difficultyId: UUID!) @auth(level: USER) {
+  questions(where: { isPublic: { eq: true }, active: { eq: true }, difficultyId: { eq: $difficultyId } }) {
+    questionId
+    text
+    active
+    version
+    topicId
+    difficultyId
+    questionTypeId
+    userId
+    createdAt
+    updatedAt
+  }
+}
+
+# Listar preguntas públicas filtradas por tipo
+query ListPublicQuestionsByType($questionTypeId: UUID!) @auth(level: USER) {
+  questions(where: { isPublic: { eq: true }, active: { eq: true }, questionTypeId: { eq: $questionTypeId } }) {
+    questionId
+    text
+    active
+    version
+    topicId
+    difficultyId
+    questionTypeId
+    userId
+    createdAt
+    updatedAt
+  }
+}
+
+# Obtener opciones de una pregunta
+query GetQuestionOptions($questionId: UUID!) @auth(level: USER) {
+  questionOptions(where: { questionId: { eq: $questionId } }) {
+    questionOptionId
+    text
+    isCorrect
+    position
+    score
+    questionId
+  }
+}

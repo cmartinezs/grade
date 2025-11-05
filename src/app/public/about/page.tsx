@@ -27,7 +27,7 @@ export default function PublicAbout() {
         <Row className="mb-5">
           <Col>
             <div className="text-center">
-              <h1 className="display-4 mb-4">Acerca de Grade Question Bank</h1>
+              <h1 className="display-4 mb-4">Acerca de GRADE: Generación y Registro Automatizado De Evaluaciones</h1>
               <p className="lead">
                 La solución más completa para la gestión de bancos de preguntas académicas
               </p>
@@ -70,7 +70,7 @@ export default function PublicAbout() {
               <Card.Body>
                 <h3 className="text-info">📖 Nuestra Historia</h3>
                 <p>
-                  Grade Question Bank nació de la necesidad observada en instituciones 
+                  GRADE: Generación y Registro Automatizado De Evaluaciones nació de la necesidad observada en instituciones 
                   educativas de contar con una herramienta especializada para la gestión 
                   de preguntas y evaluaciones. Desarrollado por educadores para educadores, 
                   nuestro sistema ha evolucionado para convertirse en una solución integral.
