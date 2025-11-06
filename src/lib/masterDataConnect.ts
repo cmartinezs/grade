@@ -173,6 +173,98 @@ export async function createNewDifficulty(
 }
 
 /**
+ * Crear múltiples tipos de preguntas de una vez
+ * Usado para carga masiva desde JSON
+ */
+export async function createMultipleQuestionTypes(
+  questionTypesData: Array<{
+    code: string;
+    name: string;
+    description?: string;
+    active?: boolean;
+  }>,
+  onProgress?: (progress: { currentIndex: number; total: number; itemName: string }) => void
+): Promise<{ created: QuestionType[]; errors: string[] }> {
+  const created: QuestionType[] = [];
+  const errors: string[] = [];
+
+  for (let i = 0; i < questionTypesData.length; i++) {
+    const typeData = questionTypesData[i];
+    try {
+      const newType = await createNewQuestionType(
+        typeData.code,
+        typeData.name,
+        typeData.description
+      );
+      created.push(newType);
+
+      // Emitir progreso DURANTE la creación
+      if (onProgress && typeof onProgress === 'function') {
+        onProgress({
+          currentIndex: i + 1,
+          total: questionTypesData.length,
+          itemName: typeData.name,
+        });
+      }
+    } catch (error) {
+      const errorMsg = `Error creating question type "${typeData.name}": ${
+        error instanceof Error ? error.message : String(error)
+      }`;
+      console.error(errorMsg);
+      errors.push(errorMsg);
+    }
+  }
+
+  return { created, errors };
+}
+
+/**
+ * Crear múltiples dificultades de una vez
+ * Usado para carga masiva desde JSON
+ */
+export async function createMultipleDifficulties(
+  difficultiesData: Array<{
+    level: string;
+    weight: number;
+    description?: string;
+    active?: boolean;
+  }>,
+  onProgress?: (progress: { currentIndex: number; total: number; itemName: string }) => void
+): Promise<{ created: Difficulty[]; errors: string[] }> {
+  const created: Difficulty[] = [];
+  const errors: string[] = [];
+
+  for (let i = 0; i < difficultiesData.length; i++) {
+    const diffData = difficultiesData[i];
+    try {
+      const newDiff = await createNewDifficulty(
+        diffData.level,
+        diffData.weight,
+        diffData.description
+      );
+      created.push(newDiff);
+
+      // Emitir progreso DURANTE la creación
+      if (onProgress && typeof onProgress === 'function') {
+        onProgress({
+          currentIndex: i + 1,
+          total: difficultiesData.length,
+          itemName: diffData.level,
+        });
+      }
+    } catch (error) {
+      const errorMsg = `Error creating difficulty "${diffData.level}": ${
+        error instanceof Error ? error.message : String(error)
+      }`;
+      console.error(errorMsg);
+      errors.push(errorMsg);
+    }
+  }
+
+  return { created, errors };
+}
+
+/**
  * TODO: Actualizar un tipo de pregunta
  * Descomentar las imports de updateQuestionType cuando se implemente
  */

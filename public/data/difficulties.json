@@ -1,0 +1,20 @@
+[
+  {
+    "level": "Fácil",
+    "weight": 1,
+    "description": "Preguntas que evalúan conocimiento básico y comprensión simple",
+    "active": true
+  },
+  {
+    "level": "Medio",
+    "weight": 2,
+    "description": "Preguntas que evalúan aplicación de conceptos y análisis",
+    "active": true
+  },
+  {
+    "level": "Difícil",
+    "weight": 3,
+    "description": "Preguntas que evalúan síntesis, evaluación y pensamiento crítico",
+    "active": true
+  }
+]

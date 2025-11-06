@@ -10,6 +10,14 @@ interface ChileDataLoaderModalProps {
   onSuccess?: () => void;
   title?: string;
   description?: string;
+  /**
+   * Información personalizada de qué se cargará (opcional)
+   * Si no se proporciona, no se muestra la sección azul de información
+   */
+  loadInfo?: Array<{
+    label: string;
+    value: string;
+  }>;
 }
 
 interface ProgressState {
@@ -25,6 +33,7 @@ export default function ChileDataLoaderModal({
   onSuccess,
   title = '📍 Cargar Configuración de Chile',
   description = '¿Deseas cargar los niveles educacionales y categorías del sistema educativo chileno?',
+  loadInfo,
 }: ChileDataLoaderModalProps) {
   const { loadChileConfiguration } = useChileDataLoader();
   const [isLoading, setIsLoading] = useState(false);
@@ -115,18 +124,21 @@ export default function ChileDataLoaderModal({
           <div>
             <p className="lead">{description}</p>
             
-            <div className="alert alert-info">
-              <h6 className="mb-2">📚 Se cargarán:</h6>
-              <ul className="mb-0 small">
-                <li><strong>2 Categorías:</strong> Enseñanza Básica y Enseñanza Media</li>
-                <li><strong>12 Niveles:</strong> 1° a 8° Básico y 1° a 4° Medio</li>
-              </ul>
-            </div>
+            {loadInfo && loadInfo.length > 0 && (
+              <div className="alert alert-info">
+                <h6 className="mb-2">📚 Se cargarán:</h6>
+                <ul className="mb-0 small">
+                  {loadInfo.map((info, idx) => (
+                    <li key={idx}><strong>{info.label}:</strong> {info.value}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="alert alert-warning">
               <small>
                 <strong>⚠️ Nota:</strong> Solo se cargarán los datos que no existan. 
-                Si ya hay categorías o niveles registrados, no se duplicarán.
+                Si ya hay datos registrados, no se duplicarán.
               </small>
             </div>
 

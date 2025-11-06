@@ -1,21 +1,25 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Modal, Form, Spinner, Alert } from 'react-bootstrap';
+import { Modal, Form, Spinner, Alert, Button } from 'react-bootstrap';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
 } from '@/components/MasterDataTable';
+import DataPreloaderModal from '@/components/DataPreloaderModal';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import type { Difficulty } from '@/lib/masterDataConnect';
 import { useDifficulties } from '@/hooks/useDifficulties';
+import { loadDifficultiesData } from '@/lib/difficultiesDataLoader';
 
 const PAGE_SIZE = 10;
 
 
 export default function DifficultiesPage() {
-  const { difficulties, loading, error: hookError, creating, create } =
+  const { difficulties, loading, error: hookError, creating, create, refetch } =
     useDifficulties();
+
+  const [showLoaderModal, setShowLoaderModal] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState('');
@@ -60,6 +64,8 @@ export default function DifficultiesPage() {
     setLocalError(null);
     setShowModal(true);
   };
+
+  
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -169,6 +175,15 @@ export default function DifficultiesPage() {
         createButtonIcon="➕"
         emptyMessage="No hay niveles de dificultad registrados"
         emptyIcon="📭"
+        preloadComponent={
+          <Button
+            variant="success"
+            onClick={() => setShowLoaderModal(true)}
+            className="d-flex align-items-center gap-2"
+          >
+            <span>📥 Pre-carga</span>
+          </Button>
+        }
       />
 
       {/* Create/Edit Modal */}
@@ -287,6 +302,25 @@ export default function DifficultiesPage() {
           </Form>
         </Modal>
       )}
+
+      {/* Data Preloader Modal (reusable) */}
+      <DataPreloaderModal
+        show={showLoaderModal}
+        onHide={() => setShowLoaderModal(false)}
+        onSuccess={async () => await refetch()}
+        title="📚 Cargar Niveles de Dificultad"
+        description="¿Deseas cargar los niveles de dificultad predefinidos del sistema?"
+        loaders={[
+          {
+            label: 'Niveles de Dificultad',
+            info: 'Fácil, Medio, Difícil',
+            loadFn: async (onProgress) => {
+              const res = await loadDifficultiesData(onProgress);
+              return { itemsLoaded: res.difficultiesCreated, errors: res.errors };
+            },
+          },
+        ]}
+      />
     </ProtectedRoute>
   );
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "code": "MC",
+    "name": "Selección Múltiple",
+    "description": "Pregunta con una única respuesta correcta entre varias opciones",
+    "active": true
+  },
+  {
+    "code": "SS",
+    "name": "Selección Simple",
+    "description": "Pregunta con una única respuesta correcta entre varias opciones",
+    "active": true
+  },
+  {
+    "code": "TF",
+    "name": "Verdadero/Falso",
+    "description": "Pregunta binaria que requiere evaluar si una afirmación es verdadera o falsa",
+    "active": true
+  }
+]

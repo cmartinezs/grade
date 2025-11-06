@@ -6,7 +6,7 @@ import MasterDataTable, {
   ColumnConfig,
   ActionButton,
 } from '@/components/MasterDataTable';
-import { Badge } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import ChileDataLoaderModal from '@/components/ChileDataLoaderModal';
 import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
 import { useAuth } from '@/contexts/AuthContext';
@@ -235,8 +235,15 @@ export default function LevelsPage() {
         onCreateClick={() => router.push('/evaluation-management/levels/create')}
         createButtonLabel="Nuevo Nivel"
         createButtonIcon="➕"
-        onPreloadData={() => setShowChileLoader(true)}
-        showPreloadButton={true}
+        preloadComponent={
+          <Button
+            variant="success"
+            onClick={() => setShowChileLoader(true)}
+            className="d-flex align-items-center gap-2"
+          >
+            <span>📥 Pre-carga</span>
+          </Button>
+        }
         emptyMessage="No hay niveles creados aún"
         emptyIcon="📭"
         emptyActionLabel="Crear Primer Nivel"
@@ -248,6 +255,10 @@ export default function LevelsPage() {
         onSuccess={handleChileDataLoaded}
         title="📍 Cargar Niveles de Chile"
         description="No se encontraron niveles educacionales. ¿Deseas cargar los niveles del sistema educativo chileno?"
+        loadInfo={[
+          { label: '2 Categorías', value: 'Enseñanza Básica y Enseñanza Media' },
+          { label: '12 Niveles', value: '1° a 8° Básico y 1° a 4° Medio' },
+        ]}
       />
     </>
   );

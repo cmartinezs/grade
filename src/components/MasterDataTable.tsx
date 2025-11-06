@@ -84,7 +84,9 @@ export interface MasterDataTableProps<T> {
   sortDirection?: 'asc' | 'desc';
   createButtonLabel?: string;
   createButtonIcon?: string;
-  onPreloadData?: () => void; // Nuevo: callback para pre-carga de datos
+
+  // Preload component (render prop para máxima flexibilidad)
+  preloadComponent?: React.ReactNode;
 
   // Stat cards
   statCards?: StatCard[];
@@ -94,7 +96,6 @@ export interface MasterDataTableProps<T> {
   emptyIcon?: string;
   emptyActionLabel?: string;
   emptyActionHref?: string;
-  showPreloadButton?: boolean; // Nuevo: mostrar botón de pre-carga
 }
 
 /**
@@ -153,11 +154,10 @@ export default function MasterDataTable<T>(
     onCreateClick,
     createButtonLabel = 'Crear',
     createButtonIcon = '➕',
-    onPreloadData,
+    preloadComponent,
     statCards = [],
     emptyMessage = 'No hay elementos',
     emptyIcon = '📭',
-    showPreloadButton = false,
     emptyActionLabel = 'Crear Elemento',
     emptyActionHref,
     onSortChange,
@@ -246,17 +246,24 @@ export default function MasterDataTable<T>(
                   </Col>
                   <Col md={4}></Col>
                   <Col md={4} className="text-end">
-                    {hasResults && (
-                      <Button
-                        onClick={onCreateClick}
-                        variant="primary"
-                        size="sm"
-                        className="d-flex align-items-center gap-2 ms-auto"
-                      >
-                        <span>{createButtonIcon}</span>
-                        <span>{createButtonLabel}</span>
-                      </Button>
-                    )}
+                    <div className="d-flex align-items-center gap-2 justify-content-end">
+                      {hasResults && preloadComponent && (
+                        <div>
+                          {preloadComponent}
+                        </div>
+                      )}
+                      {hasResults && (
+                        <Button
+                          onClick={onCreateClick}
+                          variant="primary"
+                          size="sm"
+                          className="d-flex align-items-center gap-2"
+                        >
+                          <span>{createButtonIcon}</span>
+                          <span>{createButtonLabel}</span>
+                        </Button>
+                      )}
+                    </div>
                   </Col>
                 </Row>
               </Card.Header>
@@ -435,15 +442,10 @@ export default function MasterDataTable<T>(
                   </p>
                   <h5 className="text-muted">{emptyMessage}</h5>
                   <div className="mt-4 d-flex gap-2 justify-content-center">
-                    {showPreloadButton && onPreloadData && (
-                      <Button
-                        variant="success"
-                        onClick={onPreloadData}
-                        disabled={isLoading}
-                        className="d-flex align-items-center gap-2"
-                      >
-                        📥 Pre-carga de Datos
-                      </Button>
+                    {preloadComponent && (
+                      <div>
+                        {preloadComponent}
+                      </div>
                     )}
                     {/* Botón Crear - siempre que no haya búsqueda */}
                     {!searchText && (

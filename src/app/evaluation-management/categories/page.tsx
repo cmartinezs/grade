@@ -7,7 +7,7 @@ import MasterDataTable, {
   ColumnConfig,
   ActionButton,
 } from '@/components/MasterDataTable';
-import { Badge } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import ChileDataLoaderModal from '@/components/ChileDataLoaderModal';
 import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
 import { levelStore } from '@/lib/levelStore';
@@ -222,8 +222,15 @@ export default function CategoriesPage() {
         onCreateClick={() => router.push('/evaluation-management/categories/create')}
         createButtonLabel="Nueva Categoría"
         createButtonIcon="➕"
-        onPreloadData={() => setShowChileLoader(true)}
-        showPreloadButton={true}
+        preloadComponent={
+          <Button
+            variant="success"
+            onClick={() => setShowChileLoader(true)}
+            className="d-flex align-items-center gap-2"
+          >
+            <span>📥 Pre-carga</span>
+          </Button>
+        }
         emptyMessage="No hay categorías creadas aún"
         emptyIcon="📭"
         emptyActionLabel="Crear Primera Categoría"
@@ -236,6 +243,10 @@ export default function CategoriesPage() {
         onSuccess={handleChileDataLoaded}
         title="📍 Cargar Categorías de Chile"
         description="No se encontraron categorías. ¿Deseas cargar las categorías del sistema educativo chileno?"
+        loadInfo={[
+          { label: '2 Categorías', value: 'Enseñanza Básica y Enseñanza Media' },
+          { label: '12 Niveles', value: '1° a 8° Básico y 1° a 4° Medio' },
+        ]}
       />
     </>
   );

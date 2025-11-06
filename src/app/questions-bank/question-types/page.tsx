@@ -1,25 +1,28 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Modal, Form, Spinner, Alert } from 'react-bootstrap';
+import { Modal, Form, Spinner, Alert, Button } from 'react-bootstrap';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
 } from '@/components/MasterDataTable';
+import DataPreloaderModal from '@/components/DataPreloaderModal';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import type { QuestionType } from '@/lib/masterDataConnect';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { loadQuestionTypesData } from '@/lib/questionTypesDataLoader';
 
 const PAGE_SIZE = 10;
 
 
 export default function QuestionTypesPage() {
-  const { questionTypes, loading, error: hookError, creating, create } =
+  const { questionTypes, loading, error: hookError, creating, create, refetch } =
     useQuestionTypes();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showLoaderModal, setShowLoaderModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     code: '',
@@ -28,6 +31,14 @@ export default function QuestionTypesPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+
+  // Show loader modal if no question types
+  // Comentado: ahora el botón aparece directamente en MasterDataTable
+  // useEffect(() => {
+  //   if (!loading && questionTypes.length === 0 && !showModal) {
+  //     setShowLoaderModal(true);
+  //   }
+  // }, [loading, questionTypes.length, showModal]);
 
   // Filter items by search text
   const filteredItems = useMemo(() => {
@@ -69,6 +80,8 @@ export default function QuestionTypesPage() {
     setLocalError(null);
     setSubmitting(false);
   };
+
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,6 +178,15 @@ export default function QuestionTypesPage() {
         createButtonIcon="➕"
         emptyMessage="No hay tipos de preguntas registrados"
         emptyIcon="📭"
+        preloadComponent={
+          <Button
+            variant="success"
+            onClick={() => setShowLoaderModal(true)}
+            className="d-flex align-items-center gap-2"
+          >
+            <span>📥 Pre-carga</span>
+          </Button>
+        }
       />
 
       {/* Create/Edit Modal */}
@@ -275,6 +297,25 @@ export default function QuestionTypesPage() {
           </Form>
         </Modal>
       )}
+
+      {/* Data Preloader Modal (reusable) */}
+      <DataPreloaderModal
+        show={showLoaderModal}
+        onHide={() => setShowLoaderModal(false)}
+        onSuccess={async () => await refetch()}
+        title="📚 Cargar Tipos de Preguntas"
+        description="¿Deseas cargar los tipos de preguntas predefinidos del sistema?"
+        loaders={[
+          {
+            label: 'Tipos de Preguntas',
+            info: 'Selección Simple, Selección Múltiple, Verdadero/Falso',
+            loadFn: async (onProgress) => {
+              const res = await loadQuestionTypesData(onProgress);
+              return { itemsLoaded: res.typesCreated, errors: res.errors };
+            },
+          },
+        ]}
+      />
     </ProtectedRoute>
   );
 }
