@@ -12,13 +12,9 @@ import { generateUUID } from './uuid';
 
 import {
   createNewLevelCategory,
-  updateLevelCategoryInfo,
   deactivateLevelCategoryInfo,
-  reactivateLevelCategoryInfo,
   createNewEducationalLevel,
-  updateEducationalLevelInfo,
   deactivateEducationalLevelInfo,
-  reactivateEducationalLevelInfo,
   fetchLevelCategoriesFromDataConnect,
   fetchEducationalLevelsFromDataConnect,
 } from './levelDataConnect';
@@ -320,6 +316,10 @@ class LevelCategoryStore {
         deletedAt: null,
         deletedBy: null,
       }));
+
+      // Actualizar el memory cache
+      memoryCache.categories = convertedCategories;
+      memoryCache.categoriesLoaded = true;
 
       // localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(convertedCategories));
       console.log(`[CATEGORY] Refreshed ${convertedCategories.length} categories from Data-Connect`);
@@ -649,6 +649,10 @@ class EducationalLevelStore {
         deletedAt: null,
         deletedBy: null,
       }));
+
+      // Actualizar el memory cache
+      memoryCache.levels = convertedLevels;
+      memoryCache.levelsLoaded = true;
 
       // localStorage.setItem(LEVELS_STORAGE_KEY, JSON.stringify(convertedLevels));
       console.log(`[LEVEL] Refreshed ${convertedLevels.length} levels from Data-Connect`);

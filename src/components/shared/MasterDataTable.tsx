@@ -84,6 +84,11 @@ export interface MasterDataTableProps<T> {
   sortDirection?: 'asc' | 'desc';
   createButtonLabel?: string;
   createButtonIcon?: string;
+  
+  // Preload button (opcional)
+  onPreloadClick?: () => void;
+  preloadButtonLabel?: string;
+  preloadButtonIcon?: string;
 
   // Stat cards
   statCards?: StatCard[];
@@ -151,6 +156,9 @@ export default function MasterDataTable<T>(
     onCreateClick,
     createButtonLabel = 'Crear',
     createButtonIcon = '➕',
+    onPreloadClick,
+    preloadButtonLabel = '📥 Pre-carga',
+    preloadButtonIcon,
     statCards = [],
     emptyMessage = 'No hay elementos',
     emptyIcon = '📭',
@@ -433,6 +441,18 @@ export default function MasterDataTable<T>(
                   </p>
                   <h5 className="text-muted">{emptyMessage}</h5>
                   <div className="mt-4 d-flex gap-2 justify-content-center">
+                    {/* Botón Precarga - solo si no hay búsqueda y no hay datos */}
+                    {!searchText && totalItems === 0 && onPreloadClick && (
+                      <Button
+                        variant="info"
+                        onClick={onPreloadClick}
+                        disabled={isLoading}
+                        className="d-flex align-items-center gap-2"
+                      >
+                        {preloadButtonIcon || '📥'} {preloadButtonLabel}
+                      </Button>
+                    )}
+                    
                     {/* Botón Crear - siempre que no haya búsqueda */}
                     {!searchText && (
                       <Button

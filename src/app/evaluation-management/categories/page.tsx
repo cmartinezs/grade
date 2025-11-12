@@ -8,8 +8,7 @@ import MasterDataTable, {
   ActionButton,
 } from '@/components/shared/MasterDataTable';
 import { Badge } from 'react-bootstrap';
-import ChileDataLoaderModal from '../components/ChileDataLoaderModal';
-import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
+import ChileConfigPreloaderModal from '../components/ChileConfigPreloaderModal';
 import { levelStore } from '@/lib/levelStore';
 import { LevelCategory } from '@/types/level';
 
@@ -18,7 +17,6 @@ const PAGE_SIZE = 10;
 export default function CategoriesPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { isDismissed, dismiss, isLoading: isChileLoaderLoading } = useChileLoaderModalState();
   const [categories, setCategories] = useState<LevelCategory[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<LevelCategory[]>([]);
   const [totalCategories, setTotalCategories] = useState(0);
@@ -29,11 +27,6 @@ export default function CategoriesPage() {
 
   // Load all categories on mount
   useEffect(() => {
-    // No mostrar nada mientras se carga el estado del localStorage
-    if (isChileLoaderLoading) {
-      return;
-    }
-
     const loadCategoriesData = async () => {
       try {
         // Load from Data-Connect
@@ -43,15 +36,6 @@ export default function CategoriesPage() {
         const allCategories = levelStore.getAllCategories();
         setCategories(allCategories);
         setTotalCategories(allCategories.length);
-        
-        // Si no hay categorías y no han sido cerradas, mostrar el modal de carga
-        if (allCategories.length === 0) {
-          if (!isDismissed) {
-            setShowChileLoader(true);
-          }
-        } else {
-          setShowChileLoader(false);
-        }
       } catch (error) {
         console.error('Error loading categories:', error);
         // On error, try to get whatever is cached
@@ -61,13 +45,8 @@ export default function CategoriesPage() {
       }
     };
 
-    if (isDismissed) {
-      // Si fue cerrado, no mostrar modal
-      setShowChileLoader(false);
-    }
-
     loadCategoriesData();
-  }, [isDismissed, isChileLoaderLoading]); // Incluir ambas dependencias
+  }, []);
 
   // Filter and paginate categories
   useEffect(() => {
@@ -131,16 +110,24 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleChileDataLoaded = () => {
-    // Recargar categorías después de cargar datos de Chile
-    const allCategories = levelStore.getAllCategories();
-    setCategories(allCategories);
-    setTotalCategories(allCategories.length);
-  };
-
   const handleChileLoaderClose = () => {
     setShowChileLoader(false);
-    dismiss(); // Marcar como cerrado en localStorage
+  };
+
+  const handleChileDataLoaded = async () => {
+    // Recargar categorías desde Data-Connect después de cargar datos de Chile
+    try {
+      await levelStore.loadCategories();
+      const allCategories = levelStore.getAllCategories();
+      setCategories(allCategories);
+      setTotalCategories(allCategories.length);
+    } catch (error) {
+      console.error('Error reloading categories after Chile data load:', error);
+      // Fallback: try to get whatever is cached
+      const allCategories = levelStore.getAllCategories();
+      setCategories(allCategories);
+      setTotalCategories(allCategories.length);
+    }
   };
 
   const columns: ColumnConfig<LevelCategory>[] = [
@@ -222,22 +209,19 @@ export default function CategoriesPage() {
         onCreateClick={() => router.push('/evaluation-management/categories/create')}
         createButtonLabel="Nueva Categoría"
         createButtonIcon="➕"
+        onPreloadClick={() => setShowChileLoader(true)}
+        preloadButtonLabel="Cargar de Chile"
+        preloadButtonIcon="📥"
         emptyMessage="No hay categorías creadas aún"
         emptyIcon="📭"
         emptyActionLabel="Crear Primera Categoría"
         actions={actions}
       />
       
-      <ChileDataLoaderModal
+      <ChileConfigPreloaderModal 
         show={showChileLoader}
         onHide={handleChileLoaderClose}
         onSuccess={handleChileDataLoaded}
-        title="📍 Cargar Categorías de Chile"
-        description="No se encontraron categorías. ¿Deseas cargar las categorías del sistema educativo chileno?"
-        loadInfo={[
-          { label: '2 Categorías', value: 'Enseñanza Básica y Enseñanza Media' },
-          { label: '12 Niveles', value: '1° a 8° Básico y 1° a 4° Medio' },
-        ]}
       />
     </>
   );
