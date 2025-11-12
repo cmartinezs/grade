@@ -176,6 +176,9 @@ export default function QuestionTypesPage() {
         onCreateClick={() => handleOpenModal()}
         createButtonLabel="Crear Tipo"
         createButtonIcon="➕"
+        onPreloadClick={() => setShowLoaderModal(true)}
+        preloadButtonLabel="Cargar Predefinidos"
+        preloadButtonIcon="📥"
         emptyMessage="No hay tipos de preguntas registrados"
         emptyIcon="📭"
       />

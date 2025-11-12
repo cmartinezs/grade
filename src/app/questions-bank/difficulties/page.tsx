@@ -173,6 +173,9 @@ export default function DifficultiesPage() {
         onCreateClick={() => handleOpenModal()}
         createButtonLabel="Crear Nivel"
         createButtonIcon="➕"
+        onPreloadClick={() => setShowLoaderModal(true)}
+        preloadButtonLabel="Cargar Predefinidos"
+        preloadButtonIcon="📥"
         emptyMessage="No hay niveles de dificultad registrados"
         emptyIcon="📭"
       />
