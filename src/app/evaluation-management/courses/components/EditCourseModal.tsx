@@ -2,37 +2,38 @@
 
 import { useState } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
-import CourseForm from '@/components/CourseForm';
+import CourseForm from '@/app/evaluation-management/courses/CourseForm';
 import { courseStore } from '@/lib/courseStore';
 import { useAuth } from '@/contexts/AuthContext';
 
-interface CreateCourseModalProps {
+interface EditCourseModalProps {
   show: boolean;
   onHide: () => void;
   onSuccess: () => void;
+  courseId: string | null;
 }
 
-export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCourseModalProps) {
+export default function EditCourseModal({ show, onHide, onSuccess, courseId }: EditCourseModalProps) {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [createdCourseId, setCreatedCourseId] = useState('');
 
   const handleClose = () => {
     setSubmitSuccess(false);
-    setCreatedCourseId('');
     onHide();
   };
 
   const handleSubmit = async (data: { name: string; code: string; levelId: string; institution: string; active: boolean }) => {
+    if (!courseId) return;
+
     setIsSubmitting(true);
     try {
-      const newCourse = await courseStore.createCourse(
+      await courseStore.updateCourse(
+        courseId,
         data,
         user?.id || 'anonymous'
       );
       setSubmitSuccess(true);
-      setCreatedCourseId(newCourse.course_id);
 
       // Auto-close after 2 seconds
       setTimeout(() => {
@@ -48,23 +49,24 @@ export default function CreateCourseModal({ show, onHide, onSuccess }: CreateCou
     <Modal show={show} onHide={handleClose} size="lg" backdrop={isSubmitting ? 'static' : true}>
       <Modal.Header closeButton={!isSubmitting && !submitSuccess}>
         <Modal.Title>
-          {submitSuccess ? '✅ Curso Creado' : '➕ Crear Nuevo Curso'}
+          {submitSuccess ? '✅ Curso Actualizado' : '✏️ Editar Curso'}
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         {submitSuccess ? (
           <Alert variant="success">
-            <Alert.Heading>¡Curso creado exitosamente!</Alert.Heading>
-            <p>ID del curso: <strong>{createdCourseId}</strong></p>
+            <Alert.Heading>¡Curso actualizado exitosamente!</Alert.Heading>
+            <p>ID del curso: <strong>{courseId}</strong></p>
             <hr />
             <p className="mb-0">
-              <small>El curso ya está disponible en el catálogo.</small>
+              <small>Los cambios han sido guardados exitosamente.</small>
             </p>
           </Alert>
         ) : (
           <CourseForm
-            mode="create"
+            mode="edit"
+            courseId={courseId || undefined}
             isSubmitting={isSubmitting}
             onSubmit={handleSubmit}
             onSubmitSuccess={() => {

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Container, Row, Col, Badge, Card } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
-import LoadingLink from '@/components/LoadingLink';
+import LoadingLink from '@/components/shared/LoadingLink';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function PublicHome() {

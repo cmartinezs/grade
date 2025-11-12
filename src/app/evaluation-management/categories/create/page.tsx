@@ -5,7 +5,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
-import CategoryFormFields from '@/components/CategoryFormFields';
+import CategoryFormFields from '@/app/evaluation-management/categories/CategoryFormFields';
 
 export default function CreateCategoryPage() {
   const router = useRouter();

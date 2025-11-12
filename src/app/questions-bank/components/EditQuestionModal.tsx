@@ -13,7 +13,7 @@ import {
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { getAllTopics, getAllUnits } from '@/lib/taxonomyStore';
 import { useAuth } from '@/contexts/AuthContext';
-import QuestionFormFields from '@/components/QuestionFormFields';
+import QuestionFormFields from './shared/QuestionFormFields';
 
 interface EditQuestionModalProps {
   show: boolean;

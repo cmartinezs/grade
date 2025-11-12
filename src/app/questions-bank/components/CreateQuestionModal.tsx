@@ -17,7 +17,7 @@ import {
 } from '@/types/question';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { useAuth } from '@/contexts/AuthContext';
-import QuestionFormFields from './QuestionFormFields';
+import QuestionFormFields from './shared/QuestionFormFields';
 
 interface CreateQuestionModalProps {
   show: boolean;

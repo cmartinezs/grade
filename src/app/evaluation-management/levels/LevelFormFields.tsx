@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { levelStore } from '@/lib/levelStore';
-import AutocompleteSelect, { AutocompleteOption } from '@/components/AutocompleteSelect';
+import AutocompleteSelect, { AutocompleteOption } from '@/components/shared/AutocompleteSelect';
 
 export interface LevelFormData {
   name: string;

@@ -85,9 +85,6 @@ export interface MasterDataTableProps<T> {
   createButtonLabel?: string;
   createButtonIcon?: string;
 
-  // Preload component (render prop para máxima flexibilidad)
-  preloadComponent?: React.ReactNode;
-
   // Stat cards
   statCards?: StatCard[];
 
@@ -154,7 +151,6 @@ export default function MasterDataTable<T>(
     onCreateClick,
     createButtonLabel = 'Crear',
     createButtonIcon = '➕',
-    preloadComponent,
     statCards = [],
     emptyMessage = 'No hay elementos',
     emptyIcon = '📭',
@@ -247,11 +243,6 @@ export default function MasterDataTable<T>(
                   <Col md={4}></Col>
                   <Col md={4} className="text-end">
                     <div className="d-flex align-items-center gap-2 justify-content-end">
-                      {hasResults && preloadComponent && (
-                        <div>
-                          {preloadComponent}
-                        </div>
-                      )}
                       {hasResults && (
                         <Button
                           onClick={onCreateClick}
@@ -442,11 +433,6 @@ export default function MasterDataTable<T>(
                   </p>
                   <h5 className="text-muted">{emptyMessage}</h5>
                   <div className="mt-4 d-flex gap-2 justify-content-center">
-                    {preloadComponent && (
-                      <div>
-                        {preloadComponent}
-                      </div>
-                    )}
                     {/* Botón Crear - siempre que no haya búsqueda */}
                     {!searchText && (
                       <Button

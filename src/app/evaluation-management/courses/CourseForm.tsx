@@ -6,8 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { courseStore } from '@/lib/courseStore';
 import { levelStore } from '@/lib/levelStore';
 import { CourseValidationError } from '@/types/course';
-import AutocompleteSelect, { AutocompleteOption } from '@/components/AutocompleteSelect';
-import FreeTextAutocomplete from '@/components/FreeTextAutocomplete';
+import AutocompleteSelect, { AutocompleteOption } from '@/components/shared/AutocompleteSelect';
+import FreeTextAutocomplete from '@/components/shared/FreeTextAutocomplete';
 
 interface CourseFormProps {
   mode: 'create' | 'edit';

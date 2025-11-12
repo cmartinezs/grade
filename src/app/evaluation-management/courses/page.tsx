@@ -8,9 +8,9 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
-} from '@/components/MasterDataTable';
-import CreateCourseModal from '@/components/CreateCourseModal';
-import EditCourseModal from '@/components/EditCourseModal';
+} from '@/components/shared/MasterDataTable';
+import CreateCourseModal from '@/app/evaluation-management/courses/CreateCourseModal';
+import EditCourseModal from './components/EditCourseModal';
 import { courseStore } from '@/lib/courseStore';
 import { levelStore } from '@/lib/levelStore';
 import { Course } from '@/types/course';

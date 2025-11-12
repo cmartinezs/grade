@@ -5,7 +5,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useRouter } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
-import LevelFormFields from '@/components/LevelFormFields';
+import LevelFormFields from '../LevelFormFields';
 
 export default function CreateLevelPage() {
   const router = useRouter();

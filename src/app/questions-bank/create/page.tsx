@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import CreateQuestionModal from '@/components/CreateQuestionModal';
+import CreateQuestionModal from '../components/CreateQuestionModal';
 
 export default function CreateQuestionPage() {
   const [showModal, setShowModal] = useState(true);

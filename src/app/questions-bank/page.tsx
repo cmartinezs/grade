@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { Row, Col, Card, Button, Badge, Form, InputGroup, Dropdown, ButtonGroup } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import CreateQuestionModal from '@/components/CreateQuestionModal';
-import ViewQuestionModal from '@/components/ViewQuestionModal';
-import EditQuestionModal from '@/components/EditQuestionModal';
-import CloneQuestionModal from '@/components/CloneQuestionModal';
-import RetireQuestionModal from '@/components/RetireQuestionModal';
-import ReactivateQuestionModal from '@/components/ReactivateQuestionModal';
+import CreateQuestionModal from './components/CreateQuestionModal';
+import ViewQuestionModal from './components/ViewQuestionModal';
+import EditQuestionModal from './components/EditQuestionModal';
+import CloneQuestionModal from './components/CloneQuestionModal';
+import RetireQuestionModal from './components/RetireQuestionModal';
+import ReactivateQuestionModal from './components/ReactivateQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import type { QuestionType, DifficultyLevel } from '@/types/question';
 import { useTaxonomy } from '@/hooks/useTaxonomy';

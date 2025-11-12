@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Modal, Form, Spinner, Alert, Button } from 'react-bootstrap';
+import { Modal, Form, Spinner, Alert } from 'react-bootstrap';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
-} from '@/components/MasterDataTable';
-import DataPreloaderModal from '@/components/DataPreloaderModal';
+} from '@/components/shared/MasterDataTable';
+import DataPreloaderModal from '../components/shared/DataPreloaderModal';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import type { QuestionType } from '@/lib/masterDataConnect';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
@@ -178,15 +178,6 @@ export default function QuestionTypesPage() {
         createButtonIcon="➕"
         emptyMessage="No hay tipos de preguntas registrados"
         emptyIcon="📭"
-        preloadComponent={
-          <Button
-            variant="success"
-            onClick={() => setShowLoaderModal(true)}
-            className="d-flex align-items-center gap-2"
-          >
-            <span>📥 Pre-carga</span>
-          </Button>
-        }
       />
 
       {/* Create/Edit Modal */}

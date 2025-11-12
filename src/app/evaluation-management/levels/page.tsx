@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import MasterDataTable, {
   ColumnConfig,
   ActionButton,
-} from '@/components/MasterDataTable';
-import { Badge, Button } from 'react-bootstrap';
-import ChileDataLoaderModal from '@/components/ChileDataLoaderModal';
+} from '@/components/shared/MasterDataTable';
+import { Badge } from 'react-bootstrap';
+import ChileDataLoaderModal from '../components/ChileDataLoaderModal';
 import { useChileLoaderModalState } from '@/hooks/useChileLoaderModalState';
 import { useAuth } from '@/contexts/AuthContext';
 import { levelStore } from '@/lib/levelStore';
@@ -235,15 +235,6 @@ export default function LevelsPage() {
         onCreateClick={() => router.push('/evaluation-management/levels/create')}
         createButtonLabel="Nuevo Nivel"
         createButtonIcon="➕"
-        preloadComponent={
-          <Button
-            variant="success"
-            onClick={() => setShowChileLoader(true)}
-            className="d-flex align-items-center gap-2"
-          >
-            <span>📥 Pre-carga</span>
-          </Button>
-        }
         emptyMessage="No hay niveles creados aún"
         emptyIcon="📭"
         emptyActionLabel="Crear Primer Nivel"

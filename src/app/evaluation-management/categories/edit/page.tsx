@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { levelStore } from '@/lib/levelStore';
-import CategoryFormFields from '@/components/CategoryFormFields';
+import CategoryFormFields from '@/app/evaluation-management/categories/CategoryFormFields';
 
 function EditCategoryContent() {
   const router = useRouter();

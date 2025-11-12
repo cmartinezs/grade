@@ -23,7 +23,7 @@ import {
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { getAllUnits, getAllTopics } from '@/lib/taxonomyStore';
 import { useAuth } from '@/contexts/AuthContext';
-import QuestionFormFields from './QuestionFormFields';
+import QuestionFormFields from './shared/QuestionFormFields';
 
 interface CloneQuestionModalProps {
   show: boolean;
@@ -342,12 +342,12 @@ export default function CloneQuestionModal({
               selectedSubject={selectedSubject}
               selectedUnit={selectedUnit}
               selectedTopic={selectedTopic}
-              onSubjectChange={(value) => {
+              onSubjectChange={(value: string) => {
                 setSelectedSubject(value);
                 setSelectedUnit('');
                 setSelectedTopic('');
               }}
-              onUnitChange={(value) => {
+              onUnitChange={(value: string) => {
                 setSelectedUnit(value);
                 setSelectedTopic('');
               }}

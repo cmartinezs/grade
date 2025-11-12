@@ -2,9 +2,9 @@
 
 import { Container, Row, Col } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import CreateTaxonomyModal from '@/components/CreateTaxonomyModal';
-import EditTaxonomyModal from '@/components/EditTaxonomyModal';
-import DeleteTaxonomyModal from '@/components/DeleteTaxonomyModal';
+import CreateTaxonomyModal from '@/app/questions-bank/taxonomy/components/CreateTaxonomyModal';
+import EditTaxonomyModal from './components/EditTaxonomyModal';
+import DeleteTaxonomyModal from './components/DeleteTaxonomyModal';
 import {
   TaxonomyHeader,
   TaxonomySearchBar,

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageWrapper from '@/components/PageWrapper';
-import { CourseBulkGeneratorForm } from '@/components/CourseBulkGeneratorForm';
+import { CourseBulkGeneratorForm } from '@/app/evaluation-management/courses/bulk-generate/CourseBulkGeneratorForm';
 import { useRouter } from 'next/navigation';
 
 export default function BulkGeneratePage() {
