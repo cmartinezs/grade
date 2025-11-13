@@ -1,14 +1,14 @@
 import { Accordion, Button } from 'react-bootstrap';
-import { clearAllTaxonomyData } from '@/lib/taxonomyStore';
+import { clearAllCurriculumHierarchyData } from '@/lib/curriculumHierarchyStore';
 
-export function TaxonomyHelpCard() {
+export function CurriculumHierarchyHelpCard() {
   const handleResetData = () => {
     if (
       window.confirm(
         '¿Estás seguro de resetear todos los datos? Esta acción no se puede deshacer.'
       )
     ) {
-      clearAllTaxonomyData();
+      clearAllCurriculumHierarchyData();
     }
   };
 

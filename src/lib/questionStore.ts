@@ -16,7 +16,7 @@ import {
   QuestionType,
   DifficultyLevel,
 } from '@/types/question';
-import { getAllTopics, getAllUnits, getAllSubjects } from './taxonomyStore';
+import { getAllTopics, getAllUnits, getAllSubjects } from './curriculumHierarchyStore';
 
 // LocalStorage keys
 const STORAGE_KEYS = {
@@ -257,7 +257,7 @@ class QuestionStore {
       errors.push({ field: 'difficulty_fk', message: 'La dificultad es obligatoria' });
     }
 
-    // RN-3: Validate topic exists in taxonomy
+    // RN-3: Validate topic exists in CurriculumHierarchy
     if (input.topic_fk) {
       const topics = getAllTopics();
       const topic = topics.find((t) => t.topic_id === input.topic_fk && !t.deleted_at);
@@ -407,7 +407,7 @@ class QuestionStore {
     const questionOptions = options.filter(opt => opt.question_fk === questionId)
       .sort((a, b) => a.position - b.position);
 
-    // Get taxonomy metadata
+    // Get CurriculumHierarchy metadata
     const topics = getAllTopics();
     const units = getAllUnits();
     const subjects = getAllSubjects();

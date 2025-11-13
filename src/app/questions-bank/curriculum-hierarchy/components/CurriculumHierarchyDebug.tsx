@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { Card, Button, Badge } from 'react-bootstrap';
-import { debugGetFullCache } from '@/lib/taxonomyStore';
+import { debugGetFullCache } from '@/lib/curriculumHierarchyStore';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface DebugInfo {
@@ -19,7 +19,7 @@ interface DebugInfo {
   hierarchyAnalysis: string;
 }
 
-export function TaxonomyDebug() {
+export function CurriculumHierarchyDebug() {
   const [isOpen, setIsOpen] = useState(false);
   const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
 
@@ -102,7 +102,7 @@ export function TaxonomyDebug() {
           className="shadow-lg"
         >
           <Card.Header className="bg-danger text-white">
-            <strong>Debug - Taxonomy Cache Hierarchy</strong>
+            <strong>Debug - CurriculumHierarchy Cache Hierarchy</strong>
           </Card.Header>
           <Card.Body style={{ fontSize: '0.85rem' }}>
             <div>

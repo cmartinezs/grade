@@ -1,5 +1,5 @@
 /**
- * useTaxonomy Hook
+ * useCurriculumHierarchy Hook
  * Carga la taxonomía (Asignaturas, Unidades, Temas) desde Firebase Data Connect
  * Asegura datos frescos cada vez que se monta el componente
  */
@@ -7,14 +7,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useState } from 'react';
-import { Subject, Unit, Topic } from '@/types/taxonomy';
+import { Subject, Unit, Topic } from '@/types/curriculumHierarchy';
 import {
   fetchAllSubjects,
   fetchAllUnits,
   fetchAllTopics,
-} from '@/lib/taxonomyDataConnect';
+} from '@/lib/curriculumHierarchyDataConnect';
 
-interface UseTaxonomyResult {
+interface UseCurriculumHierarchyResult {
   subjects: Subject[];
   units: Unit[];
   topics: Topic[];
@@ -22,7 +22,7 @@ interface UseTaxonomyResult {
   error: string | null;
 }
 
-export const useTaxonomy = (): UseTaxonomyResult => {
+export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -30,7 +30,7 @@ export const useTaxonomy = (): UseTaxonomyResult => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadTaxonomy = async () => {
+    const loadCurriculumHierarchy = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -88,7 +88,7 @@ export const useTaxonomy = (): UseTaxonomyResult => {
         setUnits(transformedUnits);
         setTopics(transformedTopics);
       } catch (err) {
-        console.error('Error loading taxonomy:', err);
+        console.error('Error loading CurriculumHierarchy:', err);
         setError(err instanceof Error ? err.message : 'Error cargando taxonomía');
         setSubjects([]);
         setUnits([]);
@@ -98,7 +98,7 @@ export const useTaxonomy = (): UseTaxonomyResult => {
       }
     };
 
-    loadTaxonomy();
+    loadCurriculumHierarchy();
   }, []);
 
   return {

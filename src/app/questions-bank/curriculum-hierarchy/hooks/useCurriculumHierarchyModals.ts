@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ModalElement } from '../types';
 
-export function useTaxonomyModals() {
+export function useCurriculumHierarchyModals() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

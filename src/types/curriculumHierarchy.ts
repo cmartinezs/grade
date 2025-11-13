@@ -1,6 +1,6 @@
 /**
  * CU-BP-11: Crear elemento de taxonomía curricular
- * Types for curriculum taxonomy hierarchy: Subject → Unit → Topic
+ * Types for curriculum hierarchy: Subject → Unit → Topic
  */
 
 export interface Subject {
@@ -44,7 +44,7 @@ export interface Topic {
   deleted_by: string | null;
 }
 
-export type TaxonomyType = 'subject' | 'unit' | 'topic';
+export type CurriculumHierarchyType = 'subject' | 'unit' | 'topic';
 
 export interface CreateSubjectInput {
   name: string;
@@ -61,7 +61,7 @@ export interface CreateTopicInput {
   unit_fk: string;
 }
 
-export type CreateTaxonomyInput = CreateSubjectInput | CreateUnitInput | CreateTopicInput;
+export type CreateCurriculumHierarchyInput = CreateSubjectInput | CreateUnitInput | CreateTopicInput;
 
 /**
  * CU-BP-12: Editar elemento de taxonomía curricular
@@ -81,7 +81,7 @@ export interface UpdateTopicInput {
   unit_fk: string; // Permite reasignar a otra unidad
 }
 
-export type UpdateTaxonomyInput = UpdateSubjectInput | UpdateUnitInput | UpdateTopicInput;
+export type UpdateCurriculumHierarchyInput = UpdateSubjectInput | UpdateUnitInput | UpdateTopicInput;
 
 /**
  * CU-BP-13: Eliminar elemento de taxonomía curricular

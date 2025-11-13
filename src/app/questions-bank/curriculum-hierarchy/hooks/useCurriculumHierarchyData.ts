@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Subject } from '@/types/taxonomy';
+import { Subject } from '@/types/curriculumHierarchy';
 import {
   getAllSubjects,
   getAllUnits,
   getAllTopics,
-  searchTaxonomy,
-} from '@/lib/taxonomyStore';
+  searchCurriculumHierarchy,
+} from '@/lib/curriculumHierarchyStore';
 
-export function useTaxonomyData() {
+export function useCurriculumHierarchyData() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,7 @@ export function useTaxonomyData() {
       const subjectsData = getAllSubjects();
       setSubjects(subjectsData);
     } else {
-      const results = searchTaxonomy(searchTerm);
+      const results = searchCurriculumHierarchy(searchTerm);
       setSubjects(results.subjects);
     }
   }, [searchTerm]);

@@ -1,21 +1,21 @@
 import { Card, Accordion } from 'react-bootstrap';
-import { Subject } from '@/types/taxonomy';
-import { TaxonomyContextProps } from '../types';
-import { TaxonomySubjectItem } from './TaxonomySubjectItem';
+import { Subject } from '@/types/curriculumHierarchy';
+import { CurriculumHierarchyContextProps } from '../types';
+import { CurriculumHierarchySubjectItem } from './CurriculumHierarchySubjectItem';
 
-interface TaxonomyCatalogProps extends TaxonomyContextProps {
+interface CurriculumHierarchyCatalogProps extends CurriculumHierarchyContextProps {
   subjects: Subject[];
   searchTerm: string;
   onCreateClick: () => void;
 }
 
-export function TaxonomyCatalog({
+export function CurriculumHierarchyCatalog({
   subjects,
   searchTerm,
   onCreateClick,
   onEdit,
   onDelete,
-}: TaxonomyCatalogProps) {
+}: CurriculumHierarchyCatalogProps) {
   return (
     <Card>
       <Card.Header className="d-flex justify-content-between align-items-center">
@@ -43,7 +43,7 @@ export function TaxonomyCatalog({
           <Accordion>
             {subjects.map((subject) => (
               <div key={subject.subject_id}>
-                <TaxonomySubjectItem
+                <CurriculumHierarchySubjectItem
                   subject={subject}
                   onEdit={onEdit}
                   onDelete={onDelete}

@@ -48,6 +48,9 @@ type Subject @table(name: "subjects", key: "subjectId") {
   # Código de la asignatura (ej. MAT-101, ENG-102)
   code: String!
   
+  # ID del nivel educacional al que pertenece esta asignatura
+  levelId: UUID! @col(name: "level_fk")
+  
   # Indicador de activo/inactivo
   active: Boolean! @default(value: true)
   
@@ -174,6 +177,44 @@ type Difficulty @table(name: "difficulties", key: "difficultyId") {
   active: Boolean! @default(value: true)
 }
 
+type Taxonomy @table(name: "taxonomies", key: "taxonomyId") {
+  # Identificador único de la taxonomía
+  taxonomyId: UUID! @col(name: "taxonomy_id")
+  
+  # Código de la taxonomía (ej. REMEMBER, UNDERSTAND, APPLY, ANALYZE, EVALUATE, CREATE)
+  code: String! @unique
+  
+  # Nombre de la taxonomía
+  name: String!
+  
+  # Descripción de la taxonomía
+  description: String
+  
+  # Nivel de Bloom (1-6)
+  level: Int!
+  
+  # Indicador de activo/inactivo
+  active: Boolean! @default(value: true)
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
 type Question @table(name: "questions", key: "questionId") {
   # Identificador único de la pregunta
   questionId: UUID! @col(name: "question_id")
@@ -195,6 +236,9 @@ type Question @table(name: "questions", key: "questionId") {
   
   # ID del nivel de dificultad
   difficultyId: UUID! @col(name: "difficulty_fk")
+  
+  # ID de la taxonomía
+  taxonomyId: UUID! @col(name: "taxonomy_fk")
   
   # ID del tipo de pregunta
   questionTypeId: UUID! @col(name: "question_type_fk")

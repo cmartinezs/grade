@@ -1,7 +1,7 @@
 /**
- * Taxonomy Store
+ * CurriculumHierarchy Store
  * Gestión centralizada de datos de taxonomías (Asignaturas, Unidades, Temas)
- * Wrapper sobre taxonomyDataConnect.ts con caching en memoria
+ * Wrapper sobre CurriculumHierarchyDataConnect.ts con caching en memoria
  * 
  * IMPORTANTE: Los componentes esperan funciones sincrónicas que devuelven objetos,
  * no promesas. Este store proporciona interfaces compatibles.
@@ -26,9 +26,9 @@ import {
   updateTopicInfo,
   deactivateTopicInfo,
   reactivateTopicInfo,
-} from './taxonomyDataConnect';
+} from './curriculumHierarchyDataConnect';
 
-import { Subject, Unit, Topic, DeleteImpactAnalysis, ValidationError } from '@/types/taxonomy';
+import { Subject, Unit, Topic, DeleteImpactAnalysis, ValidationError } from '@/types/curriculumHierarchy';
 
 // ===================================================================
 // CACHE IN-MEMORY
@@ -588,7 +588,7 @@ export const searchTopicsByUnit = (unitId: string, searchTerm?: string): Topic[]
 /**
  * Buscar taxonomía (general)
  */
-export const searchTaxonomy = (query: string): { subjects: Subject[]; units: Unit[]; topics: Topic[] } => {
+export const searchCurriculumHierarchy = (query: string): { subjects: Subject[]; units: Unit[]; topics: Topic[] } => {
   const queryLower = query.toLowerCase();
 
   return {
@@ -749,7 +749,7 @@ export const analyzeTopicDeleteImpact = (): DeleteImpactAnalysis => {
 /**
  * Precarga todos los datos (llamar al iniciar la app)
  */
-export const preloadAllTaxonomyData = async (): Promise<void> => {
+export const preloadAllCurriculumHierarchyData = async (): Promise<void> => {
   try {
     await Promise.all([
       getAllSubjects(),
@@ -757,14 +757,14 @@ export const preloadAllTaxonomyData = async (): Promise<void> => {
       getAllTopics(),
     ]);
   } catch (error) {
-    console.error('Error preloading taxonomy data:', error);
+    console.error('Error preloading CurriculumHierarchy data:', error);
   }
 };
 
 /**
  * Limpiar todo el cache
  */
-export const clearAllTaxonomyData = (): void => {
+export const clearAllCurriculumHierarchyData = (): void => {
   cache.subjects = null;
   cache.units = null;
   cache.topics = null;
@@ -774,12 +774,12 @@ export const clearAllTaxonomyData = (): void => {
 /**
  * Invalidar cache específico
  */
-export const invalidateTaxonomyCache = (key?: 'subjects' | 'units' | 'topics'): void => {
+export const invalidateCurriculumHierarchyCache = (key?: 'subjects' | 'units' | 'topics'): void => {
   if (key) {
     cache[key] = null;
     delete cache.lastFetch[key];
   } else {
-    clearAllTaxonomyData();
+    clearAllCurriculumHierarchyData();
   }
 };
 

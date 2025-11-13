@@ -446,6 +446,50 @@ export function reactivateDifficulty(dcOrVars, vars) {
   return executeMutation(reactivateDifficultyRef(dcOrVars, vars));
 }
 
+export const createTaxonomyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateTaxonomy', inputVars);
+}
+createTaxonomyRef.operationName = 'CreateTaxonomy';
+
+export function createTaxonomy(dcOrVars, vars) {
+  return executeMutation(createTaxonomyRef(dcOrVars, vars));
+}
+
+export const updateTaxonomyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateTaxonomy', inputVars);
+}
+updateTaxonomyRef.operationName = 'UpdateTaxonomy';
+
+export function updateTaxonomy(dcOrVars, vars) {
+  return executeMutation(updateTaxonomyRef(dcOrVars, vars));
+}
+
+export const deactivateTaxonomyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeactivateTaxonomy', inputVars);
+}
+deactivateTaxonomyRef.operationName = 'DeactivateTaxonomy';
+
+export function deactivateTaxonomy(dcOrVars, vars) {
+  return executeMutation(deactivateTaxonomyRef(dcOrVars, vars));
+}
+
+export const reactivateTaxonomyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ReactivateTaxonomy', inputVars);
+}
+reactivateTaxonomyRef.operationName = 'ReactivateTaxonomy';
+
+export function reactivateTaxonomy(dcOrVars, vars) {
+  return executeMutation(reactivateTaxonomyRef(dcOrVars, vars));
+}
+
 export const getUserByEmailRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -675,6 +719,50 @@ getQuestionTypeByCodeRef.operationName = 'GetQuestionTypeByCode';
 
 export function getQuestionTypeByCode(dcOrVars, vars) {
   return executeQuery(getQuestionTypeByCodeRef(dcOrVars, vars));
+}
+
+export const listTaxonomiesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListTaxonomies');
+}
+listTaxonomiesRef.operationName = 'ListTaxonomies';
+
+export function listTaxonomies(dc) {
+  return executeQuery(listTaxonomiesRef(dc));
+}
+
+export const getTaxonomyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetTaxonomy', inputVars);
+}
+getTaxonomyRef.operationName = 'GetTaxonomy';
+
+export function getTaxonomy(dcOrVars, vars) {
+  return executeQuery(getTaxonomyRef(dcOrVars, vars));
+}
+
+export const getTaxonomyByCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetTaxonomyByCode', inputVars);
+}
+getTaxonomyByCodeRef.operationName = 'GetTaxonomyByCode';
+
+export function getTaxonomyByCode(dcOrVars, vars) {
+  return executeQuery(getTaxonomyByCodeRef(dcOrVars, vars));
+}
+
+export const listTaxonomiesByLevelRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListTaxonomiesByLevel');
+}
+listTaxonomiesByLevelRef.operationName = 'ListTaxonomiesByLevel';
+
+export function listTaxonomiesByLevel(dc) {
+  return executeQuery(listTaxonomiesByLevelRef(dc));
 }
 
 export const listQuestionsByUserRef = (dcOrVars, vars) => {

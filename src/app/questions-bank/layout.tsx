@@ -35,9 +35,9 @@ const qbMenu = [
     isSection: true,
     children: [
       { 
-        label: 'Taxonomía', 
+        label: 'Jerarquía curricular', 
         icon: '📂',
-        href: '/questions-bank/taxonomy' 
+        href: '/questions-bank/curriculum-hierarchy' 
       },
       { 
         label: 'Tipos de Preguntas', 

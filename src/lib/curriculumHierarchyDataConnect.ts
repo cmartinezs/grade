@@ -1,5 +1,5 @@
 /**
- * Taxonomy Data Connect Store
+ * CurriculumHierarchy Data Connect Store
  * Gestión de Asignaturas, Unidades y Temas mediante Firebase Data Connect
  */
 
@@ -31,7 +31,7 @@ import {
   GetSubjectData,
   GetUnitData,
   GetTopicData,
-} from '../dataconnect-generated';
+} from '@dataconnect/generated';
 
 // ===================================================================
 // SUBJECTS (Asignaturas)
@@ -60,12 +60,13 @@ export const fetchSubjectById = async (subjectId: string): Promise<GetSubjectDat
 export const createNewSubject = async (
   name: string,
   code: string,
+  levelId: string,
   createdBy: string
 ): Promise<void> => {
   try {
     // Generate UUID for subjectId
     const subjectId = generateUUID();
-    await dcCreateSubject({ subjectId, name, code, createdBy });
+    await dcCreateSubject({ subjectId, name, code, levelId, createdBy });
   } catch (error) {
     console.error('Error creating subject:', error);
     throw error;
@@ -331,7 +332,7 @@ export const reactivateTopicInfo = async (topicId: string, deletedBy: string): P
 // HIERARCHICAL QUERIES
 // ===================================================================
 
-export const fetchTaxonomyHierarchy = async (subjectId: string) => {
+export const fetchCurriculumHierarchyHierarchy = async (subjectId: string) => {
   try {
     const subject = await fetchSubjectById(subjectId);
     const units = await fetchUnitsBySubject(subjectId);
@@ -348,25 +349,25 @@ export const fetchTaxonomyHierarchy = async (subjectId: string) => {
 
     return hierarchyData;
   } catch (error) {
-    console.error(`Error fetching taxonomy hierarchy for subject ${subjectId}:`, error);
+    console.error(`Error fetching CurriculumHierarchy hierarchy for subject ${subjectId}:`, error);
     throw error;
   }
 };
 
-export const fetchCompleteTaxonomy = async () => {
+export const fetchCompleteCurriculumHierarchy = async () => {
   try {
     const subjects = await fetchAllSubjects();
 
-    const completeTaxonomy = await Promise.all(
+    const completeCurriculumHierarchy = await Promise.all(
       subjects.subjects.map(async (subject) => {
-        const hierarchy = await fetchTaxonomyHierarchy(subject.subjectId);
+        const hierarchy = await fetchCurriculumHierarchyHierarchy(subject.subjectId);
         return hierarchy;
       })
     );
 
-    return completeTaxonomy;
+    return completeCurriculumHierarchy;
   } catch (error) {
-    console.error('Error fetching complete taxonomy:', error);
+    console.error('Error fetching complete CurriculumHierarchy:', error);
     throw error;
   }
 };

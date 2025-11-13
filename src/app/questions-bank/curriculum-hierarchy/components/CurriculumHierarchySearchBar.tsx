@@ -1,18 +1,18 @@
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
-interface TaxonomySearchBarProps {
+interface CurriculumHierarchySearchBarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onClearSearch: () => void;
   resultsCount: number;
 }
 
-export function TaxonomySearchBar({
+export function CurriculumHierarchySearchBar({
   searchTerm,
   onSearchChange,
   onClearSearch,
   resultsCount,
-}: TaxonomySearchBarProps) {
+}: CurriculumHierarchySearchBarProps) {
   return (
     <>
       <InputGroup size="lg">

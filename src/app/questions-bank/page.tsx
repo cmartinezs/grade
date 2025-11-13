@@ -11,7 +11,7 @@ import RetireQuestionModal from './components/RetireQuestionModal';
 import ReactivateQuestionModal from './components/ReactivateQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import type { QuestionType, DifficultyLevel } from '@/types/question';
-import { useTaxonomy } from '@/hooks/useTaxonomy';
+import { useTaxonomy } from '@/hooks/useCurriculumHierarchy';
 import { useQuestions } from '@/hooks/useQuestions';
 
 export default function QuestionsBankPage() {

@@ -8,19 +8,19 @@ import {
   createTopic,
   getAllSubjects,
   getAllUnits,
-} from '@/lib/taxonomyStore';
+} from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
-import { TaxonomyType, ValidationError, Subject, Unit } from '@/types/taxonomy';
+import { CurriculumHierarchyType, ValidationError, Subject, Unit } from '@/types/curriculumHierarchy';
 
-interface CreateTaxonomyModalProps {
+interface CreateCurriculumHierarchyModalProps {
   show: boolean;
   onHide: () => void;
   onSuccess: () => void;
 }
 
-export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateTaxonomyModalProps) {
+export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess }: CreateCurriculumHierarchyModalProps) {
   const { user } = useAuth();
-  const [taxonomyType, setTaxonomyType] = useState<TaxonomyType>('subject');
+  const [CurriculumHierarchyType, setCurriculumHierarchyType] = useState<CurriculumHierarchyType>('subject');
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -43,7 +43,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
 
   // Reset form when modal is closed or opened
   const resetForm = () => {
-    setTaxonomyType('subject');
+    setCurriculumHierarchyType('subject');
     setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
     setErrors([]);
     setSuccessMessage(null);
@@ -55,8 +55,8 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     onHide();
   };
 
-  const handleTypeChange = (type: TaxonomyType) => {
-    setTaxonomyType(type);
+  const handleTypeChange = (type: CurriculumHierarchyType) => {
+    setCurriculumHierarchyType(type);
     setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
     setErrors([]);
     setSuccessMessage(null);
@@ -76,15 +76,15 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     }
 
     try {
-      if (taxonomyType === 'subject') {
+      if (CurriculumHierarchyType === 'subject') {
         await createSubject(formData.name, formData.code, userId);
-      } else if (taxonomyType === 'unit') {
+      } else if (CurriculumHierarchyType === 'unit') {
         await createUnit(formData.name, formData.subject_fk, userId, formData.description);
       } else {
         await createTopic(formData.name, formData.unit_fk, userId);
       }
 
-      setSuccessMessage(`✅ ${getTaxonomyLabel(taxonomyType)} creado exitosamente: "${formData.name}"`);
+      setSuccessMessage(`✅ ${getCurriculumHierarchyLabel(CurriculumHierarchyType)} creado exitosamente: "${formData.name}"`);
       setTimeout(() => {
         onSuccess();
         handleHide();
@@ -99,7 +99,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     }
   };
 
-  const getTaxonomyLabel = (type: TaxonomyType): string => {
+  const getCurriculumHierarchyLabel = (type: CurriculumHierarchyType): string => {
     switch (type) {
       case 'subject':
         return 'Asignatura';
@@ -110,7 +110,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
     }
   };
 
-  const getTaxonomyIcon = (type: TaxonomyType): string => {
+  const getCurriculumHierarchyIcon = (type: CurriculumHierarchyType): string => {
     switch (type) {
       case 'subject':
         return '📚';
@@ -131,8 +131,8 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
       <Modal.Header closeButton>
         <Modal.Title>
           <span className="d-flex align-items-center gap-2">
-            <span style={{ fontSize: '1.3rem' }}>{getTaxonomyIcon(taxonomyType)}</span>
-            <span>Crear {getTaxonomyLabel(taxonomyType)}</span>
+            <span style={{ fontSize: '1.3rem' }}>{getCurriculumHierarchyIcon(CurriculumHierarchyType)}</span>
+            <span>Crear {getCurriculumHierarchyLabel(CurriculumHierarchyType)}</span>
           </span>
         </Modal.Title>
       </Modal.Header>
@@ -144,7 +144,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
           </Form.Label>
           <div className="d-flex gap-2">
             <Button
-              variant={taxonomyType === 'subject' ? 'primary' : 'outline-primary'}
+              variant={CurriculumHierarchyType === 'subject' ? 'primary' : 'outline-primary'}
               onClick={() => handleTypeChange('subject')}
               className="d-flex align-items-center gap-2"
             >
@@ -152,7 +152,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
               <span>Asignatura</span>
             </Button>
             <Button
-              variant={taxonomyType === 'unit' ? 'primary' : 'outline-primary'}
+              variant={CurriculumHierarchyType === 'unit' ? 'primary' : 'outline-primary'}
               onClick={() => handleTypeChange('unit')}
               className="d-flex align-items-center gap-2"
             >
@@ -160,7 +160,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
               <span>Unidad</span>
             </Button>
             <Button
-              variant={taxonomyType === 'topic' ? 'primary' : 'outline-primary'}
+              variant={CurriculumHierarchyType === 'topic' ? 'primary' : 'outline-primary'}
               onClick={() => handleTypeChange('topic')}
               className="d-flex align-items-center gap-2"
             >
@@ -194,7 +194,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
           </Form.Group>
 
           {/* SUBJECT FORM */}
-          {taxonomyType === 'subject' && (
+          {CurriculumHierarchyType === 'subject' && (
             <>
               <Form.Group className="mb-3">
                 <Form.Label>Nombre de la Asignatura *</Form.Label>
@@ -224,7 +224,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
           )}
 
           {/* UNIT FORM */}
-          {taxonomyType === 'unit' && (
+          {CurriculumHierarchyType === 'unit' && (
             <>
               <Form.Group className="mb-3">
                 <Form.Label>Asignatura Padre *</Form.Label>
@@ -270,7 +270,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
           )}
 
           {/* TOPIC FORM */}
-          {taxonomyType === 'topic' && (
+          {CurriculumHierarchyType === 'topic' && (
             <>
               <Form.Group className="mb-3">
                 <Form.Label>1. Asignatura *</Form.Label>
@@ -320,7 +320,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
                       onClick={(e) => {
                         e.preventDefault();
                         // Switch to Unit form with subject already selected
-                        setTaxonomyType('unit');
+                        setCurriculumHierarchyType('unit');
                         setFormData({
                           ...formData,
                           name: '',
@@ -356,7 +356,7 @@ export default function CreateTaxonomyModal({ show, onHide, onSuccess }: CreateT
               ❌ Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              💾 Guardar {getTaxonomyLabel(taxonomyType)}
+              💾 Guardar {getCurriculumHierarchyLabel(CurriculumHierarchyType)}
             </Button>
           </div>
         </Form>

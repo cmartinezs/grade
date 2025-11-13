@@ -21,7 +21,7 @@ import {
   QuestionWithDetails,
 } from '@/types/question';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { getAllUnits, getAllTopics } from '@/lib/taxonomyStore';
+import { getAllUnits, getAllTopics } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
 import QuestionFormFields from './shared/QuestionFormFields';
 

@@ -2,21 +2,21 @@
 
 import { Container, Row, Col } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import CreateTaxonomyModal from '@/app/questions-bank/taxonomy/components/CreateTaxonomyModal';
-import EditTaxonomyModal from './components/EditTaxonomyModal';
-import DeleteTaxonomyModal from './components/DeleteTaxonomyModal';
+import CreateCurriculumHierarchyModal from '@/app/questions-bank/curriculum-hierarchy/components/CreateCurriculumHierarchyModal';
+import EditCurriculumHierarchyModal from './components/EditCurriculumHierarchyModal';
+import DeleteCurriculumHierarchyModal from './components/DeleteCurriculumHierarchyModal';
 import {
-  TaxonomyHeader,
-  TaxonomySearchBar,
-  TaxonomyHelpCard,
-  TaxonomyCatalog,
+  CurriculumHierarchyHeader,
+  CurriculumHierarchySearchBar,
+  CurriculumHierarchyHelpCard,
+  CurriculumHierarchyCatalog,
 } from './components';
-import { TaxonomyDebug } from './components/TaxonomyDebug';
-import { useTaxonomyData, useTaxonomyModals } from './hooks';
+import { CurriculumHierarchyDebug } from './components/CurriculumHierarchyDebug';
+import { useCurriculumHierarchyData, useCurriculumHierarchyModals } from './hooks';
 
-export default function TaxonomyPage() {
+export default function CurriculumHierarchyPage() {
   const { subjects, searchTerm, setSearchTerm, handleSuccess, handleClearSearch } =
-    useTaxonomyData();
+    useCurriculumHierarchyData();
   const {
     showCreateModal,
     setShowCreateModal,
@@ -28,32 +28,32 @@ export default function TaxonomyPage() {
     handleEditModalHide,
     handleDelete,
     handleDeleteModalHide,
-  } = useTaxonomyModals();
+  } = useCurriculumHierarchyModals();
 
   return (
     <ProtectedRoute>
       <Container className="mt-4">
         {/* Debug Component - only in development */}
-        {process.env.NODE_ENV === 'development' && <TaxonomyDebug />}
+        {process.env.NODE_ENV === 'development' && <CurriculumHierarchyDebug />}
 
         {/* Header */}
         <Row className="mb-4">
           <Col>
-            <TaxonomyHeader />
+            <CurriculumHierarchyHeader />
           </Col>
         </Row>
 
         {/* Collapsible Info Card */}
         <Row className="mb-3">
           <Col>
-            <TaxonomyHelpCard />
+            <CurriculumHierarchyHelpCard />
           </Col>
         </Row>
 
         {/* Search Bar */}
         <Row className="mb-3">
           <Col>
-            <TaxonomySearchBar
+            <CurriculumHierarchySearchBar
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
               onClearSearch={handleClearSearch}
@@ -62,10 +62,10 @@ export default function TaxonomyPage() {
           </Col>
         </Row>
 
-        {/* Taxonomy Catalog */}
+        {/* CurriculumHierarchy Catalog */}
         <Row>
           <Col>
-            <TaxonomyCatalog
+            <CurriculumHierarchyCatalog
               subjects={subjects}
               searchTerm={searchTerm}
               onCreateClick={() => setShowCreateModal(true)}
@@ -76,7 +76,7 @@ export default function TaxonomyPage() {
         </Row>
 
         {/* Create Modal */}
-        <CreateTaxonomyModal
+        <CreateCurriculumHierarchyModal
           show={showCreateModal}
           onHide={() => setShowCreateModal(false)}
           onSuccess={handleSuccess}
@@ -84,7 +84,7 @@ export default function TaxonomyPage() {
 
         {/* Edit Modal */}
         {editElement && (
-          <EditTaxonomyModal
+          <EditCurriculumHierarchyModal
             show={showEditModal}
             onHide={handleEditModalHide}
             onSuccess={handleSuccess}
@@ -95,7 +95,7 @@ export default function TaxonomyPage() {
 
         {/* Delete Modal */}
         {deleteElement && (
-          <DeleteTaxonomyModal
+          <DeleteCurriculumHierarchyModal
             show={showDeleteModal}
             onHide={handleDeleteModalHide}
             onSuccess={handleSuccess}

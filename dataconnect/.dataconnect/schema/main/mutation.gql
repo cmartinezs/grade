@@ -72,6 +72,15 @@ extend type Mutation {
     data: Subject_Data!
   ): Subject_KeyOutput! @fdc_generated(from: "Subject", purpose: INSERT_SINGLE)
   """
+  ✨ Insert a single `Taxonomy` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  taxonomy_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Taxonomy_Data!
+  ): Taxonomy_KeyOutput! @fdc_generated(from: "Taxonomy", purpose: INSERT_SINGLE)
+  """
   ✨ Insert a single `Topic` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   topic_insert(
@@ -170,6 +179,15 @@ extend type Mutation {
     """
     data: [Subject_Data!]!
   ): [Subject_KeyOutput!]! @fdc_generated(from: "Subject", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Taxonomy` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  taxonomy_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Taxonomy_Data!]!
+  ): [Taxonomy_KeyOutput!]! @fdc_generated(from: "Taxonomy", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Topic` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -270,6 +288,15 @@ extend type Mutation {
     data: Subject_Data!
   ): Subject_KeyOutput! @fdc_generated(from: "Subject", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update a single `Taxonomy` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Taxonomy`.
+  """
+  taxonomy_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Taxonomy_Data!
+  ): Taxonomy_KeyOutput! @fdc_generated(from: "Taxonomy", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update a single `Topic` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Topic`.
   """
   topic_upsert(
@@ -368,6 +395,15 @@ extend type Mutation {
     """
     data: [Subject_Data!]!
   ): [Subject_KeyOutput!]! @fdc_generated(from: "Subject", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Taxonomy` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Taxonomy`.
+  """
+  taxonomy_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Taxonomy_Data!]!
+  ): [Taxonomy_KeyOutput!]! @fdc_generated(from: "Taxonomy", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Topic` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Topic`.
   """
@@ -547,6 +583,25 @@ extend type Mutation {
     """
     data: Subject_Data!
   ): Subject_KeyOutput @fdc_generated(from: "Subject", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Taxonomy` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Taxonomy` or `null` if not found.
+  """
+  taxonomy_update(
+    """
+    The key used to identify the object.
+    """
+    key: Taxonomy_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Taxonomy_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Taxonomy_Data!
+  ): Taxonomy_KeyOutput @fdc_generated(from: "Taxonomy", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Topic` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Topic` or `null` if not found.
   """
@@ -757,6 +812,25 @@ extend type Mutation {
     data: Subject_Data!
   ): Int! @fdc_generated(from: "Subject", purpose: UPDATE_MULTIPLE)
   """
+  ✨ Update `Taxonomy` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  taxonomy_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Taxonomy_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Taxonomy_Data!
+  ): Int! @fdc_generated(from: "Taxonomy", purpose: UPDATE_MULTIPLE)
+  """
   ✨ Update `Topic` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   topic_updateMany(
@@ -926,6 +1000,20 @@ extend type Mutation {
     first: Subject_FirstRow
   ): Subject_KeyOutput @fdc_generated(from: "Subject", purpose: DELETE_SINGLE)
   """
+  ✨ Delete a single `Taxonomy` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  taxonomy_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Taxonomy_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Taxonomy_FirstRow
+  ): Taxonomy_KeyOutput @fdc_generated(from: "Taxonomy", purpose: DELETE_SINGLE)
+  """
   ✨ Delete a single `Topic` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   topic_delete(
@@ -1079,6 +1167,20 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "Subject", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Taxonomy` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  taxonomy_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Taxonomy_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Topic` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

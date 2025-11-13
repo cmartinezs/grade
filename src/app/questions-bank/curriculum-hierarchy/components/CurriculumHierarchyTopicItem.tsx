@@ -1,16 +1,16 @@
 import { Button } from 'react-bootstrap';
-import { Topic } from '@/types/taxonomy';
-import { TaxonomyContextProps } from '../types';
+import { Topic } from '@/types/curriculumHierarchy';
+import { CurriculumHierarchyContextProps } from '../types';
 
-interface TaxonomyTopicItemProps extends TaxonomyContextProps {
+interface CurriculumHierarchyTopicItemProps extends CurriculumHierarchyContextProps {
   topic: Topic;
 }
 
-export function TaxonomyTopicItem({
+export function CurriculumHierarchyTopicItem({
   topic,
   onEdit,
   onDelete,
-}: TaxonomyTopicItemProps) {
+}: CurriculumHierarchyTopicItemProps) {
   return (
     <li className="d-flex justify-content-between align-items-center py-2 border-bottom">
       <span className="d-flex align-items-center gap-2">

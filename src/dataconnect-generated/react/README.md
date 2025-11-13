@@ -38,6 +38,10 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*ListQuestionTypes*](#listquestiontypes)
   - [*GetQuestionType*](#getquestiontype)
   - [*GetQuestionTypeByCode*](#getquestiontypebycode)
+  - [*ListTaxonomies*](#listtaxonomies)
+  - [*GetTaxonomy*](#gettaxonomy)
+  - [*GetTaxonomyByCode*](#gettaxonomybycode)
+  - [*ListTaxonomiesByLevel*](#listtaxonomiesbylevel)
   - [*ListQuestionsByUser*](#listquestionsbyuser)
   - [*GetQuestion*](#getquestion)
   - [*ListPublicQuestions*](#listpublicquestions)
@@ -85,6 +89,10 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*CreateDifficulty*](#createdifficulty)
   - [*DeactivateDifficulty*](#deactivatedifficulty)
   - [*ReactivateDifficulty*](#reactivatedifficulty)
+  - [*CreateTaxonomy*](#createtaxonomy)
+  - [*UpdateTaxonomy*](#updatetaxonomy)
+  - [*DeactivateTaxonomy*](#deactivatetaxonomy)
+  - [*ReactivateTaxonomy*](#reactivatetaxonomy)
 
 # TanStack Query Firebase & TanStack React Query
 This SDK provides [React](https://react.dev/) hooks generated specific to your application, for the operations found in the connector `example`. These hooks are generated using [TanStack Query Firebase](https://react-query-firebase.invertase.dev/) by our partners at Invertase, a library built on top of [TanStack React Query v5](https://tanstack.com/query/v5/docs/framework/react/overview).
@@ -292,6 +300,7 @@ export interface ListSubjectsData {
     subjectId: UUIDString;
     name: string;
     code: string;
+    levelId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
   } & Subject_Key)[];
@@ -374,6 +383,7 @@ export interface GetSubjectData {
     name: string;
     code: string;
     active: boolean;
+    levelId: UUIDString;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -1997,6 +2007,345 @@ export default function GetQuestionTypeByCodeComponent() {
 }
 ```
 
+## ListTaxonomies
+You can execute the `ListTaxonomies` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useListTaxonomies(dc: DataConnect, options?: useDataConnectQueryOptions<ListTaxonomiesData>): UseDataConnectQueryResult<ListTaxonomiesData, undefined>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useListTaxonomies(options?: useDataConnectQueryOptions<ListTaxonomiesData>): UseDataConnectQueryResult<ListTaxonomiesData, undefined>;
+```
+
+### Variables
+The `ListTaxonomies` Query has no variables.
+### Return Type
+Recall that calling the `ListTaxonomies` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListTaxonomies` Query is of type `ListTaxonomiesData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ListTaxonomiesData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `ListTaxonomies`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig } from '@dataconnect/generated';
+import { useListTaxonomies } from '@dataconnect/generated/react'
+
+export default function ListTaxonomiesComponent() {
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListTaxonomies();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useListTaxonomies(dataConnect);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useListTaxonomies(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useListTaxonomies(dataConnect, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.taxonomies);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetTaxonomy
+You can execute the `GetTaxonomy` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetTaxonomy(dc: DataConnect, vars: GetTaxonomyVariables, options?: useDataConnectQueryOptions<GetTaxonomyData>): UseDataConnectQueryResult<GetTaxonomyData, GetTaxonomyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetTaxonomy(vars: GetTaxonomyVariables, options?: useDataConnectQueryOptions<GetTaxonomyData>): UseDataConnectQueryResult<GetTaxonomyData, GetTaxonomyVariables>;
+```
+
+### Variables
+The `GetTaxonomy` Query requires an argument of type `GetTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetTaxonomyVariables {
+  taxonomyId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetTaxonomy` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetTaxonomy` Query is of type `GetTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetTaxonomyData {
+  taxonomy?: {
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & Taxonomy_Key;
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetTaxonomy`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetTaxonomyVariables } from '@dataconnect/generated';
+import { useGetTaxonomy } from '@dataconnect/generated/react'
+
+export default function GetTaxonomyComponent() {
+  // The `useGetTaxonomy` Query hook requires an argument of type `GetTaxonomyVariables`:
+  const getTaxonomyVars: GetTaxonomyVariables = {
+    taxonomyId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetTaxonomy(getTaxonomyVars);
+  // Variables can be defined inline as well.
+  const query = useGetTaxonomy({ taxonomyId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetTaxonomy(dataConnect, getTaxonomyVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetTaxonomy(getTaxonomyVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetTaxonomy(dataConnect, getTaxonomyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.taxonomy);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetTaxonomyByCode
+You can execute the `GetTaxonomyByCode` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetTaxonomyByCode(dc: DataConnect, vars: GetTaxonomyByCodeVariables, options?: useDataConnectQueryOptions<GetTaxonomyByCodeData>): UseDataConnectQueryResult<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetTaxonomyByCode(vars: GetTaxonomyByCodeVariables, options?: useDataConnectQueryOptions<GetTaxonomyByCodeData>): UseDataConnectQueryResult<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+```
+
+### Variables
+The `GetTaxonomyByCode` Query requires an argument of type `GetTaxonomyByCodeVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetTaxonomyByCodeVariables {
+  code: string;
+}
+```
+### Return Type
+Recall that calling the `GetTaxonomyByCode` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetTaxonomyByCode` Query is of type `GetTaxonomyByCodeData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetTaxonomyByCodeData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetTaxonomyByCode`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetTaxonomyByCodeVariables } from '@dataconnect/generated';
+import { useGetTaxonomyByCode } from '@dataconnect/generated/react'
+
+export default function GetTaxonomyByCodeComponent() {
+  // The `useGetTaxonomyByCode` Query hook requires an argument of type `GetTaxonomyByCodeVariables`:
+  const getTaxonomyByCodeVars: GetTaxonomyByCodeVariables = {
+    code: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetTaxonomyByCode(getTaxonomyByCodeVars);
+  // Variables can be defined inline as well.
+  const query = useGetTaxonomyByCode({ code: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetTaxonomyByCode(dataConnect, getTaxonomyByCodeVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetTaxonomyByCode(getTaxonomyByCodeVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetTaxonomyByCode(dataConnect, getTaxonomyByCodeVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.taxonomies);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ListTaxonomiesByLevel
+You can execute the `ListTaxonomiesByLevel` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useListTaxonomiesByLevel(dc: DataConnect, options?: useDataConnectQueryOptions<ListTaxonomiesByLevelData>): UseDataConnectQueryResult<ListTaxonomiesByLevelData, undefined>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useListTaxonomiesByLevel(options?: useDataConnectQueryOptions<ListTaxonomiesByLevelData>): UseDataConnectQueryResult<ListTaxonomiesByLevelData, undefined>;
+```
+
+### Variables
+The `ListTaxonomiesByLevel` Query has no variables.
+### Return Type
+Recall that calling the `ListTaxonomiesByLevel` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListTaxonomiesByLevel` Query is of type `ListTaxonomiesByLevelData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ListTaxonomiesByLevelData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `ListTaxonomiesByLevel`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig } from '@dataconnect/generated';
+import { useListTaxonomiesByLevel } from '@dataconnect/generated/react'
+
+export default function ListTaxonomiesByLevelComponent() {
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListTaxonomiesByLevel();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useListTaxonomiesByLevel(dataConnect);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useListTaxonomiesByLevel(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useListTaxonomiesByLevel(dataConnect, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.taxonomies);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
 ## ListQuestionsByUser
 You can execute the `ListQuestionsByUser` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
 
@@ -2034,6 +2383,7 @@ export interface ListQuestionsByUserData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2134,6 +2484,7 @@ export interface GetQuestionData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2226,6 +2577,7 @@ export interface ListPublicQuestionsData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2312,6 +2664,7 @@ export interface ListPublicQuestionsByDifficultyData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2405,6 +2758,7 @@ export interface ListPublicQuestionsByTypeData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2805,6 +3159,7 @@ export interface CreateSubjectVariables {
   subjectId: UUIDString;
   name: string;
   code: string;
+  levelId: UUIDString;
   createdBy: UUIDString;
 }
 ```
@@ -2858,11 +3213,12 @@ export default function CreateSubjectComponent() {
     subjectId: ..., 
     name: ..., 
     code: ..., 
+    levelId: ..., 
     createdBy: ..., 
   };
   mutation.mutate(createSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ subjectId: ..., name: ..., code: ..., createdBy: ..., });
+  mutation.mutate({ subjectId: ..., name: ..., code: ..., levelId: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5235,6 +5591,7 @@ export interface CreateQuestionVariables {
   topicId: UUIDString;
   difficultyId: UUIDString;
   questionTypeId: UUIDString;
+  taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
   firebaseId: string;
@@ -5292,13 +5649,14 @@ export default function CreateQuestionComponent() {
     topicId: ..., 
     difficultyId: ..., 
     questionTypeId: ..., 
+    taxonomyId: ..., 
     userId: ..., 
     isPublic: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(createQuestionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
+  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5343,6 +5701,7 @@ export interface CreateQuestionVersionVariables {
   topicId: UUIDString;
   difficultyId: UUIDString;
   questionTypeId: UUIDString;
+  taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
   version: number;
@@ -5402,6 +5761,7 @@ export default function CreateQuestionVersionComponent() {
     topicId: ..., 
     difficultyId: ..., 
     questionTypeId: ..., 
+    taxonomyId: ..., 
     userId: ..., 
     isPublic: ..., 
     version: ..., 
@@ -5410,7 +5770,7 @@ export default function CreateQuestionVersionComponent() {
   };
   mutation.mutate(createQuestionVersionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
+  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -6620,6 +6980,414 @@ export default function ReactivateDifficultyComponent() {
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
     console.log(mutation.data.difficulty_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CreateTaxonomy
+You can execute the `CreateTaxonomy` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useCreateTaxonomy(options?: useDataConnectMutationOptions<CreateTaxonomyData, FirebaseError, CreateTaxonomyVariables>): UseDataConnectMutationResult<CreateTaxonomyData, CreateTaxonomyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useCreateTaxonomy(dc: DataConnect, options?: useDataConnectMutationOptions<CreateTaxonomyData, FirebaseError, CreateTaxonomyVariables>): UseDataConnectMutationResult<CreateTaxonomyData, CreateTaxonomyVariables>;
+```
+
+### Variables
+The `CreateTaxonomy` Mutation requires an argument of type `CreateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CreateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  level: number;
+  createdBy: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `CreateTaxonomy` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateTaxonomy` Mutation is of type `CreateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CreateTaxonomyData {
+  taxonomy_insert: Taxonomy_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `CreateTaxonomy`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CreateTaxonomyVariables } from '@dataconnect/generated';
+import { useCreateTaxonomy } from '@dataconnect/generated/react'
+
+export default function CreateTaxonomyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useCreateTaxonomy();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useCreateTaxonomy(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateTaxonomy(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateTaxonomy(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useCreateTaxonomy` Mutation requires an argument of type `CreateTaxonomyVariables`:
+  const createTaxonomyVars: CreateTaxonomyVariables = {
+    taxonomyId: ..., 
+    code: ..., 
+    name: ..., 
+    description: ..., // optional
+    level: ..., 
+    createdBy: ..., 
+  };
+  mutation.mutate(createTaxonomyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ taxonomyId: ..., code: ..., name: ..., description: ..., level: ..., createdBy: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(createTaxonomyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.taxonomy_insert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateTaxonomy
+You can execute the `UpdateTaxonomy` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateTaxonomy(options?: useDataConnectMutationOptions<UpdateTaxonomyData, FirebaseError, UpdateTaxonomyVariables>): UseDataConnectMutationResult<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateTaxonomy(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateTaxonomyData, FirebaseError, UpdateTaxonomyVariables>): UseDataConnectMutationResult<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+```
+
+### Variables
+The `UpdateTaxonomy` Mutation requires an argument of type `UpdateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  level: number;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that calling the `UpdateTaxonomy` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateTaxonomy` Mutation is of type `UpdateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateTaxonomy`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateTaxonomyVariables } from '@dataconnect/generated';
+import { useUpdateTaxonomy } from '@dataconnect/generated/react'
+
+export default function UpdateTaxonomyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateTaxonomy();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateTaxonomy(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateTaxonomy(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateTaxonomy(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateTaxonomy` Mutation requires an argument of type `UpdateTaxonomyVariables`:
+  const updateTaxonomyVars: UpdateTaxonomyVariables = {
+    taxonomyId: ..., 
+    code: ..., 
+    name: ..., 
+    description: ..., // optional
+    level: ..., 
+    updatedBy: ..., 
+    updatedAt: ..., 
+    firebaseId: ..., 
+  };
+  mutation.mutate(updateTaxonomyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ taxonomyId: ..., code: ..., name: ..., description: ..., level: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateTaxonomyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.taxonomy_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## DeactivateTaxonomy
+You can execute the `DeactivateTaxonomy` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useDeactivateTaxonomy(options?: useDataConnectMutationOptions<DeactivateTaxonomyData, FirebaseError, DeactivateTaxonomyVariables>): UseDataConnectMutationResult<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useDeactivateTaxonomy(dc: DataConnect, options?: useDataConnectMutationOptions<DeactivateTaxonomyData, FirebaseError, DeactivateTaxonomyVariables>): UseDataConnectMutationResult<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+```
+
+### Variables
+The `DeactivateTaxonomy` Mutation requires an argument of type `DeactivateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface DeactivateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that calling the `DeactivateTaxonomy` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeactivateTaxonomy` Mutation is of type `DeactivateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface DeactivateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `DeactivateTaxonomy`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, DeactivateTaxonomyVariables } from '@dataconnect/generated';
+import { useDeactivateTaxonomy } from '@dataconnect/generated/react'
+
+export default function DeactivateTaxonomyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useDeactivateTaxonomy();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useDeactivateTaxonomy(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeactivateTaxonomy(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeactivateTaxonomy(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useDeactivateTaxonomy` Mutation requires an argument of type `DeactivateTaxonomyVariables`:
+  const deactivateTaxonomyVars: DeactivateTaxonomyVariables = {
+    taxonomyId: ..., 
+    deletedAt: ..., 
+    deletedBy: ..., 
+    firebaseId: ..., 
+  };
+  mutation.mutate(deactivateTaxonomyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ taxonomyId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(deactivateTaxonomyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.taxonomy_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ReactivateTaxonomy
+You can execute the `ReactivateTaxonomy` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useReactivateTaxonomy(options?: useDataConnectMutationOptions<ReactivateTaxonomyData, FirebaseError, ReactivateTaxonomyVariables>): UseDataConnectMutationResult<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useReactivateTaxonomy(dc: DataConnect, options?: useDataConnectMutationOptions<ReactivateTaxonomyData, FirebaseError, ReactivateTaxonomyVariables>): UseDataConnectMutationResult<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+```
+
+### Variables
+The `ReactivateTaxonomy` Mutation requires an argument of type `ReactivateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ReactivateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that calling the `ReactivateTaxonomy` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ReactivateTaxonomy` Mutation is of type `ReactivateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ReactivateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `ReactivateTaxonomy`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ReactivateTaxonomyVariables } from '@dataconnect/generated';
+import { useReactivateTaxonomy } from '@dataconnect/generated/react'
+
+export default function ReactivateTaxonomyComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useReactivateTaxonomy();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useReactivateTaxonomy(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useReactivateTaxonomy(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useReactivateTaxonomy(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useReactivateTaxonomy` Mutation requires an argument of type `ReactivateTaxonomyVariables`:
+  const reactivateTaxonomyVars: ReactivateTaxonomyVariables = {
+    taxonomyId: ..., 
+    firebaseId: ..., 
+  };
+  mutation.mutate(reactivateTaxonomyVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ taxonomyId: ..., firebaseId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(reactivateTaxonomyVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.taxonomy_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }

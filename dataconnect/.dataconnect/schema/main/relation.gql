@@ -148,6 +148,10 @@ extend type Course {
   ✨ Maximum of the `updatedAt` field in the `Course` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "Course.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Course.courseId", purpose: GLOBAL_ID)
 }
 extend type Difficulty {
   """
@@ -229,6 +233,10 @@ extend type Difficulty {
   ✨ Maximum of the `weight` field in the `Difficulty` table.
   """
   weight_max: Int @fdc_generated(from: "Difficulty.weight", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Difficulty.difficultyId", purpose: GLOBAL_ID)
 }
 extend type EducationalLevel {
   """
@@ -371,6 +379,10 @@ extend type EducationalLevel {
   ✨ Maximum of the `updatedAt` field in the `EducationalLevel` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "EducationalLevel.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "EducationalLevel.levelId", purpose: GLOBAL_ID)
 }
 extend type LevelCategory {
   """
@@ -504,6 +516,10 @@ extend type LevelCategory {
   ✨ Maximum of the `updatedAt` field in the `LevelCategory` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "LevelCategory.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "LevelCategory.categoryId", purpose: GLOBAL_ID)
 }
 extend type Question {
   """
@@ -595,6 +611,15 @@ extend type Question {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Question.questionTypeId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Question` table where the `taxonomyId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  taxonomyId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Question.taxonomyId", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Question` table where the `text` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
@@ -699,6 +724,10 @@ extend type Question {
   ✨ Maximum of the `version` field in the `Question` table.
   """
   version_max: Int @fdc_generated(from: "Question.version", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Question.questionId", purpose: GLOBAL_ID)
 }
 extend type QuestionOption {
   """
@@ -815,6 +844,10 @@ extend type QuestionOption {
   ✨ Maximum of the `score` field in the `QuestionOption` table.
   """
   score_max: Float @fdc_generated(from: "QuestionOption.score", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "QuestionOption.questionOptionId", purpose: GLOBAL_ID)
 }
 extend type QuestionType {
   """
@@ -870,6 +903,10 @@ extend type QuestionType {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "QuestionType.questionTypeId", purpose: QUERY_COUNT)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "QuestionType.questionTypeId", purpose: GLOBAL_ID)
 }
 extend type Subject {
   """
@@ -935,6 +972,15 @@ extend type Subject {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Subject.deletedBy", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Subject` table where the `levelId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  levelId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Subject.levelId", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Subject` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   name_count(
@@ -994,6 +1040,182 @@ extend type Subject {
   ✨ Maximum of the `updatedAt` field in the `Subject` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "Subject.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Subject.subjectId", purpose: GLOBAL_ID)
+}
+extend type Taxonomy {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Taxonomy", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table.
+  """
+  _count: Int! @fdc_generated(from: "Taxonomy.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `active` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  active_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.active", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.code", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `deletedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.deletedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `deletedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  deletedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.deletedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `level` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  level_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.level", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `taxonomyId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  taxonomyId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.taxonomyId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Taxonomy` table where the `updatedBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Taxonomy.updatedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `level` field in the `Taxonomy` table.
+  """
+  level_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Taxonomy.level", purpose: QUERY_SUM)
+  """
+  ✨ Average the `level` field in the `Taxonomy` table.
+  """
+  level_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Taxonomy.level", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `Taxonomy` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Taxonomy.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `deletedAt` field in the `Taxonomy` table.
+  """
+  deletedAt_min: Timestamp @fdc_generated(from: "Taxonomy.deletedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `level` field in the `Taxonomy` table.
+  """
+  level_min: Int @fdc_generated(from: "Taxonomy.level", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Taxonomy` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Taxonomy.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Taxonomy` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Taxonomy.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `deletedAt` field in the `Taxonomy` table.
+  """
+  deletedAt_max: Timestamp @fdc_generated(from: "Taxonomy.deletedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `level` field in the `Taxonomy` table.
+  """
+  level_max: Int @fdc_generated(from: "Taxonomy.level", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Taxonomy` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Taxonomy.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Taxonomy.taxonomyId", purpose: GLOBAL_ID)
 }
 extend type Topic {
   """
@@ -1127,6 +1349,10 @@ extend type Topic {
   ✨ Maximum of the `updatedAt` field in the `Topic` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "Topic.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Topic.topicId", purpose: GLOBAL_ID)
 }
 extend type Unit {
   """
@@ -1260,6 +1486,10 @@ extend type Unit {
   ✨ Maximum of the `updatedAt` field in the `Unit` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "Unit.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Unit.unitId", purpose: GLOBAL_ID)
 }
 extend type User {
   """
@@ -1393,4 +1623,8 @@ extend type User {
   ✨ Maximum of the `updatedAt` field in the `User` table.
   """
   updatedAt_max: Timestamp @fdc_generated(from: "User.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "User.userId", purpose: GLOBAL_ID)
 }

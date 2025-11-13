@@ -1,4 +1,4 @@
-export function TaxonomyHeader() {
+export function CurriculumHierarchyHeader() {
   return (
     <>
       <h1>Taxonomía Curricular</h1>

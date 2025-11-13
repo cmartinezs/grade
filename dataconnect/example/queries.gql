@@ -32,6 +32,7 @@ query ListSubjects @auth(level: USER) {
     subjectId
     name
     code
+    levelId
     active
     createdAt
   }
@@ -44,6 +45,7 @@ query GetSubject($subjectId: UUID!) @auth(level: USER) {
     name
     code
     active
+    levelId
     createdAt
     createdBy
     updatedAt
@@ -322,7 +324,68 @@ query GetQuestionTypeByCode($code: String!) @auth(level: USER) {
   }
 }
 
-# Listar preguntas del usuario autenticado
+# ===================================================================
+# TAXONOMÍAS (Taxonomies)
+# ===================================================================
+
+# Listar todas las taxonomías
+query ListTaxonomies @auth(level: USER) {
+  taxonomies {
+    taxonomyId
+    code
+    name
+    description
+    level
+    active
+    createdAt
+  }
+}
+
+# Obtener una taxonomía por ID
+query GetTaxonomy($taxonomyId: UUID!) @auth(level: USER) {
+  taxonomy(key: { taxonomyId: $taxonomyId }) {
+    taxonomyId
+    code
+    name
+    description
+    level
+    active
+    createdAt
+    createdBy
+    updatedAt
+    updatedBy
+    deletedAt
+    deletedBy
+  }
+}
+
+# Obtener una taxonomía por código
+query GetTaxonomyByCode($code: String!) @auth(level: USER) {
+  taxonomies(where: { code: { eq: $code } }) {
+    taxonomyId
+    code
+    name
+    description
+    level
+    active
+    createdAt
+  }
+}
+
+# Listar todas las taxonomías ordenadas por nivel (Bloom)
+query ListTaxonomiesByLevel @auth(level: USER) {
+  taxonomies(orderBy: [{level: ASC}]) {
+    taxonomyId
+    code
+    name
+    description
+    level
+    active
+    createdAt
+  }
+}
+
+# Listar preguntas públicas
 query ListQuestionsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
   questions(where: { userId: { eq: $userId } }) {
     questionId
@@ -333,6 +396,7 @@ query ListQuestionsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "fir
     topicId
     difficultyId
     questionTypeId
+    taxonomyId
     userId
     createdAt
     updatedAt
@@ -353,6 +417,7 @@ query GetQuestion($questionId: UUID!, $userId: UUID!, $firebaseId: String!) @aut
     topicId
     difficultyId
     questionTypeId
+    taxonomyId
     userId
     createdAt
     updatedAt
@@ -372,6 +437,7 @@ query ListPublicQuestions @auth(level: USER) {
     topicId
     difficultyId
     questionTypeId
+    taxonomyId
     userId
     createdAt
     updatedAt
@@ -388,6 +454,7 @@ query ListPublicQuestionsByDifficulty($difficultyId: UUID!) @auth(level: USER) {
     topicId
     difficultyId
     questionTypeId
+    taxonomyId
     userId
     createdAt
     updatedAt
@@ -404,6 +471,7 @@ query ListPublicQuestionsByType($questionTypeId: UUID!) @auth(level: USER) {
     topicId
     difficultyId
     questionTypeId
+    taxonomyId
     userId
     createdAt
     updatedAt

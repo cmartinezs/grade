@@ -11,25 +11,25 @@ import {
   getSubjectById,
   getUnitById,
   getTopicById,
-} from '@/lib/taxonomyStore';
+} from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
-import { TaxonomyType, ValidationError, Subject, Unit } from '@/types/taxonomy';
+import { CurriculumHierarchyType, ValidationError, Subject, Unit } from '@/types/curriculumHierarchy';
 
-interface EditTaxonomyModalProps {
+interface EditCurriculumHierarchyModalProps {
   show: boolean;
   onHide: () => void;
   onSuccess: () => void;
-  elementType: TaxonomyType;
+  elementType: CurriculumHierarchyType;
   elementId: string;
 }
 
-export default function EditTaxonomyModal({
+export default function EditCurriculumHierarchyModal({
   show,
   onHide,
   onSuccess,
   elementType,
   elementId,
-}: EditTaxonomyModalProps) {
+}: EditCurriculumHierarchyModalProps) {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
@@ -136,14 +136,14 @@ export default function EditTaxonomyModal({
         );
       }
 
-      setSuccessMessage(`✅ ${getTaxonomyLabel(elementType)} actualizado exitosamente: "${formData.name}"`);
+      setSuccessMessage(`✅ ${getCurriculumHierarchyLabel(elementType)} actualizado exitosamente: "${formData.name}"`);
       setTimeout(() => {
         onSuccess();
         handleHide();
       }, 1500);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      console.error('Error updating taxonomy:', error);
+      console.error('Error updating CurriculumHierarchy:', error);
       setErrors([
         {
           field: 'general',
@@ -153,7 +153,7 @@ export default function EditTaxonomyModal({
     }
   };
 
-  const getTaxonomyLabel = (type: TaxonomyType): string => {
+  const getCurriculumHierarchyLabel = (type: CurriculumHierarchyType): string => {
     switch (type) {
       case 'subject':
         return 'Asignatura';
@@ -164,7 +164,7 @@ export default function EditTaxonomyModal({
     }
   };
 
-  const getTaxonomyIcon = (type: TaxonomyType): string => {
+  const getCurriculumHierarchyIcon = (type: CurriculumHierarchyType): string => {
     switch (type) {
       case 'subject':
         return '📚';
@@ -185,8 +185,8 @@ export default function EditTaxonomyModal({
       <Modal.Header closeButton>
         <Modal.Title>
           <span className="d-flex align-items-center gap-2">
-            <span style={{ fontSize: '1.3rem' }}>{getTaxonomyIcon(elementType)}</span>
-            <span>Editar {getTaxonomyLabel(elementType)}</span>
+            <span style={{ fontSize: '1.3rem' }}>{getCurriculumHierarchyIcon(elementType)}</span>
+            <span>Editar {getCurriculumHierarchyLabel(elementType)}</span>
           </span>
         </Modal.Title>
       </Modal.Header>
@@ -360,7 +360,7 @@ export default function EditTaxonomyModal({
                   ❌ Cancelar
                 </Button>
                 <Button variant="primary" type="submit">
-                  💾 Actualizar {getTaxonomyLabel(elementType)}
+                  💾 Actualizar {getCurriculumHierarchyLabel(elementType)}
                 </Button>
               </div>
             </Form>

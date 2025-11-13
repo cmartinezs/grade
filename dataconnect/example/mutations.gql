@@ -60,6 +60,7 @@ mutation CreateSubject(
   $subjectId: UUID!
   $name: String!
   $code: String!
+  $levelId: UUID!
   $createdBy: UUID!
 ) @auth(level: USER) {
   subject_insert(
@@ -67,6 +68,7 @@ mutation CreateSubject(
       subjectId: $subjectId
       name: $name
       code: $code
+      levelId: $levelId
       createdBy: $createdBy
       active: true
     }
@@ -535,6 +537,7 @@ mutation CreateQuestion(
   $topicId: UUID!
   $difficultyId: UUID!
   $questionTypeId: UUID!
+  $taxonomyId: UUID!
   $userId: UUID!
   $isPublic: Boolean!
   $firebaseId: String!
@@ -546,6 +549,7 @@ mutation CreateQuestion(
       topicId: $topicId
       difficultyId: $difficultyId
       questionTypeId: $questionTypeId
+      taxonomyId: $taxonomyId
       userId: $userId
       isPublic: $isPublic
       active: true
@@ -561,6 +565,7 @@ mutation CreateQuestionVersion(
   $topicId: UUID!
   $difficultyId: UUID!
   $questionTypeId: UUID!
+  $taxonomyId: UUID!
   $userId: UUID!
   $isPublic: Boolean!
   $version: Int!
@@ -574,6 +579,7 @@ mutation CreateQuestionVersion(
       topicId: $topicId
       difficultyId: $difficultyId
       questionTypeId: $questionTypeId
+      taxonomyId: $taxonomyId
       userId: $userId
       isPublic: $isPublic
       active: true
@@ -773,6 +779,88 @@ mutation ReactivateDifficulty(
     key: { difficultyId: $difficultyId }
     data: {
       active: true
+    }
+  )
+}
+
+# ===================================================================
+# TAXONOMÍAS (Taxonomies)
+# ===================================================================
+
+# Crear una nueva taxonomía
+mutation CreateTaxonomy(
+  $taxonomyId: UUID!
+  $code: String!
+  $name: String!
+  $description: String
+  $level: Int!
+  $createdBy: UUID!
+) @auth(level: USER) {
+  taxonomy_insert(
+    data: {
+      taxonomyId: $taxonomyId
+      code: $code
+      name: $name
+      description: $description
+      level: $level
+      createdBy: $createdBy
+      active: true
+    }
+  )
+}
+
+# Actualizar una taxonomía
+mutation UpdateTaxonomy(
+  $taxonomyId: UUID!
+  $code: String!
+  $name: String!
+  $description: String
+  $level: Int!
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
+  taxonomy_update(
+    key: { taxonomyId: $taxonomyId }
+    data: {
+      code: $code
+      name: $name
+      description: $description
+      level: $level
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar una taxonomía (soft delete)
+mutation DeactivateTaxonomy(
+  $taxonomyId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
+  taxonomy_update(
+    key: { taxonomyId: $taxonomyId }
+    data: {
+      active: false
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar una taxonomía (undo soft delete)
+mutation ReactivateTaxonomy(
+  $taxonomyId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid || auth.token.role == 'ADMIN'") {
+  taxonomy_update(
+    key: { taxonomyId: $taxonomyId }
+    data: {
+      active: true
+      deletedAt: null
+      deletedBy: null
     }
   )
 }

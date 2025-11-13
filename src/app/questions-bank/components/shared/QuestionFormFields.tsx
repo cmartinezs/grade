@@ -25,8 +25,8 @@ import {
   QuestionValidationError,
 } from '@/types/question';
 import { QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { useTaxonomy } from '@/hooks/useTaxonomy';
-import type { Subject, Unit, Topic } from '@/types/taxonomy';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
+import type { Subject, Unit, Topic } from '@/types/curriculumHierarchy';
 
 interface QuestionFormFieldsProps {
   // Question Type
@@ -37,7 +37,7 @@ interface QuestionFormFieldsProps {
   enunciado: string;
   onEnunciadoChange: (value: string) => void;
   
-  // Taxonomy
+  // CurriculumHierarchy
   selectedSubject: string;
   selectedUnit: string;
   selectedTopic: string;
@@ -87,8 +87,8 @@ export default function QuestionFormFields({
   showDifficultyAsRadio = false,
 }: QuestionFormFieldsProps) {
   
-  // Load taxonomy data from Data Connect
-  const { subjects: allSubjects, units: allUnits, topics: allTopics } = useTaxonomy();
+  // Load CurriculumHierarchy data from Data Connect
+  const { subjects: allSubjects, units: allUnits, topics: allTopics } = useCurriculumHierarchy();
   
   // Filter active items
   const subjects: Subject[] = allSubjects.filter((s) => s.active && !s.deleted_at);
@@ -106,7 +106,7 @@ export default function QuestionFormFields({
     { difficulty_id: 'alto' as DifficultyLevel, name: 'Alto', description: 'Nivel de dificultad avanzado', active: true },
   ];
 
-  // Check for missing taxonomy levels
+  // Check for missing CurriculumHierarchy levels
   const selectedSubjectData = subjects.find(s => s.subject_id === selectedSubject);
   const selectedUnitData = units.find(u => u.unit_id === selectedUnit);
   const hasNoUnits = selectedSubject && units.length === 0;
@@ -170,7 +170,7 @@ export default function QuestionFormFields({
         </Card.Body>
       </Card>
 
-      {/* Taxonomy Selection */}
+      {/* CurriculumHierarchy Selection */}
       <Card className="mb-3">
         <Card.Header>
           <strong>Taxonomía (Tema) *</strong>

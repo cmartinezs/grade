@@ -31,6 +31,10 @@ This README will guide you through the process of using the generated JavaScript
   - [*ListQuestionTypes*](#listquestiontypes)
   - [*GetQuestionType*](#getquestiontype)
   - [*GetQuestionTypeByCode*](#getquestiontypebycode)
+  - [*ListTaxonomies*](#listtaxonomies)
+  - [*GetTaxonomy*](#gettaxonomy)
+  - [*GetTaxonomyByCode*](#gettaxonomybycode)
+  - [*ListTaxonomiesByLevel*](#listtaxonomiesbylevel)
   - [*ListQuestionsByUser*](#listquestionsbyuser)
   - [*GetQuestion*](#getquestion)
   - [*ListPublicQuestions*](#listpublicquestions)
@@ -78,6 +82,10 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateDifficulty*](#createdifficulty)
   - [*DeactivateDifficulty*](#deactivatedifficulty)
   - [*ReactivateDifficulty*](#reactivatedifficulty)
+  - [*CreateTaxonomy*](#createtaxonomy)
+  - [*UpdateTaxonomy*](#updatetaxonomy)
+  - [*DeactivateTaxonomy*](#deactivatetaxonomy)
+  - [*ReactivateTaxonomy*](#reactivatetaxonomy)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `example`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -283,6 +291,7 @@ export interface ListSubjectsData {
     subjectId: UUIDString;
     name: string;
     code: string;
+    levelId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
   } & Subject_Key)[];
@@ -387,6 +396,7 @@ export interface GetSubjectData {
     name: string;
     code: string;
     active: boolean;
+    levelId: UUIDString;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -2483,6 +2493,443 @@ executeQuery(ref).then((response) => {
 });
 ```
 
+## ListTaxonomies
+You can execute the `ListTaxonomies` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+listTaxonomies(): QueryPromise<ListTaxonomiesData, undefined>;
+
+interface ListTaxonomiesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTaxonomiesData, undefined>;
+}
+export const listTaxonomiesRef: ListTaxonomiesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listTaxonomies(dc: DataConnect): QueryPromise<ListTaxonomiesData, undefined>;
+
+interface ListTaxonomiesRef {
+  ...
+  (dc: DataConnect): QueryRef<ListTaxonomiesData, undefined>;
+}
+export const listTaxonomiesRef: ListTaxonomiesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listTaxonomiesRef:
+```typescript
+const name = listTaxonomiesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListTaxonomies` query has no variables.
+### Return Type
+Recall that executing the `ListTaxonomies` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListTaxonomiesData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListTaxonomiesData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+```
+### Using `ListTaxonomies`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listTaxonomies } from '@dataconnect/generated';
+
+
+// Call the `listTaxonomies()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listTaxonomies();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listTaxonomies(dataConnect);
+
+console.log(data.taxonomies);
+
+// Or, you can use the `Promise` API.
+listTaxonomies().then((response) => {
+  const data = response.data;
+  console.log(data.taxonomies);
+});
+```
+
+### Using `ListTaxonomies`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listTaxonomiesRef } from '@dataconnect/generated';
+
+
+// Call the `listTaxonomiesRef()` function to get a reference to the query.
+const ref = listTaxonomiesRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listTaxonomiesRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.taxonomies);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomies);
+});
+```
+
+## GetTaxonomy
+You can execute the `GetTaxonomy` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getTaxonomy(vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
+
+interface GetTaxonomyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
+}
+export const getTaxonomyRef: GetTaxonomyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getTaxonomy(dc: DataConnect, vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
+
+interface GetTaxonomyRef {
+  ...
+  (dc: DataConnect, vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
+}
+export const getTaxonomyRef: GetTaxonomyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getTaxonomyRef:
+```typescript
+const name = getTaxonomyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetTaxonomy` query requires an argument of type `GetTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetTaxonomyVariables {
+  taxonomyId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetTaxonomy` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetTaxonomyData {
+  taxonomy?: {
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & Taxonomy_Key;
+}
+```
+### Using `GetTaxonomy`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getTaxonomy, GetTaxonomyVariables } from '@dataconnect/generated';
+
+// The `GetTaxonomy` query requires an argument of type `GetTaxonomyVariables`:
+const getTaxonomyVars: GetTaxonomyVariables = {
+  taxonomyId: ..., 
+};
+
+// Call the `getTaxonomy()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getTaxonomy(getTaxonomyVars);
+// Variables can be defined inline as well.
+const { data } = await getTaxonomy({ taxonomyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getTaxonomy(dataConnect, getTaxonomyVars);
+
+console.log(data.taxonomy);
+
+// Or, you can use the `Promise` API.
+getTaxonomy(getTaxonomyVars).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy);
+});
+```
+
+### Using `GetTaxonomy`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getTaxonomyRef, GetTaxonomyVariables } from '@dataconnect/generated';
+
+// The `GetTaxonomy` query requires an argument of type `GetTaxonomyVariables`:
+const getTaxonomyVars: GetTaxonomyVariables = {
+  taxonomyId: ..., 
+};
+
+// Call the `getTaxonomyRef()` function to get a reference to the query.
+const ref = getTaxonomyRef(getTaxonomyVars);
+// Variables can be defined inline as well.
+const ref = getTaxonomyRef({ taxonomyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getTaxonomyRef(dataConnect, getTaxonomyVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.taxonomy);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy);
+});
+```
+
+## GetTaxonomyByCode
+You can execute the `GetTaxonomyByCode` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getTaxonomyByCode(vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+
+interface GetTaxonomyByCodeRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+}
+export const getTaxonomyByCodeRef: GetTaxonomyByCodeRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getTaxonomyByCode(dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+
+interface GetTaxonomyByCodeRef {
+  ...
+  (dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+}
+export const getTaxonomyByCodeRef: GetTaxonomyByCodeRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getTaxonomyByCodeRef:
+```typescript
+const name = getTaxonomyByCodeRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetTaxonomyByCode` query requires an argument of type `GetTaxonomyByCodeVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetTaxonomyByCodeVariables {
+  code: string;
+}
+```
+### Return Type
+Recall that executing the `GetTaxonomyByCode` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetTaxonomyByCodeData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetTaxonomyByCodeData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+```
+### Using `GetTaxonomyByCode`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getTaxonomyByCode, GetTaxonomyByCodeVariables } from '@dataconnect/generated';
+
+// The `GetTaxonomyByCode` query requires an argument of type `GetTaxonomyByCodeVariables`:
+const getTaxonomyByCodeVars: GetTaxonomyByCodeVariables = {
+  code: ..., 
+};
+
+// Call the `getTaxonomyByCode()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getTaxonomyByCode(getTaxonomyByCodeVars);
+// Variables can be defined inline as well.
+const { data } = await getTaxonomyByCode({ code: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getTaxonomyByCode(dataConnect, getTaxonomyByCodeVars);
+
+console.log(data.taxonomies);
+
+// Or, you can use the `Promise` API.
+getTaxonomyByCode(getTaxonomyByCodeVars).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomies);
+});
+```
+
+### Using `GetTaxonomyByCode`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getTaxonomyByCodeRef, GetTaxonomyByCodeVariables } from '@dataconnect/generated';
+
+// The `GetTaxonomyByCode` query requires an argument of type `GetTaxonomyByCodeVariables`:
+const getTaxonomyByCodeVars: GetTaxonomyByCodeVariables = {
+  code: ..., 
+};
+
+// Call the `getTaxonomyByCodeRef()` function to get a reference to the query.
+const ref = getTaxonomyByCodeRef(getTaxonomyByCodeVars);
+// Variables can be defined inline as well.
+const ref = getTaxonomyByCodeRef({ code: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getTaxonomyByCodeRef(dataConnect, getTaxonomyByCodeVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.taxonomies);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomies);
+});
+```
+
+## ListTaxonomiesByLevel
+You can execute the `ListTaxonomiesByLevel` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+listTaxonomiesByLevel(): QueryPromise<ListTaxonomiesByLevelData, undefined>;
+
+interface ListTaxonomiesByLevelRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTaxonomiesByLevelData, undefined>;
+}
+export const listTaxonomiesByLevelRef: ListTaxonomiesByLevelRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listTaxonomiesByLevel(dc: DataConnect): QueryPromise<ListTaxonomiesByLevelData, undefined>;
+
+interface ListTaxonomiesByLevelRef {
+  ...
+  (dc: DataConnect): QueryRef<ListTaxonomiesByLevelData, undefined>;
+}
+export const listTaxonomiesByLevelRef: ListTaxonomiesByLevelRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listTaxonomiesByLevelRef:
+```typescript
+const name = listTaxonomiesByLevelRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListTaxonomiesByLevel` query has no variables.
+### Return Type
+Recall that executing the `ListTaxonomiesByLevel` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListTaxonomiesByLevelData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListTaxonomiesByLevelData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+```
+### Using `ListTaxonomiesByLevel`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listTaxonomiesByLevel } from '@dataconnect/generated';
+
+
+// Call the `listTaxonomiesByLevel()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listTaxonomiesByLevel();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listTaxonomiesByLevel(dataConnect);
+
+console.log(data.taxonomies);
+
+// Or, you can use the `Promise` API.
+listTaxonomiesByLevel().then((response) => {
+  const data = response.data;
+  console.log(data.taxonomies);
+});
+```
+
+### Using `ListTaxonomiesByLevel`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listTaxonomiesByLevelRef } from '@dataconnect/generated';
+
+
+// Call the `listTaxonomiesByLevelRef()` function to get a reference to the query.
+const ref = listTaxonomiesByLevelRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listTaxonomiesByLevelRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.taxonomies);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomies);
+});
+```
+
 ## ListQuestionsByUser
 You can execute the `ListQuestionsByUser` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
 ```typescript
@@ -2536,6 +2983,7 @@ export interface ListQuestionsByUserData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2664,6 +3112,7 @@ export interface GetQuestionData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2785,6 +3234,7 @@ export interface ListPublicQuestionsData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -2893,6 +3343,7 @@ export interface ListPublicQuestionsByDifficultyData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -3013,6 +3464,7 @@ export interface ListPublicQuestionsByTypeData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -3501,6 +3953,7 @@ export interface CreateSubjectVariables {
   subjectId: UUIDString;
   name: string;
   code: string;
+  levelId: UUIDString;
   createdBy: UUIDString;
 }
 ```
@@ -3524,6 +3977,7 @@ const createSubjectVars: CreateSubjectVariables = {
   subjectId: ..., 
   name: ..., 
   code: ..., 
+  levelId: ..., 
   createdBy: ..., 
 };
 
@@ -3531,7 +3985,7 @@ const createSubjectVars: CreateSubjectVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createSubject(createSubjectVars);
 // Variables can be defined inline as well.
-const { data } = await createSubject({ subjectId: ..., name: ..., code: ..., createdBy: ..., });
+const { data } = await createSubject({ subjectId: ..., name: ..., code: ..., levelId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3557,13 +4011,14 @@ const createSubjectVars: CreateSubjectVariables = {
   subjectId: ..., 
   name: ..., 
   code: ..., 
+  levelId: ..., 
   createdBy: ..., 
 };
 
 // Call the `createSubjectRef()` function to get a reference to the mutation.
 const ref = createSubjectRef(createSubjectVars);
 // Variables can be defined inline as well.
-const ref = createSubjectRef({ subjectId: ..., name: ..., code: ..., createdBy: ..., });
+const ref = createSubjectRef({ subjectId: ..., name: ..., code: ..., levelId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6377,6 +6832,7 @@ export interface CreateQuestionVariables {
   topicId: UUIDString;
   difficultyId: UUIDString;
   questionTypeId: UUIDString;
+  taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
   firebaseId: string;
@@ -6404,6 +6860,7 @@ const createQuestionVars: CreateQuestionVariables = {
   topicId: ..., 
   difficultyId: ..., 
   questionTypeId: ..., 
+  taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
   firebaseId: ..., 
@@ -6413,7 +6870,7 @@ const createQuestionVars: CreateQuestionVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuestion(createQuestionVars);
 // Variables can be defined inline as well.
-const { data } = await createQuestion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
+const { data } = await createQuestion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6441,6 +6898,7 @@ const createQuestionVars: CreateQuestionVariables = {
   topicId: ..., 
   difficultyId: ..., 
   questionTypeId: ..., 
+  taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
   firebaseId: ..., 
@@ -6449,7 +6907,7 @@ const createQuestionVars: CreateQuestionVariables = {
 // Call the `createQuestionRef()` function to get a reference to the mutation.
 const ref = createQuestionRef(createQuestionVars);
 // Variables can be defined inline as well.
-const ref = createQuestionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
+const ref = createQuestionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6507,6 +6965,7 @@ export interface CreateQuestionVersionVariables {
   topicId: UUIDString;
   difficultyId: UUIDString;
   questionTypeId: UUIDString;
+  taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
   version: number;
@@ -6536,6 +6995,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
   topicId: ..., 
   difficultyId: ..., 
   questionTypeId: ..., 
+  taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
   version: ..., 
@@ -6547,7 +7007,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuestionVersion(createQuestionVersionVars);
 // Variables can be defined inline as well.
-const { data } = await createQuestionVersion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
+const { data } = await createQuestionVersion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6575,6 +7035,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
   topicId: ..., 
   difficultyId: ..., 
   questionTypeId: ..., 
+  taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
   version: ..., 
@@ -6585,7 +7046,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
 // Call the `createQuestionVersionRef()` function to get a reference to the mutation.
 const ref = createQuestionVersionRef(createQuestionVersionVars);
 // Variables can be defined inline as well.
-const ref = createQuestionVersionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
+const ref = createQuestionVersionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -8002,6 +8463,490 @@ console.log(data.difficulty_update);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.difficulty_update);
+});
+```
+
+## CreateTaxonomy
+You can execute the `CreateTaxonomy` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+createTaxonomy(vars: CreateTaxonomyVariables): MutationPromise<CreateTaxonomyData, CreateTaxonomyVariables>;
+
+interface CreateTaxonomyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateTaxonomyVariables): MutationRef<CreateTaxonomyData, CreateTaxonomyVariables>;
+}
+export const createTaxonomyRef: CreateTaxonomyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createTaxonomy(dc: DataConnect, vars: CreateTaxonomyVariables): MutationPromise<CreateTaxonomyData, CreateTaxonomyVariables>;
+
+interface CreateTaxonomyRef {
+  ...
+  (dc: DataConnect, vars: CreateTaxonomyVariables): MutationRef<CreateTaxonomyData, CreateTaxonomyVariables>;
+}
+export const createTaxonomyRef: CreateTaxonomyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createTaxonomyRef:
+```typescript
+const name = createTaxonomyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateTaxonomy` mutation requires an argument of type `CreateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  level: number;
+  createdBy: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `CreateTaxonomy` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateTaxonomyData {
+  taxonomy_insert: Taxonomy_Key;
+}
+```
+### Using `CreateTaxonomy`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createTaxonomy, CreateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `CreateTaxonomy` mutation requires an argument of type `CreateTaxonomyVariables`:
+const createTaxonomyVars: CreateTaxonomyVariables = {
+  taxonomyId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  level: ..., 
+  createdBy: ..., 
+};
+
+// Call the `createTaxonomy()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createTaxonomy(createTaxonomyVars);
+// Variables can be defined inline as well.
+const { data } = await createTaxonomy({ taxonomyId: ..., code: ..., name: ..., description: ..., level: ..., createdBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createTaxonomy(dataConnect, createTaxonomyVars);
+
+console.log(data.taxonomy_insert);
+
+// Or, you can use the `Promise` API.
+createTaxonomy(createTaxonomyVars).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_insert);
+});
+```
+
+### Using `CreateTaxonomy`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createTaxonomyRef, CreateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `CreateTaxonomy` mutation requires an argument of type `CreateTaxonomyVariables`:
+const createTaxonomyVars: CreateTaxonomyVariables = {
+  taxonomyId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  level: ..., 
+  createdBy: ..., 
+};
+
+// Call the `createTaxonomyRef()` function to get a reference to the mutation.
+const ref = createTaxonomyRef(createTaxonomyVars);
+// Variables can be defined inline as well.
+const ref = createTaxonomyRef({ taxonomyId: ..., code: ..., name: ..., description: ..., level: ..., createdBy: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createTaxonomyRef(dataConnect, createTaxonomyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.taxonomy_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_insert);
+});
+```
+
+## UpdateTaxonomy
+You can execute the `UpdateTaxonomy` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+updateTaxonomy(vars: UpdateTaxonomyVariables): MutationPromise<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+
+interface UpdateTaxonomyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateTaxonomyVariables): MutationRef<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+}
+export const updateTaxonomyRef: UpdateTaxonomyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateTaxonomy(dc: DataConnect, vars: UpdateTaxonomyVariables): MutationPromise<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+
+interface UpdateTaxonomyRef {
+  ...
+  (dc: DataConnect, vars: UpdateTaxonomyVariables): MutationRef<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+}
+export const updateTaxonomyRef: UpdateTaxonomyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateTaxonomyRef:
+```typescript
+const name = updateTaxonomyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateTaxonomy` mutation requires an argument of type `UpdateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  level: number;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that executing the `UpdateTaxonomy` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+```
+### Using `UpdateTaxonomy`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateTaxonomy, UpdateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `UpdateTaxonomy` mutation requires an argument of type `UpdateTaxonomyVariables`:
+const updateTaxonomyVars: UpdateTaxonomyVariables = {
+  taxonomyId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  level: ..., 
+  updatedBy: ..., 
+  updatedAt: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `updateTaxonomy()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateTaxonomy(updateTaxonomyVars);
+// Variables can be defined inline as well.
+const { data } = await updateTaxonomy({ taxonomyId: ..., code: ..., name: ..., description: ..., level: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateTaxonomy(dataConnect, updateTaxonomyVars);
+
+console.log(data.taxonomy_update);
+
+// Or, you can use the `Promise` API.
+updateTaxonomy(updateTaxonomyVars).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_update);
+});
+```
+
+### Using `UpdateTaxonomy`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateTaxonomyRef, UpdateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `UpdateTaxonomy` mutation requires an argument of type `UpdateTaxonomyVariables`:
+const updateTaxonomyVars: UpdateTaxonomyVariables = {
+  taxonomyId: ..., 
+  code: ..., 
+  name: ..., 
+  description: ..., // optional
+  level: ..., 
+  updatedBy: ..., 
+  updatedAt: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `updateTaxonomyRef()` function to get a reference to the mutation.
+const ref = updateTaxonomyRef(updateTaxonomyVars);
+// Variables can be defined inline as well.
+const ref = updateTaxonomyRef({ taxonomyId: ..., code: ..., name: ..., description: ..., level: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateTaxonomyRef(dataConnect, updateTaxonomyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.taxonomy_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_update);
+});
+```
+
+## DeactivateTaxonomy
+You can execute the `DeactivateTaxonomy` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+deactivateTaxonomy(vars: DeactivateTaxonomyVariables): MutationPromise<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+
+interface DeactivateTaxonomyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateTaxonomyVariables): MutationRef<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+}
+export const deactivateTaxonomyRef: DeactivateTaxonomyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deactivateTaxonomy(dc: DataConnect, vars: DeactivateTaxonomyVariables): MutationPromise<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+
+interface DeactivateTaxonomyRef {
+  ...
+  (dc: DataConnect, vars: DeactivateTaxonomyVariables): MutationRef<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+}
+export const deactivateTaxonomyRef: DeactivateTaxonomyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deactivateTaxonomyRef:
+```typescript
+const name = deactivateTaxonomyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeactivateTaxonomy` mutation requires an argument of type `DeactivateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeactivateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that executing the `DeactivateTaxonomy` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeactivateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeactivateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+```
+### Using `DeactivateTaxonomy`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deactivateTaxonomy, DeactivateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `DeactivateTaxonomy` mutation requires an argument of type `DeactivateTaxonomyVariables`:
+const deactivateTaxonomyVars: DeactivateTaxonomyVariables = {
+  taxonomyId: ..., 
+  deletedAt: ..., 
+  deletedBy: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `deactivateTaxonomy()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deactivateTaxonomy(deactivateTaxonomyVars);
+// Variables can be defined inline as well.
+const { data } = await deactivateTaxonomy({ taxonomyId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deactivateTaxonomy(dataConnect, deactivateTaxonomyVars);
+
+console.log(data.taxonomy_update);
+
+// Or, you can use the `Promise` API.
+deactivateTaxonomy(deactivateTaxonomyVars).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_update);
+});
+```
+
+### Using `DeactivateTaxonomy`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deactivateTaxonomyRef, DeactivateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `DeactivateTaxonomy` mutation requires an argument of type `DeactivateTaxonomyVariables`:
+const deactivateTaxonomyVars: DeactivateTaxonomyVariables = {
+  taxonomyId: ..., 
+  deletedAt: ..., 
+  deletedBy: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `deactivateTaxonomyRef()` function to get a reference to the mutation.
+const ref = deactivateTaxonomyRef(deactivateTaxonomyVars);
+// Variables can be defined inline as well.
+const ref = deactivateTaxonomyRef({ taxonomyId: ..., deletedAt: ..., deletedBy: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deactivateTaxonomyRef(dataConnect, deactivateTaxonomyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.taxonomy_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_update);
+});
+```
+
+## ReactivateTaxonomy
+You can execute the `ReactivateTaxonomy` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+reactivateTaxonomy(vars: ReactivateTaxonomyVariables): MutationPromise<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+
+interface ReactivateTaxonomyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateTaxonomyVariables): MutationRef<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+}
+export const reactivateTaxonomyRef: ReactivateTaxonomyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+reactivateTaxonomy(dc: DataConnect, vars: ReactivateTaxonomyVariables): MutationPromise<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+
+interface ReactivateTaxonomyRef {
+  ...
+  (dc: DataConnect, vars: ReactivateTaxonomyVariables): MutationRef<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+}
+export const reactivateTaxonomyRef: ReactivateTaxonomyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the reactivateTaxonomyRef:
+```typescript
+const name = reactivateTaxonomyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ReactivateTaxonomy` mutation requires an argument of type `ReactivateTaxonomyVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ReactivateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that executing the `ReactivateTaxonomy` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ReactivateTaxonomyData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ReactivateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+```
+### Using `ReactivateTaxonomy`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, reactivateTaxonomy, ReactivateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `ReactivateTaxonomy` mutation requires an argument of type `ReactivateTaxonomyVariables`:
+const reactivateTaxonomyVars: ReactivateTaxonomyVariables = {
+  taxonomyId: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `reactivateTaxonomy()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await reactivateTaxonomy(reactivateTaxonomyVars);
+// Variables can be defined inline as well.
+const { data } = await reactivateTaxonomy({ taxonomyId: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await reactivateTaxonomy(dataConnect, reactivateTaxonomyVars);
+
+console.log(data.taxonomy_update);
+
+// Or, you can use the `Promise` API.
+reactivateTaxonomy(reactivateTaxonomyVars).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_update);
+});
+```
+
+### Using `ReactivateTaxonomy`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, reactivateTaxonomyRef, ReactivateTaxonomyVariables } from '@dataconnect/generated';
+
+// The `ReactivateTaxonomy` mutation requires an argument of type `ReactivateTaxonomyVariables`:
+const reactivateTaxonomyVars: ReactivateTaxonomyVariables = {
+  taxonomyId: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `reactivateTaxonomyRef()` function to get a reference to the mutation.
+const ref = reactivateTaxonomyRef(reactivateTaxonomyVars);
+// Variables can be defined inline as well.
+const ref = reactivateTaxonomyRef({ taxonomyId: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = reactivateTaxonomyRef(dataConnect, reactivateTaxonomyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.taxonomy_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.taxonomy_update);
 });
 ```
 

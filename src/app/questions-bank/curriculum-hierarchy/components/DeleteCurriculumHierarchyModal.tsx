@@ -12,25 +12,25 @@ import {
   getSubjectById,
   getUnitById,
   getTopicById,
-} from '@/lib/taxonomyStore';
+} from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
-import { TaxonomyType, DeleteImpactAnalysis } from '@/types/taxonomy';
+import { CurriculumHierarchyType, DeleteImpactAnalysis } from '@/types/curriculumHierarchy';
 
-interface DeleteTaxonomyModalProps {
+interface DeleteCurriculumHierarchyModalProps {
   show: boolean;
   onHide: () => void;
   onSuccess: () => void;
-  elementType: TaxonomyType;
+  elementType: CurriculumHierarchyType;
   elementId: string;
 }
 
-export default function DeleteTaxonomyModal({
+export default function DeleteCurriculumHierarchyModal({
   show,
   onHide,
   onSuccess,
   elementType,
   elementId,
-}: DeleteTaxonomyModalProps) {
+}: DeleteCurriculumHierarchyModalProps) {
   const { user } = useAuth();
   const [impact, setImpact] = useState<DeleteImpactAnalysis | null>(null);
   const [elementName, setElementName] = useState<string>('');
@@ -96,19 +96,19 @@ export default function DeleteTaxonomyModal({
         await deleteTopic(elementId, userId);
       }
 
-      setSuccessMessage(`✅ ${getTaxonomyLabel(elementType)} eliminado exitosamente`);
+      setSuccessMessage(`✅ ${getCurriculumHierarchyLabel(elementType)} eliminado exitosamente`);
       setTimeout(() => {
         onSuccess();
         handleHide();
       }, 1500);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al eliminar elemento';
-      console.error('Error deleting taxonomy:', error);
+      console.error('Error deleting CurriculumHierarchy:', error);
       setErrorMessage(errorMessage);
     }
   };
 
-  const getTaxonomyLabel = (type: TaxonomyType): string => {
+  const getCurriculumHierarchyLabel = (type: CurriculumHierarchyType): string => {
     switch (type) {
       case 'subject':
         return 'Asignatura';
@@ -119,7 +119,7 @@ export default function DeleteTaxonomyModal({
     }
   };
 
-  const getTaxonomyIcon = (type: TaxonomyType): string => {
+  const getCurriculumHierarchyIcon = (type: CurriculumHierarchyType): string => {
     switch (type) {
       case 'subject':
         return '📚';
@@ -136,8 +136,8 @@ export default function DeleteTaxonomyModal({
         <Modal.Title>
           <span className="d-flex align-items-center gap-2">
             <span>🗑️</span>
-            <span>{getTaxonomyIcon(elementType)}</span>
-            <span>Eliminar {getTaxonomyLabel(elementType)}</span>
+            <span>{getCurriculumHierarchyIcon(elementType)}</span>
+            <span>Eliminar {getCurriculumHierarchyLabel(elementType)}</span>
           </span>
         </Modal.Title>
       </Modal.Header>

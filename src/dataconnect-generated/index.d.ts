@@ -100,6 +100,7 @@ export interface CreateQuestionVariables {
   topicId: UUIDString;
   difficultyId: UUIDString;
   questionTypeId: UUIDString;
+  taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
   firebaseId: string;
@@ -115,6 +116,7 @@ export interface CreateQuestionVersionVariables {
   topicId: UUIDString;
   difficultyId: UUIDString;
   questionTypeId: UUIDString;
+  taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
   version: number;
@@ -130,6 +132,20 @@ export interface CreateSubjectVariables {
   subjectId: UUIDString;
   name: string;
   code: string;
+  levelId: UUIDString;
+  createdBy: UUIDString;
+}
+
+export interface CreateTaxonomyData {
+  taxonomy_insert: Taxonomy_Key;
+}
+
+export interface CreateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  level: number;
   createdBy: UUIDString;
 }
 
@@ -236,6 +252,17 @@ export interface DeactivateSubjectData {
 
 export interface DeactivateSubjectVariables {
   subjectId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+  firebaseId: string;
+}
+
+export interface DeactivateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+
+export interface DeactivateTaxonomyVariables {
+  taxonomyId: UUIDString;
   deletedAt: TimestampString;
   deletedBy: UUIDString;
   firebaseId: string;
@@ -422,6 +449,7 @@ export interface GetQuestionData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -486,6 +514,7 @@ export interface GetSubjectData {
     name: string;
     code: string;
     active: boolean;
+    levelId: UUIDString;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -497,6 +526,43 @@ export interface GetSubjectData {
 
 export interface GetSubjectVariables {
   subjectId: UUIDString;
+}
+
+export interface GetTaxonomyByCodeData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+
+export interface GetTaxonomyByCodeVariables {
+  code: string;
+}
+
+export interface GetTaxonomyData {
+  taxonomy?: {
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+    deletedBy?: UUIDString | null;
+  } & Taxonomy_Key;
+}
+
+export interface GetTaxonomyVariables {
+  taxonomyId: UUIDString;
 }
 
 export interface GetTopicData {
@@ -619,6 +685,7 @@ export interface ListPublicQuestionsByDifficultyData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -638,6 +705,7 @@ export interface ListPublicQuestionsByTypeData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -657,6 +725,7 @@ export interface ListPublicQuestionsData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -683,6 +752,7 @@ export interface ListQuestionsByUserData {
     topicId: UUIDString;
     difficultyId: UUIDString;
     questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
     userId: UUIDString;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
@@ -702,9 +772,34 @@ export interface ListSubjectsData {
     subjectId: UUIDString;
     name: string;
     code: string;
+    levelId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
   } & Subject_Key)[];
+}
+
+export interface ListTaxonomiesByLevelData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
+}
+
+export interface ListTaxonomiesData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    code: string;
+    name: string;
+    description?: string | null;
+    level: number;
+    active: boolean;
+    createdAt: TimestampString;
+  } & Taxonomy_Key)[];
 }
 
 export interface ListTopicsData {
@@ -804,6 +899,15 @@ export interface ReactivateSubjectVariables {
   firebaseId: string;
 }
 
+export interface ReactivateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+
+export interface ReactivateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  firebaseId: string;
+}
+
 export interface ReactivateTopicData {
   topic_update?: Topic_Key | null;
 }
@@ -825,6 +929,11 @@ export interface ReactivateUnitVariables {
 export interface Subject_Key {
   subjectId: UUIDString;
   __typename?: 'Subject_Key';
+}
+
+export interface Taxonomy_Key {
+  taxonomyId: UUIDString;
+  __typename?: 'Taxonomy_Key';
 }
 
 export interface Topic_Key {
@@ -919,6 +1028,21 @@ export interface UpdateSubjectVariables {
   subjectId: UUIDString;
   name?: string | null;
   code?: string | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
+}
+
+export interface UpdateTaxonomyData {
+  taxonomy_update?: Taxonomy_Key | null;
+}
+
+export interface UpdateTaxonomyVariables {
+  taxonomyId: UUIDString;
+  code: string;
+  name: string;
+  description?: string | null;
+  level: number;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -1450,6 +1574,54 @@ export const reactivateDifficultyRef: ReactivateDifficultyRef;
 export function reactivateDifficulty(vars: ReactivateDifficultyVariables): MutationPromise<ReactivateDifficultyData, ReactivateDifficultyVariables>;
 export function reactivateDifficulty(dc: DataConnect, vars: ReactivateDifficultyVariables): MutationPromise<ReactivateDifficultyData, ReactivateDifficultyVariables>;
 
+interface CreateTaxonomyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateTaxonomyVariables): MutationRef<CreateTaxonomyData, CreateTaxonomyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateTaxonomyVariables): MutationRef<CreateTaxonomyData, CreateTaxonomyVariables>;
+  operationName: string;
+}
+export const createTaxonomyRef: CreateTaxonomyRef;
+
+export function createTaxonomy(vars: CreateTaxonomyVariables): MutationPromise<CreateTaxonomyData, CreateTaxonomyVariables>;
+export function createTaxonomy(dc: DataConnect, vars: CreateTaxonomyVariables): MutationPromise<CreateTaxonomyData, CreateTaxonomyVariables>;
+
+interface UpdateTaxonomyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateTaxonomyVariables): MutationRef<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateTaxonomyVariables): MutationRef<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+  operationName: string;
+}
+export const updateTaxonomyRef: UpdateTaxonomyRef;
+
+export function updateTaxonomy(vars: UpdateTaxonomyVariables): MutationPromise<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+export function updateTaxonomy(dc: DataConnect, vars: UpdateTaxonomyVariables): MutationPromise<UpdateTaxonomyData, UpdateTaxonomyVariables>;
+
+interface DeactivateTaxonomyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateTaxonomyVariables): MutationRef<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeactivateTaxonomyVariables): MutationRef<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+  operationName: string;
+}
+export const deactivateTaxonomyRef: DeactivateTaxonomyRef;
+
+export function deactivateTaxonomy(vars: DeactivateTaxonomyVariables): MutationPromise<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+export function deactivateTaxonomy(dc: DataConnect, vars: DeactivateTaxonomyVariables): MutationPromise<DeactivateTaxonomyData, DeactivateTaxonomyVariables>;
+
+interface ReactivateTaxonomyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateTaxonomyVariables): MutationRef<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReactivateTaxonomyVariables): MutationRef<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+  operationName: string;
+}
+export const reactivateTaxonomyRef: ReactivateTaxonomyRef;
+
+export function reactivateTaxonomy(vars: ReactivateTaxonomyVariables): MutationPromise<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+export function reactivateTaxonomy(dc: DataConnect, vars: ReactivateTaxonomyVariables): MutationPromise<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+
 interface GetUserByEmailRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
@@ -1701,6 +1873,54 @@ export const getQuestionTypeByCodeRef: GetQuestionTypeByCodeRef;
 
 export function getQuestionTypeByCode(vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
 export function getQuestionTypeByCode(dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+
+interface ListTaxonomiesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTaxonomiesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListTaxonomiesData, undefined>;
+  operationName: string;
+}
+export const listTaxonomiesRef: ListTaxonomiesRef;
+
+export function listTaxonomies(): QueryPromise<ListTaxonomiesData, undefined>;
+export function listTaxonomies(dc: DataConnect): QueryPromise<ListTaxonomiesData, undefined>;
+
+interface GetTaxonomyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
+  operationName: string;
+}
+export const getTaxonomyRef: GetTaxonomyRef;
+
+export function getTaxonomy(vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
+export function getTaxonomy(dc: DataConnect, vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
+
+interface GetTaxonomyByCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+  operationName: string;
+}
+export const getTaxonomyByCodeRef: GetTaxonomyByCodeRef;
+
+export function getTaxonomyByCode(vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+export function getTaxonomyByCode(dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+
+interface ListTaxonomiesByLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTaxonomiesByLevelData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListTaxonomiesByLevelData, undefined>;
+  operationName: string;
+}
+export const listTaxonomiesByLevelRef: ListTaxonomiesByLevelRef;
+
+export function listTaxonomiesByLevel(): QueryPromise<ListTaxonomiesByLevelData, undefined>;
+export function listTaxonomiesByLevel(dc: DataConnect): QueryPromise<ListTaxonomiesByLevelData, undefined>;
 
 interface ListQuestionsByUserRef {
   /* Allow users to create refs without passing in DataConnect */

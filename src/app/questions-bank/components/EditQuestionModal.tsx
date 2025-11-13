@@ -11,7 +11,7 @@ import {
   QuestionWithDetails,
 } from '@/types/question';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
-import { getAllTopics, getAllUnits } from '@/lib/taxonomyStore';
+import { getAllTopics, getAllUnits } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
 import QuestionFormFields from './shared/QuestionFormFields';
 
@@ -59,7 +59,7 @@ export default function EditQuestionModal({
         setIsLoadingQuestion(true);
         setOriginalQuestion(question);
         
-        // Populate form with question data (non-taxonomy fields)
+        // Populate form with question data (non-CurriculumHierarchy fields)
         setQuestionType(question.type);
         setEnunciado(question.enunciado);
         setDifficulty(question.difficulty_fk);
@@ -80,7 +80,7 @@ export default function EditQuestionModal({
     }
   }, [show, questionId]);
 
-  // Load taxonomy hierarchy separately after originalQuestion is set
+  // Load CurriculumHierarchy hierarchy separately after originalQuestion is set
   useEffect(() => {
     if (originalQuestion && isLoadingQuestion) {
       const allTopics = getAllTopics();

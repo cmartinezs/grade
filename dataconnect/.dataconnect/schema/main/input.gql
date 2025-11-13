@@ -47,6 +47,12 @@ It has the same format as `Subject_Key`, but is only used as mutation return val
 """
 scalar Subject_KeyOutput
 """
+✨ `Taxonomy_KeyOutput` returns the primary key fields of table type `Taxonomy`.
+
+It has the same format as `Taxonomy_Key`, but is only used as mutation return value.
+"""
+scalar Taxonomy_KeyOutput
+"""
 ✨ `Topic_KeyOutput` returns the primary key fields of table type `Topic`.
 
 It has the same format as `Topic_Key`, but is only used as mutation return value.
@@ -1773,6 +1779,14 @@ input Question_Data {
   """
   questionTypeId_expr: UUID_Expr
   """
+  ✨ Generated from Field `Question`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: UUID
+  """
+  ✨ `_expr` server value variant of `taxonomyId` (✨ Generated from Field `Question`.`taxonomyId` of type `UUID!`)
+  """
+  taxonomyId_expr: UUID_Expr
+  """
   ✨ Generated from Field `Question`.`text` of type `String!`
   """
   text: String
@@ -1886,6 +1900,10 @@ input Question_Filter {
   """
   questionTypeId: UUID_Filter
   """
+  ✨ Generated from Field `Question`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: UUID_Filter
+  """
   ✨ Generated from Field `Question`.`text` of type `String!`
   """
   text: String_Filter
@@ -1983,6 +2001,10 @@ input Question_Having {
   ✨ Generated from Field `Question`.`questionTypeId_count` of type `Int!`
   """
   questionTypeId_count: Int_Filter
+  """
+  ✨ Generated from Field `Question`.`taxonomyId_count` of type `Int!`
+  """
+  taxonomyId_count: Int_Filter
   """
   ✨ Generated from Field `Question`.`text_count` of type `Int!`
   """
@@ -2115,6 +2137,10 @@ input Question_Order {
   """
   questionTypeId: OrderDirection
   """
+  ✨ Generated from Field `Question`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: OrderDirection
+  """
   ✨ Generated from Field `Question`.`text` of type `String!`
   """
   text: OrderDirection
@@ -2178,6 +2204,10 @@ input Question_Order {
   ✨ Generated from Field `Question`.`questionTypeId_count` of type `Int!`
   """
   questionTypeId_count: OrderDirection
+  """
+  ✨ Generated from Field `Question`.`taxonomyId_count` of type `Int!`
+  """
+  taxonomyId_count: OrderDirection
   """
   ✨ Generated from Field `Question`.`text_count` of type `Int!`
   """
@@ -2846,6 +2876,14 @@ input Subject_Data {
   """
   deletedBy_expr: UUID_Expr
   """
+  ✨ Generated from Field `Subject`.`levelId` of type `UUID!`
+  """
+  levelId: UUID
+  """
+  ✨ `_expr` server value variant of `levelId` (✨ Generated from Field `Subject`.`levelId` of type `UUID!`)
+  """
+  levelId_expr: UUID_Expr
+  """
   ✨ Generated from Field `Subject`.`name` of type `String!`
   """
   name: String
@@ -2923,6 +2961,10 @@ input Subject_Filter {
   """
   deletedBy: UUID_Filter
   """
+  ✨ Generated from Field `Subject`.`levelId` of type `UUID!`
+  """
+  levelId: UUID_Filter
+  """
   ✨ Generated from Field `Subject`.`name` of type `String!`
   """
   name: String_Filter
@@ -2996,6 +3038,10 @@ input Subject_Having {
   ✨ Generated from Field `Subject`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Subject`.`levelId_count` of type `Int!`
+  """
+  levelId_count: Int_Filter
   """
   ✨ Generated from Field `Subject`.`name_count` of type `Int!`
   """
@@ -3096,6 +3142,10 @@ input Subject_Order {
   """
   deletedBy: OrderDirection
   """
+  ✨ Generated from Field `Subject`.`levelId` of type `UUID!`
+  """
+  levelId: OrderDirection
+  """
   ✨ Generated from Field `Subject`.`name` of type `String!`
   """
   name: OrderDirection
@@ -3136,6 +3186,10 @@ input Subject_Order {
   """
   deletedBy_count: OrderDirection
   """
+  ✨ Generated from Field `Subject`.`levelId_count` of type `Int!`
+  """
+  levelId_count: OrderDirection
+  """
   ✨ Generated from Field `Subject`.`name_count` of type `Int!`
   """
   name_count: OrderDirection
@@ -3173,6 +3227,497 @@ input Subject_Order {
   deletedAt_max: OrderDirection
   """
   ✨ Generated from Field `Subject`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Taxonomy'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Taxonomy_Data {
+  """
+  ✨ Generated from Field `Taxonomy`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: UUID
+  """
+  ✨ `_expr` server value variant of `taxonomyId` (✨ Generated from Field `Taxonomy`.`taxonomyId` of type `UUID!`)
+  """
+  taxonomyId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`active` of type `Boolean!`
+  """
+  active: Boolean
+  """
+  ✨ `_expr` server value variant of `active` (✨ Generated from Field `Taxonomy`.`active` of type `Boolean!`)
+  """
+  active_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`code` of type `String!`
+  """
+  code: String
+  """
+  ✨ `_expr` server value variant of `code` (✨ Generated from Field `Taxonomy`.`code` of type `String!`)
+  """
+  code_expr: String_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Taxonomy`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Taxonomy`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Taxonomy`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Taxonomy`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Taxonomy`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `Taxonomy`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `Taxonomy`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `Taxonomy`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `Taxonomy`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Taxonomy`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`level` of type `Int!`
+  """
+  level: Int
+  """
+  ✨ `_expr` server value variant of `level` (✨ Generated from Field `Taxonomy`.`level` of type `Int!`)
+  """
+  level_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `level` (✨ Generated from Field `Taxonomy`.`level` of type `Int!`)
+  """
+  level_update: [Int_Update!]
+  """
+  ✨ Generated from Field `Taxonomy`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Taxonomy`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Taxonomy`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Taxonomy`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Taxonomy`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `Taxonomy`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'Taxonomy'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Taxonomy_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Taxonomy_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Taxonomy_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Taxonomy_Filter!]
+  """
+  ✨ Generated from Field `Taxonomy`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: UUID_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`active` of type `Boolean!`
+  """
+  active: Boolean_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`code` of type `String!`
+  """
+  code: String_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`level` of type `Int!`
+  """
+  level: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'Taxonomy'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Taxonomy_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Taxonomy_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Taxonomy_Filter
+}
+"""
+✨ Generated having input type for table 'Taxonomy'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Taxonomy_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Taxonomy_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Taxonomy_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Taxonomy_Having!]
+  """
+  ✨ Generated from Field `Taxonomy`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`active_count` of type `Int!`
+  """
+  active_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`code_count` of type `Int!`
+  """
+  code_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`level_count` of type `Int!`
+  """
+  level_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`taxonomyId_count` of type `Int!`
+  """
+  taxonomyId_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`level_sum` of type `Int`
+  """
+  level_sum: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`level_avg` of type `Float`
+  """
+  level_avg: Float_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`level_min` of type `Int`
+  """
+  level_min: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`level_max` of type `Int`
+  """
+  level_max: Int_Filter
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Taxonomy'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Taxonomy_Key {
+  """
+  ✨ Generated from Field `Taxonomy`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: UUID
+  """
+  ✨ `_expr` server value variant of `taxonomyId` (✨ Generated from Field `Taxonomy`.`taxonomyId` of type `UUID!`)
+  """
+  taxonomyId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Taxonomy'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Taxonomy_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Taxonomy_Filter
+}
+"""
+✨ Generated order input type for table 'Taxonomy'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Taxonomy_Order {
+  """
+  ✨ Generated from Field `Taxonomy`.`taxonomyId` of type `UUID!`
+  """
+  taxonomyId: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`active` of type `Boolean!`
+  """
+  active: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`code` of type `String!`
+  """
+  code: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`level` of type `Int!`
+  """
+  level: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`active_count` of type `Int!`
+  """
+  active_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`code_count` of type `Int!`
+  """
+  code_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`level_count` of type `Int!`
+  """
+  level_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`taxonomyId_count` of type `Int!`
+  """
+  taxonomyId_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`level_sum` of type `Int`
+  """
+  level_sum: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`level_avg` of type `Float`
+  """
+  level_avg: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`level_min` of type `Int`
+  """
+  level_min: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`level_max` of type `Int`
+  """
+  level_max: OrderDirection
+  """
+  ✨ Generated from Field `Taxonomy`.`updatedAt_max` of type `Timestamp`
   """
   updatedAt_max: OrderDirection
 }

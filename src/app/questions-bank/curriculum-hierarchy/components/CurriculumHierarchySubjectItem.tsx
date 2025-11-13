@@ -1,22 +1,22 @@
 import { Accordion, Badge } from 'react-bootstrap';
-import { Subject } from '@/types/taxonomy';
+import { Subject } from '@/types/curriculumHierarchy';
 import {
   getUnitsBySubject,
   searchUnitsBySubject,
-} from '@/lib/taxonomyStore';
-import { TaxonomyItemProps } from '../types';
-import { TaxonomyUnitItem } from './TaxonomyUnitItem';
+} from '@/lib/curriculumHierarchyStore';
+import { CurriculumHierarchyItemProps } from '../types';
+import { CurriculumHierarchyUnitItem } from './CurriculumHierarchyUnitItem';
 
-interface TaxonomySubjectItemProps extends TaxonomyItemProps {
+interface CurriculumHierarchySubjectItemProps extends CurriculumHierarchyItemProps {
   subject: Subject;
 }
 
-export function TaxonomySubjectItem({
+export function CurriculumHierarchySubjectItem({
   subject,
   onEdit,
   onDelete,
   searchTerm,
-}: TaxonomySubjectItemProps) {
+}: CurriculumHierarchySubjectItemProps) {
   // Obtener units de manera sincrónica del caché
   const units = searchTerm
     ? searchUnitsBySubject(subject.subject_id, searchTerm)
@@ -81,7 +81,7 @@ export function TaxonomySubjectItem({
           <Accordion>
             {units.map((unit) => (
               <div key={unit.unit_id}>
-                <TaxonomyUnitItem
+                <CurriculumHierarchyUnitItem
                   unit={unit}
                   onEdit={onEdit}
                   onDelete={onDelete}
