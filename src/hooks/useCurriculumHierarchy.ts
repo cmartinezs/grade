@@ -47,6 +47,7 @@ export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
           subject_id: s.subjectId,
           name: s.name,
           code: s.code,
+          level_fk: s.levelId,
           active: s.active,
           created_at: s.createdAt,
           created_by: s.createdBy,
