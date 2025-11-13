@@ -49,6 +49,7 @@ export default function CloneQuestionModal({
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedTaxonomy, setSelectedTaxonomy] = useState('');
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('medio');
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([]);
 
@@ -155,6 +156,7 @@ export default function CloneQuestionModal({
     setSelectedSubject('');
     setSelectedUnit('');
     setSelectedTopic('');
+    setSelectedTaxonomy('');
     setDifficulty('medio');
     setOptions([
       { text: '', is_correct: false, position: 1 },
@@ -352,6 +354,8 @@ export default function CloneQuestionModal({
                 setSelectedTopic('');
               }}
               onTopicChange={setSelectedTopic}
+              selectedTaxonomy={selectedTaxonomy}
+              onTaxonomyChange={setSelectedTaxonomy}
               difficulty={difficulty}
               onDifficultyChange={setDifficulty}
               options={options}

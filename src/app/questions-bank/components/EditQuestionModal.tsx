@@ -41,6 +41,7 @@ export default function EditQuestionModal({
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedTaxonomy, setSelectedTaxonomy] = useState('');
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('medio');
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([]);
 
@@ -149,6 +150,7 @@ export default function EditQuestionModal({
     setSelectedSubject('');
     setSelectedUnit('');
     setSelectedTopic('');
+    setSelectedTaxonomy('');
     setDifficulty('medio');
     setOptions([]);
     setValidationErrors([]);
@@ -344,6 +346,8 @@ export default function EditQuestionModal({
                 }
               }}
               onTopicChange={setSelectedTopic}
+              selectedTaxonomy={selectedTaxonomy}
+              onTaxonomyChange={setSelectedTaxonomy}
               difficulty={difficulty}
               onDifficultyChange={setDifficulty}
               options={options}

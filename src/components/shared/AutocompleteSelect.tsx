@@ -20,7 +20,7 @@ interface AutocompleteSelectProps {
   label?: string;
   required?: boolean;
   errorMessage?: string;
-  warningMessage?: string; // Nuevo: mensaje de advertencia
+  warningMessage?: string;
   autoComplete?: string;
 }
 
@@ -43,19 +43,14 @@ export default function AutocompleteSelect({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
 
-  // Initialize input value when value prop changes
-  // If value is an ID, find the corresponding option name
   useEffect(() => {
-    // Skip this effect if we just made a selection (avoid overwriting user's choice)
     if (isSelecting) {
       setIsSelecting(false);
       return;
     }
 
     if (value && value !== '') {
-      // Convert value to the same type as option.id for proper comparison
       const selectedOption = options.find(opt => {
-        // Compare as numbers if possible
         if (typeof opt.id === 'number' && typeof value === 'string') {
           return opt.id === parseInt(value, 10);
         }
@@ -65,7 +60,6 @@ export default function AutocompleteSelect({
       if (selectedOption) {
         setInputValue(selectedOption.name);
       } else {
-        // If not found in options, use the string value (user might be typing)
         setInputValue(String(value));
       }
     } else {
@@ -73,7 +67,6 @@ export default function AutocompleteSelect({
     }
   }, [value, options, isSelecting]);
 
-  // Initialize filtered options
   useEffect(() => {
     setFilteredOptions(options);
   }, [options]);
@@ -95,11 +88,8 @@ export default function AutocompleteSelect({
   };
 
   const handleSelectOption = (option: AutocompleteOption) => {
-    // Set flag to prevent useEffect from overwriting this selection
     setIsSelecting(true);
-    // Update input display with the selected option name
     setInputValue(option.name);
-    // Pass the ID (number or string, as is)
     onChange(option.id);
     setShowSuggestions(false);
   };
@@ -111,15 +101,14 @@ export default function AutocompleteSelect({
   };
 
   const handleBlur = () => {
-    // Delay to allow click on suggestion to register
     setTimeout(() => {
       setShowSuggestions(false);
       onBlur?.();
-    }, 150); // Slightly longer delay to ensure handleSelectOption completes first
+    }, 150);
   };
 
   return (
-    <Form.Group className="mb-3" style={{ position: 'relative' }}>
+    <Form.Group className="mb-3">
       {label && (
         <Form.Label>
           {label}
@@ -127,91 +116,82 @@ export default function AutocompleteSelect({
         </Form.Label>
       )}
 
-      <Form.Control
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        placeholder={placeholder}
-        disabled={disabled}
-        isInvalid={isInvalid}
-        autoComplete={autoComplete}
-      />
+      <div style={{ position: 'relative' }}>
+        <Form.Control
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          disabled={disabled}
+          isInvalid={isInvalid}
+          autoComplete={autoComplete}
+        />
 
-      {/* Suggestions Dropdown */}
-      {showSuggestions && filteredOptions.length > 0 && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            backgroundColor: '#fff',
-            border: '1px solid #dee2e6',
-            borderTop: 'none',
-            borderRadius: '0 0 0.25rem 0.25rem',
-            maxHeight: '200px',
-            overflowY: 'auto',
-            zIndex: 1000,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            marginTop: '-4px'
-          }}
-        >
-          {filteredOptions.map((option) => (
-            <div
-              key={option.id}
-              onClick={() => handleSelectOption(option)}
-              style={{
-                padding: '10px 15px',
-                cursor: 'pointer',
-                backgroundColor: inputValue === option.name ? '#e9ecef' : '#fff',
-                borderBottom: '1px solid #f0f0f0',
-                transition: 'background-color 0.15s ease-in-out'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f8f9fa';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  inputValue === option.name ? '#e9ecef' : '#fff';
-              }}
-            >
-              <strong>{option.name}</strong>
-              {option.description && (
-                <>
-                  <br />
-                  <small className="text-muted">{option.description}</small>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* No results message */}
-      {filteredOptions.length === 0 && showSuggestions && inputValue.trim() && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            backgroundColor: '#fff',
-            border: '1px solid #dee2e6',
-            borderTop: 'none',
-            borderRadius: '0 0 0.25rem 0.25rem',
-            padding: '10px 15px',
-            zIndex: 1000,
-            textAlign: 'center',
-            color: '#6c757d',
-            fontSize: '0.875rem',
-            marginTop: '-4px'
-          }}
-        >
-          No se encontraron resultados
-        </div>
-      )}
+        {/* Suggestions Dropdown */}
+        {showSuggestions && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              border: '1px solid #dee2e6',
+              borderTop: 'none',
+              borderRadius: '0 0 0.25rem 0.25rem',
+              backgroundColor: '#fff',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              maxHeight: '250px',
+              overflowY: 'auto',
+              zIndex: 9999,
+            }}
+          >
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <div
+                  key={option.id}
+                  onClick={() => handleSelectOption(option)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    cursor: 'pointer',
+                    backgroundColor: inputValue === option.name ? '#e9ecef' : 'transparent',
+                    transition: 'background-color 0.15s ease-in-out',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = '#f8f9fa';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = inputValue === option.name ? '#e9ecef' : 'transparent';
+                  }}
+                >
+                  <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {option.name}
+                  </strong>
+                  {option.description && (
+                    <small 
+                      style={{ 
+                        display: 'block',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        maxWidth: '100%',
+                        color: '#6c757d'
+                      }}
+                    >
+                      {option.description}
+                    </small>
+                  )}
+                </div>
+              ))
+            ) : inputValue.trim() ? (
+              <div style={{ padding: '0.5rem 1rem', color: '#6c757d' }}>
+                No se encontraron resultados
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
 
       {/* Error message */}
       {isInvalid && errorMessage && (

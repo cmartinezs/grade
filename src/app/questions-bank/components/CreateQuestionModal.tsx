@@ -46,6 +46,7 @@ export default function CreateQuestionModal({
   const [selectedSubject, setSelectedSubject] = useState(initialSubject || '');
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedTaxonomy, setSelectedTaxonomy] = useState('');
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty || 'medio');
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([
     { text: '', is_correct: false, position: 1 },
@@ -108,6 +109,7 @@ export default function CreateQuestionModal({
     setSelectedSubject(initialSubject || '');
     setSelectedUnit('');
     setSelectedTopic('');
+    setSelectedTaxonomy('');
     setDifficulty(initialDifficulty || 'medio');
     setOptions([
       { text: '', is_correct: false, position: 1 },
@@ -327,6 +329,8 @@ export default function CreateQuestionModal({
                 setSelectedTopic('');
               }}
               onTopicChange={setSelectedTopic}
+              selectedTaxonomy={selectedTaxonomy}
+              onTaxonomyChange={setSelectedTaxonomy}
               difficulty={difficulty}
               onDifficultyChange={setDifficulty}
               options={options}
