@@ -50,6 +50,11 @@ const qbMenu = [
         href: '/questions-bank/difficulties' 
       },
       { 
+        label: 'Taxonomías', 
+        icon: '🎓',
+        href: '/questions-bank/taxonomies' 
+      },
+      { 
         label: 'Configuración', 
         icon: '⚙️',
         href: '/questions-bank/settings' 

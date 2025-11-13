@@ -11,6 +11,9 @@ import {
   getQuestionType as dcGetQuestionType,
   createDifficulty as dcCreateDifficulty,
   createQuestionType as dcCreateQuestionType,
+  listTaxonomies as dcListTaxonomies,
+  getTaxonomy as dcGetTaxonomy,
+  createTaxonomy as dcCreateTaxonomy,
   // TODO: Descomentar cuando se implemente actualización y eliminación
   // deactivateQuestionType as dcDeactivateQuestionType,
   // deactivateDifficulty as dcDeactivateDifficulty,
@@ -20,6 +23,8 @@ import {
   GetQuestionTypeVariables,
   CreateDifficultyVariables,
   CreateQuestionTypeVariables,
+  GetTaxonomyVariables,
+  CreateTaxonomyVariables,
   // TODO: Descomentar cuando se implemente actualización y eliminación
   // DeactivateQuestionTypeVariables,
   // DeactivateDifficultyVariables,
@@ -41,6 +46,15 @@ export interface Difficulty {
   level: string;
   weight: number;
   description?: string;
+  active?: boolean;
+}
+
+export interface Taxonomy {
+  taxonomyId: string;
+  code: string;
+  name: string;
+  description?: string;
+  level: number;
   active?: boolean;
 }
 
@@ -301,3 +315,72 @@ export async function createMultipleDifficulties(
 // export async function deleteDifficulty(
 //   difficultyId: string
 // ): Promise<void> { ... }
+
+/**
+ * Listar todas las taxonomías
+ */
+export async function fetchAllTaxonomies(): Promise<Taxonomy[]> {
+  try {
+    const result = await dcListTaxonomies();
+    return (result.data?.taxonomies || []) as unknown as Taxonomy[];
+  } catch (error) {
+    console.error('Error fetching taxonomies:', error);
+    throw error;
+  }
+}
+
+/**
+ * Obtener una taxonomía por ID
+ */
+export async function fetchTaxonomyById(
+  taxonomyId: string
+): Promise<Taxonomy | null> {
+  try {
+    const variables: GetTaxonomyVariables = { taxonomyId };
+    const result = await dcGetTaxonomy(variables);
+    return (result.data?.taxonomy || null) as unknown as Taxonomy | null;
+  } catch (error) {
+    console.error('Error fetching taxonomy:', error);
+    throw error;
+  }
+}
+
+/**
+ * Crear una nueva taxonomía
+ */
+export async function createNewTaxonomy(
+  code: string,
+  name: string,
+  level: number,
+  createdBy: string,
+  description?: string
+): Promise<Taxonomy> {
+  try {
+    const variables = {
+      taxonomyId: generateUUID(),
+      code,
+      name,
+      level,
+      description: description || null,
+      createdBy,
+    } as CreateTaxonomyVariables;
+    
+    const result = await dcCreateTaxonomy(variables);
+    
+    if (!result.data?.taxonomy_insert) {
+      throw new Error('Failed to create taxonomy');
+    }
+    
+    return {
+      taxonomyId: result.data.taxonomy_insert.taxonomyId,
+      code,
+      name,
+      level,
+      description,
+      active: true,
+    };
+  } catch (error) {
+    console.error('Error creating taxonomy:', error);
+    throw error;
+  }
+}

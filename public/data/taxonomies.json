@@ -1,0 +1,38 @@
+[
+  {
+    "code": "REMEMBER",
+    "name": "Recordar",
+    "level": 1,
+    "description": "Recuperar información relevante de la memoria de largo plazo. Ejemplos: definir, duplicar, enumerar, etiquetas, enumerar, memorizar, nombrar, ordenar, reconocer, reproducir, recordar, relatar, repetir, reproducir, revisar, seleccionar, establecer"
+  },
+  {
+    "code": "UNDERSTAND",
+    "name": "Comprender",
+    "level": 2,
+    "description": "Determinar el significado de material educativo. Ejemplos: clasificar, describir, discutir, explicar, identificar, indicar, conocer, etiquetar, enumerar, destacar, parafrasear, reconocer, reportar, reafirmar, revisar, seleccionar, traducir"
+  },
+  {
+    "code": "APPLY",
+    "name": "Aplicar",
+    "level": 3,
+    "description": "Utilizar información en una nueva situación. Ejemplos: elegir, demostrar, dramatizar, emplear, ilustrar, interpretar, operacionalizar, escenificar, practicar, programar, esbozar, solucionar, usar, escribir"
+  },
+  {
+    "code": "ANALYZE",
+    "name": "Analizar",
+    "level": 4,
+    "description": "Dividir material en partes constituyentes y determinar las relaciones entre las partes. Ejemplos: apreciar, descomponer, discriminar, distinguir, identificar, ilustrar, inferir, elegir, diferenciar, contrastar, resolver, separar, subdividir"
+  },
+  {
+    "code": "EVALUATE",
+    "name": "Evaluar",
+    "level": 5,
+    "description": "Hacer juicios sobre el valor del material para un propósito determinado. Ejemplos: aprobar, evaluar, argumentar, defender, juzgar, seleccionar, soportar, evaluar, valorar"
+  },
+  {
+    "code": "CREATE",
+    "name": "Crear",
+    "level": 6,
+    "description": "Unir elementos para formar un nuevo todo o proponer soluciones alternativas. Ejemplos: ensamblar, compilar, componer, construir, crear, diseñar, desarrollar, formular, generar, inventar, hacer, organizar, orquestar, planificar, preparar, producir, proponer, configurar, escribir"
+  }
+]
