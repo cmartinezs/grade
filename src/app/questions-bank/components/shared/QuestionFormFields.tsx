@@ -27,6 +27,7 @@ import {
 import { QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import type { Subject, Unit, Topic } from '@/types/curriculumHierarchy';
+import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 
 interface QuestionFormFieldsProps {
   // Question Type
@@ -173,75 +174,62 @@ export default function QuestionFormFields({
       {/* CurriculumHierarchy Selection */}
       <Card className="mb-3">
         <Card.Header>
-          <strong>Taxonomía (Tema) *</strong>
+          <strong>Jerarquía Curricular *</strong>
         </Card.Header>
         <Card.Body>
           <Row>
             <Col md={4}>
               <Form.Group className="mb-2">
-                <Form.Label>Asignatura</Form.Label>
-                <Form.Select
+                <AutocompleteSelect
+                  label="Asignatura"
                   value={selectedSubject}
-                  onChange={(e) => onSubjectChange(e.target.value)}
+                  onChange={(value) => onSubjectChange(String(value))}
+                  options={subjects.map(s => ({
+                    id: s.subject_id,
+                    name: s.name,
+                    description: s.code
+                  }))}
+                  placeholder="Busca una asignatura..."
                   disabled={disabled}
-                >
-                  <option value="">Seleccione...</option>
-                  {subjects.map((s) => (
-                    <option key={s.subject_id} value={s.subject_id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </Form.Select>
+                  warningMessage={subjects.length === 0 ? "⚠️ No hay asignaturas disponibles" : undefined}
+                />
               </Form.Group>
             </Col>
             <Col md={4}>
               <Form.Group className="mb-2">
-                <Form.Label>Unidad</Form.Label>
-                <Form.Select
+                <AutocompleteSelect
+                  label="Unidad"
                   value={selectedUnit}
-                  onChange={(e) => onUnitChange(e.target.value)}
+                  onChange={(value) => onUnitChange(String(value))}
+                  options={units.map(u => ({
+                    id: u.unit_id,
+                    name: u.name,
+                    description: u.description
+                  }))}
+                  placeholder={!selectedSubject ? "Selecciona una asignatura primero..." : "Busca una unidad..."}
                   disabled={!selectedSubject || disabled}
-                >
-                  <option value="">Seleccione...</option>
-                  {units.map((u) => (
-                    <option key={u.unit_id} value={u.unit_id}>
-                      {u.name}
-                    </option>
-                  ))}
-                </Form.Select>
-                {hasNoUnits && (
-                  <Form.Text className="text-warning">
-                    ⚠️ No hay unidades para esta asignatura
-                  </Form.Text>
-                )}
+                  warningMessage={hasNoUnits ? "⚠️ No hay unidades para esta asignatura" : undefined}
+                />
               </Form.Group>
             </Col>
             <Col md={4}>
               <Form.Group className="mb-2">
-                <Form.Label>Tema *</Form.Label>
-                <Form.Select
+                <AutocompleteSelect
+                  label="Tema"
                   value={selectedTopic}
-                  onChange={(e) => onTopicChange(e.target.value)}
+                  onChange={(value) => onTopicChange(String(value))}
+                  options={topics.map(t => ({
+                    id: t.topic_id,
+                    name: t.name,
+                    description: t.description
+                  }))}
+                  placeholder={!selectedUnit ? "Selecciona una unidad primero..." : "Busca un tema..."}
                   disabled={!selectedUnit || disabled}
                   isInvalid={getErrorsForField('topic_fk').length > 0}
-                >
-                  <option value="">Seleccione...</option>
-                  {topics.map((t) => (
-                    <option key={t.topic_id} value={t.topic_id}>
-                      {t.name}
-                    </option>
-                  ))}
-                </Form.Select>
-                {hasNoTopics && (
-                  <Form.Text className="text-warning">
-                    ⚠️ No hay temas para esta unidad
-                  </Form.Text>
-                )}
-                {getErrorsForField('topic_fk').map((err, i) => (
-                  <Form.Control.Feedback key={i} type="invalid">
-                    {err.message}
-                  </Form.Control.Feedback>
-                ))}
+                  errorMessage={getErrorsForField('topic_fk')[0]?.message}
+                  warningMessage={hasNoTopics ? "⚠️ No hay temas para esta unidad" : undefined}
+                  required
+                />
               </Form.Group>
             </Col>
           </Row>
