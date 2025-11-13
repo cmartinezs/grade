@@ -11,7 +11,7 @@ import RetireQuestionModal from './components/RetireQuestionModal';
 import ReactivateQuestionModal from './components/ReactivateQuestionModal';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import type { QuestionType, DifficultyLevel } from '@/types/question';
-import { useTaxonomy } from '@/hooks/useCurriculumHierarchy';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { useQuestions } from '@/hooks/useQuestions';
 
 export default function QuestionsBankPage() {
@@ -32,7 +32,7 @@ export default function QuestionsBankPage() {
   const [showInactive, setShowInactive] = useState(true);
 
   // Load subjects from Data Connect
-  const { subjects: allSubjects } = useTaxonomy();
+  const { subjects: allSubjects } = useCurriculumHierarchy();
   const subjects = allSubjects.filter((s) => s.active && !s.deleted_at);
 
   // Load questions with current filters from Data Connect (with fallback to local store)
