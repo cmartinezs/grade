@@ -75,7 +75,7 @@ export const createNewSubject = async (
 
 export const updateSubjectInfo = async (
   subjectId: string,
-  updates: { name?: string; code?: string },
+  updates: { name?: string; code?: string; levelId?: string },
   updatedBy: string
 ): Promise<void> => {
   try {
@@ -84,6 +84,7 @@ export const updateSubjectInfo = async (
       subjectId,
       name: updates.name,
       code: updates.code,
+      levelId: updates.levelId,
       updatedBy,
       updatedAt,
     });

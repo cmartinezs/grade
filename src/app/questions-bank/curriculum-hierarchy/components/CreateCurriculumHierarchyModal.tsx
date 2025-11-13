@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Alert, Row, Col } from 'react-bootstrap';
 import {
   createSubject,
   createUnit,
@@ -9,8 +9,11 @@ import {
   getAllSubjects,
   getAllUnits,
 } from '@/lib/curriculumHierarchyStore';
+import { levelCategoryStore, educationalLevelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
+import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import { CurriculumHierarchyType, ValidationError, Subject, Unit } from '@/types/curriculumHierarchy';
+import { LevelCategory, EducationalLevel } from '@/types/level';
 
 interface CreateCurriculumHierarchyModalProps {
   show: boolean;
@@ -27,24 +30,41 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
     subject_fk: '',
     unit_fk: '',
     description: '',
+    category_fk: '',
+    level_fk: '',
   });
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
+  const [categories, setCategories] = useState<LevelCategory[]>([]);
+  const [levels, setLevels] = useState<EducationalLevel[]>([]);
+  const [filteredLevels, setFilteredLevels] = useState<EducationalLevel[]>([]);
 
-  // Load subjects and units when modal opens
+  // Load subjects, units, categories and levels when modal opens
   useEffect(() => {
     if (show) {
       setSubjects(getAllSubjects());
       setUnits(getAllUnits());
+      setCategories(levelCategoryStore.getAllCategories());
+      setLevels(educationalLevelStore.getAllLevels());
     }
   }, [show]);
+
+  // Filter levels when category changes
+  useEffect(() => {
+    if (formData.category_fk) {
+      const filtered = levels.filter(level => level.categoryId === formData.category_fk);
+      setFilteredLevels(filtered);
+    } else {
+      setFilteredLevels([]);
+    }
+  }, [formData.category_fk, levels]);
 
   // Reset form when modal is closed or opened
   const resetForm = () => {
     setCurriculumHierarchyType('subject');
-    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
+    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '', category_fk: '', level_fk: '' });
     setErrors([]);
     setSuccessMessage(null);
   };
@@ -57,7 +77,7 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
 
   const handleTypeChange = (type: CurriculumHierarchyType) => {
     setCurriculumHierarchyType(type);
-    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
+    setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '', category_fk: '', level_fk: '' });
     setErrors([]);
     setSuccessMessage(null);
   };
@@ -75,9 +95,53 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
       return;
     }
 
+    // Validaciones según el tipo
+    const newErrors: ValidationError[] = [];
+
+    if (CurriculumHierarchyType === 'subject') {
+      // Validaciones para Asignatura
+      if (!formData.name || formData.name.trim() === '') {
+        newErrors.push({ field: 'name', message: 'El nombre de la asignatura es obligatorio' });
+      }
+      if (!formData.code || formData.code.trim() === '') {
+        newErrors.push({ field: 'code', message: 'El código de la asignatura es obligatorio' });
+      }
+      if (!formData.category_fk || formData.category_fk === '') {
+        newErrors.push({ field: 'category_fk', message: 'Debes seleccionar una categoría de nivel' });
+      }
+      if (!formData.level_fk || formData.level_fk === '') {
+        newErrors.push({ field: 'level_fk', message: 'Debes seleccionar un nivel educacional' });
+      }
+    } else if (CurriculumHierarchyType === 'unit') {
+      // Validaciones para Unidad
+      if (!formData.subject_fk || formData.subject_fk === '') {
+        newErrors.push({ field: 'subject_fk', message: 'Debes seleccionar una asignatura padre' });
+      }
+      if (!formData.name || formData.name.trim() === '') {
+        newErrors.push({ field: 'name', message: 'El nombre de la unidad es obligatorio' });
+      }
+    } else if (CurriculumHierarchyType === 'topic') {
+      // Validaciones para Tema
+      if (!formData.subject_fk || formData.subject_fk === '') {
+        newErrors.push({ field: 'subject_fk', message: 'Debes seleccionar una asignatura' });
+      }
+      if (!formData.unit_fk || formData.unit_fk === '') {
+        newErrors.push({ field: 'unit_fk', message: 'Debes seleccionar una unidad padre' });
+      }
+      if (!formData.name || formData.name.trim() === '') {
+        newErrors.push({ field: 'name', message: 'El nombre del tema es obligatorio' });
+      }
+    }
+
+    // Si hay errores de validación, mostrarlos y no continuar
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       if (CurriculumHierarchyType === 'subject') {
-        await createSubject(formData.name, formData.code, userId);
+        await createSubject(formData.name, formData.code, formData.level_fk, userId);
       } else if (CurriculumHierarchyType === 'unit') {
         await createUnit(formData.name, formData.subject_fk, userId, formData.description);
       } else {
@@ -121,9 +185,9 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
     }
   };
 
-  const getErrorForField = (field: string): string | null => {
+  const getErrorForField = (field: string): string | undefined => {
     const error = errors.find((e) => e.field === field);
-    return error ? error.message : null;
+    return error ? error.message : undefined;
   };
 
   return (
@@ -174,13 +238,15 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
         {successMessage && <Alert variant="success">{successMessage}</Alert>}
 
         {/* Error Messages */}
-        {errors.length > 0 && (
+        {errors.length > 0 && errors.some(e => e.field === 'general') && (
           <Alert variant="danger">
-            <strong>❌ Errores de validación:</strong>
+            <strong>❌ Error:</strong>
             <ul className="mb-0 mt-2">
-              {errors.map((error, idx) => (
-                <li key={idx}>{error.message}</li>
-              ))}
+              {errors
+                .filter(error => error.field === 'general')
+                .map((error, idx) => (
+                  <li key={idx}>{error.message}</li>
+                ))}
             </ul>
           </Alert>
         )}
@@ -202,7 +268,10 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
                   type="text"
                   placeholder="Ej: Matemáticas"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const name = e.target.value.trim();
+                    setFormData({ ...formData, name });
+                  }}
                   isInvalid={!!getErrorForField('name')}
                 />
                 <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>
@@ -214,12 +283,60 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
                   type="text"
                   placeholder="Ej: MAT-101"
                   value={formData.code}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                  onChange={(e) => {
+                    const code = e.target.value.trim();
+                    setFormData({ ...formData, code });
+                    // Validar que no sea vacío
+                    if (code === '') {
+                      // El error se mostrará al hacer submit
+                    }
+                  }}
                   isInvalid={!!getErrorForField('code')}
                 />
                 <Form.Control.Feedback type="invalid">{getErrorForField('code')}</Form.Control.Feedback>
-                <Form.Text>El código debe ser único globalmente.</Form.Text>
+                <Form.Text>El código debe ser único globalmente (ej: MAT-101, ESP-202)</Form.Text>
               </Form.Group>
+
+              <Row className="g-2 mb-3">
+                <Col md={6}>
+                  <AutocompleteSelect
+                    label="Categoría de Nivel"
+                    value={formData.category_fk}
+                    onChange={(value) => {
+                      setFormData({ ...formData, category_fk: String(value), level_fk: '' });
+                      setFilteredLevels([]);
+                    }}
+                    options={categories.map(cat => ({
+                      id: cat.id,
+                      name: cat.name,
+                      description: cat.description
+                    }))}
+                    placeholder="Busca una categoría..."
+                    isInvalid={!!getErrorForField('category_fk')}
+                    errorMessage={getErrorForField('category_fk')}
+                    warningMessage={categories.length === 0 ? "⚠️ No hay categorías disponibles. Crea una categoría primero." : undefined}
+                    required
+                  />
+                </Col>
+                <Col md={6}>
+                  <AutocompleteSelect
+                    label="Nivel Educacional"
+                    value={formData.level_fk}
+                    onChange={(value) => setFormData({ ...formData, level_fk: String(value) })}
+                    options={filteredLevels.map(level => ({
+                      id: level.id,
+                      name: level.name,
+                      description: level.description
+                    }))}
+                    placeholder={formData.category_fk ? "Busca un nivel..." : "Selecciona categoría primero"}
+                    disabled={!formData.category_fk}
+                    isInvalid={!!getErrorForField('level_fk')}
+                    errorMessage={getErrorForField('level_fk')}
+                    warningMessage={formData.category_fk && filteredLevels.length === 0 ? "⚠️ No hay niveles disponibles para esta categoría. Selecciona otra categoría." : undefined}
+                    required
+                  />
+                </Col>
+              </Row>
             </>
           )}
 
@@ -249,7 +366,10 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
                   type="text"
                   placeholder="Ej: Álgebra Básica"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const name = e.target.value.trim();
+                    setFormData({ ...formData, name });
+                  }}
                   isInvalid={!!getErrorForField('name')}
                 />
                 <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>
@@ -342,7 +462,10 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
                   type="text"
                   placeholder="Ej: Ecuaciones lineales"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const name = e.target.value.trim();
+                    setFormData({ ...formData, name });
+                  }}
                   isInvalid={!!getErrorForField('name')}
                 />
                 <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>

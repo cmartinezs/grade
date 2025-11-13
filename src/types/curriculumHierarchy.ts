@@ -7,6 +7,7 @@ export interface Subject {
   subject_id: string; // UUID
   name: string;
   code: string; // Unique code
+  level_fk: string; // References educational level (UUID)
   active: boolean;
   created_at: Date | string;
   created_by: string;
@@ -49,6 +50,7 @@ export type CurriculumHierarchyType = 'subject' | 'unit' | 'topic';
 export interface CreateSubjectInput {
   name: string;
   code: string;
+  levelId: string; // References EducationalLevel
 }
 
 export interface CreateUnitInput {
@@ -69,6 +71,7 @@ export type CreateCurriculumHierarchyInput = CreateSubjectInput | CreateUnitInpu
 export interface UpdateSubjectInput {
   name: string;
   code: string;
+  levelId: string; // References EducationalLevel
 }
 
 export interface UpdateUnitInput {

@@ -104,16 +104,17 @@ export const getSubjectById = (subjectId: string): Subject | undefined => {
 /**
  * Crear nueva asignatura
  */
-export const createSubject = async (name: string, code: string, createdBy: string): Promise<void> => {
+export const createSubject = async (name: string, code: string, levelId: string, createdBy: string): Promise<void> => {
   try {
     const subjectId = generateUUID();
-    await createNewSubject(name, code, createdBy);
+    await createNewSubject(name, code, levelId, createdBy);
     
     // Agregar el nuevo elemento al caché local para reflejar cambios inmediatamente
     const newSubject: Subject = {
       subject_id: subjectId,
       name,
       code,
+      level_fk: levelId,
       active: true,
       created_at: new Date().toISOString(),
       created_by: createdBy,
