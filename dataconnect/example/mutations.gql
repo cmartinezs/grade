@@ -540,6 +540,7 @@ mutation CreateQuestion(
   $taxonomyId: UUID!
   $userId: UUID!
   $isPublic: Boolean!
+  $allowPartialScore: Boolean!
   $firebaseId: String!
 ) @auth(expr: "firebaseId == auth.uid") {
   question_insert(
@@ -552,6 +553,7 @@ mutation CreateQuestion(
       taxonomyId: $taxonomyId
       userId: $userId
       isPublic: $isPublic
+      allowPartialScore: $allowPartialScore
       active: true
       version: 1
     }
@@ -568,6 +570,7 @@ mutation CreateQuestionVersion(
   $taxonomyId: UUID!
   $userId: UUID!
   $isPublic: Boolean!
+  $allowPartialScore: Boolean!
   $version: Int!
   $originalQuestionId: UUID!
   $firebaseId: String!
@@ -582,6 +585,7 @@ mutation CreateQuestionVersion(
       taxonomyId: $taxonomyId
       userId: $userId
       isPublic: $isPublic
+      allowPartialScore: $allowPartialScore
       active: true
       version: $version
       originalQuestionId: $originalQuestionId
@@ -597,9 +601,9 @@ mutation UpdateQuestion(
   $difficultyId: UUID
   $questionTypeId: UUID
   $isPublic: Boolean
+  $allowPartialScore: Boolean
   $updatedBy: UUID!
   $updatedAt: Timestamp!
-  $userId: UUID!
   $firebaseId: String!
 ) @auth(expr: "firebaseId == auth.uid") {
   question_update(
@@ -610,6 +614,7 @@ mutation UpdateQuestion(
       difficultyId: $difficultyId
       questionTypeId: $questionTypeId
       isPublic: $isPublic
+      allowPartialScore: $allowPartialScore
       updatedBy: $updatedBy
       updatedAt: $updatedAt
     }
@@ -705,6 +710,9 @@ mutation CreateQuestionType(
   $code: String!
   $name: String!
   $description: String
+  $minOptions: Int!
+  $maxOptions: Int!
+  $correctOptions: Int!
   $active: Boolean!
 ) @auth(level: USER) {
   questionType_insert(
@@ -713,7 +721,33 @@ mutation CreateQuestionType(
       code: $code
       name: $name
       description: $description
+      minOptions: $minOptions
+      maxOptions: $maxOptions
+      correctOptions: $correctOptions
       active: $active
+    }
+  )
+}
+
+# Actualizar un tipo de pregunta
+mutation UpdateQuestionType(
+  $questionTypeId: UUID!
+  $code: String
+  $name: String
+  $description: String
+  $minOptions: Int
+  $maxOptions: Int
+  $correctOptions: Int
+) @auth(level: USER) {
+  questionType_update(
+    key: { questionTypeId: $questionTypeId }
+    data: {
+      code: $code
+      name: $name
+      description: $description
+      minOptions: $minOptions
+      maxOptions: $maxOptions
+      correctOptions: $correctOptions
     }
   )
 }

@@ -39,6 +39,9 @@ export async function loadQuestionTypesData(onProgress?: ProgressCallback): Prom
       code: string;
       name: string;
       description?: string;
+      minOptions?: number;
+      maxOptions?: number;
+      correctOptions?: number;
       active?: boolean;
     }> = [];
     try {
@@ -92,7 +95,14 @@ export async function loadQuestionTypesData(onProgress?: ProgressCallback): Prom
           });
         }
 
-        await createNewQuestionType(typeData.code, typeData.name, typeData.description);
+        await createNewQuestionType(
+          typeData.code, 
+          typeData.name, 
+          typeData.description,
+          typeData.minOptions,
+          typeData.maxOptions,
+          typeData.correctOptions
+        );
 
         result.typesCreated++;
         console.log(`[QuestionTypesDataLoader] Created question type: ${typeData.name}`);

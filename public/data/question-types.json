@@ -1,20 +1,56 @@
 [
   {
-    "code": "MC",
-    "name": "Selección Múltiple",
-    "description": "Pregunta con una única respuesta correcta entre varias opciones",
+    "code": "MC2",
+    "name": "Selección Múltiple (2 correctas)",
+    "description": "Pregunta con dos respuestas correctas entre varias opciones",
+    "minOptions": 3,
+    "maxOptions": 0,
+    "correctOptions": 2,
+    "active": true
+  },
+  {
+    "code": "MC3",
+    "name": "Selección Múltiple (3 correctas)",
+    "description": "Pregunta con tres respuestas correctas entre varias opciones",
+    "minOptions": 4,
+    "maxOptions": 0,
+    "correctOptions": 3,
+    "active": true
+  },
+  {
+    "code": "MC4",
+    "name": "Selección Múltiple (4 correctas)",
+    "description": "Pregunta con cuatro respuestas correctas entre varias opciones",
+    "minOptions": 5,
+    "maxOptions": 0,
+    "correctOptions": 4,
+    "active": true
+  },
+  {
+    "code": "MC5",
+    "name": "Selección Múltiple (5 correctas)",
+    "description": "Pregunta con cinco respuestas correctas entre varias opciones",
+    "minOptions": 6,
+    "maxOptions": 0,
+    "correctOptions": 5,
     "active": true
   },
   {
     "code": "SS",
     "name": "Selección Simple",
     "description": "Pregunta con una única respuesta correcta entre varias opciones",
+    "minOptions": 2,
+    "maxOptions": 0,
+    "correctOptions": 1,
     "active": true
   },
   {
     "code": "TF",
     "name": "Verdadero/Falso",
     "description": "Pregunta binaria que requiere evaluar si una afirmación es verdadera o falsa",
+    "minOptions": 2,
+    "maxOptions": 2,
+    "correctOptions": 1,
     "active": true
   }
 ]

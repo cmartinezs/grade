@@ -84,6 +84,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*UpdateQuestionOption*](#updatequestionoption)
   - [*DeleteQuestionOption*](#deletequestionoption)
   - [*CreateQuestionType*](#createquestiontype)
+  - [*UpdateQuestionType*](#updatequestiontype)
   - [*DeactivateQuestionType*](#deactivatequestiontype)
   - [*ReactivateQuestionType*](#reactivatequestiontype)
   - [*CreateDifficulty*](#createdifficulty)
@@ -1782,6 +1783,9 @@ export interface ListQuestionTypesData {
     code: string;
     name: string;
     description?: string | null;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
     active: boolean;
   } & QuestionType_Key)[];
 }
@@ -1863,6 +1867,9 @@ export interface GetQuestionTypeData {
     code: string;
     name: string;
     description?: string | null;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
     active: boolean;
   } & QuestionType_Key;
 }
@@ -1951,6 +1958,9 @@ export interface GetQuestionTypeByCodeData {
     code: string;
     name: string;
     description?: string | null;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
     active: boolean;
   } & QuestionType_Key)[];
 }
@@ -2385,6 +2395,8 @@ export interface ListQuestionsByUserData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
+    isPublic: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -2486,6 +2498,8 @@ export interface GetQuestionData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
+    isPublic: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -2579,6 +2593,7 @@ export interface ListPublicQuestionsData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
   } & Question_Key)[];
@@ -2666,6 +2681,7 @@ export interface ListPublicQuestionsByDifficultyData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
   } & Question_Key)[];
@@ -2760,6 +2776,7 @@ export interface ListPublicQuestionsByTypeData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
   } & Question_Key)[];
@@ -5594,6 +5611,7 @@ export interface CreateQuestionVariables {
   taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
+  allowPartialScore: boolean;
   firebaseId: string;
 }
 ```
@@ -5652,11 +5670,12 @@ export default function CreateQuestionComponent() {
     taxonomyId: ..., 
     userId: ..., 
     isPublic: ..., 
+    allowPartialScore: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(createQuestionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
+  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., allowPartialScore: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5704,6 +5723,7 @@ export interface CreateQuestionVersionVariables {
   taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
+  allowPartialScore: boolean;
   version: number;
   originalQuestionId: UUIDString;
   firebaseId: string;
@@ -5764,13 +5784,14 @@ export default function CreateQuestionVersionComponent() {
     taxonomyId: ..., 
     userId: ..., 
     isPublic: ..., 
+    allowPartialScore: ..., 
     version: ..., 
     originalQuestionId: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(createQuestionVersionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
+  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., allowPartialScore: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5816,9 +5837,9 @@ export interface UpdateQuestionVariables {
   difficultyId?: UUIDString | null;
   questionTypeId?: UUIDString | null;
   isPublic?: boolean | null;
+  allowPartialScore?: boolean | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
-  userId: UUIDString;
   firebaseId: string;
 }
 ```
@@ -5875,14 +5896,14 @@ export default function UpdateQuestionComponent() {
     difficultyId: ..., // optional
     questionTypeId: ..., // optional
     isPublic: ..., // optional
+    allowPartialScore: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
-    userId: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(updateQuestionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., isPublic: ..., updatedBy: ..., updatedAt: ..., userId: ..., firebaseId: ..., });
+  mutation.mutate({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., isPublic: ..., allowPartialScore: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -6426,6 +6447,9 @@ export interface CreateQuestionTypeVariables {
   code: string;
   name: string;
   description?: string | null;
+  minOptions: number;
+  maxOptions: number;
+  correctOptions: number;
   active: boolean;
 }
 ```
@@ -6480,11 +6504,14 @@ export default function CreateQuestionTypeComponent() {
     code: ..., 
     name: ..., 
     description: ..., // optional
+    minOptions: ..., 
+    maxOptions: ..., 
+    correctOptions: ..., 
     active: ..., 
   };
   mutation.mutate(createQuestionTypeVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ questionTypeId: ..., code: ..., name: ..., description: ..., active: ..., });
+  mutation.mutate({ questionTypeId: ..., code: ..., name: ..., description: ..., minOptions: ..., maxOptions: ..., correctOptions: ..., active: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -6504,6 +6531,112 @@ export default function CreateQuestionTypeComponent() {
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
     console.log(mutation.data.questionType_insert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateQuestionType
+You can execute the `UpdateQuestionType` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateQuestionType(options?: useDataConnectMutationOptions<UpdateQuestionTypeData, FirebaseError, UpdateQuestionTypeVariables>): UseDataConnectMutationResult<UpdateQuestionTypeData, UpdateQuestionTypeVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateQuestionType(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateQuestionTypeData, FirebaseError, UpdateQuestionTypeVariables>): UseDataConnectMutationResult<UpdateQuestionTypeData, UpdateQuestionTypeVariables>;
+```
+
+### Variables
+The `UpdateQuestionType` Mutation requires an argument of type `UpdateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  minOptions?: number | null;
+  maxOptions?: number | null;
+  correctOptions?: number | null;
+}
+```
+### Return Type
+Recall that calling the `UpdateQuestionType` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateQuestionType` Mutation is of type `UpdateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateQuestionTypeData {
+  questionType_update?: QuestionType_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateQuestionType`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateQuestionTypeVariables } from '@dataconnect/generated';
+import { useUpdateQuestionType } from '@dataconnect/generated/react'
+
+export default function UpdateQuestionTypeComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateQuestionType();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateQuestionType(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateQuestionType(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateQuestionType(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateQuestionType` Mutation requires an argument of type `UpdateQuestionTypeVariables`:
+  const updateQuestionTypeVars: UpdateQuestionTypeVariables = {
+    questionTypeId: ..., 
+    code: ..., // optional
+    name: ..., // optional
+    description: ..., // optional
+    minOptions: ..., // optional
+    maxOptions: ..., // optional
+    correctOptions: ..., // optional
+  };
+  mutation.mutate(updateQuestionTypeVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ questionTypeId: ..., code: ..., name: ..., description: ..., minOptions: ..., maxOptions: ..., correctOptions: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateQuestionTypeVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.questionType_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }

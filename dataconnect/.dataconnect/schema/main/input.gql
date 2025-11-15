@@ -1707,6 +1707,14 @@ input Question_Data {
   """
   active_expr: Boolean_Expr
   """
+  ✨ Generated from Field `Question`.`allowPartialScore` of type `Boolean!`
+  """
+  allowPartialScore: Boolean
+  """
+  ✨ `_expr` server value variant of `allowPartialScore` (✨ Generated from Field `Question`.`allowPartialScore` of type `Boolean!`)
+  """
+  allowPartialScore_expr: Boolean_Expr
+  """
   ✨ Generated from Field `Question`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp
@@ -1872,6 +1880,10 @@ input Question_Filter {
   """
   active: Boolean_Filter
   """
+  ✨ Generated from Field `Question`.`allowPartialScore` of type `Boolean!`
+  """
+  allowPartialScore: Boolean_Filter
+  """
   ✨ Generated from Field `Question`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp_Filter
@@ -1969,6 +1981,10 @@ input Question_Having {
   ✨ Generated from Field `Question`.`active_count` of type `Int!`
   """
   active_count: Int_Filter
+  """
+  ✨ Generated from Field `Question`.`allowPartialScore_count` of type `Int!`
+  """
+  allowPartialScore_count: Int_Filter
   """
   ✨ Generated from Field `Question`.`createdAt_count` of type `Int!`
   """
@@ -2109,6 +2125,10 @@ input Question_Order {
   """
   active: OrderDirection
   """
+  ✨ Generated from Field `Question`.`allowPartialScore` of type `Boolean!`
+  """
+  allowPartialScore: OrderDirection
+  """
   ✨ Generated from Field `Question`.`createdAt` of type `Timestamp!`
   """
   createdAt: OrderDirection
@@ -2172,6 +2192,10 @@ input Question_Order {
   ✨ Generated from Field `Question`.`active_count` of type `Int!`
   """
   active_count: OrderDirection
+  """
+  ✨ Generated from Field `Question`.`allowPartialScore_count` of type `Int!`
+  """
+  allowPartialScore_count: OrderDirection
   """
   ✨ Generated from Field `Question`.`createdAt_count` of type `Int!`
   """
@@ -2613,6 +2637,18 @@ input QuestionType_Data {
   """
   code_expr: String_Expr
   """
+  ✨ Generated from Field `QuestionType`.`correctOptions` of type `Int!`
+  """
+  correctOptions: Int
+  """
+  ✨ `_expr` server value variant of `correctOptions` (✨ Generated from Field `QuestionType`.`correctOptions` of type `Int!`)
+  """
+  correctOptions_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `correctOptions` (✨ Generated from Field `QuestionType`.`correctOptions` of type `Int!`)
+  """
+  correctOptions_update: [Int_Update!]
+  """
   ✨ Generated from Field `QuestionType`.`description` of type `String`
   """
   description: String
@@ -2620,6 +2656,30 @@ input QuestionType_Data {
   ✨ `_expr` server value variant of `description` (✨ Generated from Field `QuestionType`.`description` of type `String`)
   """
   description_expr: String_Expr
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions` of type `Int!`
+  """
+  maxOptions: Int
+  """
+  ✨ `_expr` server value variant of `maxOptions` (✨ Generated from Field `QuestionType`.`maxOptions` of type `Int!`)
+  """
+  maxOptions_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `maxOptions` (✨ Generated from Field `QuestionType`.`maxOptions` of type `Int!`)
+  """
+  maxOptions_update: [Int_Update!]
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions` of type `Int!`
+  """
+  minOptions: Int
+  """
+  ✨ `_expr` server value variant of `minOptions` (✨ Generated from Field `QuestionType`.`minOptions` of type `Int!`)
+  """
+  minOptions_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `minOptions` (✨ Generated from Field `QuestionType`.`minOptions` of type `Int!`)
+  """
+  minOptions_update: [Int_Update!]
   """
   ✨ Generated from Field `QuestionType`.`name` of type `String!`
   """
@@ -2658,9 +2718,21 @@ input QuestionType_Filter {
   """
   code: String_Filter
   """
+  ✨ Generated from Field `QuestionType`.`correctOptions` of type `Int!`
+  """
+  correctOptions: Int_Filter
+  """
   ✨ Generated from Field `QuestionType`.`description` of type `String`
   """
   description: String_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions` of type `Int!`
+  """
+  maxOptions: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions` of type `Int!`
+  """
+  minOptions: Int_Filter
   """
   ✨ Generated from Field `QuestionType`.`name` of type `String!`
   """
@@ -2712,9 +2784,21 @@ input QuestionType_Having {
   """
   code_count: Int_Filter
   """
+  ✨ Generated from Field `QuestionType`.`correctOptions_count` of type `Int!`
+  """
+  correctOptions_count: Int_Filter
+  """
   ✨ Generated from Field `QuestionType`.`description_count` of type `Int!`
   """
   description_count: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_count` of type `Int!`
+  """
+  maxOptions_count: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_count` of type `Int!`
+  """
+  minOptions_count: Int_Filter
   """
   ✨ Generated from Field `QuestionType`.`name_count` of type `Int!`
   """
@@ -2723,6 +2807,54 @@ input QuestionType_Having {
   ✨ Generated from Field `QuestionType`.`questionTypeId_count` of type `Int!`
   """
   questionTypeId_count: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_sum` of type `Int`
+  """
+  correctOptions_sum: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_sum` of type `Int`
+  """
+  maxOptions_sum: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_sum` of type `Int`
+  """
+  minOptions_sum: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_avg` of type `Float`
+  """
+  correctOptions_avg: Float_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_avg` of type `Float`
+  """
+  maxOptions_avg: Float_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_avg` of type `Float`
+  """
+  minOptions_avg: Float_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_min` of type `Int`
+  """
+  correctOptions_min: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_min` of type `Int`
+  """
+  maxOptions_min: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_min` of type `Int`
+  """
+  minOptions_min: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_max` of type `Int`
+  """
+  correctOptions_max: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_max` of type `Int`
+  """
+  maxOptions_max: Int_Filter
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_max` of type `Int`
+  """
+  minOptions_max: Int_Filter
 }
 """
 ✨ Generated key input type for table 'QuestionType'. It represents the primary key fields used to uniquely identify a row in the table.
@@ -2767,9 +2899,21 @@ input QuestionType_Order {
   """
   code: OrderDirection
   """
+  ✨ Generated from Field `QuestionType`.`correctOptions` of type `Int!`
+  """
+  correctOptions: OrderDirection
+  """
   ✨ Generated from Field `QuestionType`.`description` of type `String`
   """
   description: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions` of type `Int!`
+  """
+  maxOptions: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions` of type `Int!`
+  """
+  minOptions: OrderDirection
   """
   ✨ Generated from Field `QuestionType`.`name` of type `String!`
   """
@@ -2787,9 +2931,21 @@ input QuestionType_Order {
   """
   code_count: OrderDirection
   """
+  ✨ Generated from Field `QuestionType`.`correctOptions_count` of type `Int!`
+  """
+  correctOptions_count: OrderDirection
+  """
   ✨ Generated from Field `QuestionType`.`description_count` of type `Int!`
   """
   description_count: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_count` of type `Int!`
+  """
+  maxOptions_count: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_count` of type `Int!`
+  """
+  minOptions_count: OrderDirection
   """
   ✨ Generated from Field `QuestionType`.`name_count` of type `Int!`
   """
@@ -2798,6 +2954,54 @@ input QuestionType_Order {
   ✨ Generated from Field `QuestionType`.`questionTypeId_count` of type `Int!`
   """
   questionTypeId_count: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_sum` of type `Int`
+  """
+  correctOptions_sum: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_sum` of type `Int`
+  """
+  maxOptions_sum: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_sum` of type `Int`
+  """
+  minOptions_sum: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_avg` of type `Float`
+  """
+  correctOptions_avg: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_avg` of type `Float`
+  """
+  maxOptions_avg: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_avg` of type `Float`
+  """
+  minOptions_avg: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_min` of type `Int`
+  """
+  correctOptions_min: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_min` of type `Int`
+  """
+  maxOptions_min: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_min` of type `Int`
+  """
+  minOptions_min: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`correctOptions_max` of type `Int`
+  """
+  correctOptions_max: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`maxOptions_max` of type `Int`
+  """
+  maxOptions_max: OrderDirection
+  """
+  ✨ Generated from Field `QuestionType`.`minOptions_max` of type `Int`
+  """
+  minOptions_max: OrderDirection
 }
 """
 ✨ Generated data input type for table 'Subject'. It includes all necessary fields for creating or upserting rows into table.

@@ -156,6 +156,15 @@ type QuestionType @table(name: "question_types", key: "questionTypeId") {
   # Descripción del tipo de pregunta
   description: String
   
+  # Cantidad minima de opciones
+  minOptions: Int!
+  
+  # Cantidad máxima de opciones
+  maxOptions: Int!
+  
+  # Cantidad de opciones correctas
+  correctOptions: Int!
+  
   # Indicador de activo/inactivo
   active: Boolean! @default(value: true)
 }
@@ -245,9 +254,12 @@ type Question @table(name: "questions", key: "questionId") {
   
   # ID del usuario creador
   userId: UUID! @col(name: "user_fk")
+  
+  # Habilita puntaje parcial para preguntas de opción múltiple
+  allowPartialScore: Boolean! @col(name: "allow_partial_score") @default(value: false)
 
   # Indicador de pregunta pública o privada
-  isPublic: Boolean! @default(value: false)
+  isPublic: Boolean! @col(name: "is_public") @default(value: false)
   
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")

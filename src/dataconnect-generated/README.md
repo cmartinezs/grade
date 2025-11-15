@@ -77,6 +77,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateQuestionOption*](#updatequestionoption)
   - [*DeleteQuestionOption*](#deletequestionoption)
   - [*CreateQuestionType*](#createquestiontype)
+  - [*UpdateQuestionType*](#updatequestiontype)
   - [*DeactivateQuestionType*](#deactivatequestiontype)
   - [*ReactivateQuestionType*](#reactivatequestiontype)
   - [*CreateDifficulty*](#createdifficulty)
@@ -2208,6 +2209,9 @@ export interface ListQuestionTypesData {
     code: string;
     name: string;
     description?: string | null;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
     active: boolean;
   } & QuestionType_Key)[];
 }
@@ -2311,6 +2315,9 @@ export interface GetQuestionTypeData {
     code: string;
     name: string;
     description?: string | null;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
     active: boolean;
   } & QuestionType_Key;
 }
@@ -2426,6 +2433,9 @@ export interface GetQuestionTypeByCodeData {
     code: string;
     name: string;
     description?: string | null;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
     active: boolean;
   } & QuestionType_Key)[];
 }
@@ -2985,6 +2995,8 @@ export interface ListQuestionsByUserData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
+    isPublic: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -3114,6 +3126,8 @@ export interface GetQuestionData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
+    isPublic: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -3236,6 +3250,7 @@ export interface ListPublicQuestionsData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
   } & Question_Key)[];
@@ -3345,6 +3360,7 @@ export interface ListPublicQuestionsByDifficultyData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
   } & Question_Key)[];
@@ -3466,6 +3482,7 @@ export interface ListPublicQuestionsByTypeData {
     questionTypeId: UUIDString;
     taxonomyId: UUIDString;
     userId: UUIDString;
+    allowPartialScore: boolean;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
   } & Question_Key)[];
@@ -6835,6 +6852,7 @@ export interface CreateQuestionVariables {
   taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
+  allowPartialScore: boolean;
   firebaseId: string;
 }
 ```
@@ -6863,6 +6881,7 @@ const createQuestionVars: CreateQuestionVariables = {
   taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
+  allowPartialScore: ..., 
   firebaseId: ..., 
 };
 
@@ -6870,7 +6889,7 @@ const createQuestionVars: CreateQuestionVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuestion(createQuestionVars);
 // Variables can be defined inline as well.
-const { data } = await createQuestion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
+const { data } = await createQuestion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., allowPartialScore: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6901,13 +6920,14 @@ const createQuestionVars: CreateQuestionVariables = {
   taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
+  allowPartialScore: ..., 
   firebaseId: ..., 
 };
 
 // Call the `createQuestionRef()` function to get a reference to the mutation.
 const ref = createQuestionRef(createQuestionVars);
 // Variables can be defined inline as well.
-const ref = createQuestionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., firebaseId: ..., });
+const ref = createQuestionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., allowPartialScore: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6968,6 +6988,7 @@ export interface CreateQuestionVersionVariables {
   taxonomyId: UUIDString;
   userId: UUIDString;
   isPublic: boolean;
+  allowPartialScore: boolean;
   version: number;
   originalQuestionId: UUIDString;
   firebaseId: string;
@@ -6998,6 +7019,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
   taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
+  allowPartialScore: ..., 
   version: ..., 
   originalQuestionId: ..., 
   firebaseId: ..., 
@@ -7007,7 +7029,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuestionVersion(createQuestionVersionVars);
 // Variables can be defined inline as well.
-const { data } = await createQuestionVersion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
+const { data } = await createQuestionVersion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., allowPartialScore: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7038,6 +7060,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
   taxonomyId: ..., 
   userId: ..., 
   isPublic: ..., 
+  allowPartialScore: ..., 
   version: ..., 
   originalQuestionId: ..., 
   firebaseId: ..., 
@@ -7046,7 +7069,7 @@ const createQuestionVersionVars: CreateQuestionVersionVariables = {
 // Call the `createQuestionVersionRef()` function to get a reference to the mutation.
 const ref = createQuestionVersionRef(createQuestionVersionVars);
 // Variables can be defined inline as well.
-const ref = createQuestionVersionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
+const ref = createQuestionVersionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., taxonomyId: ..., userId: ..., isPublic: ..., allowPartialScore: ..., version: ..., originalQuestionId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7105,9 +7128,9 @@ export interface UpdateQuestionVariables {
   difficultyId?: UUIDString | null;
   questionTypeId?: UUIDString | null;
   isPublic?: boolean | null;
+  allowPartialScore?: boolean | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
-  userId: UUIDString;
   firebaseId: string;
 }
 ```
@@ -7134,9 +7157,9 @@ const updateQuestionVars: UpdateQuestionVariables = {
   difficultyId: ..., // optional
   questionTypeId: ..., // optional
   isPublic: ..., // optional
+  allowPartialScore: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
-  userId: ..., 
   firebaseId: ..., 
 };
 
@@ -7144,7 +7167,7 @@ const updateQuestionVars: UpdateQuestionVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateQuestion(updateQuestionVars);
 // Variables can be defined inline as well.
-const { data } = await updateQuestion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., isPublic: ..., updatedBy: ..., updatedAt: ..., userId: ..., firebaseId: ..., });
+const { data } = await updateQuestion({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., isPublic: ..., allowPartialScore: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7173,16 +7196,16 @@ const updateQuestionVars: UpdateQuestionVariables = {
   difficultyId: ..., // optional
   questionTypeId: ..., // optional
   isPublic: ..., // optional
+  allowPartialScore: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
-  userId: ..., 
   firebaseId: ..., 
 };
 
 // Call the `updateQuestionRef()` function to get a reference to the mutation.
 const ref = updateQuestionRef(updateQuestionVars);
 // Variables can be defined inline as well.
-const ref = updateQuestionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., isPublic: ..., updatedBy: ..., updatedAt: ..., userId: ..., firebaseId: ..., });
+const ref = updateQuestionRef({ questionId: ..., text: ..., topicId: ..., difficultyId: ..., questionTypeId: ..., isPublic: ..., allowPartialScore: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7829,6 +7852,9 @@ export interface CreateQuestionTypeVariables {
   code: string;
   name: string;
   description?: string | null;
+  minOptions: number;
+  maxOptions: number;
+  correctOptions: number;
   active: boolean;
 }
 ```
@@ -7853,6 +7879,9 @@ const createQuestionTypeVars: CreateQuestionTypeVariables = {
   code: ..., 
   name: ..., 
   description: ..., // optional
+  minOptions: ..., 
+  maxOptions: ..., 
+  correctOptions: ..., 
   active: ..., 
 };
 
@@ -7860,7 +7889,7 @@ const createQuestionTypeVars: CreateQuestionTypeVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuestionType(createQuestionTypeVars);
 // Variables can be defined inline as well.
-const { data } = await createQuestionType({ questionTypeId: ..., code: ..., name: ..., description: ..., active: ..., });
+const { data } = await createQuestionType({ questionTypeId: ..., code: ..., name: ..., description: ..., minOptions: ..., maxOptions: ..., correctOptions: ..., active: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7887,13 +7916,16 @@ const createQuestionTypeVars: CreateQuestionTypeVariables = {
   code: ..., 
   name: ..., 
   description: ..., // optional
+  minOptions: ..., 
+  maxOptions: ..., 
+  correctOptions: ..., 
   active: ..., 
 };
 
 // Call the `createQuestionTypeRef()` function to get a reference to the mutation.
 const ref = createQuestionTypeRef(createQuestionTypeVars);
 // Variables can be defined inline as well.
-const ref = createQuestionTypeRef({ questionTypeId: ..., code: ..., name: ..., description: ..., active: ..., });
+const ref = createQuestionTypeRef({ questionTypeId: ..., code: ..., name: ..., description: ..., minOptions: ..., maxOptions: ..., correctOptions: ..., active: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7909,6 +7941,133 @@ console.log(data.questionType_insert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.questionType_insert);
+});
+```
+
+## UpdateQuestionType
+You can execute the `UpdateQuestionType` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+updateQuestionType(vars: UpdateQuestionTypeVariables): MutationPromise<UpdateQuestionTypeData, UpdateQuestionTypeVariables>;
+
+interface UpdateQuestionTypeRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionTypeVariables): MutationRef<UpdateQuestionTypeData, UpdateQuestionTypeVariables>;
+}
+export const updateQuestionTypeRef: UpdateQuestionTypeRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateQuestionType(dc: DataConnect, vars: UpdateQuestionTypeVariables): MutationPromise<UpdateQuestionTypeData, UpdateQuestionTypeVariables>;
+
+interface UpdateQuestionTypeRef {
+  ...
+  (dc: DataConnect, vars: UpdateQuestionTypeVariables): MutationRef<UpdateQuestionTypeData, UpdateQuestionTypeVariables>;
+}
+export const updateQuestionTypeRef: UpdateQuestionTypeRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuestionTypeRef:
+```typescript
+const name = updateQuestionTypeRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateQuestionType` mutation requires an argument of type `UpdateQuestionTypeVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateQuestionTypeVariables {
+  questionTypeId: UUIDString;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
+  minOptions?: number | null;
+  maxOptions?: number | null;
+  correctOptions?: number | null;
+}
+```
+### Return Type
+Recall that executing the `UpdateQuestionType` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateQuestionTypeData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateQuestionTypeData {
+  questionType_update?: QuestionType_Key | null;
+}
+```
+### Using `UpdateQuestionType`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateQuestionType, UpdateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `UpdateQuestionType` mutation requires an argument of type `UpdateQuestionTypeVariables`:
+const updateQuestionTypeVars: UpdateQuestionTypeVariables = {
+  questionTypeId: ..., 
+  code: ..., // optional
+  name: ..., // optional
+  description: ..., // optional
+  minOptions: ..., // optional
+  maxOptions: ..., // optional
+  correctOptions: ..., // optional
+};
+
+// Call the `updateQuestionType()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateQuestionType(updateQuestionTypeVars);
+// Variables can be defined inline as well.
+const { data } = await updateQuestionType({ questionTypeId: ..., code: ..., name: ..., description: ..., minOptions: ..., maxOptions: ..., correctOptions: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateQuestionType(dataConnect, updateQuestionTypeVars);
+
+console.log(data.questionType_update);
+
+// Or, you can use the `Promise` API.
+updateQuestionType(updateQuestionTypeVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_update);
+});
+```
+
+### Using `UpdateQuestionType`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateQuestionTypeRef, UpdateQuestionTypeVariables } from '@dataconnect/generated';
+
+// The `UpdateQuestionType` mutation requires an argument of type `UpdateQuestionTypeVariables`:
+const updateQuestionTypeVars: UpdateQuestionTypeVariables = {
+  questionTypeId: ..., 
+  code: ..., // optional
+  name: ..., // optional
+  description: ..., // optional
+  minOptions: ..., // optional
+  maxOptions: ..., // optional
+  correctOptions: ..., // optional
+};
+
+// Call the `updateQuestionTypeRef()` function to get a reference to the mutation.
+const ref = updateQuestionTypeRef(updateQuestionTypeVars);
+// Variables can be defined inline as well.
+const ref = updateQuestionTypeRef({ questionTypeId: ..., code: ..., name: ..., description: ..., minOptions: ..., maxOptions: ..., correctOptions: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateQuestionTypeRef(dataConnect, updateQuestionTypeVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionType_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionType_update);
 });
 ```
 

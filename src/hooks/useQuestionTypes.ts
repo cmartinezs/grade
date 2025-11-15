@@ -16,7 +16,7 @@ interface UseQuestionTypesResult {
   loading: boolean;
   error: string | null;
   creating: boolean;
-  create: (code: string, name: string, description?: string) => Promise<QuestionType>;
+  create: (code: string, name: string, description?: string, minOptions?: number, maxOptions?: number, correctOptions?: number) => Promise<QuestionType>;
   refetch: () => Promise<void>;
 }
 
@@ -47,11 +47,11 @@ export const useQuestionTypes = (): UseQuestionTypesResult => {
 
   // Crear nuevo tipo de pregunta
   const create = useCallback(
-    async (code: string, name: string, description?: string): Promise<QuestionType> => {
+    async (code: string, name: string, description?: string, minOptions?: number, maxOptions?: number, correctOptions?: number): Promise<QuestionType> => {
       try {
         setCreating(true);
         setError(null);
-        const newType = await createNewQuestionType(code, name, description);
+        const newType = await createNewQuestionType(code, name, description, minOptions, maxOptions, correctOptions);
         setQuestionTypes((prev) => [...prev, newType]);
         return newType;
       } catch (err) {

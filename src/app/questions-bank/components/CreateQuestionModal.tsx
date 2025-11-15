@@ -74,7 +74,7 @@ export default function CreateQuestionModal({
 
   // Update options when question type changes
   useEffect(() => {
-    const rules = QUESTION_TYPE_RULES[questionType];
+    const rules = QUESTION_TYPE_RULES[questionType] || QUESTION_TYPE_RULES.seleccion_unica;
     
     if (questionType === 'desarrollo') {
       setOptions([]);

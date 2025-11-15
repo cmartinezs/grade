@@ -38,6 +38,9 @@ export interface QuestionType {
   code: string;
   name: string;
   description?: string;
+  minOptions: number;
+  maxOptions: number;
+  correctOptions: number;
   active?: boolean;
 }
 
@@ -122,7 +125,10 @@ export async function fetchDifficultyById(
 export async function createNewQuestionType(
   code: string,
   name: string,
-  description?: string
+  description?: string,
+  minOptions?: number,
+  maxOptions?: number,
+  correctOptions?: number
 ): Promise<QuestionType> {
   try {
     const variables: CreateQuestionTypeVariables = {
@@ -130,6 +136,9 @@ export async function createNewQuestionType(
       code,
       name,
       description: description || null,
+      minOptions: minOptions ?? 2,
+      maxOptions: maxOptions ?? 10,
+      correctOptions: correctOptions ?? 1,
       active: true,
     };
     const result = await dcCreateQuestionType(variables);
@@ -143,6 +152,9 @@ export async function createNewQuestionType(
       code,
       name,
       description,
+      minOptions: minOptions ?? 2,
+      maxOptions: maxOptions ?? 10,
+      correctOptions: correctOptions ?? 1,
       active: true,
     };
   } catch (error) {
@@ -195,6 +207,9 @@ export async function createMultipleQuestionTypes(
     code: string;
     name: string;
     description?: string;
+    minOptions?: number;
+    maxOptions?: number;
+    correctOptions?: number;
     active?: boolean;
   }>,
   onProgress?: (progress: { currentIndex: number; total: number; itemName: string }) => void
@@ -208,7 +223,10 @@ export async function createMultipleQuestionTypes(
       const newType = await createNewQuestionType(
         typeData.code,
         typeData.name,
-        typeData.description
+        typeData.description,
+        typeData.minOptions,
+        typeData.maxOptions,
+        typeData.correctOptions
       );
       created.push(newType);
 

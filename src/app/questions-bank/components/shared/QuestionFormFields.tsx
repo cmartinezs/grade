@@ -27,6 +27,8 @@ import {
 import { QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { useTaxonomies } from '@/hooks/useTaxonomies';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { useDifficulties } from '@/hooks/useDifficulties';
 import type { Subject, Unit, Topic } from '@/types/curriculumHierarchy';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 
@@ -101,6 +103,36 @@ export default function QuestionFormFields({
   // Load Taxonomies data from Data Connect
   const { taxonomies } = useTaxonomies();
   
+  // Load Question Types from Data Connect
+  const { questionTypes } = useQuestionTypes();
+  
+  // Load Difficulties from Data Connect
+  const { difficulties } = useDifficulties();
+  
+  // Helper function to validate and convert question type code to QuestionType
+  const validateQuestionType = (code: string | number): QuestionType => {
+    const codeStr = String(code);
+    const validTypes: QuestionType[] = ['verdadero_falso', 'seleccion_unica', 'seleccion_multiple', 'desarrollo'];
+    
+    if (validTypes.includes(codeStr as QuestionType)) {
+      return codeStr as QuestionType;
+    }
+    
+    // If code doesn't match, try to find the question type by matching with the fetched types
+    const matchingType = questionTypes.find(qt => qt.code === codeStr);
+    if (matchingType) {
+      // Try to extract the type from the name if possible
+      const name = matchingType.name.toLowerCase();
+      if (name.includes('verdadero') || name.includes('falso')) return 'verdadero_falso';
+      if (name.includes('múltiple')) return 'seleccion_multiple';
+      if (name.includes('selección') || name.includes('seleccion')) return 'seleccion_unica';
+      if (name.includes('desarrollo') || name.includes('abierta')) return 'desarrollo';
+    }
+    
+    // Default fallback
+    return 'seleccion_unica';
+  };
+  
   // Filter active items
   const subjects: Subject[] = allSubjects.filter((s) => s.active && !s.deleted_at);
   const units: Unit[] = selectedSubject
@@ -113,12 +145,8 @@ export default function QuestionFormFields({
   // Filter active taxonomies
   const activeTaxonomies = taxonomies.filter((t) => t.active);
 
-  // Get difficulty levels from store
-  const difficultyLevels = [
-    { difficulty_id: 'bajo' as DifficultyLevel, name: 'Bajo', description: 'Nivel de dificultad básico', active: true },
-    { difficulty_id: 'medio' as DifficultyLevel, name: 'Medio', description: 'Nivel de dificultad intermedio', active: true },
-    { difficulty_id: 'alto' as DifficultyLevel, name: 'Alto', description: 'Nivel de dificultad avanzado', active: true },
-  ];
+  // Filter active difficulties from Data Connect
+  const activeDifficulties = difficulties.filter(d => d.active);
 
   // Check for missing CurriculumHierarchy levels
   const selectedSubjectData = subjects.find(s => s.subject_id === selectedSubject);
@@ -126,7 +154,8 @@ export default function QuestionFormFields({
   const hasNoUnits = selectedSubject && units.length === 0;
   const hasNoTopics = selectedUnit && topics.length === 0;
 
-  const rules = QUESTION_TYPE_RULES[questionType];
+  // Get rules for the current question type
+  const rules = QUESTION_TYPE_RULES[questionType] || QUESTION_TYPE_RULES.seleccion_unica;
 
   return (
     <>
@@ -241,71 +270,62 @@ export default function QuestionFormFields({
       </div>
 
       {/* 3. Question Type */}
-      <Form.Group className="mb-3">
-        <Form.Label>
-          Tipo de Pregunta <span style={{ color: 'red' }}>*</span>
-        </Form.Label>
-        <Form.Select
+      <div className="mb-4">
+        <h6 className="mb-3 fw-bold">Tipo de Pregunta *</h6>
+        <AutocompleteSelect
+          label="Tipo"
           value={questionType}
-          onChange={(e) => onQuestionTypeChange(e.target.value as QuestionType)}
-          isInvalid={getErrorsForField('type').length > 0}
+          onChange={(value) => onQuestionTypeChange(validateQuestionType(value))}
+          options={questionTypes.map(qt => ({
+            id: qt.code,
+            name: qt.name,
+            description: qt.description
+          }))}
+          placeholder="Busca un tipo de pregunta..."
           disabled={disabled}
-        >
-          {Object.values(QUESTION_TYPE_RULES).map((rule) => (
-            <option key={rule.type} value={rule.type}>
-              {rule.name}
-            </option>
-          ))}
-        </Form.Select>
-        <Form.Text className="text-muted">{rules.description}</Form.Text>
-        {getErrorsForField('type').map((err, i) => (
-          <Form.Control.Feedback key={i} type="invalid" style={{ display: 'block' }}>
-            {err.message}
-          </Form.Control.Feedback>
-        ))}
-      </Form.Group>
+          isInvalid={getErrorsForField('type').length > 0}
+          errorMessage={getErrorsForField('type')[0]?.message}
+          required
+        />
+      </div>
 
       {/* 4. Difficulty */}
-      <Form.Group className="mb-3">
-        <Form.Label>
-          Dificultad <span style={{ color: 'red' }}>*</span>
-        </Form.Label>
+      <div className="mb-4">
+        <h6 className="mb-3 fw-bold">Dificultad *</h6>
         {showDifficultyAsRadio ? (
           <div className="d-flex gap-2">
-            {difficultyLevels.map((level) => (
+            {activeDifficulties.map((level) => (
               <Form.Check
-                key={level.difficulty_id}
+                key={level.difficultyId}
                 type="radio"
-                id={`difficulty-${level.difficulty_id}`}
-                label={level.name}
+                id={`difficulty-${level.difficultyId}`}
+                label={level.level}
                 name="difficulty"
-                value={level.difficulty_id}
-                checked={difficulty === level.difficulty_id}
+                value={level.difficultyId}
+                checked={difficulty === level.difficultyId}
                 onChange={(e) => onDifficultyChange(e.target.value as DifficultyLevel)}
                 disabled={disabled}
               />
             ))}
           </div>
         ) : (
-          <Form.Select
+          <AutocompleteSelect
+            label="Nivel"
             value={difficulty}
-            onChange={(e) => onDifficultyChange(e.target.value as DifficultyLevel)}
-            isInvalid={getErrorsForField('difficulty_fk').length > 0}
+            onChange={(value) => onDifficultyChange(value as DifficultyLevel)}
+            options={activeDifficulties.map(d => ({
+              id: d.difficultyId,
+              name: d.level,
+              description: d.description
+            }))}
+            placeholder="Busca un nivel de dificultad..."
             disabled={disabled}
-          >
-            {difficultyLevels.map((level) => (
-              <option key={level.difficulty_id} value={level.difficulty_id}>
-                {level.name}
-              </option>
-            ))}
-          </Form.Select>
+            isInvalid={getErrorsForField('difficulty_fk').length > 0}
+            errorMessage={getErrorsForField('difficulty_fk')[0]?.message}
+            required
+          />
         )}
-        {getErrorsForField('difficulty_fk').map((err, i) => (
-          <div key={i} className="text-danger small mt-1">
-            {err.message}
-          </div>
-        ))}
-      </Form.Group>
+      </div>
 
       {/* 5. Question Statement */}
       <Form.Group className="mb-3">

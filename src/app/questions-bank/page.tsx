@@ -9,10 +9,13 @@ import EditQuestionModal from './components/EditQuestionModal';
 import CloneQuestionModal from './components/CloneQuestionModal';
 import RetireQuestionModal from './components/RetireQuestionModal';
 import ReactivateQuestionModal from './components/ReactivateQuestionModal';
+import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import type { QuestionType, DifficultyLevel } from '@/types/question';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { useQuestions } from '@/hooks/useQuestions';
+import { useDifficulties } from '@/hooks/useDifficulties';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 
 export default function QuestionsBankPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -34,6 +37,12 @@ export default function QuestionsBankPage() {
   // Load subjects from Data Connect
   const { subjects: allSubjects } = useCurriculumHierarchy();
   const subjects = allSubjects.filter((s) => s.active && !s.deleted_at);
+
+  // Load difficulties from Data Connect
+  const { difficulties } = useDifficulties();
+  
+  // Load question types from Data Connect
+  const { questionTypes } = useQuestionTypes();
 
   // Load questions with current filters from Data Connect (with fallback to local store)
   const { questions, refetch } = useQuestions({
@@ -179,52 +188,52 @@ export default function QuestionsBankPage() {
                 </Form.Group>
               </Col>
               <Col md={2}>
-                <Form.Group>
-                  <Form.Label>Tipo</Form.Label>
-                  <Form.Select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value as QuestionType | '')}
-                  >
-                    <option value="">Todos</option>
-                    {Object.values(QUESTION_TYPE_RULES).map((rule) => (
-                      <option key={rule.type} value={rule.type}>
-                        {rule.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+                <AutocompleteSelect
+                  label="Tipo"
+                  value={filterType}
+                  onChange={(value) => setFilterType(value as QuestionType | '')}
+                  options={[
+                    { id: '', name: 'Todos' },
+                    ...questionTypes.map(qt => ({
+                      id: qt.code,
+                      name: qt.name,
+                      description: qt.description
+                    }))
+                  ]}
+                  placeholder="Busca un tipo de pregunta..."
+                />
               </Col>
               <Col md={2}>
-                <Form.Group>
-                  <Form.Label>Dificultad</Form.Label>
-                  <Form.Select
-                    value={filterDifficulty}
-                    onChange={(e) => setFilterDifficulty(e.target.value as DifficultyLevel | '')}
-                  >
-                    <option value="">Todas</option>
-                    {difficultyLevels.map((level) => (
-                      <option key={level.difficulty_id} value={level.difficulty_id}>
-                        {level.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+                <AutocompleteSelect
+                  label="Dificultad"
+                  value={filterDifficulty}
+                  onChange={(value) => setFilterDifficulty(value as DifficultyLevel | '')}
+                  options={[
+                    { id: '', name: 'Todas' },
+                    ...difficulties.map(d => ({
+                      id: d.difficultyId,
+                      name: d.level,
+                      description: d.description
+                    }))
+                  ]}
+                  placeholder="Busca un nivel de dificultad..."
+                />
               </Col>
               <Col md={3}>
-                <Form.Group>
-                  <Form.Label>Asignatura</Form.Label>
-                  <Form.Select
-                    value={filterSubject}
-                    onChange={(e) => setFilterSubject(e.target.value)}
-                  >
-                    <option value="">Todas</option>
-                    {subjects.map((subject) => (
-                      <option key={subject.subject_id} value={subject.subject_id}>
-                        {subject.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+                <AutocompleteSelect
+                  label="Asignatura"
+                  value={filterSubject}
+                  onChange={(value) => setFilterSubject(String(value))}
+                  options={[
+                    { id: '', name: 'Todas' },
+                    ...subjects.map(s => ({
+                      id: s.subject_id,
+                      name: s.name,
+                      description: s.code
+                    }))
+                  ]}
+                  placeholder="Busca una asignatura..."
+                />
               </Col>
             </Row>
             <Row className="mt-2">

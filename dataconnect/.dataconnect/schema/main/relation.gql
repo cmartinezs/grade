@@ -540,6 +540,15 @@ extend type Question {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Question.active", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Question` table where the `allowPartialScore` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  allowPartialScore_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Question.allowPartialScore", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Question` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   createdAt_count(
@@ -877,6 +886,15 @@ extend type QuestionType {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "QuestionType.code", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `QuestionType` table where the `correctOptions` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  correctOptions_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionType.correctOptions", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `QuestionType` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   description_count(
@@ -885,6 +903,24 @@ extend type QuestionType {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "QuestionType.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `QuestionType` table where the `maxOptions` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  maxOptions_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionType.maxOptions", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `QuestionType` table where the `minOptions` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  minOptions_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "QuestionType.minOptions", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `QuestionType` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
@@ -903,6 +939,84 @@ extend type QuestionType {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "QuestionType.questionTypeId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `correctOptions` field in the `QuestionType` table.
+  """
+  correctOptions_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "QuestionType.correctOptions", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `maxOptions` field in the `QuestionType` table.
+  """
+  maxOptions_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "QuestionType.maxOptions", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `minOptions` field in the `QuestionType` table.
+  """
+  minOptions_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "QuestionType.minOptions", purpose: QUERY_SUM)
+  """
+  ✨ Average the `correctOptions` field in the `QuestionType` table.
+  """
+  correctOptions_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "QuestionType.correctOptions", purpose: QUERY_AVG)
+  """
+  ✨ Average the `maxOptions` field in the `QuestionType` table.
+  """
+  maxOptions_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "QuestionType.maxOptions", purpose: QUERY_AVG)
+  """
+  ✨ Average the `minOptions` field in the `QuestionType` table.
+  """
+  minOptions_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "QuestionType.minOptions", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `correctOptions` field in the `QuestionType` table.
+  """
+  correctOptions_min: Int @fdc_generated(from: "QuestionType.correctOptions", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `maxOptions` field in the `QuestionType` table.
+  """
+  maxOptions_min: Int @fdc_generated(from: "QuestionType.maxOptions", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `minOptions` field in the `QuestionType` table.
+  """
+  minOptions_min: Int @fdc_generated(from: "QuestionType.minOptions", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `correctOptions` field in the `QuestionType` table.
+  """
+  correctOptions_max: Int @fdc_generated(from: "QuestionType.correctOptions", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `maxOptions` field in the `QuestionType` table.
+  """
+  maxOptions_max: Int @fdc_generated(from: "QuestionType.maxOptions", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `minOptions` field in the `QuestionType` table.
+  """
+  minOptions_max: Int @fdc_generated(from: "QuestionType.minOptions", purpose: QUERY_MAX)
   """
   A generated field that is used for caching results in SDKs.
   """

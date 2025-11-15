@@ -6,347 +6,6 @@ export const connectorConfig = {
   location: 'southamerica-west1'
 };
 
-export const getUserByEmailRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetUserByEmail', inputVars);
-}
-getUserByEmailRef.operationName = 'GetUserByEmail';
-
-export function getUserByEmail(dcOrVars, vars) {
-  return executeQuery(getUserByEmailRef(dcOrVars, vars));
-}
-
-export const listSubjectsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListSubjects');
-}
-listSubjectsRef.operationName = 'ListSubjects';
-
-export function listSubjects(dc) {
-  return executeQuery(listSubjectsRef(dc));
-}
-
-export const getSubjectRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetSubject', inputVars);
-}
-getSubjectRef.operationName = 'GetSubject';
-
-export function getSubject(dcOrVars, vars) {
-  return executeQuery(getSubjectRef(dcOrVars, vars));
-}
-
-export const listUnitsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListUnits');
-}
-listUnitsRef.operationName = 'ListUnits';
-
-export function listUnits(dc) {
-  return executeQuery(listUnitsRef(dc));
-}
-
-export const getUnitRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetUnit', inputVars);
-}
-getUnitRef.operationName = 'GetUnit';
-
-export function getUnit(dcOrVars, vars) {
-  return executeQuery(getUnitRef(dcOrVars, vars));
-}
-
-export const listTopicsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListTopics');
-}
-listTopicsRef.operationName = 'ListTopics';
-
-export function listTopics(dc) {
-  return executeQuery(listTopicsRef(dc));
-}
-
-export const getTopicRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetTopic', inputVars);
-}
-getTopicRef.operationName = 'GetTopic';
-
-export function getTopic(dcOrVars, vars) {
-  return executeQuery(getTopicRef(dcOrVars, vars));
-}
-
-export const listLevelCategoriesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListLevelCategories');
-}
-listLevelCategoriesRef.operationName = 'ListLevelCategories';
-
-export function listLevelCategories(dc) {
-  return executeQuery(listLevelCategoriesRef(dc));
-}
-
-export const getLevelCategoryRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetLevelCategory', inputVars);
-}
-getLevelCategoryRef.operationName = 'GetLevelCategory';
-
-export function getLevelCategory(dcOrVars, vars) {
-  return executeQuery(getLevelCategoryRef(dcOrVars, vars));
-}
-
-export const listEducationalLevelsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListEducationalLevels');
-}
-listEducationalLevelsRef.operationName = 'ListEducationalLevels';
-
-export function listEducationalLevels(dc) {
-  return executeQuery(listEducationalLevelsRef(dc));
-}
-
-export const getEducationalLevelRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetEducationalLevel', inputVars);
-}
-getEducationalLevelRef.operationName = 'GetEducationalLevel';
-
-export function getEducationalLevel(dcOrVars, vars) {
-  return executeQuery(getEducationalLevelRef(dcOrVars, vars));
-}
-
-export const getLevelsByCategoryRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetLevelsByCategory', inputVars);
-}
-getLevelsByCategoryRef.operationName = 'GetLevelsByCategory';
-
-export function getLevelsByCategory(dcOrVars, vars) {
-  return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
-}
-
-export const listCoursesRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListCourses', inputVars);
-}
-listCoursesRef.operationName = 'ListCourses';
-
-export function listCourses(dcOrVars, vars) {
-  return executeQuery(listCoursesRef(dcOrVars, vars));
-}
-
-export const getCourseRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetCourse', inputVars);
-}
-getCourseRef.operationName = 'GetCourse';
-
-export function getCourse(dcOrVars, vars) {
-  return executeQuery(getCourseRef(dcOrVars, vars));
-}
-
-export const getCoursesByUserRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetCoursesByUser', inputVars);
-}
-getCoursesByUserRef.operationName = 'GetCoursesByUser';
-
-export function getCoursesByUser(dcOrVars, vars) {
-  return executeQuery(getCoursesByUserRef(dcOrVars, vars));
-}
-
-export const getCoursesByLevelRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetCoursesByLevel', inputVars);
-}
-getCoursesByLevelRef.operationName = 'GetCoursesByLevel';
-
-export function getCoursesByLevel(dcOrVars, vars) {
-  return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
-}
-
-export const listDifficultiesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListDifficulties');
-}
-listDifficultiesRef.operationName = 'ListDifficulties';
-
-export function listDifficulties(dc) {
-  return executeQuery(listDifficultiesRef(dc));
-}
-
-export const getDifficultyRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetDifficulty', inputVars);
-}
-getDifficultyRef.operationName = 'GetDifficulty';
-
-export function getDifficulty(dcOrVars, vars) {
-  return executeQuery(getDifficultyRef(dcOrVars, vars));
-}
-
-export const listQuestionTypesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListQuestionTypes');
-}
-listQuestionTypesRef.operationName = 'ListQuestionTypes';
-
-export function listQuestionTypes(dc) {
-  return executeQuery(listQuestionTypesRef(dc));
-}
-
-export const getQuestionTypeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetQuestionType', inputVars);
-}
-getQuestionTypeRef.operationName = 'GetQuestionType';
-
-export function getQuestionType(dcOrVars, vars) {
-  return executeQuery(getQuestionTypeRef(dcOrVars, vars));
-}
-
-export const getQuestionTypeByCodeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetQuestionTypeByCode', inputVars);
-}
-getQuestionTypeByCodeRef.operationName = 'GetQuestionTypeByCode';
-
-export function getQuestionTypeByCode(dcOrVars, vars) {
-  return executeQuery(getQuestionTypeByCodeRef(dcOrVars, vars));
-}
-
-export const listTaxonomiesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListTaxonomies');
-}
-listTaxonomiesRef.operationName = 'ListTaxonomies';
-
-export function listTaxonomies(dc) {
-  return executeQuery(listTaxonomiesRef(dc));
-}
-
-export const getTaxonomyRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetTaxonomy', inputVars);
-}
-getTaxonomyRef.operationName = 'GetTaxonomy';
-
-export function getTaxonomy(dcOrVars, vars) {
-  return executeQuery(getTaxonomyRef(dcOrVars, vars));
-}
-
-export const getTaxonomyByCodeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetTaxonomyByCode', inputVars);
-}
-getTaxonomyByCodeRef.operationName = 'GetTaxonomyByCode';
-
-export function getTaxonomyByCode(dcOrVars, vars) {
-  return executeQuery(getTaxonomyByCodeRef(dcOrVars, vars));
-}
-
-export const listTaxonomiesByLevelRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListTaxonomiesByLevel');
-}
-listTaxonomiesByLevelRef.operationName = 'ListTaxonomiesByLevel';
-
-export function listTaxonomiesByLevel(dc) {
-  return executeQuery(listTaxonomiesByLevelRef(dc));
-}
-
-export const listQuestionsByUserRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListQuestionsByUser', inputVars);
-}
-listQuestionsByUserRef.operationName = 'ListQuestionsByUser';
-
-export function listQuestionsByUser(dcOrVars, vars) {
-  return executeQuery(listQuestionsByUserRef(dcOrVars, vars));
-}
-
-export const getQuestionRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetQuestion', inputVars);
-}
-getQuestionRef.operationName = 'GetQuestion';
-
-export function getQuestion(dcOrVars, vars) {
-  return executeQuery(getQuestionRef(dcOrVars, vars));
-}
-
-export const listPublicQuestionsRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListPublicQuestions');
-}
-listPublicQuestionsRef.operationName = 'ListPublicQuestions';
-
-export function listPublicQuestions(dc) {
-  return executeQuery(listPublicQuestionsRef(dc));
-}
-
-export const listPublicQuestionsByDifficultyRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListPublicQuestionsByDifficulty', inputVars);
-}
-listPublicQuestionsByDifficultyRef.operationName = 'ListPublicQuestionsByDifficulty';
-
-export function listPublicQuestionsByDifficulty(dcOrVars, vars) {
-  return executeQuery(listPublicQuestionsByDifficultyRef(dcOrVars, vars));
-}
-
-export const listPublicQuestionsByTypeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListPublicQuestionsByType', inputVars);
-}
-listPublicQuestionsByTypeRef.operationName = 'ListPublicQuestionsByType';
-
-export function listPublicQuestionsByType(dcOrVars, vars) {
-  return executeQuery(listPublicQuestionsByTypeRef(dcOrVars, vars));
-}
-
-export const getQuestionOptionsRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetQuestionOptions', inputVars);
-}
-getQuestionOptionsRef.operationName = 'GetQuestionOptions';
-
-export function getQuestionOptions(dcOrVars, vars) {
-  return executeQuery(getQuestionOptionsRef(dcOrVars, vars));
-}
-
 export const createUserRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -732,6 +391,17 @@ export function createQuestionType(dcOrVars, vars) {
   return executeMutation(createQuestionTypeRef(dcOrVars, vars));
 }
 
+export const updateQuestionTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuestionType', inputVars);
+}
+updateQuestionTypeRef.operationName = 'UpdateQuestionType';
+
+export function updateQuestionType(dcOrVars, vars) {
+  return executeMutation(updateQuestionTypeRef(dcOrVars, vars));
+}
+
 export const deactivateQuestionTypeRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -829,5 +499,346 @@ reactivateTaxonomyRef.operationName = 'ReactivateTaxonomy';
 
 export function reactivateTaxonomy(dcOrVars, vars) {
   return executeMutation(reactivateTaxonomyRef(dcOrVars, vars));
+}
+
+export const getUserByEmailRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetUserByEmail', inputVars);
+}
+getUserByEmailRef.operationName = 'GetUserByEmail';
+
+export function getUserByEmail(dcOrVars, vars) {
+  return executeQuery(getUserByEmailRef(dcOrVars, vars));
+}
+
+export const listSubjectsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListSubjects');
+}
+listSubjectsRef.operationName = 'ListSubjects';
+
+export function listSubjects(dc) {
+  return executeQuery(listSubjectsRef(dc));
+}
+
+export const getSubjectRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetSubject', inputVars);
+}
+getSubjectRef.operationName = 'GetSubject';
+
+export function getSubject(dcOrVars, vars) {
+  return executeQuery(getSubjectRef(dcOrVars, vars));
+}
+
+export const listUnitsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListUnits');
+}
+listUnitsRef.operationName = 'ListUnits';
+
+export function listUnits(dc) {
+  return executeQuery(listUnitsRef(dc));
+}
+
+export const getUnitRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetUnit', inputVars);
+}
+getUnitRef.operationName = 'GetUnit';
+
+export function getUnit(dcOrVars, vars) {
+  return executeQuery(getUnitRef(dcOrVars, vars));
+}
+
+export const listTopicsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListTopics');
+}
+listTopicsRef.operationName = 'ListTopics';
+
+export function listTopics(dc) {
+  return executeQuery(listTopicsRef(dc));
+}
+
+export const getTopicRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetTopic', inputVars);
+}
+getTopicRef.operationName = 'GetTopic';
+
+export function getTopic(dcOrVars, vars) {
+  return executeQuery(getTopicRef(dcOrVars, vars));
+}
+
+export const listLevelCategoriesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListLevelCategories');
+}
+listLevelCategoriesRef.operationName = 'ListLevelCategories';
+
+export function listLevelCategories(dc) {
+  return executeQuery(listLevelCategoriesRef(dc));
+}
+
+export const getLevelCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetLevelCategory', inputVars);
+}
+getLevelCategoryRef.operationName = 'GetLevelCategory';
+
+export function getLevelCategory(dcOrVars, vars) {
+  return executeQuery(getLevelCategoryRef(dcOrVars, vars));
+}
+
+export const listEducationalLevelsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListEducationalLevels');
+}
+listEducationalLevelsRef.operationName = 'ListEducationalLevels';
+
+export function listEducationalLevels(dc) {
+  return executeQuery(listEducationalLevelsRef(dc));
+}
+
+export const getEducationalLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetEducationalLevel', inputVars);
+}
+getEducationalLevelRef.operationName = 'GetEducationalLevel';
+
+export function getEducationalLevel(dcOrVars, vars) {
+  return executeQuery(getEducationalLevelRef(dcOrVars, vars));
+}
+
+export const getLevelsByCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetLevelsByCategory', inputVars);
+}
+getLevelsByCategoryRef.operationName = 'GetLevelsByCategory';
+
+export function getLevelsByCategory(dcOrVars, vars) {
+  return executeQuery(getLevelsByCategoryRef(dcOrVars, vars));
+}
+
+export const listCoursesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListCourses', inputVars);
+}
+listCoursesRef.operationName = 'ListCourses';
+
+export function listCourses(dcOrVars, vars) {
+  return executeQuery(listCoursesRef(dcOrVars, vars));
+}
+
+export const getCourseRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourse', inputVars);
+}
+getCourseRef.operationName = 'GetCourse';
+
+export function getCourse(dcOrVars, vars) {
+  return executeQuery(getCourseRef(dcOrVars, vars));
+}
+
+export const getCoursesByUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByUser', inputVars);
+}
+getCoursesByUserRef.operationName = 'GetCoursesByUser';
+
+export function getCoursesByUser(dcOrVars, vars) {
+  return executeQuery(getCoursesByUserRef(dcOrVars, vars));
+}
+
+export const getCoursesByLevelRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCoursesByLevel', inputVars);
+}
+getCoursesByLevelRef.operationName = 'GetCoursesByLevel';
+
+export function getCoursesByLevel(dcOrVars, vars) {
+  return executeQuery(getCoursesByLevelRef(dcOrVars, vars));
+}
+
+export const listDifficultiesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListDifficulties');
+}
+listDifficultiesRef.operationName = 'ListDifficulties';
+
+export function listDifficulties(dc) {
+  return executeQuery(listDifficultiesRef(dc));
+}
+
+export const getDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetDifficulty', inputVars);
+}
+getDifficultyRef.operationName = 'GetDifficulty';
+
+export function getDifficulty(dcOrVars, vars) {
+  return executeQuery(getDifficultyRef(dcOrVars, vars));
+}
+
+export const listQuestionTypesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuestionTypes');
+}
+listQuestionTypesRef.operationName = 'ListQuestionTypes';
+
+export function listQuestionTypes(dc) {
+  return executeQuery(listQuestionTypesRef(dc));
+}
+
+export const getQuestionTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionType', inputVars);
+}
+getQuestionTypeRef.operationName = 'GetQuestionType';
+
+export function getQuestionType(dcOrVars, vars) {
+  return executeQuery(getQuestionTypeRef(dcOrVars, vars));
+}
+
+export const getQuestionTypeByCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionTypeByCode', inputVars);
+}
+getQuestionTypeByCodeRef.operationName = 'GetQuestionTypeByCode';
+
+export function getQuestionTypeByCode(dcOrVars, vars) {
+  return executeQuery(getQuestionTypeByCodeRef(dcOrVars, vars));
+}
+
+export const listTaxonomiesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListTaxonomies');
+}
+listTaxonomiesRef.operationName = 'ListTaxonomies';
+
+export function listTaxonomies(dc) {
+  return executeQuery(listTaxonomiesRef(dc));
+}
+
+export const getTaxonomyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetTaxonomy', inputVars);
+}
+getTaxonomyRef.operationName = 'GetTaxonomy';
+
+export function getTaxonomy(dcOrVars, vars) {
+  return executeQuery(getTaxonomyRef(dcOrVars, vars));
+}
+
+export const getTaxonomyByCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetTaxonomyByCode', inputVars);
+}
+getTaxonomyByCodeRef.operationName = 'GetTaxonomyByCode';
+
+export function getTaxonomyByCode(dcOrVars, vars) {
+  return executeQuery(getTaxonomyByCodeRef(dcOrVars, vars));
+}
+
+export const listTaxonomiesByLevelRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListTaxonomiesByLevel');
+}
+listTaxonomiesByLevelRef.operationName = 'ListTaxonomiesByLevel';
+
+export function listTaxonomiesByLevel(dc) {
+  return executeQuery(listTaxonomiesByLevelRef(dc));
+}
+
+export const listQuestionsByUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuestionsByUser', inputVars);
+}
+listQuestionsByUserRef.operationName = 'ListQuestionsByUser';
+
+export function listQuestionsByUser(dcOrVars, vars) {
+  return executeQuery(listQuestionsByUserRef(dcOrVars, vars));
+}
+
+export const getQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestion', inputVars);
+}
+getQuestionRef.operationName = 'GetQuestion';
+
+export function getQuestion(dcOrVars, vars) {
+  return executeQuery(getQuestionRef(dcOrVars, vars));
+}
+
+export const listPublicQuestionsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListPublicQuestions');
+}
+listPublicQuestionsRef.operationName = 'ListPublicQuestions';
+
+export function listPublicQuestions(dc) {
+  return executeQuery(listPublicQuestionsRef(dc));
+}
+
+export const listPublicQuestionsByDifficultyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListPublicQuestionsByDifficulty', inputVars);
+}
+listPublicQuestionsByDifficultyRef.operationName = 'ListPublicQuestionsByDifficulty';
+
+export function listPublicQuestionsByDifficulty(dcOrVars, vars) {
+  return executeQuery(listPublicQuestionsByDifficultyRef(dcOrVars, vars));
+}
+
+export const listPublicQuestionsByTypeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListPublicQuestionsByType', inputVars);
+}
+listPublicQuestionsByTypeRef.operationName = 'ListPublicQuestionsByType';
+
+export function listPublicQuestionsByType(dcOrVars, vars) {
+  return executeQuery(listPublicQuestionsByTypeRef(dcOrVars, vars));
+}
+
+export const getQuestionOptionsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionOptions', inputVars);
+}
+getQuestionOptionsRef.operationName = 'GetQuestionOptions';
+
+export function getQuestionOptions(dcOrVars, vars) {
+  return executeQuery(getQuestionOptionsRef(dcOrVars, vars));
 }
 

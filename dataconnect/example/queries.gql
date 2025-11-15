@@ -298,6 +298,9 @@ query ListQuestionTypes @auth(level: USER) {
     code
     name
     description
+    minOptions
+    maxOptions
+    correctOptions
     active
   }
 }
@@ -309,6 +312,9 @@ query GetQuestionType($questionTypeId: UUID!) @auth(level: USER) {
     code
     name
     description
+    minOptions
+    maxOptions
+    correctOptions
     active
   }
 }
@@ -320,6 +326,9 @@ query GetQuestionTypeByCode($code: String!) @auth(level: USER) {
     code
     name
     description
+    minOptions
+    maxOptions
+    correctOptions
     active
   }
 }
@@ -398,6 +407,8 @@ query ListQuestionsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "fir
     questionTypeId
     taxonomyId
     userId
+    allowPartialScore
+    isPublic
     createdAt
     updatedAt
     updatedBy
@@ -419,6 +430,8 @@ query GetQuestion($questionId: UUID!, $userId: UUID!, $firebaseId: String!) @aut
     questionTypeId
     taxonomyId
     userId
+    allowPartialScore
+    isPublic
     createdAt
     updatedAt
     updatedBy
@@ -439,6 +452,7 @@ query ListPublicQuestions @auth(level: USER) {
     questionTypeId
     taxonomyId
     userId
+    allowPartialScore
     createdAt
     updatedAt
   }
@@ -456,6 +470,7 @@ query ListPublicQuestionsByDifficulty($difficultyId: UUID!) @auth(level: USER) {
     questionTypeId
     taxonomyId
     userId
+    allowPartialScore
     createdAt
     updatedAt
   }
@@ -473,6 +488,7 @@ query ListPublicQuestionsByType($questionTypeId: UUID!) @auth(level: USER) {
     questionTypeId
     taxonomyId
     userId
+    allowPartialScore
     createdAt
     updatedAt
   }
