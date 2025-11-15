@@ -6,10 +6,10 @@ import {
   createSubject,
   createUnit,
   createTopic,
-  getAllSubjects,
-  getAllUnits,
+  loadSubjectsAsync,
+  loadUnitsAsync,
 } from '@/lib/curriculumHierarchyStore';
-import { levelCategoryStore, educationalLevelStore } from '@/lib/levelStore';
+import { levelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
 import SubjectForm from './forms/SubjectForm';
 import UnitForm from './forms/UnitForm';
@@ -46,10 +46,37 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
   // Load subjects, units, categories and levels when modal opens
   useEffect(() => {
     if (show) {
-      setSubjects(getAllSubjects());
-      setUnits(getAllUnits());
-      setCategories(levelCategoryStore.getAllCategories());
-      setLevels(educationalLevelStore.getAllLevels());
+      // Load subjects and units asynchronously to ensure data is loaded before rendering
+      (async () => {
+        try {
+          const loadedSubjects = await loadSubjectsAsync();
+          setSubjects(loadedSubjects);
+          
+          const loadedUnits = await loadUnitsAsync();
+          setUnits(loadedUnits);
+        } catch (error) {
+          console.error('Error loading subjects/units:', error);
+          setSubjects([]);
+          setUnits([]);
+        }
+      })();
+      
+      // Load categories and levels asynchronously
+      (async () => {
+        try {
+          await levelStore.loadAll();
+          
+          const loadedCategories = levelStore.getAllCategories();
+          setCategories(loadedCategories);
+          
+          const loadedLevels = levelStore.getAllLevels();
+          setLevels(loadedLevels);
+        } catch (error) {
+          console.error('Error loading categories/levels:', error);
+          setCategories([]);
+          setLevels([]);
+        }
+      })();
     }
   }, [show]);
 

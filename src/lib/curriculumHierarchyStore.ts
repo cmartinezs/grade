@@ -68,17 +68,20 @@ export const getAllSubjects = (): Subject[] => {
       .then((data: any) => {
         // data es { subjects: [...], ... }, necesitamos extraer y transformar el array
         // Data Connect devuelve subjectId, pero nuestro tipo espera subject_id
+        // CRITICAL: ListSubjects query returns: subjectId, name, code, levelId, active, createdAt
+        // Se mapean los campos disponibles y se asignan valores por defecto para los que no existen
         const subjects = (data.subjects || []).map((s: any) => ({
           subject_id: s.subjectId,
           name: s.name,
           code: s.code,
+          level_fk: s.levelId || '', // CRITICAL FIX: levelId must be mapped to level_fk
           active: s.active,
           created_at: s.createdAt,
-          created_by: s.createdBy,
-          updated_at: s.updatedAt,
-          updated_by: s.updatedBy,
-          deleted_at: s.deletedAt,
-          deleted_by: s.deletedBy,
+          created_by: '', // Not provided by ListSubjects query
+          updated_at: s.createdAt, // Default to createdAt when not available
+          updated_by: '', // Not provided by ListSubjects query
+          deleted_at: null,
+          deleted_by: null,
         }));
         cache.subjects = subjects;
         cache.lastFetch.subjects = Date.now();
@@ -91,6 +94,61 @@ export const getAllSubjects = (): Subject[] => {
 
   // Retornar cache actual (puede estar vacío)
   return cache.subjects || [];
+};
+
+/**
+ * Obtener todas las asignaturas (asincrónico - espera a que se carguen)
+ */
+export const loadSubjectsAsync = async (): Promise<Subject[]> => {
+  // Si hay cache válido, devolverlo inmediatamente
+  if (cache.subjects && Date.now() - (cache.lastFetch.subjects || 0) < CACHE_DURATION) {
+    return cache.subjects as Subject[];
+  }
+
+  // Si ya se están cargando, esperar a que terminen
+  if (cache.loading.subjects) {
+    // Esperar hasta que termine la carga
+    return new Promise((resolve) => {
+      const checkInterval = setInterval(() => {
+        if (!cache.loading.subjects && cache.subjects) {
+          clearInterval(checkInterval);
+          resolve(cache.subjects as Subject[]);
+        }
+      }, 100);
+      // Timeout de 10 segundos
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve(cache.subjects || []);
+      }, 10000);
+    });
+  }
+
+  // Si no hay carga en progreso, iniciar la carga
+  cache.loading.subjects = true;
+  try {
+    const data: any = await fetchAllSubjects();
+    const subjects = (data.subjects || []).map((s: any) => ({
+      subject_id: s.subjectId,
+      name: s.name,
+      code: s.code,
+      level_fk: s.levelId || '',
+      active: s.active,
+      created_at: s.createdAt,
+      created_by: '',
+      updated_at: s.createdAt,
+      updated_by: '',
+      deleted_at: null,
+      deleted_by: null,
+    }));
+    cache.subjects = subjects;
+    cache.lastFetch.subjects = Date.now();
+    return subjects;
+  } catch (error) {
+    console.error('Error loading subjects:', error);
+    return [];
+  } finally {
+    cache.loading.subjects = false;
+  }
 };
 
 /**
@@ -299,18 +357,20 @@ export const getAllUnits = (): Unit[] => {
       .then((data: any) => {
         // data es { units: [...], ... }, necesitamos extraer y transformar el array
         // Data Connect devuelve unitId/subjectId, pero nuestro tipo espera unit_id/subject_fk
+        // CRITICAL: ListUnits query returns: unitId, name, subjectId, active, createdAt
+        // Se mapean los campos disponibles y se asignan valores por defecto para los que no existen
         const units = (data.units || []).map((u: any) => ({
           unit_id: u.unitId,
           name: u.name,
           subject_fk: u.subjectId,
-          description: u.description,
+          description: undefined, // Not provided by ListUnits query
           active: u.active,
           created_at: u.createdAt,
-          created_by: u.createdBy,
-          updated_at: u.updatedAt,
-          updated_by: u.updatedBy,
-          deleted_at: u.deletedAt,
-          deleted_by: u.deletedBy,
+          created_by: '', // Not provided by ListUnits query
+          updated_at: u.createdAt, // Default to createdAt when not available
+          updated_by: '', // Not provided by ListUnits query
+          deleted_at: null,
+          deleted_by: null,
         }));
         cache.units = units;
         cache.lastFetch.units = Date.now();
@@ -322,6 +382,61 @@ export const getAllUnits = (): Unit[] => {
   }
 
   return cache.units || [];
+};
+
+/**
+ * Obtener todas las unidades (asincrónico - espera a que se carguen)
+ */
+export const loadUnitsAsync = async (): Promise<Unit[]> => {
+  // Si hay cache válido, devolverlo inmediatamente
+  if (cache.units && Date.now() - (cache.lastFetch.units || 0) < CACHE_DURATION) {
+    return cache.units as Unit[];
+  }
+
+  // Si ya se están cargando, esperar a que terminen
+  if (cache.loading.units) {
+    // Esperar hasta que termine la carga
+    return new Promise((resolve) => {
+      const checkInterval = setInterval(() => {
+        if (!cache.loading.units && cache.units) {
+          clearInterval(checkInterval);
+          resolve(cache.units as Unit[]);
+        }
+      }, 100);
+      // Timeout de 10 segundos
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve(cache.units || []);
+      }, 10000);
+    });
+  }
+
+  // Si no hay carga en progreso, iniciar la carga
+  cache.loading.units = true;
+  try {
+    const data: any = await fetchAllUnits();
+    const units = (data.units || []).map((u: any) => ({
+      unit_id: u.unitId,
+      name: u.name,
+      subject_fk: u.subjectId,
+      description: undefined,
+      active: u.active,
+      created_at: u.createdAt,
+      created_by: '',
+      updated_at: u.createdAt,
+      updated_by: '',
+      deleted_at: null,
+      deleted_by: null,
+    }));
+    cache.units = units;
+    cache.lastFetch.units = Date.now();
+    return units;
+  } catch (error) {
+    console.error('Error loading units:', error);
+    return [];
+  } finally {
+    cache.loading.units = false;
+  }
 };
 
 /**
@@ -531,18 +646,20 @@ export const getAllTopics = (): Topic[] => {
       .then((data: any) => {
         // data es { topics: [...], ... }, necesitamos extraer y transformar el array
         // Data Connect devuelve topicId/unitId, pero nuestro tipo espera topic_id/unit_fk
+        // CRITICAL: ListTopics query returns: topicId, name, unitId, active, createdAt
+        // Se mapean los campos disponibles y se asignan valores por defecto para los que no existen
         const topics = (data.topics || []).map((t: any) => ({
           topic_id: t.topicId,
           name: t.name,
           unit_fk: t.unitId,
-          description: t.description,
+          description: undefined, // Not provided by ListTopics query
           active: t.active,
           created_at: t.createdAt,
-          created_by: t.createdBy,
-          updated_at: t.updatedAt,
-          updated_by: t.updatedBy,
-          deleted_at: t.deletedAt,
-          deleted_by: t.deletedBy,
+          created_by: '', // Not provided by ListTopics query
+          updated_at: t.createdAt, // Default to createdAt when not available
+          updated_by: '', // Not provided by ListTopics query
+          deleted_at: null,
+          deleted_by: null,
         }));
         cache.topics = topics;
         cache.lastFetch.topics = Date.now();
@@ -554,7 +671,62 @@ export const getAllTopics = (): Topic[] => {
   }
 
   return cache.topics || [];
-};;
+};
+
+/**
+ * Obtener todos los temas (asincrónico - espera a que se carguen)
+ */
+export const loadTopicsAsync = async (): Promise<Topic[]> => {
+  // Si hay cache válido, devolverlo inmediatamente
+  if (cache.topics && Date.now() - (cache.lastFetch.topics || 0) < CACHE_DURATION) {
+    return cache.topics as Topic[];
+  }
+
+  // Si ya se están cargando, esperar a que terminen
+  if (cache.loading.topics) {
+    // Esperar hasta que termine la carga
+    return new Promise((resolve) => {
+      const checkInterval = setInterval(() => {
+        if (!cache.loading.topics && cache.topics) {
+          clearInterval(checkInterval);
+          resolve(cache.topics as Topic[]);
+        }
+      }, 100);
+      // Timeout de 10 segundos
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve(cache.topics || []);
+      }, 10000);
+    });
+  }
+
+  // Si no hay carga en progreso, iniciar la carga
+  cache.loading.topics = true;
+  try {
+    const data: any = await fetchAllTopics();
+    const topics = (data.topics || []).map((t: any) => ({
+      topic_id: t.topicId,
+      name: t.name,
+      unit_fk: t.unitId,
+      description: undefined,
+      active: t.active,
+      created_at: t.createdAt,
+      created_by: '',
+      updated_at: t.createdAt,
+      updated_by: '',
+      deleted_at: null,
+      deleted_by: null,
+    }));
+    cache.topics = topics;
+    cache.lastFetch.topics = Date.now();
+    return topics;
+  } catch (error) {
+    console.error('Error loading topics:', error);
+    return [];
+  } finally {
+    cache.loading.topics = false;
+  }
+};
 
 /**
  * Obtener tema por ID (sincrónico)
