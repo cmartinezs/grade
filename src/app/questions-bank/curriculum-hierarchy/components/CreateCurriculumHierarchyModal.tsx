@@ -151,11 +151,11 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
 
   const handleSaveItem = async (userId: string): Promise<void> => {
     if (CurriculumHierarchyType === 'subject') {
-      await createSubject(formData.name, formData.code, formData.level_fk, userId);
+      await createSubject(formData.name.trim(), formData.code.trim(), formData.level_fk, userId);
     } else if (CurriculumHierarchyType === 'unit') {
-      await createUnit(formData.name, formData.subject_fk, userId, formData.description);
+      await createUnit(formData.name.trim(), formData.subject_fk, userId, formData.description.trim());
     } else {
-      await createTopic(formData.name, formData.unit_fk, userId);
+      await createTopic(formData.name.trim(), formData.unit_fk, userId);
     }
   };
 

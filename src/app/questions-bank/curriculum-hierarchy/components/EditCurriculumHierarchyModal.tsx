@@ -112,27 +112,30 @@ export default function EditCurriculumHierarchyModal({
     try {
       // Obtener userId del contexto de autenticación
       const userId = user?.id;
+      const firebaseId = user?.firebaseUid; // Usar email como firebaseId o user.uid si está disponible
       
-      if (!userId) {
+      if (!userId || !firebaseId) {
         setErrors([{ field: 'general', message: 'Usuario no autenticado' }]);
         return;
       }
 
       if (elementType === 'subject') {
-        await updateSubject(elementId, { name: formData.name, code: formData.code }, userId);
+        await updateSubject(elementId, { name: formData.name, code: formData.code }, userId, firebaseId);
       } else if (elementType === 'unit') {
         await updateUnit(
           elementId,
           { name: formData.name, subject_fk: formData.subject_fk, description: formData.description },
           userId,
-          formData.subject_fk
+          formData.subject_fk,
+          firebaseId
         );
       } else {
         await updateTopic(
           elementId,
           { name: formData.name, unit_fk: formData.unit_fk },
           userId,
-          formData.unit_fk
+          formData.unit_fk,
+          firebaseId
         );
       }
 

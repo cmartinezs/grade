@@ -55,7 +55,7 @@ export default function UnitForm({
           type="text"
           placeholder="Ej: Álgebra Básica"
           value={name}
-          onChange={(e) => onNameChange(e.target.value.trim())}
+          onChange={(e) => onNameChange(e.target.value)}
           isInvalid={!!getError("name")}
         />
         <Form.Control.Feedback type="invalid">

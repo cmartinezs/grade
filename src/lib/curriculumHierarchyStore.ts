@@ -201,10 +201,11 @@ export const createSubject = async (name: string, code: string, levelId: string,
 export const updateSubject = async (
   subjectId: string,
   updates: { name?: string; code?: string },
-  updatedBy: string
+  updatedBy: string,
+  firebaseId: string
 ): Promise<void> => {
   try {
-    await updateSubjectInfo(subjectId, updates, updatedBy);
+    await updateSubjectInfo(subjectId, updates, updatedBy, firebaseId);
     cache.subjects = null;
   } catch (error) {
     console.error('Error updating subject:', error);
@@ -517,10 +518,11 @@ export const updateUnit = async (
   unitId: string,
   updates: { name?: string; subject_fk?: string; description?: string },
   updatedBy: string,
-  subjectId?: string
+  subjectId?: string,
+  firebaseId?: string
 ): Promise<void> => {
   try {
-    await updateUnitInfo(unitId, updates, updatedBy, subjectId);
+    await updateUnitInfo(unitId, updates, updatedBy, subjectId, firebaseId);
     cache.units = null;
   } catch (error) {
     console.error('Error updating unit:', error);
@@ -823,10 +825,11 @@ export const updateTopic = async (
   topicId: string,
   updates: { name?: string; unit_fk?: string },
   updatedBy: string,
-  unitId?: string
+  unitId?: string,
+  firebaseId?: string
 ): Promise<void> => {
   try {
-    await updateTopicInfo(topicId, updates, updatedBy, unitId);
+    await updateTopicInfo(topicId, updates, updatedBy, unitId, firebaseId);
     cache.topics = null;
   } catch (error) {
     console.error('Error updating topic:', error);

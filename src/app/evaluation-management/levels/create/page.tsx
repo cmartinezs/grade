@@ -47,9 +47,9 @@ export default function CreateLevelPage() {
 
     try {
       await levelStore.createLevel({
-        name: formData.name,
-        code: formData.code,
-        description: formData.description,
+        name: formData.name.trim(),
+        code: formData.code.trim(),
+        description: formData.description.trim(),
         categoryId: formData.categoryId,
         isActive: formData.isActive,
         userId: user?.id,

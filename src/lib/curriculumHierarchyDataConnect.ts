@@ -76,7 +76,8 @@ export const createNewSubject = async (
 export const updateSubjectInfo = async (
   subjectId: string,
   updates: { name?: string; code?: string; levelId?: string },
-  updatedBy: string
+  updatedBy: string,
+  firebaseId: string
 ): Promise<void> => {
   try {
     const updatedAt = new Date().toISOString();
@@ -84,9 +85,9 @@ export const updateSubjectInfo = async (
       subjectId,
       name: updates.name,
       code: updates.code,
-      levelId: updates.levelId,
       updatedBy,
       updatedAt,
+      firebaseId,
     });
   } catch (error) {
     console.error(`Error updating subject ${subjectId}:`, error);
@@ -179,7 +180,8 @@ export const updateUnitInfo = async (
   unitId: string,
   updates: { name?: string; subject_fk?: string; description?: string },
   updatedBy: string,
-  subjectId?: string
+  subjectId?: string,
+  firebaseId?: string
 ): Promise<void> => {
   try {
     const updatedAt = new Date().toISOString();
@@ -190,7 +192,8 @@ export const updateUnitInfo = async (
       description: updates.description,
       subjectId: subject_fk,
       updatedBy, 
-      updatedAt 
+      updatedAt,
+      firebaseId
     });
   } catch (error) {
     console.error(`Error updating unit ${unitId}:`, error);
@@ -282,7 +285,8 @@ export const updateTopicInfo = async (
   topicId: string,
   updates: { name?: string; unit_fk?: string },
   updatedBy: string,
-  unitId?: string
+  unitId?: string,
+  firebaseId?: string
 ): Promise<void> => {
   try {
     const updatedAt = new Date().toISOString();
@@ -292,7 +296,8 @@ export const updateTopicInfo = async (
       unitId: unit_fk,
       name: updates.name, 
       updatedBy, 
-      updatedAt 
+      updatedAt,
+      firebaseId
     });
   } catch (error) {
     console.error(`Error updating topic ${topicId}:`, error);

@@ -71,7 +71,7 @@ export default function TopicForm({
           type="text"
           placeholder="Ej: Ecuaciones lineales"
           value={name}
-          onChange={(e) => onNameChange(e.target.value.trim())}
+          onChange={(e) => onNameChange(e.target.value)}
           isInvalid={!!getError('name')}
         />
         <Form.Control.Feedback type="invalid">{getError('name')}</Form.Control.Feedback>

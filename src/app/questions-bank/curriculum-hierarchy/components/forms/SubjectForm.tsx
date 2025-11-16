@@ -76,7 +76,7 @@ export default function SubjectForm({
           type="text"
           placeholder="Ej: Matemáticas"
           value={name}
-          onChange={(e) => onNameChange(e.target.value.trim())}
+          onChange={(e) => onNameChange(e.target.value)}
           isInvalid={!!getError('name')}
         />
         <Form.Control.Feedback type="invalid">{getError('name')}</Form.Control.Feedback>
@@ -88,7 +88,7 @@ export default function SubjectForm({
           type="text"
           placeholder="Ej: MAT-101"
           value={code}
-          onChange={(e) => onCodeChange(e.target.value.trim())}
+          onChange={(e) => onCodeChange(e.target.value)}
           isInvalid={!!getError('code')}
         />
         <Form.Control.Feedback type="invalid">{getError('code')}</Form.Control.Feedback>
