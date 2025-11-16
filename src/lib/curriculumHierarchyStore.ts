@@ -48,6 +48,17 @@ const cache: Record<string, any> = {
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
+/**
+ * Invalidar el caché completamente
+ */
+const invalidateCache = (keys: ('subjects' | 'units' | 'topics')[] = ['subjects', 'units', 'topics']) => {
+  keys.forEach(key => {
+    cache[key] = null;
+    cache.lastFetch[key] = 0; // Reset timestamp para forzar recarga
+    cache.loading[key] = false; // Reset loading flag para permitir nueva carga
+  });
+};
+
 // ===================================================================
 // SUBJECTS (Asignaturas)
 // ===================================================================
@@ -206,7 +217,7 @@ export const updateSubject = async (
 ): Promise<void> => {
   try {
     await updateSubjectInfo(subjectId, updates, updatedBy, firebaseId);
-    cache.subjects = null;
+    invalidateCache(['subjects']);
   } catch (error) {
     console.error('Error updating subject:', error);
     throw error;
@@ -222,7 +233,7 @@ export const deactivateSubject = async (
 ): Promise<void> => {
   try {
     await deactivateSubjectInfo(subjectId, userId);
-    cache.subjects = null;
+    invalidateCache(['subjects']);
   } catch (error) {
     console.error('Error deactivating subject:', error);
     throw error;
@@ -273,9 +284,7 @@ export const deleteSubject = async (
     await deactivateSubjectInfo(subjectId, userId);
 
     // Limpiar caches
-    cache.subjects = null;
-    cache.units = null;
-    cache.topics = null;
+    invalidateCache(['subjects', 'units', 'topics']);
 
     return { success: true };
   } catch (error) {
@@ -301,7 +310,7 @@ export const reactivateSubject = async (
 ): Promise<void> => {
   try {
     await reactivateSubjectInfo(subjectId, userId);
-    cache.subjects = null;
+    invalidateCache(['subjects']);
   } catch (error) {
     console.error('Error reactivating subject:', error);
     throw error;
@@ -503,7 +512,7 @@ export const createUnit = async (
       cache.units.push(newUnit);
     } else {
       // Si no hay caché, limpiar para forzar recarga
-      cache.units = null;
+      invalidateCache(['units']);
     }
   } catch (error) {
     console.error('Error creating unit:', error);
@@ -523,7 +532,7 @@ export const updateUnit = async (
 ): Promise<void> => {
   try {
     await updateUnitInfo(unitId, updates, updatedBy, subjectId, firebaseId);
-    cache.units = null;
+    invalidateCache(['units']);
   } catch (error) {
     console.error('Error updating unit:', error);
     throw error;
@@ -536,7 +545,7 @@ export const updateUnit = async (
 export const deactivateUnit = async (unitId: string, userId: string): Promise<void> => {
   try {
     await deactivateUnitInfo(unitId, userId);
-    cache.units = null;
+    invalidateCache(['units']);
   } catch (error) {
     console.error('Error deactivating unit:', error);
     throw error;
@@ -576,8 +585,7 @@ export const deleteUnit = async (
     // Deactivar la unidad
     await deactivateUnitInfo(unitId, userId);
 
-    cache.units = null;
-    cache.topics = null;
+    invalidateCache(['units', 'topics']);
 
     return { success: true };
   } catch (error) {
@@ -600,7 +608,7 @@ export const deleteUnit = async (
 export const reactivateUnit = async (unitId: string, userId: string): Promise<void> => {
   try {
     await reactivateUnitInfo(unitId, userId);
-    cache.units = null;
+    invalidateCache(['units']);
   } catch (error) {
     console.error('Error reactivating unit:', error);
     throw error;
@@ -810,7 +818,7 @@ export const createTopic = async (
       cache.topics.push(newTopic);
     } else {
       // Si no hay caché, limpiar para forzar recarga
-      cache.topics = null;
+      invalidateCache(['topics']);
     }
   } catch (error) {
     console.error('Error creating topic:', error);
@@ -830,7 +838,7 @@ export const updateTopic = async (
 ): Promise<void> => {
   try {
     await updateTopicInfo(topicId, updates, updatedBy, unitId, firebaseId);
-    cache.topics = null;
+    invalidateCache(['topics']);
   } catch (error) {
     console.error('Error updating topic:', error);
     throw error;
@@ -843,7 +851,7 @@ export const updateTopic = async (
 export const deactivateTopic = async (topicId: string, userId: string): Promise<void> => {
   try {
     await deactivateTopicInfo(topicId, userId);
-    cache.topics = null;
+    invalidateCache(['topics']);
   } catch (error) {
     console.error('Error deactivating topic:', error);
     throw error;
@@ -874,7 +882,7 @@ export const deleteTopic = async (
 
     await deactivateTopicInfo(topicId, userId);
 
-    cache.topics = null;
+    invalidateCache(['topics']);
 
     return { success: true };
   } catch (error) {
@@ -897,7 +905,7 @@ export const deleteTopic = async (
 export const reactivateTopic = async (topicId: string, userId: string): Promise<void> => {
   try {
     await reactivateTopicInfo(topicId, userId);
-    cache.topics = null;
+    invalidateCache(['topics']);
   } catch (error) {
     console.error('Error reactivating topic:', error);
     throw error;
@@ -941,10 +949,7 @@ export const preloadAllCurriculumHierarchyData = async (): Promise<void> => {
  * Limpiar todo el cache
  */
 export const clearAllCurriculumHierarchyData = (): void => {
-  cache.subjects = null;
-  cache.units = null;
-  cache.topics = null;
-  cache.lastFetch = {};
+  invalidateCache(['subjects', 'units', 'topics']);
 };
 
 /**

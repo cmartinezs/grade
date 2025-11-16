@@ -80,9 +80,30 @@ export function useCurriculumHierarchyData() {
 
   const handleSuccess = () => {
     // Refresh data after creation, edition, or deletion
+    // Important: We need to retry loading since cache was invalidated
     loadAttemptRef.current = 0;
     setIsLoading(true);
-    loadAllData();
+    
+    // Retry with polling to ensure data is reloaded
+    const attemptLoad = () => {
+      const subjectsData = getAllSubjects();
+      const unitsData = getAllUnits();
+      
+      setSubjects(subjectsData);
+      
+      // Keep polling until we have data (cache rebuild completed)
+      const allDataReady = subjectsData.length > 0 && unitsData.length > 0;
+      
+      if (allDataReady || loadAttemptRef.current > 100) {
+        setIsLoading(false);
+      } else {
+        loadAttemptRef.current += 1;
+        // Continue polling
+        setTimeout(attemptLoad, 100);
+      }
+    };
+    
+    attemptLoad();
   };
 
   const handleClearSearch = () => {
