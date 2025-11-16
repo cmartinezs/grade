@@ -12,8 +12,10 @@ import {
   getUnitById,
   getTopicById,
 } from '@/lib/curriculumHierarchyStore';
+import { educationalLevelStore, levelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { CurriculumHierarchyType, ValidationError, Subject, Unit } from '@/types/curriculumHierarchy';
+import { EducationalLevel } from '@/types/level';
 
 interface EditCurriculumHierarchyModalProps {
   show: boolean;
@@ -42,6 +44,8 @@ export default function EditCurriculumHierarchyModal({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
+  const [levels, setLevels] = useState<EducationalLevel[]>([]);
+  const [currentSubject, setCurrentSubject] = useState<Subject | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Load data when modal opens
@@ -51,14 +55,16 @@ export default function EditCurriculumHierarchyModal({
       setErrors([]);
       setSuccessMessage(null);
 
-      // Load subjects and units
+      // Load subjects, units and levels
       setSubjects(getAllSubjects());
       setUnits(getAllUnits());
+      setLevels(educationalLevelStore.getAllLevels());
 
       // Load element data based on type
       if (elementType === 'subject') {
         const subject = getSubjectById(elementId);
         if (subject) {
+          setCurrentSubject(subject);
           setFormData({
             name: subject.name,
             code: subject.code,
@@ -104,10 +110,65 @@ export default function EditCurriculumHierarchyModal({
     onHide();
   };
 
+  const getLevelName = (levelId: string): string => {
+    const level = levels.find((l) => l.id === levelId);
+    return level ? level.name : 'N/A';
+  };
+
+  const getLevelWithCategory = (levelId: string): { level: string; category: string } => {
+    const level = levels.find((l) => l.id === levelId);
+    if (!level) {
+      return { level: 'N/A', category: 'N/A' };
+    }
+    const category = levelStore.getCategoryById(level.categoryId);
+    return {
+      level: level.name,
+      category: category ? category.name : 'N/A',
+    };
+  };
+
+  const validateForm = (): ValidationError[] => {
+    const newErrors: ValidationError[] = [];
+
+    if (elementType === 'subject') {
+      if (!formData.name || formData.name.trim() === '') {
+        newErrors.push({ field: 'name', message: 'El nombre de la asignatura es obligatorio' });
+      }
+      if (!formData.code || formData.code.trim() === '') {
+        newErrors.push({ field: 'code', message: 'El código de la asignatura es obligatorio' });
+      }
+    } else if (elementType === 'unit') {
+      if (!formData.subject_fk || formData.subject_fk === '') {
+        newErrors.push({ field: 'subject_fk', message: 'Debes seleccionar una asignatura padre' });
+      }
+      if (!formData.name || formData.name.trim() === '') {
+        newErrors.push({ field: 'name', message: 'El nombre de la unidad es obligatorio' });
+      }
+    } else if (elementType === 'topic') {
+      if (!formData.subject_fk || formData.subject_fk === '') {
+        newErrors.push({ field: 'subject_fk', message: 'Debes seleccionar una asignatura' });
+      }
+      if (!formData.unit_fk || formData.unit_fk === '') {
+        newErrors.push({ field: 'unit_fk', message: 'Debes seleccionar una unidad padre' });
+      }
+      if (!formData.name || formData.name.trim() === '') {
+        newErrors.push({ field: 'name', message: 'El nombre del tema es obligatorio' });
+      }
+    }
+
+    return newErrors;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors([]);
     setSuccessMessage(null);
+
+    const newErrors = validateForm();
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     try {
       // Obtener userId del contexto de autenticación
@@ -201,25 +262,51 @@ export default function EditCurriculumHierarchyModal({
             {/* Success Message */}
             {successMessage && <Alert variant="success">{successMessage}</Alert>}
 
-            {/* Error Messages */}
-            {errors.length > 0 && (
+            {/* General Error Messages */}
+            {errors.some(e => e.field === 'general') && (
               <Alert variant="danger">
-                <strong>❌ Errores de validación:</strong>
+                <strong>❌ Error:</strong>
                 <ul className="mb-0 mt-2">
-                  {errors.map((error, idx) => (
-                    <li key={idx}>{error.message}</li>
-                  ))}
+                  {errors
+                    .filter(error => error.field === 'general')
+                    .map((error, idx) => (
+                      <li key={idx}>{error.message}</li>
+                    ))}
                 </ul>
               </Alert>
             )}
 
             {/* Form */}
             <Form onSubmit={handleSubmit}>
+              {/* Subject Info Header */}
+              {elementType === 'subject' && currentSubject && (
+                <div className="bg-light p-3 rounded mb-4 border-start border-4 border-info">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <p className="mb-1">
+                        <small className="text-muted">Categoría</small>
+                      </p>
+                      <p className="mb-0">
+                        <strong>{getLevelWithCategory(currentSubject.level_fk).category}</strong>
+                      </p>
+                    </div>
+                    <div className="col-md-6">
+                      <p className="mb-1">
+                        <small className="text-muted">Nivel Educacional</small>
+                      </p>
+                      <p className="mb-0">
+                        <strong>{getLevelWithCategory(currentSubject.level_fk).level}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* SUBJECT FORM */}
               {elementType === 'subject' && (
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label>Nombre de la Asignatura *</Form.Label>
+                    <Form.Label>Nombre de la Asignatura <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Ej: Matemáticas"
@@ -231,7 +318,7 @@ export default function EditCurriculumHierarchyModal({
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>Código Único *</Form.Label>
+                    <Form.Label>Código Único <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Ej: MAT-101"
@@ -249,7 +336,7 @@ export default function EditCurriculumHierarchyModal({
               {elementType === 'unit' && (
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label>Asignatura Padre *</Form.Label>
+                    <Form.Label>Asignatura Padre <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Select
                       value={formData.subject_fk}
                       onChange={(e) => setFormData({ ...formData, subject_fk: e.target.value })}
@@ -258,7 +345,7 @@ export default function EditCurriculumHierarchyModal({
                       <option value="">-- Selecciona una asignatura --</option>
                       {subjects.map((subject) => (
                         <option key={subject.subject_id} value={subject.subject_id}>
-                          {subject.name} ({subject.code})
+                          {subject.name} ({subject.code}) - {getLevelName(subject.level_fk)}
                         </option>
                       ))}
                     </Form.Select>
@@ -269,7 +356,7 @@ export default function EditCurriculumHierarchyModal({
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>Nombre de la Unidad *</Form.Label>
+                    <Form.Label>Nombre de la Unidad <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Ej: Álgebra Básica"
@@ -298,7 +385,7 @@ export default function EditCurriculumHierarchyModal({
               {elementType === 'topic' && (
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label>1. Asignatura *</Form.Label>
+                    <Form.Label>1. Asignatura <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Select
                       value={formData.subject_fk}
                       onChange={(e) => {
@@ -309,7 +396,7 @@ export default function EditCurriculumHierarchyModal({
                       <option value="">-- Selecciona una asignatura --</option>
                       {subjects.map((subject) => (
                         <option key={subject.subject_id} value={subject.subject_id}>
-                          {subject.name} ({subject.code})
+                          {subject.name} ({subject.code}) - {getLevelName(subject.level_fk)}
                         </option>
                       ))}
                     </Form.Select>
@@ -317,7 +404,7 @@ export default function EditCurriculumHierarchyModal({
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>2. Unidad Padre *</Form.Label>
+                    <Form.Label>2. Unidad Padre <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Select
                       value={formData.unit_fk}
                       onChange={(e) => setFormData({ ...formData, unit_fk: e.target.value })}
@@ -344,7 +431,7 @@ export default function EditCurriculumHierarchyModal({
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>3. Nombre del Tema *</Form.Label>
+                    <Form.Label>3. Nombre del Tema <span style={{ color: 'red' }}>*</span></Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Ej: Ecuaciones lineales"

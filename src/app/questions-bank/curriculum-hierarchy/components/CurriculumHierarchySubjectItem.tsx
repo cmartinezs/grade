@@ -4,6 +4,7 @@ import {
   getUnitsBySubject,
   searchUnitsBySubject,
 } from '@/lib/curriculumHierarchyStore';
+import { educationalLevelStore } from '@/lib/levelStore';
 import { CurriculumHierarchyItemProps } from '../types';
 import { CurriculumHierarchyUnitItem } from './CurriculumHierarchyUnitItem';
 
@@ -22,6 +23,10 @@ export function CurriculumHierarchySubjectItem({
     ? searchUnitsBySubject(subject.subject_id, searchTerm)
     : getUnitsBySubject(subject.subject_id);
 
+  // Obtener nivel educacional
+  const level = educationalLevelStore.getLevelById(subject.level_fk);
+  const levelName = level ? level.name : 'N/A';
+
   return (
     <Accordion.Item eventKey={subject.subject_id}>
       <Accordion.Header>
@@ -30,6 +35,7 @@ export function CurriculumHierarchySubjectItem({
             <span style={{ fontSize: '1.2rem' }}>📚</span>
             <strong>{subject.name}</strong>
             <Badge bg="secondary">{subject.code}</Badge>
+            <Badge bg="info">{levelName}</Badge>
           </span>
           <div className="d-flex gap-2 align-items-center">
             <Badge bg="primary">{units.length} unidad(es)</Badge>
