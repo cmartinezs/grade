@@ -1,0 +1,174 @@
+/* AutocompleteSelect Container */
+.container {
+  position: relative;
+}
+
+/* Suggestions Dropdown */
+.suggestionsDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  border-radius: 0 0 0.25rem 0.25rem;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 9999;
+}
+
+/* Option Item - Base Styles */
+.option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  border-left: 3px solid transparent;
+  padding-left: calc(1rem - 3px);
+}
+
+/* Even Row (index 0, 2, 4...) */
+.optionEven {
+  background-color: #ffffff;
+}
+
+.optionEven:hover {
+  background-color: #eff2f7;
+}
+
+/* Odd Row (index 1, 3, 5...) */
+.optionOdd {
+  background-color: #f9fafb;
+}
+
+.optionOdd:hover {
+  background-color: #e8ecf3;
+}
+
+/* Selected State */
+.optionSelected {
+  background-color: #dbe4f0;
+  border-left-color: #5b8fc4;
+}
+
+.optionSelected:hover {
+  background-color: #dbe4f0;
+}
+
+/* Selected Text */
+.optionNameSelected {
+  color: #1a3a52;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Unselected Text */
+.optionName {
+  color: #212529;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Description - Selected */
+.descriptionSelected {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  color: rgba(26, 58, 82, 0.8);
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+
+/* Description - Unselected */
+.description {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  color: #6c757d;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+
+/* No Results Message */
+.noResults {
+  padding: 0.75rem 1rem;
+  color: #6c757d;
+}
+
+/* Input Wrapper - For positioning clear button */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Clear Button */
+.clearButton {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #6c757d;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease-in-out;
+}
+
+.clearButton:hover {
+  color: #495057;
+}
+
+.clearButton:focus {
+  outline: none;
+  color: #212529;
+}
+
+/* Option Content - Flex container for text and clear button */
+.optionContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+/* Clear Button in Dropdown */
+.clearButtonInDropdown {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #5b8fc4;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease-in-out;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.clearButtonInDropdown:hover {
+  color: #3d5a80;
+}
+
+.clearButtonInDropdown:focus {
+  outline: none;
+  color: #1a3a52;
+}
+

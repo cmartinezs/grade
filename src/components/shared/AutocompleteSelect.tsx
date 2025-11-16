@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Form, Alert } from 'react-bootstrap';
+import styles from './AutocompleteSelect.module.css';
 
 export interface AutocompleteOption {
   id: string | number;
@@ -107,85 +108,88 @@ export default function AutocompleteSelect({
     }, 150);
   };
 
+  const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setInputValue('');
+    onChange('');
+    setShowSuggestions(false);
+  };
+
   return (
     <Form.Group className="mb-3">
       {label && (
         <Form.Label>
           {label}
-          {required && <span className="text-danger">*</span>}
+          {required && <span className="text-danger"> *</span>}
         </Form.Label>
       )}
 
-      <div style={{ position: 'relative' }}>
-        <Form.Control
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder={placeholder}
-          disabled={disabled}
-          isInvalid={isInvalid}
-          autoComplete={autoComplete}
-        />
+      <div className={styles.container}>
+        <div className={styles.inputWrapper}>
+          <Form.Control
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            disabled={disabled}
+            isInvalid={isInvalid}
+            autoComplete={autoComplete}
+          />
+        </div>
 
         {/* Suggestions Dropdown */}
         {showSuggestions && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              border: '1px solid #dee2e6',
-              borderTop: 'none',
-              borderRadius: '0 0 0.25rem 0.25rem',
-              backgroundColor: '#fff',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              maxHeight: '250px',
-              overflowY: 'auto',
-              zIndex: 9999,
-            }}
-          >
+          <div className={styles.suggestionsDropdown}>
             {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => (
-                <div
-                  key={option.id}
-                  onClick={() => handleSelectOption(option)}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    cursor: 'pointer',
-                    backgroundColor: inputValue === option.name ? '#e9ecef' : 'transparent',
-                    transition: 'background-color 0.15s ease-in-out',
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = '#f8f9fa';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.backgroundColor = inputValue === option.name ? '#e9ecef' : 'transparent';
-                  }}
-                >
-                  <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {option.name}
-                  </strong>
-                  {option.description && (
-                    <small 
-                      style={{ 
-                        display: 'block',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        maxWidth: '100%',
-                        color: '#6c757d'
-                      }}
-                    >
-                      {option.description}
-                    </small>
-                  )}
-                </div>
-              ))
+              filteredOptions.map((option, index) => {
+                const isSelected = String(value) === String(option.id);
+                const isEvenRow = index % 2 === 0;
+                
+                // Build class names based on state
+                const optionClasses = [
+                  styles.option,
+                  isSelected ? styles.optionSelected : (isEvenRow ? styles.optionEven : styles.optionOdd)
+                ].join(' ');
+                
+                return (
+                  <div
+                    key={option.id}
+                    className={optionClasses}
+                    onClick={() => handleSelectOption(option)}
+                  >
+                    <div className={styles.optionContent}>
+                      <div>
+                        <strong className={isSelected ? styles.optionNameSelected : styles.optionName}>
+                          {option.name}
+                        </strong>
+                        {option.description && (
+                          <small className={isSelected ? styles.descriptionSelected : styles.description}>
+                            {option.description}
+                          </small>
+                        )}
+                      </div>
+                      {isSelected && (
+                        <button
+                          type="button"
+                          className={styles.clearButtonInDropdown}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleClear(e);
+                          }}
+                          title="Limpiar selección"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
             ) : inputValue.trim() ? (
-              <div style={{ padding: '0.5rem 1rem', color: '#6c757d' }}>
+              <div className={styles.noResults}>
                 No se encontraron resultados
               </div>
             ) : null}

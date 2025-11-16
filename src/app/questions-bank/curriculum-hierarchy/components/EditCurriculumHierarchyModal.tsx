@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import {
   updateSubject,
   updateUnit,
@@ -336,23 +337,21 @@ export default function EditCurriculumHierarchyModal({
               {elementType === 'unit' && (
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label>Asignatura Padre <span style={{ color: 'red' }}>*</span></Form.Label>
-                    <Form.Select
+                    <AutocompleteSelect
+                      label='Asignatura Padre'
                       value={formData.subject_fk}
-                      onChange={(e) => setFormData({ ...formData, subject_fk: e.target.value })}
+                      onChange={(value) => setFormData({ ...formData, subject_fk: String(value) })}
+                      options={subjects.map((subject) => ({
+                        id: subject.subject_id,
+                        name: `${subject.name} (${subject.code})`,
+                        description: getLevelName(subject.level_fk),
+                      }))}
+                      placeholder="Busca una asignatura..."
                       isInvalid={!!getErrorForField('subject_fk')}
-                    >
-                      <option value="">-- Selecciona una asignatura --</option>
-                      {subjects.map((subject) => (
-                        <option key={subject.subject_id} value={subject.subject_id}>
-                          {subject.name} ({subject.code}) - {getLevelName(subject.level_fk)}
-                        </option>
-                      ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">{getErrorForField('subject_fk')}</Form.Control.Feedback>
-                    <Form.Text className="text-warning">
-                      ⚠️ Cambiar la asignatura padre mantendrá todos los temas asociados a esta unidad.
-                    </Form.Text>
+                      errorMessage={getErrorForField('subject_fk') || undefined}
+                      warningMessage="⚠️ Cambiar la asignatura padre mantendrá todos los temas asociados a esta unidad."
+                      required
+                    />
                   </Form.Group>
 
                   <Form.Group className="mb-3">
