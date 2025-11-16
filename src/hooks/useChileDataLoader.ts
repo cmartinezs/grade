@@ -15,7 +15,7 @@
  */
 
 import { useCallback } from 'react';
-import { loadChileEducationData } from '@/lib/chileDataLoader';
+import { loadChileCategoriesOnly, loadChileLevelsOnly } from '@/lib/chileDataLoader';
 import { useAuth } from '@/contexts/AuthContext';
 import { levelCategoryStore, educationalLevelStore } from '@/lib/levelStore';
 import {
@@ -23,15 +23,14 @@ import {
   fetchEducationalLevelsFromDataConnect,
 } from '@/lib/levelDataConnect';
 
-interface LoadChileDataResult {
-  categoriesLoaded: number;
-  levelsLoaded: number;
+interface LoadSingleChileDataResult {
+  itemsCreated: number;
   success: boolean;
   message: string;
+  errors: string[];
 }
 
 interface ProgressUpdate {
-  currentStep: 'categories' | 'levels' | 'completed';
   currentIndex: number;
   total: number;
   itemName: string;
@@ -43,68 +42,113 @@ export function useChileDataLoader() {
   const { user } = useAuth();
 
   /**
-   * Carga toda la configuración de Chile (categorías y niveles) a Data-Connect
-   * y refresca los stores locales con los datos desde la base de datos
-   * 
+   * Carga solo las categorías de Chile a Data-Connect
    * @param onProgress - Callback para recibir actualizaciones de progreso
    */
-  const loadChileConfiguration = useCallback(
-    async (onProgress?: ProgressCallback): Promise<LoadChileDataResult> => {
+  const loadChileCategories = useCallback(
+    async (onProgress?: ProgressCallback): Promise<LoadSingleChileDataResult> => {
       try {
-        console.log('[useChileDataLoader] Starting Chile configuration load...');
+        console.log('[useChileDataLoader] Starting Chile categories load...');
 
         if (!user?.id) {
           return {
-            categoriesLoaded: 0,
-            levelsLoaded: 0,
+            itemsCreated: 0,
             success: false,
             message: '❌ Usuario no autenticado',
+            errors: ['Usuario no autenticado'],
           };
         }
         
-        // 1. Cargar datos a Data-Connect con el userId del usuario logueado
-        const result = await loadChileEducationData(user.id, onProgress);
-        
-        // Si hubo errores, reportar
-        if (result.errors.length > 0) {
-          console.error('[useChileDataLoader] Errors during load:', result.errors);
-        }
+        // 1. Cargar datos a Data-Connect
+        const result = await loadChileCategoriesOnly(user.id, onProgress);
         
         // 2. Recargar datos desde Data-Connect para los stores locales
         try {
-          console.log('[useChileDataLoader] Refreshing local stores from Data-Connect...');
+          console.log('[useChileDataLoader] Refreshing categories store from Data-Connect...');
           
           const categoriesFromDb = await fetchLevelCategoriesFromDataConnect();
-          const levelsFromDb = await fetchEducationalLevelsFromDataConnect();
-          
-          // Update local stores
           levelCategoryStore.refreshFromDataConnect(categoriesFromDb);
-          educationalLevelStore.refreshFromDataConnect(levelsFromDb);
           
-          console.log('[useChileDataLoader] Stores refreshed successfully');
+          console.log('[useChileDataLoader] Categories store refreshed successfully');
         } catch (refreshError) {
           console.warn('[useChileDataLoader] Could not refresh stores, but data loaded to DB:', refreshError);
-          // Don't fail the entire operation if refresh fails - data is still in DB
         }
         
         const success = result.errors.length === 0;
         const message = success 
-          ? '✅ Configuración de Chile cargada exitosamente'
+          ? `✅ ${result.categoriesCreated} categorías cargadas exitosamente`
           : '⚠️ Se cargaron datos pero con algunos errores';
         
         return {
-          categoriesLoaded: result.categoriesCreated,
-          levelsLoaded: result.levelsCreated,
+          itemsCreated: result.categoriesCreated,
           success,
           message,
+          errors: result.errors,
         };
       } catch (error) {
-        console.error('[useChileDataLoader] Unexpected error:', error);
+        console.error('[useChileDataLoader] Unexpected error loading categories:', error);
         return {
-          categoriesLoaded: 0,
-          levelsLoaded: 0,
+          itemsCreated: 0,
           success: false,
           message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          errors: [error instanceof Error ? error.message : 'Unknown error'],
+        };
+      }
+    },
+    [user?.id]
+  );
+
+  /**
+   * Carga solo los niveles educacionales de Chile a Data-Connect
+   * @param onProgress - Callback para recibir actualizaciones de progreso
+   */
+  const loadChileLevels = useCallback(
+    async (onProgress?: ProgressCallback): Promise<LoadSingleChileDataResult> => {
+      try {
+        console.log('[useChileDataLoader] Starting Chile levels load...');
+
+        if (!user?.id) {
+          return {
+            itemsCreated: 0,
+            success: false,
+            message: '❌ Usuario no autenticado',
+            errors: ['Usuario no autenticado'],
+          };
+        }
+        
+        // 1. Cargar datos a Data-Connect
+        const result = await loadChileLevelsOnly(user.id, onProgress);
+        
+        // 2. Recargar datos desde Data-Connect para los stores locales
+        try {
+          console.log('[useChileDataLoader] Refreshing levels store from Data-Connect...');
+          
+          const levelsFromDb = await fetchEducationalLevelsFromDataConnect();
+          educationalLevelStore.refreshFromDataConnect(levelsFromDb);
+          
+          console.log('[useChileDataLoader] Levels store refreshed successfully');
+        } catch (refreshError) {
+          console.warn('[useChileDataLoader] Could not refresh stores, but data loaded to DB:', refreshError);
+        }
+        
+        const success = result.errors.length === 0;
+        const message = success 
+          ? `✅ ${result.levelsCreated} niveles cargados exitosamente`
+          : '⚠️ Se cargaron datos pero con algunos errores';
+        
+        return {
+          itemsCreated: result.levelsCreated,
+          success,
+          message,
+          errors: result.errors,
+        };
+      } catch (error) {
+        console.error('[useChileDataLoader] Unexpected error loading levels:', error);
+        return {
+          itemsCreated: 0,
+          success: false,
+          message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          errors: [error instanceof Error ? error.message : 'Unknown error'],
         };
       }
     },
@@ -112,6 +156,7 @@ export function useChileDataLoader() {
   );
 
   return {
-    loadChileConfiguration,
+    loadChileCategories,
+    loadChileLevels,
   };
 }

@@ -138,6 +138,24 @@ export default function DataPreloaderModal({
           if (loadResult.errors && loadResult.errors.length > 0) {
             console.warn(`[DataPreloaderModal] Errors in ${loader.label}:`, loadResult.errors);
           }
+
+          // Asegurar que la barra llegue al 100% para este loader
+          // Esperar a que el progreso se haya actualizado completamente
+          await new Promise(resolve => {
+            // Actualizar a 100% si no está ya
+            setProgress((prev) => {
+              if (prev && prev.total > 0 && prev.currentIndex < prev.total) {
+                return {
+                  ...prev,
+                  currentIndex: prev.total,
+                  itemName: 'Completado',
+                };
+              }
+              return prev;
+            });
+            // Pequeña pausa para que se vea el 100% en la UI (300ms)
+            setTimeout(resolve, 300);
+          });
         } catch (error) {
           const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
           console.error(`[DataPreloaderModal] Error in ${loader.label}:`, errorMsg);
@@ -151,6 +169,9 @@ export default function DataPreloaderModal({
         total: loaders.length,
         itemName: 'Completado',
       });
+
+      // Esperar a que se vea el 100% en la UI antes de mostrar resultado (500ms)
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Construir mensaje de resultado
       const resultEntries = Array.from(results.entries());
