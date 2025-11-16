@@ -41,6 +41,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   const [numberOfLetters, setNumberOfLetters] = useState<number>(1);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [allLevels, setAllLevels] = useState<Array<{ id: string; name: string; categoryId: string }>>([]);
+  const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>([]);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -55,16 +56,68 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   const [success, setSuccess] = useState(false);
   const [coursesCreated, setCoursesCreated] = useState(0);
 
-  // Load levels from store
+  // Load levels from Data-Connect on component mount
+  useEffect(() => {
+    const initializeLevels = async () => {
+      try {
+        // Load both categories and levels from Data-Connect
+        await levelStore.loadAll();
+        
+        // Get categories first
+        const categories = levelStore.getAllCategories();
+        setAllCategories(
+          categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+          }))
+        );
+        
+        // Then get levels from store
+        const levels = educationalLevelStore.getAllLevels().filter((l) => l.isActive);
+        setAllLevels(
+          levels.map((l) => ({
+            id: l.id,
+            name: l.name,
+            categoryId: l.categoryId || '',
+          }))
+        );
+      } catch (error) {
+        console.error('Error loading levels:', error);
+        // Still try to use what's in the store even if loading fails
+        const categories = levelStore.getAllCategories();
+        setAllCategories(
+          categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+          }))
+        );
+        
+        const levels = educationalLevelStore.getAllLevels().filter((l) => l.isActive);
+        setAllLevels(
+          levels.map((l) => ({
+            id: l.id,
+            name: l.name,
+            categoryId: l.categoryId || '',
+          }))
+        );
+      }
+    };
+
+    initializeLevels();
+  }, []);
+
+  // Legacy: Load levels from store directly (keeps existing behavior as fallback)
   useEffect(() => {
     const levels = educationalLevelStore.getAllLevels().filter((l) => l.isActive);
-    setAllLevels(
-      levels.map((l) => ({
-        id: l.id,
-        name: l.name,
-        categoryId: l.categoryId || '',
-      }))
-    );
+    if (levels.length > 0) {
+      setAllLevels(
+        levels.map((l) => ({
+          id: l.id,
+          name: l.name,
+          categoryId: l.categoryId || '',
+        }))
+      );
+    }
   }, []);
 
   const handleLevelToggle = useCallback((levelId: string) => {
@@ -288,8 +341,10 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                 });
 
                 return Array.from(grouped.entries()).map(([categoryId, levelsInCat]) => {
-                  const categoryName = categoryId === 'sin-categoria' ? 'Sin Categoría' : 
-                    levelStore.getCategoryById(categoryId)?.name || categoryId;
+                  // Get category name from state instead of store
+                  const categoryName = categoryId === 'sin-categoria' 
+                    ? 'Sin Categoría' 
+                    : allCategories.find(c => c.id === categoryId)?.name || categoryId;
                   
                   const allInCategorySelected = levelsInCat.every((l) => selectedLevels.includes(l.id));
                   const someInCategorySelected = levelsInCat.some((l) => selectedLevels.includes(l.id));

@@ -13,7 +13,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Modal, Button, Form, ProgressBar, Card, Alert, Spinner } from 'react-bootstrap';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { CourseGenerationOptions } from '@/lib/courseDataLoader';
-import { educationalLevelStore } from '@/lib/levelStore';
+import { educationalLevelStore, levelStore } from '@/lib/levelStore';
 
 // Re-export ProgressUpdate type from hook for use in this component
 interface ProgressUpdate {
@@ -67,16 +67,41 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
   const [coursesCreated, setCoursesCreated] = useState(0);
 
   // Load levels from store
+  // Load levels from Data-Connect when modal opens
   useEffect(() => {
-    const levels = educationalLevelStore.getAllLevels();
-    setAllLevels(
-      levels
-        .filter((l) => l.isActive)
-        .map((l) => ({
-          id: l.id,
-          name: l.name,
-        }))
-    );
+    if (!show) return;
+
+    const initializeLevels = async () => {
+      try {
+        // Load both categories and levels from Data-Connect
+        await levelStore.loadAll();
+        
+        // Get levels from store
+        const levels = educationalLevelStore.getAllLevels();
+        setAllLevels(
+          levels
+            .filter((l) => l.isActive)
+            .map((l) => ({
+              id: l.id,
+              name: l.name,
+            }))
+        );
+      } catch (error) {
+        console.error('Error loading levels:', error);
+        // Still try to use what's in the store even if loading fails
+        const levels = educationalLevelStore.getAllLevels();
+        setAllLevels(
+          levels
+            .filter((l) => l.isActive)
+            .map((l) => ({
+              id: l.id,
+              name: l.name,
+            }))
+        );
+      }
+    };
+
+    initializeLevels();
   }, [show]);
 
   const handleLevelToggle = useCallback((levelId: string) => {
