@@ -1,12 +1,20 @@
 'use client'
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import './NavigationBar.css';
 export default function NavigationBar() {
+  const pathname = usePathname();
   const { user, isAuthenticated, isInitializing, logout } = useAuth();
+  
   const handleLogout = () => {
     logout();
+  };
+
+  // Helper function to check if a link is active
+  const isLinkActive = (href: string): boolean => {
+    return pathname === href || pathname.startsWith(href + '/');
   };
   return (
     <Navbar bg="primary" variant="dark" expand="lg" sticky="top" className="navbar-elegant">
@@ -24,20 +32,20 @@ export default function NavigationBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto nav-links">
             {!isInitializing && !isAuthenticated && (
-              <Nav.Link as={Link} href="/" className="nav-link-item">
+              <Nav.Link as={Link} href="/" className={`nav-link-item ${isLinkActive('/') ? 'active' : ''}`}>
                 🏠 Inicio
               </Nav.Link>
             )}
             {/* Enlaces públicos - Solo cuando no autenticado y no inicializando */}
             {!isInitializing && !isAuthenticated && (
               <>
-                <Nav.Link as={Link} href="/public/about" className="nav-link-item">
+                <Nav.Link as={Link} href="/public/about" className={`nav-link-item ${isLinkActive('/public/about') ? 'active' : ''}`}>
                   ℹ️ Acerca de
                 </Nav.Link>
-                <Nav.Link as={Link} href="/public/features" className="nav-link-item">
+                <Nav.Link as={Link} href="/public/features" className={`nav-link-item ${isLinkActive('/public/features') ? 'active' : ''}`}>
                   ✨ Características
                 </Nav.Link>
-                <Nav.Link as={Link} href="/public/pricing" className="nav-link-item">
+                <Nav.Link as={Link} href="/public/pricing" className={`nav-link-item ${isLinkActive('/public/pricing') ? 'active' : ''}`}>
                   💰 Precios
                 </Nav.Link>
               </>
@@ -45,13 +53,13 @@ export default function NavigationBar() {
             {/* Enlaces directos a funcionalidades - Sin desplegar */}
             {!isInitializing && isAuthenticated && (
               <>
-                <Nav.Link as={Link} href="/dashboard" className="nav-link-item">
+                <Nav.Link as={Link} href="/dashboard" className={`nav-link-item ${isLinkActive('/dashboard') ? 'active' : ''}`}>
                   📊 Panel de Control
                 </Nav.Link>
-                <Nav.Link as={Link} href="/questions-bank" className="nav-link-item">
+                <Nav.Link as={Link} href="/questions-bank" className={`nav-link-item ${isLinkActive('/questions-bank') ? 'active' : ''}`}>
                   📚 Banco de Preguntas
                 </Nav.Link>
-                <Nav.Link as={Link} href="/evaluation-management" className="nav-link-item">
+                <Nav.Link as={Link} href="/evaluation-management" className={`nav-link-item ${isLinkActive('/evaluation-management') ? 'active' : ''}`}>
                   📝 Evaluaciones
                 </Nav.Link>
               </>
