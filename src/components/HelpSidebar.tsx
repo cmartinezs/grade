@@ -18,7 +18,7 @@ export default function HelpSidebar({ isOpen, onToggle, title, children }: HelpS
         style={{
           position: 'fixed',
           right: 0,
-          top: '70px', // Altura del navbar elegante (min-height: 70px)
+          top: '75px',
           bottom: 0,
           width: isOpen ? '350px' : '0',
           background: '#fff',
@@ -54,27 +54,46 @@ export default function HelpSidebar({ isOpen, onToggle, title, children }: HelpS
         style={{
           position: 'fixed',
           right: isOpen ? '350px' : '0',
-          top: '70px', // Alineado con el navbar elegante
+          top: '50%',
+          transform: 'translateY(-50%)',
           width: '40px',
-          height: '80px',
+          minHeight: 'auto',
+          padding: '8px 4px',
           background: '#28a745',
           border: 'none',
           color: 'white',
           cursor: 'pointer',
-          fontSize: '0.75rem',
-          fontWeight: 'bold',
-          textOrientation: 'mixed',
-          writingMode: 'vertical-lr',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: '4px',
           transition: 'right 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
           zIndex: 1001,
           borderRadius: '8px 0 0 8px',
           boxShadow: '-2px 0 8px rgba(0, 0, 0, 0.15)',
         }}
       >
-        AYUDA
+        <span
+          style={{
+            writingMode: 'vertical-lr',
+            textOrientation: 'upright',
+            fontSize: '0.75rem',
+            fontWeight: 'bold',
+            letterSpacing: '2px',
+          }}
+        >
+          AYUDA
+        </span>
+        <span
+          style={{
+            fontSize: '0.85rem',
+            fontWeight: 'bold',
+            lineHeight: '1',
+          }}
+        >
+          {isOpen ? '>>' : '<<'}
+        </span>
       </button>
 
       {/* Backdrop oscuro cuando está abierto */}
