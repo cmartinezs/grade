@@ -25,10 +25,10 @@ export const createNewCourse = async (
   levelId: string,
   userId: string,
   createdBy: string,
-  courseId?: string
+  section?: string
 ): Promise<string> => {
   try {
-    const id = courseId || generateUUID();
+    const id = generateUUID();
     await (dcCreateCourse as any)({
       courseId: id,
       name,
@@ -37,6 +37,7 @@ export const createNewCourse = async (
       levelId,
       userId,
       createdBy,
+      section,
     });
     return id;
   } catch (error) {

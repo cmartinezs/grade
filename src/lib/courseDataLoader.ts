@@ -25,10 +25,15 @@ function isValidUUID(str: string): boolean {
 
 /**
  * Genera las iniciales de una cadena (primera letra de cada palabra)
+ * Solo considera caracteres alfanuméricos
  * ej: "Colegio San Miguel" -> "CSM"
+ * ej: "Colegio "San" Miguel" -> "CSM" (las comillas se ignoran)
  */
 function getInitials(text: string): string {
-  return text
+  // Remove non-alphanumeric characters except spaces
+  const cleanText = text.replace(/[^a-zA-Z0-9\s]/g, '');
+  
+  return cleanText
     .split(/\s+/)
     .filter(word => word.length > 0)
     .map(word => word[0].toUpperCase())
@@ -38,41 +43,16 @@ function getInitials(text: string): string {
 /**
  * Genera el código de curso según el formato:
  * INSTIT-CATEG-NIVEL-LETRA (siempre en mayúsculas)
- * ej: CSM-EGB-7-A (Colegio San Miguel - Educación General Básica - 7mo - A)
+ * Usa los primeros 8 caracteres del UUID del nivel para garantizar unicidad
+ * ej: CSM-EGB-a1b2c3d4-A (Colegio San Miguel - Educación General Básica - nivel UUID - A)
  */
 function generateCourseCode(
   institutionInitials: string,
   categoryCode: string,
-  levelCode: string,
+  levelUuidPrefix: string,
   letter: string
 ): string {
-  return `${institutionInitials}-${categoryCode}-${levelCode}-${letter}`.toUpperCase();
-}
-
-/**
- * Obtiene el código de nivel (número o identificador)
- * Intenta extraer un número del nombre del nivel
- * ej: "7° Básico" -> "7", "Kinder" -> "KG"
- */
-function getLevelCode(levelName: string): string {
-  // Buscar números en el nombre
-  const numberMatch = levelName.match(/\d+/);
-  if (numberMatch) {
-    return numberMatch[0];
-  }
-  
-  // Si es Kinder, retornar "KG"
-  if (levelName.toLowerCase().includes('kinder')) {
-    return 'KG';
-  }
-  
-  // Si es Preescolar, retornar "PRE"
-  if (levelName.toLowerCase().includes('preescolar')) {
-    return 'PRE';
-  }
-  
-  // Por defecto, usar iniciales
-  return getInitials(levelName);
+  return `${institutionInitials}-${categoryCode}-${levelUuidPrefix}-${letter}`.toUpperCase();
 }
 
 export interface CourseGenerationOptions {
@@ -154,12 +134,15 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
       const categoryId = options.levelCategories?.[levelId];
       const categoryName = categoryId && options.categoryNames ? options.categoryNames[categoryId] : 'General';
       const categoryCode = (categoryId && options.categoryCodes?.[categoryId]) || getInitials(categoryName);
-      const levelCode = options.levelCodes?.[levelId] || getLevelCode(levelName);
+      
+      // Use first 8 characters of levelId UUID for uniqueness guarantee
+      // This ensures different levels always have different codes
+      const levelUuidPrefix = levelId.substring(0, 8);
 
       // Si no hay secciones, crear un solo curso por nivel
       if (options.sections.length === 0) {
         const courseName = levelName;
-        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, '');
+        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, '');
 
         coursesToCreate.push({
           name: courseName,
@@ -171,7 +154,7 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
         // Crear un curso por cada sección
         for (const section of options.sections) {
           const courseName = `${levelName} ${section}`;
-          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, section);
+          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, section);
 
           coursesToCreate.push({
             name: courseName,
@@ -194,6 +177,7 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
             code: course.code,
             levelId: course.levelId,
             institution: options.institution,
+            section: course.section,
             active: true,
           },
           userUUID

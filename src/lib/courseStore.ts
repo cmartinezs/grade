@@ -75,6 +75,7 @@ class CourseStore {
         institutionName: string;
         levelId: string;
         userId: string;
+        section?: string;
         active: boolean;
         createdAt: string;
         createdBy?: string;
@@ -88,6 +89,7 @@ class CourseStore {
         code: course.code,
         levelId: course.levelId,
         institution: course.institutionName,
+        section: course.section,
         active: course.active !== false,
         created_at: new Date(course.createdAt),
         created_by: course.createdBy || 'SYSTEM',
@@ -122,16 +124,6 @@ class CourseStore {
   private saveCourses(): void {
     if (typeof window === 'undefined') return;
     // localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
-  }
-
-  // Get next course ID
-  private getNextCourseId(): string {
-    if (typeof window === 'undefined') return 'c-1';
-    
-    const counter = parseInt(localStorage.getItem(COURSE_COUNTER_KEY) || '0', 10);
-    const nextCounter = counter + 1;
-    // localStorage.setItem(COURSE_COUNTER_KEY, nextCounter.toString());
-    return `c-${nextCounter}`;
   }
 
   // Validate course input (CU-GE-01: A2 - Datos incompletos)
@@ -206,7 +198,8 @@ class CourseStore {
       input.institution.trim(),
       input.levelId,
       currentUser,
-      currentUser
+      currentUser,
+      input.section
     );
 
     // Create local course object
@@ -216,6 +209,7 @@ class CourseStore {
       code: input.code.trim().toUpperCase(),
       levelId: input.levelId,
       institution: input.institution.trim(),
+      section: input.section,
       active,
       created_at: new Date(),
       created_by: currentUser,
