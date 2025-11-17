@@ -12,28 +12,28 @@ For each operation, there is a wrapper hook that can be used to call the operati
 
 Here are all of the hooks that get generated:
 ```ts
-import { useGetUserByEmail, useListSubjects, useGetSubject, useListUnits, useGetUnit, useListTopics, useGetTopic, useListLevelCategories, useGetLevelCategory, useListEducationalLevels } from '@dataconnect/generated/react';
+import { useCreateUser, useUpdateUser, useCreateSubject, useUpdateSubject, useDeactivateSubject, useReactivateSubject, useCreateUnit, useUpdateUnit, useDeactivateUnit, useReactivateUnit } from '@dataconnect/generated/react';
 // The types of these hooks are available in react/index.d.ts
 
-const { data, isPending, isSuccess, isError, error } = useGetUserByEmail(getUserByEmailVars);
+const { data, isPending, isSuccess, isError, error } = useCreateUser(createUserVars);
 
-const { data, isPending, isSuccess, isError, error } = useListSubjects();
+const { data, isPending, isSuccess, isError, error } = useUpdateUser(updateUserVars);
 
-const { data, isPending, isSuccess, isError, error } = useGetSubject(getSubjectVars);
+const { data, isPending, isSuccess, isError, error } = useCreateSubject(createSubjectVars);
 
-const { data, isPending, isSuccess, isError, error } = useListUnits();
+const { data, isPending, isSuccess, isError, error } = useUpdateSubject(updateSubjectVars);
 
-const { data, isPending, isSuccess, isError, error } = useGetUnit(getUnitVars);
+const { data, isPending, isSuccess, isError, error } = useDeactivateSubject(deactivateSubjectVars);
 
-const { data, isPending, isSuccess, isError, error } = useListTopics();
+const { data, isPending, isSuccess, isError, error } = useReactivateSubject(reactivateSubjectVars);
 
-const { data, isPending, isSuccess, isError, error } = useGetTopic(getTopicVars);
+const { data, isPending, isSuccess, isError, error } = useCreateUnit(createUnitVars);
 
-const { data, isPending, isSuccess, isError, error } = useListLevelCategories();
+const { data, isPending, isSuccess, isError, error } = useUpdateUnit(updateUnitVars);
 
-const { data, isPending, isSuccess, isError, error } = useGetLevelCategory(getLevelCategoryVars);
+const { data, isPending, isSuccess, isError, error } = useDeactivateUnit(deactivateUnitVars);
 
-const { data, isPending, isSuccess, isError, error } = useListEducationalLevels();
+const { data, isPending, isSuccess, isError, error } = useReactivateUnit(reactivateUnitVars);
 
 ```
 
@@ -72,38 +72,38 @@ If a user is not using a supported framework, they can use the generated SDK dir
 Here's an example of how to use it with the first 5 operations:
 
 ```js
-import { getUserByEmail, listSubjects, getSubject, listUnits, getUnit, listTopics, getTopic, listLevelCategories, getLevelCategory, listEducationalLevels } from '@dataconnect/generated';
+import { createUser, updateUser, createSubject, updateSubject, deactivateSubject, reactivateSubject, createUnit, updateUnit, deactivateUnit, reactivateUnit } from '@dataconnect/generated';
 
 
-// Operation GetUserByEmail:  For variables, look at type GetUserByEmailVars in ../index.d.ts
-const { data } = await GetUserByEmail(dataConnect, getUserByEmailVars);
+// Operation CreateUser:  For variables, look at type CreateUserVars in ../index.d.ts
+const { data } = await CreateUser(dataConnect, createUserVars);
 
-// Operation ListSubjects: 
-const { data } = await ListSubjects(dataConnect);
+// Operation UpdateUser:  For variables, look at type UpdateUserVars in ../index.d.ts
+const { data } = await UpdateUser(dataConnect, updateUserVars);
 
-// Operation GetSubject:  For variables, look at type GetSubjectVars in ../index.d.ts
-const { data } = await GetSubject(dataConnect, getSubjectVars);
+// Operation CreateSubject:  For variables, look at type CreateSubjectVars in ../index.d.ts
+const { data } = await CreateSubject(dataConnect, createSubjectVars);
 
-// Operation ListUnits: 
-const { data } = await ListUnits(dataConnect);
+// Operation UpdateSubject:  For variables, look at type UpdateSubjectVars in ../index.d.ts
+const { data } = await UpdateSubject(dataConnect, updateSubjectVars);
 
-// Operation GetUnit:  For variables, look at type GetUnitVars in ../index.d.ts
-const { data } = await GetUnit(dataConnect, getUnitVars);
+// Operation DeactivateSubject:  For variables, look at type DeactivateSubjectVars in ../index.d.ts
+const { data } = await DeactivateSubject(dataConnect, deactivateSubjectVars);
 
-// Operation ListTopics: 
-const { data } = await ListTopics(dataConnect);
+// Operation ReactivateSubject:  For variables, look at type ReactivateSubjectVars in ../index.d.ts
+const { data } = await ReactivateSubject(dataConnect, reactivateSubjectVars);
 
-// Operation GetTopic:  For variables, look at type GetTopicVars in ../index.d.ts
-const { data } = await GetTopic(dataConnect, getTopicVars);
+// Operation CreateUnit:  For variables, look at type CreateUnitVars in ../index.d.ts
+const { data } = await CreateUnit(dataConnect, createUnitVars);
 
-// Operation ListLevelCategories: 
-const { data } = await ListLevelCategories(dataConnect);
+// Operation UpdateUnit:  For variables, look at type UpdateUnitVars in ../index.d.ts
+const { data } = await UpdateUnit(dataConnect, updateUnitVars);
 
-// Operation GetLevelCategory:  For variables, look at type GetLevelCategoryVars in ../index.d.ts
-const { data } = await GetLevelCategory(dataConnect, getLevelCategoryVars);
+// Operation DeactivateUnit:  For variables, look at type DeactivateUnitVars in ../index.d.ts
+const { data } = await DeactivateUnit(dataConnect, deactivateUnitVars);
 
-// Operation ListEducationalLevels: 
-const { data } = await ListEducationalLevels(dataConnect);
+// Operation ReactivateUnit:  For variables, look at type ReactivateUnitVars in ../index.d.ts
+const { data } = await ReactivateUnit(dataConnect, reactivateUnitVars);
 
 
 ```
