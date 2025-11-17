@@ -6,7 +6,12 @@
  */
 
 import { useCallback } from 'react';
-import { generateCoursesInBulk, CourseGenerationOptions } from '@/lib/courseDataLoader';
+import {
+  generateCoursesInBulk,
+  generateCoursesInMemory,
+  CourseGenerationOptions,
+  CourseToCreate,
+} from '@/lib/courseDataLoader';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface GenerateCoursesResult {
@@ -29,16 +34,11 @@ type ProgressCallback = (progress: ProgressUpdate) => void;
 export function useCourseDataLoader() {
   const { user } = useAuth();
 
-  /**
-   * Genera masivamente cursos a Data-Connect y actualiza el store local
-   * 
-   * @param options - Opciones de generación (institución, letras, niveles)
-   * @param onProgress - Callback para recibir actualizaciones de progreso
-   */
   const generateCourses = useCallback(
     async (
       options: CourseGenerationOptions,
-      onProgress?: ProgressCallback
+      onProgress?: ProgressCallback,
+      coursesToCreate?: CourseToCreate[]
     ): Promise<GenerateCoursesResult> => {
       try {
         console.log('[useCourseGenerator] Starting bulk course generation...');
@@ -57,7 +57,7 @@ export function useCourseDataLoader() {
         }
 
         // Calcular total de cursos a crear
-        const totalCourses = options.levelIds.length * Math.max(1, options.sections.length);
+        const totalCourses = coursesToCreate?.length || (options.levelIds.length * Math.max(1, options.sections.length));
         
         if (onProgress) {
           onProgress({
@@ -70,10 +70,13 @@ export function useCourseDataLoader() {
         }
 
         // 1. Generar cursos en Data-Connect con el userId del usuario logueado
-        const result = await generateCoursesInBulk({
-          ...options,
-          userId: user.id,
-        });
+        const result = await generateCoursesInBulk(
+          {
+            ...options,
+            userId: user.id,
+          },
+          coursesToCreate
+        );
 
         // 2. Los cursos ya están en el store (courseStore.createCourse)
         // No es necesario recargar desde Data-Connect
@@ -115,7 +118,19 @@ export function useCourseDataLoader() {
     [user?.id]
   );
 
+  /**
+   * Genera cursos EN MEMORIA para mostrar en una vista previa
+   * @param options - Opciones de generación
+   */
+  const previewCourses = useCallback(
+    (options: CourseGenerationOptions): CourseToCreate[] => {
+      return generateCoursesInMemory(options);
+    },
+    []
+  );
+
   return {
     generateCourses,
+    previewCourses,
   };
 }

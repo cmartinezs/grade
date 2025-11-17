@@ -69,7 +69,6 @@ export default function BulkGeneratePage() {
                   <CourseBulkGeneratorForm
                     onSuccess={handleSuccess}
                     showSummary={false}
-                    compact={true}
                   />
                 </Card.Body>
               </Card>

@@ -10,9 +10,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Form, Button, Card, Alert, ProgressBar, Spinner } from 'react-bootstrap';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import BadgeInput from '@/components/shared/BadgeInput';
+import CoursePreviewModal from './CoursePreviewModal';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
-import { CourseGenerationOptions } from '@/lib/courseDataLoader';
+import { CourseGenerationOptions, CourseToCreate } from '@/lib/courseDataLoader';
 import { LevelCategory } from '@/types/level';
 
 interface ProgressState {
@@ -39,7 +40,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   showSummary = false,
   compact = false,
 }) => {
-  const { generateCourses } = useCourseDataLoader();
+  const { generateCourses, previewCourses } = useCourseDataLoader();
 
   // Form state
   const [institutionName, setInstitutionName] = useState('');
@@ -62,6 +63,11 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState(false);
   const [coursesCreated, setCoursesCreated] = useState(0);
+
+  // Modal state
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewCoursesList, setPreviewCoursesList] = useState<CourseToCreate[]>([]);
+  const [generationOptions, setGenerationOptions] = useState<CourseGenerationOptions | null>(null);
 
   // Load levels from Data-Connect on component mount
   useEffect(() => {
@@ -238,20 +244,36 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       categoryNames,
     };
 
+    // Generar cursos en memoria para mostrar preview
+    const coursesToPreview = previewCourses(options);
+    setPreviewCoursesList(coursesToPreview);
+    setGenerationOptions(options);
+    setShowPreview(true);
+  };
+
+  // Manejador para cuando el usuario confirma desde el modal
+  const handleConfirmPreview = async (selectedCourses: CourseToCreate[]) => {
+    if (!generationOptions) return;
+
     setIsLoading(true);
     setError('');
     setSuccess(false);
+    setShowPreview(false);
 
     try {
-      const result = await generateCourses(options, (progressUpdate) => {
-        setProgress({
-          currentStep: progressUpdate.currentStep,
-          currentIndex: progressUpdate.currentIndex,
-          total: progressUpdate.total,
-          itemName: progressUpdate.itemName,
-          percentage: progressUpdate.percentage,
-        });
-      });
+      const result = await generateCourses(
+        generationOptions,
+        (progressUpdate: ProgressState) => {
+          setProgress({
+            currentStep: progressUpdate.currentStep,
+            currentIndex: progressUpdate.currentIndex,
+            total: progressUpdate.total,
+            itemName: progressUpdate.itemName,
+            percentage: progressUpdate.percentage,
+          });
+        },
+        selectedCourses
+      );
 
       if (result.success) {
         setSuccess(true);
@@ -651,6 +673,17 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           </p>
         </Alert>
       )}
+
+      {/* Modal de vista previa */}
+      <CoursePreviewModal
+        show={showPreview}
+        courses={previewCoursesList}
+        isLoading={isLoading}
+        onConfirm={handleConfirmPreview}
+        onCancel={() => setShowPreview(false)}
+        title="Vista Previa de Cursos a Generar"
+        institution={institutionName}
+      />
     </div>
   );
 };

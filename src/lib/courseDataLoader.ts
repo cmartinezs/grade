@@ -67,17 +67,87 @@ export interface CourseGenerationOptions {
   userId?: string; // UUID del usuario logueado
 }
 
+export interface CourseToCreate {
+  name: string;
+  code: string;
+  levelId: string;
+  section?: string;
+  institution: string;
+}
+
 export interface CourseGenerationResult {
   coursesCreated: number;
   errors: string[];
 }
 
 /**
+ * Genera cursos EN MEMORIA sin guardarlos
+ * Útil para mostrar una vista previa antes de confirmar
+ * @param options Opciones de generación
+ * @returns Array de cursos que se crearían
+ */
+export function generateCoursesInMemory(options: CourseGenerationOptions): CourseToCreate[] {
+  const coursesToCreate: CourseToCreate[] = [];
+
+  try {
+    // Calcular iniciales de la institución
+    const institutionInitials = getInitials(options.institution);
+
+    // Generar todas las combinaciones de nivel + sección
+    for (const levelId of options.levelIds) {
+      const levelName = options.levelNames[levelId] || 'Unknown';
+      const categoryId = options.levelCategories?.[levelId];
+      const categoryName = categoryId && options.categoryNames ? options.categoryNames[categoryId] : 'General';
+      const categoryCode = (categoryId && options.categoryCodes?.[categoryId]) || getInitials(categoryName);
+      
+      // Use first 8 characters of levelId UUID for uniqueness guarantee
+      const levelUuidPrefix = levelId.substring(0, 8);
+
+      // Si no hay secciones, crear un solo curso por nivel
+      if (options.sections.length === 0) {
+        const courseName = levelName;
+        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, '');
+
+        coursesToCreate.push({
+          name: courseName,
+          code: courseCode,
+          levelId,
+          section: undefined,
+          institution: options.institution,
+        });
+      } else {
+        // Crear un curso por cada sección
+        for (const section of options.sections) {
+          const courseName = `${levelName} ${section}`;
+          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, section);
+
+          coursesToCreate.push({
+            name: courseName,
+            code: courseCode,
+            levelId,
+            section,
+            institution: options.institution,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error generating courses in memory:', error);
+  }
+
+  return coursesToCreate;
+}
+
+/**
  * Genera masivamente cursos para una institución
  * @param options Opciones de generación (institución, letras, niveles)
+ * @param coursesToCreate Array de cursos previamente generados en memoria (opcional)
  * @returns Resultado con cantidad de cursos creados y errores
  */
-export async function generateCoursesInBulk(options: CourseGenerationOptions): Promise<CourseGenerationResult> {
+export async function generateCoursesInBulk(
+  options: CourseGenerationOptions,
+  coursesToCreate?: CourseToCreate[]
+): Promise<CourseGenerationResult> {
   const result: CourseGenerationResult = {
     coursesCreated: 0,
     errors: [],
@@ -97,8 +167,11 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
       throw new Error('User ID is required to create courses');
     }
 
-    // Calcular iniciales de la institución
-    const institutionInitials = getInitials(options.institution);
+    // Si no se proporcionan cursos, generarlos
+    let courses = coursesToCreate;
+    if (!courses) {
+      courses = generateCoursesInMemory(options);
+    }
 
     // Validar que todos los levelIds sean válidos
     console.log('[CourseBulkGenerator] Validating levelIds...', options.levelIds);
@@ -121,62 +194,17 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
       console.log(`[CourseBulkGenerator] Level validated: ${level.name} (${levelId})`);
     }
 
-    // Generar todas las combinaciones de nivel + sección
-    const coursesToCreate: Array<{
-      name: string;
-      code: string;
-      levelId: string;
-      section?: string;
-    }> = [];
-
-    for (const levelId of options.levelIds) {
-      const levelName = options.levelNames[levelId] || 'Unknown';
-      const categoryId = options.levelCategories?.[levelId];
-      const categoryName = categoryId && options.categoryNames ? options.categoryNames[categoryId] : 'General';
-      const categoryCode = (categoryId && options.categoryCodes?.[categoryId]) || getInitials(categoryName);
-      
-      // Use first 8 characters of levelId UUID for uniqueness guarantee
-      // This ensures different levels always have different codes
-      const levelUuidPrefix = levelId.substring(0, 8);
-
-      // Si no hay secciones, crear un solo curso por nivel
-      if (options.sections.length === 0) {
-        const courseName = levelName;
-        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, '');
-
-        coursesToCreate.push({
-          name: courseName,
-          code: courseCode,
-          levelId,
-          section: undefined,
-        });
-      } else {
-        // Crear un curso por cada sección
-        for (const section of options.sections) {
-          const courseName = `${levelName} ${section}`;
-          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, section);
-
-          coursesToCreate.push({
-            name: courseName,
-            code: courseCode,
-            levelId,
-            section,
-          });
-        }
-      }
-    }
-
-    console.log(`[CourseBulkGenerator] Will create ${coursesToCreate.length} courses`);
+    console.log(`[CourseBulkGenerator] Will create ${courses.length} courses`);
 
     // Crear cursos
-    for (const course of coursesToCreate) {
+    for (const course of courses) {
       try {
         const courseId = await courseStore.createCourse(
           {
             name: course.name,
             code: course.code,
             levelId: course.levelId,
-            institution: options.institution,
+            institution: course.institution,
             section: course.section,
             active: true,
           },

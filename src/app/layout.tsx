@@ -3,6 +3,7 @@ import "./globals.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { LoadingProvider } from '@/contexts/LoadingContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { HelpProvider } from '@/contexts/HelpContext';
 
 export const metadata: Metadata = {
   title: "GRADE: Generación y Registro Automatizado De Evaluaciones - Web App",
@@ -19,7 +20,9 @@ export default function RootLayout({
       <body>
         <LoadingProvider>
           <AuthProvider>
-            {children}
+            <HelpProvider>
+              {children}
+            </HelpProvider>
           </AuthProvider>
         </LoadingProvider>
       </body>
