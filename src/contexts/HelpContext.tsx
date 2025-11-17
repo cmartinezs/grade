@@ -2,21 +2,25 @@
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
+/**
+ * Estructura del contenido de ayuda que se muestra en el sidebar
+ */
+export type HelpContentType = {
+  title?: string;
+  children?: ReactNode;
+  header?: ReactNode;
+  footer?: ReactNode;
+} | null;
+
 interface HelpContextType {
-  helpContent: {
-    title: string;
-    children: ReactNode;
-  } | null;
-  setHelpContent: (content: { title: string; children: ReactNode } | null) => void;
+  helpContent: HelpContentType;
+  setHelpContent: (content: HelpContentType) => void;
 }
 
 const HelpContext = createContext<HelpContextType | undefined>(undefined);
 
 export function HelpProvider({ children }: { children: ReactNode }) {
-  const [helpContent, setHelpContent] = useState<{
-    title: string;
-    children: ReactNode;
-  } | null>(null);
+  const [helpContent, setHelpContent] = useState<HelpContentType>(null);
 
   return (
     <HelpContext.Provider value={{ helpContent, setHelpContent }}>

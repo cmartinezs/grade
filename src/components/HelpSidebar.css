@@ -1,0 +1,101 @@
+/* Help Sidebar Component Styles */
+
+.help-sidebar-overlay {
+  position: fixed;
+  right: 0;
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1000;
+  overflow: hidden;
+  height: 100%;
+}
+
+.help-sidebar-overlay.closed {
+  width: 0;
+  box-shadow: none;
+}
+
+.help-sidebar-overlay.open {
+  width: 450px;
+}
+
+/* Sidebar Content Container */
+.help-sidebar-content {
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Footer Styling */
+.help-sidebar-content .card-footer {
+  background-color: #f8f9fa !important;
+  border-top: 1px solid #dee2e6;
+  font-size: 0.875rem;
+}
+
+/* Help Toggle Button */
+.help-sidebar-button {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  min-height: auto;
+  padding: 8px 4px;
+  background: #28a745;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: right 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1001;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.help-sidebar-button:hover {
+  background: #218838;
+}
+
+.help-sidebar-button.closed {
+  right: 0;
+}
+
+.help-sidebar-button.open {
+  right: 450px;
+}
+
+/* Button Text - Vertical */
+.help-sidebar-button-text {
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* Button Indicator - Horizontal */
+.help-sidebar-button-indicator {
+  font-size: 0.85rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* Backdrop Overlay */
+.help-sidebar-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}

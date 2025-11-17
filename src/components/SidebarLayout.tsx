@@ -154,9 +154,6 @@ export default function SidebarLayout({ items, children, sidebarTitle }: Sidebar
             />
           ))}
         </nav>
-        <div className="sidebar-footer">
-          <small className="text-muted">Versión 2.0</small>
-        </div>
       </aside>
 
       {/* Mobile offcanvas */}
@@ -185,6 +182,8 @@ export default function SidebarLayout({ items, children, sidebarTitle }: Sidebar
           isOpen={showHelp}
           onToggle={() => setShowHelp(!showHelp)}
           title={helpContent.title}
+          header={helpContent.header}
+          footer={helpContent.footer}
         >
           {helpContent.children}
         </HelpSidebar>
