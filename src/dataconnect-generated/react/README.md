@@ -1245,6 +1245,7 @@ export interface ListCoursesData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -1339,6 +1340,7 @@ export interface GetCourseData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -1438,6 +1440,7 @@ export interface GetCoursesByUserData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -1532,6 +1535,7 @@ export interface GetCoursesByLevelData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -5194,6 +5198,7 @@ export interface CreateCourseVariables {
   courseId: UUIDString;
   name: string;
   code: string;
+  section?: string | null;
   institutionName: string;
   levelId: UUIDString;
   userId: UUIDString;
@@ -5250,6 +5255,7 @@ export default function CreateCourseComponent() {
     courseId: ..., 
     name: ..., 
     code: ..., 
+    section: ..., // optional
     institutionName: ..., 
     levelId: ..., 
     userId: ..., 
@@ -5257,7 +5263,7 @@ export default function CreateCourseComponent() {
   };
   mutation.mutate(createCourseVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ courseId: ..., name: ..., code: ..., institutionName: ..., levelId: ..., userId: ..., createdBy: ..., });
+  mutation.mutate({ courseId: ..., name: ..., code: ..., section: ..., institutionName: ..., levelId: ..., userId: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5300,6 +5306,7 @@ export interface UpdateCourseVariables {
   courseId: UUIDString;
   name: string;
   code: string;
+  section?: string | null;
   institutionName: string;
   levelId: UUIDString;
   userId: UUIDString;
@@ -5358,6 +5365,7 @@ export default function UpdateCourseComponent() {
     courseId: ..., 
     name: ..., 
     code: ..., 
+    section: ..., // optional
     institutionName: ..., 
     levelId: ..., 
     userId: ..., 
@@ -5367,7 +5375,7 @@ export default function UpdateCourseComponent() {
   };
   mutation.mutate(updateCourseVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ courseId: ..., name: ..., code: ..., institutionName: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ courseId: ..., name: ..., code: ..., section: ..., institutionName: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

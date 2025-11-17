@@ -77,7 +77,7 @@ function getLevelCode(levelName: string): string {
 
 export interface CourseGenerationOptions {
   institution: string;
-  numberOfLetters: number; // A, B, C, D, etc.
+  sections: string[]; // Array de identificadores de paralelos: [], ['A', 'B', 'C'], ['1', '2', '3'], ['Ositos', 'Delfines'], etc.
   levelIds: string[]; // IDs of levels to create courses for
   levelNames: Record<string, string>; // Mapping of levelId to level name
   levelCategories?: Record<string, string>; // Mapping of levelId to categoryId
@@ -106,7 +106,7 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
   try {
     console.log('[CourseBulkGenerator] Starting bulk course generation...');
     console.log(`[CourseBulkGenerator] Institution: ${options.institution}`);
-    console.log(`[CourseBulkGenerator] Letters: ${options.numberOfLetters}`);
+    console.log(`[CourseBulkGenerator] Sections: ${options.sections.length > 0 ? options.sections.join(', ') : 'None'}`);
     console.log(`[CourseBulkGenerator] Levels: ${options.levelIds.length}`);
     console.log(`[CourseBulkGenerator] User ID: ${options.userId}`);
 
@@ -141,11 +141,12 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
       console.log(`[CourseBulkGenerator] Level validated: ${level.name} (${levelId})`);
     }
 
-    // Generar todas las combinaciones de nivel + letra
+    // Generar todas las combinaciones de nivel + sección
     const coursesToCreate: Array<{
       name: string;
       code: string;
       levelId: string;
+      section?: string;
     }> = [];
 
     for (const levelId of options.levelIds) {
@@ -155,17 +156,30 @@ export async function generateCoursesInBulk(options: CourseGenerationOptions): P
       const categoryCode = (categoryId && options.categoryCodes?.[categoryId]) || getInitials(categoryName);
       const levelCode = options.levelCodes?.[levelId] || getLevelCode(levelName);
 
-      // Generar letras: A, B, C, D, etc.
-      for (let i = 0; i < options.numberOfLetters; i++) {
-        const letter = String.fromCharCode(65 + i); // 65 = 'A'
-        const courseName = `${levelName} ${letter}`;
-        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, letter);
+      // Si no hay secciones, crear un solo curso por nivel
+      if (options.sections.length === 0) {
+        const courseName = levelName;
+        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, '');
 
         coursesToCreate.push({
           name: courseName,
           code: courseCode,
           levelId,
+          section: undefined,
         });
+      } else {
+        // Crear un curso por cada sección
+        for (const section of options.sections) {
+          const courseName = `${levelName} ${section}`;
+          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, section);
+
+          coursesToCreate.push({
+            name: courseName,
+            code: courseCode,
+            levelId,
+            section,
+          });
+        }
       }
     }
 

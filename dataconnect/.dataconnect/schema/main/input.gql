@@ -171,6 +171,14 @@ input Course_Data {
   """
   name_expr: String_Expr
   """
+  ✨ Generated from Field `Course`.`section` of type `String`
+  """
+  section: String
+  """
+  ✨ `_expr` server value variant of `section` (✨ Generated from Field `Course`.`section` of type `String`)
+  """
+  section_expr: String_Expr
+  """
   ✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`
   """
   updatedAt: Timestamp
@@ -259,6 +267,10 @@ input Course_Filter {
   ✨ Generated from Field `Course`.`name` of type `String!`
   """
   name: String_Filter
+  """
+  ✨ Generated from Field `Course`.`section` of type `String`
+  """
+  section: String_Filter
   """
   ✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`
   """
@@ -349,6 +361,10 @@ input Course_Having {
   ✨ Generated from Field `Course`.`name_count` of type `Int!`
   """
   name_count: Int_Filter
+  """
+  ✨ Generated from Field `Course`.`section_count` of type `Int!`
+  """
+  section_count: Int_Filter
   """
   ✨ Generated from Field `Course`.`updatedAt_count` of type `Int!`
   """
@@ -457,6 +473,10 @@ input Course_Order {
   """
   name: OrderDirection
   """
+  ✨ Generated from Field `Course`.`section` of type `String`
+  """
+  section: OrderDirection
+  """
   ✨ Generated from Field `Course`.`updatedAt` of type `Timestamp`
   """
   updatedAt: OrderDirection
@@ -512,6 +532,10 @@ input Course_Order {
   ✨ Generated from Field `Course`.`name_count` of type `Int!`
   """
   name_count: OrderDirection
+  """
+  ✨ Generated from Field `Course`.`section_count` of type `Int!`
+  """
+  section_count: OrderDirection
   """
   ✨ Generated from Field `Course`.`updatedAt_count` of type `Int!`
   """

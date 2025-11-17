@@ -43,7 +43,7 @@ export function useCourseDataLoader() {
       try {
         console.log('[useCourseGenerator] Starting bulk course generation...');
         console.log(`[useCourseGenerator] Institution: ${options.institution}`);
-        console.log(`[useCourseGenerator] Letters: ${options.numberOfLetters}`);
+        console.log(`[useCourseGenerator] Sections: ${options.sections.length}`);
         console.log(`[useCourseGenerator] Levels: ${options.levelIds.length}`);
         console.log(`[useCourseGenerator] User ID: ${user?.id}`);
 
@@ -57,7 +57,7 @@ export function useCourseDataLoader() {
         }
 
         // Calcular total de cursos a crear
-        const totalCourses = options.levelIds.length * options.numberOfLetters;
+        const totalCourses = options.levelIds.length * Math.max(1, options.sections.length);
         
         if (onProgress) {
           onProgress({

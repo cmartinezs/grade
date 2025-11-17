@@ -1508,6 +1508,7 @@ export interface ListCoursesData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -1630,6 +1631,7 @@ export interface GetCourseData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -1758,6 +1760,7 @@ export interface GetCoursesByUserData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -1880,6 +1883,7 @@ export interface GetCoursesByLevelData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -6357,6 +6361,7 @@ export interface CreateCourseVariables {
   courseId: UUIDString;
   name: string;
   code: string;
+  section?: string | null;
   institutionName: string;
   levelId: UUIDString;
   userId: UUIDString;
@@ -6383,6 +6388,7 @@ const createCourseVars: CreateCourseVariables = {
   courseId: ..., 
   name: ..., 
   code: ..., 
+  section: ..., // optional
   institutionName: ..., 
   levelId: ..., 
   userId: ..., 
@@ -6393,7 +6399,7 @@ const createCourseVars: CreateCourseVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createCourse(createCourseVars);
 // Variables can be defined inline as well.
-const { data } = await createCourse({ courseId: ..., name: ..., code: ..., institutionName: ..., levelId: ..., userId: ..., createdBy: ..., });
+const { data } = await createCourse({ courseId: ..., name: ..., code: ..., section: ..., institutionName: ..., levelId: ..., userId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6419,6 +6425,7 @@ const createCourseVars: CreateCourseVariables = {
   courseId: ..., 
   name: ..., 
   code: ..., 
+  section: ..., // optional
   institutionName: ..., 
   levelId: ..., 
   userId: ..., 
@@ -6428,7 +6435,7 @@ const createCourseVars: CreateCourseVariables = {
 // Call the `createCourseRef()` function to get a reference to the mutation.
 const ref = createCourseRef(createCourseVars);
 // Variables can be defined inline as well.
-const ref = createCourseRef({ courseId: ..., name: ..., code: ..., institutionName: ..., levelId: ..., userId: ..., createdBy: ..., });
+const ref = createCourseRef({ courseId: ..., name: ..., code: ..., section: ..., institutionName: ..., levelId: ..., userId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6484,6 +6491,7 @@ export interface UpdateCourseVariables {
   courseId: UUIDString;
   name: string;
   code: string;
+  section?: string | null;
   institutionName: string;
   levelId: UUIDString;
   userId: UUIDString;
@@ -6512,6 +6520,7 @@ const updateCourseVars: UpdateCourseVariables = {
   courseId: ..., 
   name: ..., 
   code: ..., 
+  section: ..., // optional
   institutionName: ..., 
   levelId: ..., 
   userId: ..., 
@@ -6524,7 +6533,7 @@ const updateCourseVars: UpdateCourseVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateCourse(updateCourseVars);
 // Variables can be defined inline as well.
-const { data } = await updateCourse({ courseId: ..., name: ..., code: ..., institutionName: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateCourse({ courseId: ..., name: ..., code: ..., section: ..., institutionName: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6550,6 +6559,7 @@ const updateCourseVars: UpdateCourseVariables = {
   courseId: ..., 
   name: ..., 
   code: ..., 
+  section: ..., // optional
   institutionName: ..., 
   levelId: ..., 
   userId: ..., 
@@ -6561,7 +6571,7 @@ const updateCourseVars: UpdateCourseVariables = {
 // Call the `updateCourseRef()` function to get a reference to the mutation.
 const ref = updateCourseRef(updateCourseVars);
 // Variables can be defined inline as well.
-const ref = updateCourseRef({ courseId: ..., name: ..., code: ..., institutionName: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateCourseRef({ courseId: ..., name: ..., code: ..., section: ..., institutionName: ..., levelId: ..., userId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);

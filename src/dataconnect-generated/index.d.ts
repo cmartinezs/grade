@@ -23,6 +23,7 @@ export interface CreateCourseVariables {
   courseId: UUIDString;
   name: string;
   code: string;
+  section?: string | null;
   institutionName: string;
   levelId: UUIDString;
   userId: UUIDString;
@@ -318,6 +319,7 @@ export interface GetCourseData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -342,6 +344,7 @@ export interface GetCoursesByLevelData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -361,6 +364,7 @@ export interface GetCoursesByUserData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -643,6 +647,7 @@ export interface ListCoursesData {
     courseId: UUIDString;
     name: string;
     code: string;
+    section?: string | null;
     institutionName: string;
     levelId: UUIDString;
     userId: UUIDString;
@@ -975,6 +980,7 @@ export interface UpdateCourseVariables {
   courseId: UUIDString;
   name: string;
   code: string;
+  section?: string | null;
   institutionName: string;
   levelId: UUIDString;
   userId: UUIDString;

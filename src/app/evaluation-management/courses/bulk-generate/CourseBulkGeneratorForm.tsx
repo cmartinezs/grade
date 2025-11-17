@@ -8,6 +8,8 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Form, Button, Card, Alert, ProgressBar, Spinner } from 'react-bootstrap';
+import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
+import BadgeInput from '@/components/shared/BadgeInput';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
 import { CourseGenerationOptions } from '@/lib/courseDataLoader';
@@ -20,6 +22,9 @@ interface ProgressState {
   itemName: string;
   percentage: number;
 }
+
+// Tipos de identificadores de paralelo
+type SectionIdentifierType = 'none' | 'letters' | 'numbers' | 'custom';
 
 interface CourseBulkGeneratorFormProps {
   onSuccess?: (coursesCreated: number) => void;
@@ -38,7 +43,9 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
 
   // Form state
   const [institutionName, setInstitutionName] = useState('');
-  const [numberOfLetters, setNumberOfLetters] = useState<number>(1);
+  const [sectionType, setSectionType] = useState<SectionIdentifierType>('letters');
+  const [sectionQuantity, setSectionQuantity] = useState<number>(1);
+  const [customSections, setCustomSections] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [allLevels, setAllLevels] = useState<Array<{ id: string; name: string; categoryId: string }>>([]);
   const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>([]);
@@ -138,7 +145,9 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
 
   const resetForm = () => {
     setInstitutionName('');
-    setNumberOfLetters(1);
+    setSectionType('letters');
+    setSectionQuantity(1);
+    setCustomSections([]);
     setSelectedLevels([]);
     setProgress({
       currentStep: '',
@@ -162,16 +171,41 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       return;
     }
 
-    if (numberOfLetters < 1 || numberOfLetters > 26) {
-      setError('La cantidad de letras debe estar entre 1 y 26');
-      onError?.('La cantidad de letras debe estar entre 1 y 26');
-      return;
-    }
-
     if (selectedLevels.length === 0) {
       setError('Por favor selecciona al menos un nivel');
       onError?.('Por favor selecciona al menos un nivel');
       return;
+    }
+
+    // Validar según el tipo de identificador
+    let sections: string[] = [];
+    if (sectionType === 'none') {
+      sections = [];
+    } else if (sectionType === 'letters') {
+      if (sectionQuantity < 1 || sectionQuantity > 26) {
+        setError('La cantidad de letras debe estar entre 1 y 26');
+        onError?.('La cantidad de letras debe estar entre 1 y 26');
+        return;
+      }
+      sections = Array.from({ length: sectionQuantity }, (_, i) =>
+        String.fromCharCode(65 + i)
+      );
+    } else if (sectionType === 'numbers') {
+      if (sectionQuantity < 1 || sectionQuantity > 100) {
+        setError('La cantidad de números debe estar entre 1 y 100');
+        onError?.('La cantidad de números debe estar entre 1 y 100');
+        return;
+      }
+      sections = Array.from({ length: sectionQuantity }, (_, i) =>
+        String(i + 1)
+      );
+    } else if (sectionType === 'custom') {
+      if (customSections.length === 0) {
+        setError('Por favor ingresa al menos un identificador personalizado');
+        onError?.('Por favor ingresa al menos un identificador personalizado');
+        return;
+      }
+      sections = customSections;
     }
 
     // Construir mapping de levelId -> levelName y levelId -> categoryId
@@ -197,7 +231,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
 
     const options: CourseGenerationOptions = {
       institution: institutionName,
-      numberOfLetters,
+      sections,
       levelIds: selectedLevels,
       levelNames,
       levelCategories,
@@ -243,39 +277,79 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
         <Form onSubmit={handleSubmit}>
           {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
 
-          {/* Fila 1: Institución y Letras (2 columnas) */}
+          {/* Fila 1: Institución, Tipo de Paralelo y Campo Dinámico (3 columnas) */}
           {compact ? (
-            <div className="row mb-4">
-              <div className="col-md-6">
-                <Form.Group>
-                  <Form.Label>
-                    <strong>Institución</strong>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="ej. Colegio San Miguel"
-                    value={institutionName}
-                    onChange={(e) => setInstitutionName(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </Form.Group>
+            <>
+              <div className="row mb-4">
+                <div className="col-md-4">
+                  <Form.Group>
+                    <Form.Label>
+                      <strong>Institución</strong>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="ej. Colegio San Miguel"
+                      value={institutionName}
+                      onChange={(e) => setInstitutionName(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </Form.Group>
+                </div>
+                <div className="col-md-4">
+                  <Form.Group>
+                    <Form.Label>
+                      <strong>Tipo de Identificador de Paralelo</strong>
+                    </Form.Label>
+                    <AutocompleteSelect
+                      value={sectionType}
+                      onChange={(value) => setSectionType(value as SectionIdentifierType)}
+                      disabled={isLoading}
+                      options={[
+                        { id: 'none', name: '🔘 Sin paralelo' },
+                        { id: 'letters', name: '🔤 Letras (A, B, C...)' },
+                        { id: 'numbers', name: '🔢 Números (1, 2, 3...)' },
+                        { id: 'custom', name: '✏️ Personalizado' },
+                      ]}
+                      placeholder="Selecciona el tipo de identificador"
+                    />
+                  </Form.Group>
+                </div>
+                <div className="col-md-4">
+                  {sectionType !== 'none' && (
+                    <>
+                      {(sectionType === 'letters' || sectionType === 'numbers') && (
+                        <Form.Group>
+                          <Form.Label>
+                            <strong>{sectionType === 'letters' ? 'Cantidad de Letras' : 'Cantidad de Números'}</strong>
+                          </Form.Label>
+                          <Form.Control
+                            type="number"
+                            min={1}
+                            max={sectionType === 'letters' ? 26 : 100}
+                            value={sectionQuantity}
+                            onChange={(e) => setSectionQuantity(Math.max(1, Math.min(sectionType === 'letters' ? 26 : 100, parseInt(e.target.value) || 1)))}
+                            disabled={isLoading}
+                          />
+                          <Form.Text className="text-muted">
+                            {sectionType === 'letters' ? 'Máximo 26' : 'Máximo 100'}
+                          </Form.Text>
+                        </Form.Group>
+                      )}
+                      {sectionType === 'custom' && (
+                        <BadgeInput
+                          label="Identificadores Personalizados"
+                          value={customSections}
+                          onChange={setCustomSections}
+                          placeholder="Escribe y presiona Enter para agregar"
+                          disabled={isLoading}
+                          helperText="Ej: Ositos, Delfines, Exploradores"
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="col-md-6">
-                <Form.Group>
-                  <Form.Label>
-                    <strong>Letras (A-Z)</strong>
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    min={1}
-                    max={26}
-                    value={numberOfLetters}
-                    onChange={(e) => setNumberOfLetters(Math.max(1, Math.min(26, parseInt(e.target.value) || 1)))}
-                    disabled={isLoading}
-                  />
-                </Form.Group>
-              </div>
-            </div>
+            </>
           ) : (
             <>
               <Form.Group className="mb-4">
@@ -293,20 +367,59 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
 
               <Form.Group className="mb-4">
                 <Form.Label>
-                  <strong>Cantidad de Letras (A, B, C...)</strong>
+                  <strong>Tipo de Identificador de Paralelo</strong>
                 </Form.Label>
-                <Form.Control
-                  type="number"
-                  min={1}
-                  max={26}
-                  value={numberOfLetters}
-                  onChange={(e) => setNumberOfLetters(Math.max(1, Math.min(26, parseInt(e.target.value) || 1)))}
+                <AutocompleteSelect
+                  value={sectionType}
+                  onChange={(value) => setSectionType(value as SectionIdentifierType)}
                   disabled={isLoading}
+                  options={[
+                    { id: 'none', name: '🔘 Sin paralelo (1 curso por nivel)' },
+                    { id: 'letters', name: '🔤 Letras (A, B, C...)' },
+                    { id: 'numbers', name: '🔢 Números (1, 2, 3...)' },
+                    { id: 'custom', name: '✏️ Personalizado' },
+                  ]}
+                  placeholder="Selecciona el tipo de identificador"
                 />
                 <Form.Text className="text-muted">
-                  Ej: 3 = A, B, C (máximo 26)
+                  💡 Selecciona cómo identificar los paralelos en cada nivel
                 </Form.Text>
               </Form.Group>
+
+              {sectionType !== 'none' && (
+                <>
+                  {(sectionType === 'letters' || sectionType === 'numbers') && (
+                    <Form.Group className="mb-4">
+                      <Form.Label>
+                        <strong>{sectionType === 'letters' ? 'Cantidad de Letras' : 'Cantidad de Números'}</strong>
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        min={1}
+                        max={sectionType === 'letters' ? 26 : 100}
+                        value={sectionQuantity}
+                        onChange={(e) => setSectionQuantity(Math.max(1, Math.min(sectionType === 'letters' ? 26 : 100, parseInt(e.target.value) || 1)))}
+                        disabled={isLoading}
+                      />
+                      <Form.Text className="text-muted">
+                        {sectionType === 'letters' 
+                          ? 'Ej: 3 = A, B, C (máximo 26)' 
+                          : 'Ej: 3 = 1, 2, 3 (máximo 100)'}
+                      </Form.Text>
+                    </Form.Group>
+                  )}
+                  {sectionType === 'custom' && (
+                    <BadgeInput
+                      label="Identificadores Personalizados"
+                      value={customSections}
+                      onChange={setCustomSections}
+                      placeholder="Escribe y presiona Enter para agregar"
+                      disabled={isLoading}
+                      helperText="Ingresa identificadores. Ej: Ositos, Delfines, Exploradores. Puedes usar Enter o comas para agregar múltiples."
+                    />
+                  )}
+                </>
+              )}
             </>
           )}
 
@@ -447,7 +560,21 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           <Card className={`mb-4 ${compact ? 'bg-info text-white' : 'bg-info text-white'}`}>
             <Card.Body className="py-3 px-4">
               <p className="mb-2">
-                <strong>Resumen:</strong> {selectedLevels.length} niveles × {numberOfLetters} letra{numberOfLetters > 1 ? 's' : ''} = <strong>{selectedLevels.length * numberOfLetters}</strong> cursos
+                <strong>Resumen:</strong> {selectedLevels.length} niveles × {
+                  sectionType === 'none' 
+                    ? '1 (sin paralelo)'
+                    : sectionType === 'custom'
+                    ? `${customSections.length} identificadores`
+                    : `${sectionQuantity} ${sectionType === 'letters' ? 'letra' : 'número'}${sectionQuantity > 1 ? 's' : ''}`
+                } = <strong>{
+                  selectedLevels.length * (
+                    sectionType === 'none' 
+                      ? 1 
+                      : sectionType === 'custom'
+                      ? Math.max(1, customSections.length)
+                      : sectionQuantity
+                  )
+                }</strong> cursos
               </p>
             </Card.Body>
           </Card>

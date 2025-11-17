@@ -1,0 +1,117 @@
+.badgeInputContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  min-height: 2.375rem;
+  max-height: auto;
+}
+
+.badgeInputContainer:focus-within {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.badgeInputContainer.focused {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.badgeInputContainer.invalid {
+  border-color: #dc3545;
+}
+
+.badgeInputContainer.invalid:focus-within {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.badgesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem !important;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  animation: slideIn 0.2s ease-in-out;
+}
+
+.badge:hover {
+  opacity: 0.9;
+}
+
+.badgeText {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badgeRemove {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 -0.25rem 0 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.badgeRemove:hover:not(:disabled) {
+  opacity: 1;
+}
+
+.badgeRemove:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0.125rem 0;
+  line-height: 1.5;
+  height: 1.5rem;
+}
+
+.input::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+
+.input:disabled {
+  color: #6c757d;
+  cursor: not-allowed;
+  background-color: #e9ecef;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -210,6 +210,7 @@ query ListCourses(
     courseId
     name
     code
+    section
     institutionName
     levelId
     userId
@@ -224,6 +225,7 @@ query GetCourse($courseId: UUID!, $userId: UUID!, $firebaseId: String!) @auth(ex
     courseId
     name
     code
+    section
     institutionName
     levelId
     userId
@@ -243,6 +245,7 @@ query GetCoursesByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "fireba
     courseId
     name
     code
+    section
     institutionName
     levelId
     userId
@@ -257,6 +260,7 @@ query GetCoursesByLevel($userId: UUID!, $levelId: UUID!, $firebaseId: String!) @
     courseId
     name
     code
+    section
     institutionName
     levelId
     userId

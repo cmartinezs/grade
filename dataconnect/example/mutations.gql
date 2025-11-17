@@ -449,6 +449,7 @@ mutation CreateCourse(
   $courseId: UUID!
   $name: String!
   $code: String!
+  $section: String
   $institutionName: String!
   $levelId: UUID!
   $userId: UUID!
@@ -459,6 +460,7 @@ mutation CreateCourse(
       courseId: $courseId
       name: $name
       code: $code
+      section: $section
       institutionName: $institutionName
       levelId: $levelId
       userId: $userId
@@ -473,6 +475,7 @@ mutation UpdateCourse(
   $courseId: UUID!
   $name: String!
   $code: String!
+  $section: String
   $institutionName: String!
   $levelId: UUID!
   $userId: UUID!
@@ -485,6 +488,7 @@ mutation UpdateCourse(
     data: {
       name: $name
       code: $code
+      section: $section
       institutionName: $institutionName
       levelId: $levelId
       userId: $userId

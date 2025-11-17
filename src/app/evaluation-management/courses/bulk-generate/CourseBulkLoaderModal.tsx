@@ -11,6 +11,8 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Modal, Button, Form, ProgressBar, Card, Alert, Spinner } from 'react-bootstrap';
+import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
+import BadgeInput from '@/components/shared/BadgeInput';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { CourseGenerationOptions } from '@/lib/courseDataLoader';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
@@ -49,7 +51,9 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
 
   // Form state
   const [institutionName, setInstitutionName] = useState('');
-  const [numberOfLetters, setNumberOfLetters] = useState<number>(1);
+  const [sectionType, setSectionType] = useState<'none' | 'letters' | 'numbers' | 'custom'>('letters');
+  const [sectionQuantity, setSectionQuantity] = useState<number>(1);
+  const [customSections, setCustomSections] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [allLevels, setAllLevels] = useState<Array<{ id: string; name: string }>>([]);
 
@@ -130,7 +134,9 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
 
   const resetForm = () => {
     setInstitutionName('');
-    setNumberOfLetters(1);
+    setSectionType('letters');
+    setSectionQuantity(1);
+    setCustomSections([]);
     setSelectedLevels([]);
     setProgress({
       currentStep: '',
@@ -153,9 +159,38 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
       return;
     }
 
-    if (numberOfLetters < 1 || numberOfLetters > 26) {
-      setError('La cantidad de letras debe estar entre 1 y 26');
-      return;
+    // Construir array de secciones según el tipo seleccionado
+    let sections: string[] = [];
+    
+    switch (sectionType) {
+      case 'none':
+        sections = [];
+        break;
+      case 'letters':
+        if (sectionQuantity < 1 || sectionQuantity > 26) {
+          setError('La cantidad de letras debe estar entre 1 y 26');
+          return;
+        }
+        sections = Array.from({ length: sectionQuantity }, (_, i) =>
+          String.fromCharCode(65 + i)
+        );
+        break;
+      case 'numbers':
+        if (sectionQuantity < 1 || sectionQuantity > 100) {
+          setError('La cantidad de números debe estar entre 1 y 100');
+          return;
+        }
+        sections = Array.from({ length: sectionQuantity }, (_, i) =>
+          (i + 1).toString()
+        );
+        break;
+      case 'custom':
+        if (customSections.length === 0) {
+          setError('Por favor ingresa al menos un identificador personalizado');
+          return;
+        }
+        sections = customSections;
+        break;
     }
 
     if (selectedLevels.length === 0) {
@@ -174,7 +209,7 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
 
     const options: CourseGenerationOptions = {
       institution: institutionName,
-      numberOfLetters,
+      sections,
       levelIds: selectedLevels,
       levelNames,
     };
@@ -234,37 +269,80 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
           <Form onSubmit={handleSubmit}>
             {error && <Alert variant="danger">{error}</Alert>}
 
-            {/* Institution Name Input */}
-            <Form.Group className="mb-4">
-              <Form.Label>
-                <strong>Nombre de la Institución</strong>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="ej. Colegio San Miguel"
-                value={institutionName}
-                onChange={(e) => setInstitutionName(e.target.value)}
-                disabled={isLoading}
-              />
-            </Form.Group>
+            {/* Institution Name, Section Type and Dynamic Field in one row */}
+            <div className="row mb-4">
+              <div className="col-md-4">
+                <Form.Group>
+                  <Form.Label>
+                    <strong>Nombre de la Institución</strong>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="ej. Colegio San Miguel"
+                    value={institutionName}
+                    onChange={(e) => setInstitutionName(e.target.value)}
+                    disabled={isLoading}
+                  />
+                </Form.Group>
+              </div>
 
-            {/* Number of Letters */}
-            <Form.Group className="mb-4">
-              <Form.Label>
-                <strong>Cantidad de Letras (A, B, C...)</strong>
-              </Form.Label>
-              <Form.Control
-                type="number"
-                min={1}
-                max={26}
-                value={numberOfLetters}
-                onChange={(e) => setNumberOfLetters(Math.max(1, Math.min(26, parseInt(e.target.value) || 1)))}
-                disabled={isLoading}
-              />
-              <Form.Text className="text-muted">
-                Ej: 3 = A, B, C (máximo 26)
-              </Form.Text>
-            </Form.Group>
+              <div className="col-md-4">
+                <Form.Group>
+                  <Form.Label>
+                    <strong>Tipo de Identificador de Paralelo</strong>
+                  </Form.Label>
+                  <AutocompleteSelect
+                    value={sectionType}
+                    onChange={(value) => setSectionType(value as 'none' | 'letters' | 'numbers' | 'custom')}
+                    disabled={isLoading}
+                    options={[
+                      { id: 'none', name: '🔘 Sin paralelo' },
+                      { id: 'letters', name: '🔤 Letras (A, B, C...)' },
+                      { id: 'numbers', name: '🔢 Números (1, 2, 3...)' },
+                      { id: 'custom', name: '✏️ Personalizado' },
+                    ]}
+                    placeholder="Selecciona el tipo de identificador"
+                  />
+                </Form.Group>
+              </div>
+
+              <div className="col-md-4">
+                {sectionType !== 'none' && (
+                  <>
+                    {(sectionType === 'letters' || sectionType === 'numbers') && (
+                      <Form.Group>
+                        <Form.Label>
+                          <strong>{sectionType === 'letters' ? 'Cantidad de Letras' : 'Cantidad de Números'}</strong>
+                        </Form.Label>
+                        <Form.Control
+                          type="number"
+                          min={1}
+                          max={sectionType === 'letters' ? 26 : 100}
+                          value={sectionQuantity}
+                          onChange={(e) => setSectionQuantity(Math.max(1, Math.min(sectionType === 'letters' ? 26 : 100, parseInt(e.target.value) || 1)))}
+                          disabled={isLoading}
+                        />
+                        <Form.Text className="text-muted">
+                          {sectionType === 'letters' 
+                            ? 'Máximo 26' 
+                            : 'Máximo 100'}
+                        </Form.Text>
+                      </Form.Group>
+                    )}
+                    {sectionType === 'custom' && (
+                      <BadgeInput
+                        label="Identificadores Personalizados"
+                        value={customSections}
+                        onChange={setCustomSections}
+                        placeholder="Escribe y presiona Enter para agregar"
+                        disabled={isLoading}
+                        helperText="Ej: Ositos, Delfines, Exploradores"
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
 
             {/* Level Selection */}
             <Form.Group className="mb-4">
@@ -316,8 +394,22 @@ export const CourseBulkLoaderModal: React.FC<CourseBulkLoaderModalProps> = ({
                   <strong>Resumen de carga:</strong>
                 </p>
                 <p className="mb-0">
-                  Se crearán <strong>{selectedLevels.length * numberOfLetters}</strong> cursos
-                  ({selectedLevels.length} niveles × {numberOfLetters} letra{numberOfLetters > 1 ? 's' : ''})
+                  Se crearán <strong>{
+                    selectedLevels.length * (
+                      sectionType === 'none' 
+                        ? 1 
+                        : sectionType === 'custom'
+                        ? Math.max(1, customSections.length)
+                        : sectionQuantity
+                    )
+                  }</strong> cursos
+                  ({selectedLevels.length} niveles × {
+                    sectionType === 'none' 
+                      ? '1 (sin paralelo)'
+                      : sectionType === 'custom'
+                      ? `${customSections.length} identificadores`
+                      : `${sectionQuantity} ${sectionType === 'letters' ? 'letra' : 'número'}${sectionQuantity > 1 ? 's' : ''}`
+                  })
                 </p>
               </Card.Body>
             </Card>
