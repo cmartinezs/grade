@@ -1,0 +1,82 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  position: relative;
+  min-height: 600px;
+}
+
+.sidebar {
+  position: fixed;
+  left: -350px;
+  top: 0;
+  bottom: 0;
+  width: 350px;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebarContent {
+  padding: 1rem;
+  height: 100%;
+}
+
+.toggleButton {
+  position: fixed;
+  left: 1rem;
+  bottom: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #28a745;
+  background: white;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 101;
+}
+
+.toggleButton:hover {
+  background: #f0f0f0;
+  transform: scale(1.1);
+}
+
+.toggleButton:active {
+  transform: scale(0.95);
+}
+
+.mainContent {
+  width: 100%;
+  transition: margin-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 280px;
+    left: -280px;
+  }
+
+  .toggleButton {
+    left: 0.5rem;
+    bottom: 1rem;
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+
+  .sidebarContent {
+    padding: 0.75rem;
+  }
+}

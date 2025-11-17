@@ -313,21 +313,32 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           {/* Level Selection - Agrupado por categoría */}
           <Form.Group className="mb-4">
             <Form.Label>
-              <strong>Seleccionar Niveles</strong>
+              <strong>📚 Seleccionar Niveles</strong>
             </Form.Label>
             
             {/* Select All Switch */}
-            <Form.Switch
-              id="select-all-levels"
-              label={<strong>Seleccionar Todos</strong>}
-              checked={selectedLevels.length === allLevels.length && allLevels.length > 0}
-              onChange={handleSelectAll}
-              className="mb-3"
-            />
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem', padding: '0.75rem', backgroundColor: '#f8f9fa', borderRadius: '0.375rem' }}>
+              <Form.Check
+                id="select-all-levels"
+                type="switch"
+                checked={selectedLevels.length === allLevels.length && allLevels.length > 0}
+                onChange={handleSelectAll}
+                style={{ margin: 0 }}
+              />
+              <Form.Label
+                htmlFor="select-all-levels"
+                className="ms-2 mb-0"
+                style={{ cursor: 'pointer', userSelect: 'none', fontWeight: 'bold' }}
+              >
+                Seleccionar Todos los Niveles
+              </Form.Label>
+            </div>
 
             {/* Niveles agrupados por categoría */}
             {allLevels.length === 0 ? (
-              <p className="text-muted">No hay niveles disponibles</p>
+              <div className="alert alert-info mb-0">
+                <p className="mb-0">No hay niveles disponibles. Por favor, carga los datos de Chile primero.</p>
+              </div>
             ) : (
               (() => {
                 // Agrupar niveles por categoría
@@ -340,7 +351,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                   grouped.get(catId)!.push(level);
                 });
 
-                return Array.from(grouped.entries()).map(([categoryId, levelsInCat]) => {
+                const categoryCards = Array.from(grouped.entries()).map(([categoryId, levelsInCat]) => {
                   // Get category name from state instead of store
                   const categoryName = categoryId === 'sin-categoria' 
                     ? 'Sin Categoría' 
@@ -365,46 +376,70 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                   };
 
                   return (
-                    <div key={categoryId} className="mb-3">
-                      <div className="d-flex align-items-center gap-2 mb-2">
-                        <strong style={{ fontSize: '0.9rem', color: '#0d6efd' }}>
-                          {categoryName}
-                        </strong>
+                    <Card key={categoryId} className="border-start border-5 h-100" style={{ borderLeftColor: '#0d6efd' }}>
+                      <Card.Header className="bg-light d-flex align-items-center justify-content-between p-3">
+                        <div>
+                          <h6 className="mb-0 text-primary fw-bold">
+                            {categoryName}
+                          </h6>
+                          <small className="text-muted">
+                            {levelsInCat.length} nivel{levelsInCat.length !== 1 ? 'es' : ''} disponible{levelsInCat.length !== 1 ? 's' : ''}
+                          </small>
+                        </div>
                         <Button
                           variant={allInCategorySelected ? 'primary' : someInCategorySelected ? 'warning' : 'outline-primary'}
                           size="sm"
                           onClick={handleSelectCategory}
-                          className="ms-auto"
+                          className="fw-bold"
                         >
                           {allInCategorySelected ? '✓ Todos' : someInCategorySelected ? '~ Parcial' : 'Seleccionar'}
                         </Button>
-                      </div>
-                      
-                      <div style={{ 
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                        gap: '0.5rem',
-                        marginLeft: '0.5rem'
-                      }}>
-                        {levelsInCat.map((level) => (
-                          <Form.Check
-                            key={level.id}
-                            id={`level-${level.id}`}
-                            type="switch"
-                            label={level.name}
-                            checked={selectedLevels.includes(level.id)}
-                            onChange={() => handleLevelToggle(level.id)}
-                          />
-                        ))}
-                      </div>
-                    </div>
+                      </Card.Header>
+                      <Card.Body className="p-3">
+                        <div style={{ 
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                          gap: '0.75rem'
+                        }}>
+                          {levelsInCat.map((level) => (
+                            <div key={level.id} style={{ display: 'flex', alignItems: 'center' }}>
+                              <Form.Check
+                                id={`level-${level.id}`}
+                                type="switch"
+                                checked={selectedLevels.includes(level.id)}
+                                onChange={() => handleLevelToggle(level.id)}
+                                style={{ margin: 0 }}
+                              />
+                              <Form.Label
+                                htmlFor={`level-${level.id}`}
+                                className={`ms-2 mb-0 ${selectedLevels.includes(level.id) ? 'fw-bold text-primary' : ''}`}
+                                style={{ cursor: 'pointer', userSelect: 'none' }}
+                              >
+                                {level.name}
+                              </Form.Label>
+                            </div>
+                          ))}
+                        </div>
+                      </Card.Body>
+                    </Card>
                   );
                 });
+
+                return (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '1.5rem',
+                    marginBottom: '1.5rem'
+                  }}>
+                    {categoryCards}
+                  </div>
+                );
               })()
             )}
 
-            <Form.Text className="text-muted d-block mt-3">
-              Seleccionados: <strong>{selectedLevels.length}</strong> de <strong>{allLevels.length}</strong>
+            <Form.Text className="text-muted d-block mt-4 p-2 bg-light rounded">
+              📊 <strong>Seleccionados:</strong> {selectedLevels.length} de {allLevels.length} niveles
             </Form.Text>
           </Form.Group>
 

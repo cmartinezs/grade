@@ -4,6 +4,8 @@ import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Offcanvas, Button, Collapse } from 'react-bootstrap';
+import { useHelpContent } from '@/contexts/HelpContext';
+import HelpSidebar from './HelpSidebar';
 
 interface SidebarItem {
   label: string;
@@ -122,6 +124,8 @@ function SidebarMenuItem({
 
 export default function SidebarLayout({ items, children, sidebarTitle }: SidebarLayoutProps) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const { helpContent } = useHelpContent();
 
   return (
     <div className="sidebar-layout-container">
@@ -174,6 +178,17 @@ export default function SidebarLayout({ items, children, sidebarTitle }: Sidebar
           ))}
         </Offcanvas.Body>
       </Offcanvas>
+
+      {/* Sidebar derecho de ayuda - overlay */}
+      {helpContent && (
+        <HelpSidebar
+          isOpen={showHelp}
+          onToggle={() => setShowHelp(!showHelp)}
+          title={helpContent.title}
+        >
+          {helpContent.children}
+        </HelpSidebar>
+      )}
 
       {/* Main content */}
       <main className="sidebar-layout-main">

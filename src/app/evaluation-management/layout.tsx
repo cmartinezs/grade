@@ -2,6 +2,7 @@ import SidebarLayout from '@/components/SidebarLayout';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 import Footer from '@/components/Footer';
+import { HelpProvider } from '@/contexts/HelpContext';
 
 const evalMenu = [
   { 
@@ -77,12 +78,14 @@ const evalMenu = [
 
 export default function EvaluationLayout({ children }: { children: React.ReactNode }) {
   return (
-    <PageWrapper>
-      <NavigationBar />
-      <SidebarLayout items={evalMenu} sidebarTitle="Gestión de Evaluaciones">
-        <div className="p-4">{children}</div>
-      </SidebarLayout>
-      <Footer />
-    </PageWrapper>
+    <HelpProvider>
+      <PageWrapper>
+        <NavigationBar />
+        <SidebarLayout items={evalMenu} sidebarTitle="Gestión de Evaluaciones">
+          <div className="p-4">{children}</div>
+        </SidebarLayout>
+        <Footer />
+      </PageWrapper>
+    </HelpProvider>
   );
 }
