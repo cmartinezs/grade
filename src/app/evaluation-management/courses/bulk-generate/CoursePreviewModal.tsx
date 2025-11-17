@@ -42,9 +42,9 @@ export default function CoursePreviewModal({
   institution = '',
 }: CoursePreviewModalProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectAll, setSelectAll] = useState(true);
+  const [selectAll, setSelectAll] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<Set<string>>(
-    new Set(courses.map((_, idx) => String(idx)))
+    new Set()
   );
 
   // Calcular paginación
@@ -167,9 +167,8 @@ export default function CoursePreviewModal({
 
             {/* Checkbox Seleccionar Todo y Botones */}
             <div className="d-flex align-items-center justify-content-between mb-3 gap-2">
-              <Form.Check
-                type="checkbox"
-                id="selectAllCheckbox"
+              <Form.Switch
+                id="selectAllSwitch"
                 label="Seleccionar todos los cursos"
                 checked={selectAll}
                 onChange={(e) => handleSelectAll(e.target.checked)}
@@ -215,7 +214,7 @@ export default function CoursePreviewModal({
                   onClick={handleConfirm}
                   disabled={isLoading || selectedCount === 0}
                 >
-                  ✅ Guardar {selectedCount > 0 ? `(${selectedCount})` : ''}
+                  💾 Guardar {selectedCount > 0 ? `(${selectedCount})` : ''}
                 </Button>
               </div>
       </Modal.Footer>

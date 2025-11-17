@@ -31,14 +31,12 @@ interface CourseBulkGeneratorFormProps {
   onSuccess?: (coursesCreated: number) => void;
   onError?: (error: string) => void;
   showSummary?: boolean;
-  compact?: boolean;
 }
 
 export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = ({
   onSuccess,
   onError,
   showSummary = false,
-  compact = false,
 }) => {
   const { generateCourses, previewCourses } = useCourseDataLoader();
 
@@ -300,8 +298,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
 
           {/* Fila 1: Institución, Tipo de Paralelo y Campo Dinámico (3 columnas) */}
-          {compact ? (
-            <>
+          
               <div className="row mb-4">
                 <div className="col-md-4">
                   <Form.Group>
@@ -371,85 +368,17 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                   )}
                 </div>
               </div>
-            </>
-          ) : (
-            <>
-              <Form.Group className="mb-4">
-                <Form.Label>
-                  <strong>Nombre de la Institución</strong>
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="ej. Colegio San Miguel"
-                  value={institutionName}
-                  onChange={(e) => setInstitutionName(e.target.value)}
-                  disabled={isLoading}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-4">
-                <Form.Label>
-                  <strong>Tipo de Identificador de Paralelo</strong>
-                </Form.Label>
-                <AutocompleteSelect
-                  value={sectionType}
-                  onChange={(value) => setSectionType(value as SectionIdentifierType)}
-                  disabled={isLoading}
-                  options={[
-                    { id: 'none', name: '🔘 Sin paralelo (1 curso por nivel)' },
-                    { id: 'letters', name: '🔤 Letras (A, B, C...)' },
-                    { id: 'numbers', name: '🔢 Números (1, 2, 3...)' },
-                    { id: 'custom', name: '✏️ Personalizado' },
-                  ]}
-                  placeholder="Selecciona el tipo de identificador"
-                />
-                <Form.Text className="text-muted">
-                  💡 Selecciona cómo identificar los paralelos en cada nivel
-                </Form.Text>
-              </Form.Group>
-
-              {sectionType !== 'none' && (
-                <>
-                  {(sectionType === 'letters' || sectionType === 'numbers') && (
-                    <Form.Group className="mb-4">
-                      <Form.Label>
-                        <strong>{sectionType === 'letters' ? 'Cantidad de Letras' : 'Cantidad de Números'}</strong>
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        min={1}
-                        max={sectionType === 'letters' ? 26 : 100}
-                        value={sectionQuantity}
-                        onChange={(e) => setSectionQuantity(Math.max(1, Math.min(sectionType === 'letters' ? 26 : 100, parseInt(e.target.value) || 1)))}
-                        disabled={isLoading}
-                      />
-                      <Form.Text className="text-muted">
-                        {sectionType === 'letters' 
-                          ? 'Ej: 3 = A, B, C (máximo 26)' 
-                          : 'Ej: 3 = 1, 2, 3 (máximo 100)'}
-                      </Form.Text>
-                    </Form.Group>
-                  )}
-                  {sectionType === 'custom' && (
-                    <BadgeInput
-                      label="Identificadores Personalizados"
-                      value={customSections}
-                      onChange={setCustomSections}
-                      placeholder="Escribe y presiona Enter para agregar"
-                      disabled={isLoading}
-                      helperText="Ingresa identificadores. Ej: Ositos, Delfines, Exploradores. Puedes usar Enter o comas para agregar múltiples."
-                    />
-                  )}
-                </>
-              )}
-            </>
-          )}
 
           {/* Level Selection - Agrupado por categoría */}
           <Form.Group className="mb-4">
-            <Form.Label>
-              <strong>📚 Seleccionar Niveles</strong>
-            </Form.Label>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <Form.Label className="mb-0">
+                <strong>📚 Seleccionar Niveles</strong>
+              </Form.Label>
+              <Form.Text className="text-muted">
+                📊 <strong>Seleccionados:</strong> {selectedLevels.length} de {allLevels.length} niveles
+              </Form.Text>
+            </div>
             
             {/* Select All Switch */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem', padding: '0.75rem', backgroundColor: '#f8f9fa', borderRadius: '0.375rem' }}>
@@ -572,14 +501,10 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                 );
               })()
             )}
-
-            <Form.Text className="text-muted d-block mt-4 p-2 bg-light rounded">
-              📊 <strong>Seleccionados:</strong> {selectedLevels.length} de {allLevels.length} niveles
-            </Form.Text>
           </Form.Group>
 
           {/* Summary Card */}
-          <Card className={`mb-4 ${compact ? 'bg-info text-white' : 'bg-info text-white'}`}>
+          <Card className={`mb-4 bg-info text-white`}>
             <Card.Body className="py-3 px-4">
               <p className="mb-2">
                 <strong>Resumen:</strong> {selectedLevels.length} niveles × {
@@ -602,12 +527,11 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           </Card>
 
           {/* Botones */}
-          <div className={`d-flex gap-2 ${compact ? 'justify-content-start' : 'justify-content-between'}`}>
+          <div className={`d-flex gap-2 : 'justify-content-between'}`}>
             <Button
               variant="success"
               type="submit"
               disabled={isLoading || selectedLevels.length === 0 || !institutionName.trim()}
-              size={compact ? 'sm' : 'lg'}
             >
               {isLoading ? (
                 <>
@@ -654,7 +578,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           <hr />
           <Button 
             variant="success" 
-            size="sm"
             onClick={() => {
               resetForm();
               window.location.href = '/evaluation-management/courses';
