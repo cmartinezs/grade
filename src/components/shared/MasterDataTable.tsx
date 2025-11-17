@@ -174,7 +174,7 @@ export default function MasterDataTable<T>(
   const isLastPage = currentPage === totalPages;
 
   return (
-    <Container fluid className="py-4">
+    <Container fluid>
       {/* Header */}
       <Row className="mb-4">
         <Col>
@@ -198,34 +198,13 @@ export default function MasterDataTable<T>(
         </Col>
       </Row>
 
-      {/* Stat Cards */}
-      {statCards.length > 0 && (
-        <Row className="mb-4">
-          {statCards.map((stat, idx) => (
-            <Col md={12 / Math.min(statCards.length, 4)} key={idx} className="mb-3">
-              <Card className={`bg-light`}>
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <p className="text-muted mb-1">{stat.label}</p>
-                      <h3 className="mb-0">{stat.value}</h3>
-                    </div>
-                    <span style={{ fontSize: '2rem' }}>{stat.icon}</span>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
-
       {/* Data Table Card */}
       <Row>
         <Col>
           <Card>
             {/* Header with Search */}
             {!hideSearch && (
-              <Card.Header className="bg-light p-3">
+              <Card.Header className="bg-light">
                 <Row className="align-items-center g-0">
                   <Col md={4}>
                     <InputGroup>
@@ -255,7 +234,6 @@ export default function MasterDataTable<T>(
                         <Button
                           onClick={onCreateClick}
                           variant="primary"
-                          size="sm"
                           className="d-flex align-items-center gap-2"
                         >
                           <span>{createButtonIcon}</span>
@@ -379,60 +357,6 @@ export default function MasterDataTable<T>(
                       </tbody>
                     </Table>
                   </div>
-
-                  {/* Pagination */}
-                  {totalPages >= 1 && (
-                    <div className="d-flex justify-content-between align-items-center py-3 px-3">
-                      <div></div>
-                      <Pagination className="mb-0">
-                        {totalPages > 1 && (
-                          <>
-                            <Pagination.First
-                              onClick={() => onPageChange(1)}
-                              disabled={isFirstPage || isLoading}
-                            />
-                            <Pagination.Prev
-                              onClick={() => onPageChange(currentPage - 1)}
-                              disabled={isFirstPage || isLoading}
-                            />
-                          </>
-                        )}
-
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                          (page) => (
-                            <Pagination.Item
-                              key={page}
-                              active={page === currentPage}
-                              onClick={() => totalPages > 1 && onPageChange(page)}
-                              disabled={isLoading || totalPages === 1}
-                            >
-                              {page}
-                            </Pagination.Item>
-                          )
-                        )}
-
-                        {totalPages > 1 && (
-                          <>
-                            <Pagination.Next
-                              onClick={() => onPageChange(currentPage + 1)}
-                              disabled={isLastPage || isLoading}
-                            />
-                            <Pagination.Last
-                              onClick={() => onPageChange(totalPages)}
-                              disabled={isLastPage || isLoading}
-                            />
-                          </>
-                        )}
-                      </Pagination>
-                      <div className="text-muted small">
-                        {isLoading ? (
-                          <Spinner animation="border" size="sm" className="me-2" />
-                        ) : (
-                          `Mostrando ${(currentPage - 1) * props.pageSize + 1}-${Math.min(currentPage * props.pageSize, totalItems)} de ${totalItems}`
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </>
               ) : (
                 <div className="text-center py-5">
@@ -484,6 +408,60 @@ export default function MasterDataTable<T>(
                 </div>
               )}
             </Card.Body>
+            <Card.Footer className="bg-light text-center">
+              {totalPages >= 1 && (
+                <div className="d-flex justify-content-between align-items-center">
+                  <div></div>
+                  <Pagination className="mb-0">
+                    {totalPages > 1 && (
+                      <>
+                        <Pagination.First
+                          onClick={() => onPageChange(1)}
+                          disabled={isFirstPage || isLoading}
+                        />
+                        <Pagination.Prev
+                          onClick={() => onPageChange(currentPage - 1)}
+                          disabled={isFirstPage || isLoading}
+                        />
+                      </>
+                    )}
+
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <Pagination.Item
+                          key={page}
+                          active={page === currentPage}
+                          onClick={() => totalPages > 1 && onPageChange(page)}
+                          disabled={isLoading || totalPages === 1}
+                        >
+                          {page}
+                        </Pagination.Item>
+                      )
+                    )}
+
+                    {totalPages > 1 && (
+                      <>
+                        <Pagination.Next
+                          onClick={() => onPageChange(currentPage + 1)}
+                          disabled={isLastPage || isLoading}
+                        />
+                        <Pagination.Last
+                          onClick={() => onPageChange(totalPages)}
+                          disabled={isLastPage || isLoading}
+                        />
+                      </>
+                    )}
+                  </Pagination>
+                  <div className="text-muted small">
+                    {isLoading ? (
+                      <Spinner animation="border" className="me-2" />
+                    ) : (
+                      `Mostrando ${(currentPage - 1) * props.pageSize + 1}-${Math.min(currentPage * props.pageSize, totalItems)} de ${totalItems}`
+                    )}
+                  </div>
+                </div>
+              )}
+            </Card.Footer>
           </Card>
         </Col>
       </Row>
