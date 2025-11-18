@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { Modal, Button, Badge, Card, ListGroup, Alert } from 'react-bootstrap';
-import { QuestionWithDetails, QuestionOption } from '@/types/question';
-import { questionStore } from '@/lib/questionStore';
+import { QuestionWithDetails, QuestionOption, QuestionType, DifficultyLevel } from '@/types/question';
+import { fetchQuestionById, mapQuestionTypeIdToCode } from '@/lib/questionConnect';
+import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { getUserByEmail } from '@/dataconnect-generated';
 
 interface ViewQuestionModalProps {
   show: boolean;
@@ -21,25 +23,116 @@ export default function ViewQuestionModal({
   onCreateVersion,
   onEdit,
 }: ViewQuestionModalProps) {
+  const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
   const [question, setQuestion] = useState<QuestionWithDetails | null>(null);
   const [versionHistory, setVersionHistory] = useState<QuestionWithDetails[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (show && questionId) {
-      const questionData = questionStore.getQuestionWithDetails(questionId);
-      setQuestion(questionData);
+    const loadQuestion = async () => {
+      if (!show || !questionId || !user?.firebaseUid || !user?.email) {
+        setQuestion(null);
+        setVersionHistory([]);
+        setShowHistory(false);
+        return;
+      }
 
-      // Load version history
-      const history = questionStore.getQuestionVersionHistory(questionId);
-      setVersionHistory(history);
-    } else {
-      setQuestion(null);
-      setVersionHistory([]);
-      setShowHistory(false);
-    }
-  }, [show, questionId]);
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Obtener userId desde Data Connect
+        const userResult = await getUserByEmail({ email: user.email });
+        const userData = userResult.data?.users?.[0];
+        
+        if (!userData?.userId) {
+          throw new Error('Usuario no encontrado en Data Connect');
+        }
+
+        // Cargar pregunta desde Data Connect
+        const dcQuestion = await fetchQuestionById(questionId, userData.userId, user.firebaseUid);
+        
+        if (!dcQuestion) {
+          throw new Error('Pregunta no encontrada');
+        }
+
+        // Transformar a formato local
+        const questionData: QuestionWithDetails = {
+          question_id: dcQuestion.questionId,
+          type: mapQuestionTypeIdToCode(dcQuestion.questionTypeId, questionTypes) as QuestionType,
+          enunciado: dcQuestion.text,
+          version: dcQuestion.version,
+          active: dcQuestion.active,
+          original_version_fk: dcQuestion.originalQuestionId || null,
+          topic_fk: dcQuestion.topicId,
+          difficulty_fk: dcQuestion.difficultyId as DifficultyLevel,
+          learning_outcome_fk: dcQuestion.taxonomyId,
+          author_fk: dcQuestion.userId,
+          created_at: new Date(),
+          updated_at: new Date(),
+          updated_by: dcQuestion.userId,
+          deleted_at: null,
+          deleted_by: null,
+          options: (dcQuestion.options || []).map(opt => ({
+            question_option_id: opt.questionOptionId,
+            question_fk: opt.questionId,
+            text: opt.text,
+            is_correct: opt.isCorrect,
+            position: opt.position,
+            partial_score: opt.score,
+            created_at: new Date(),
+            created_by: dcQuestion.userId,
+            updated_at: new Date(),
+            updated_by: dcQuestion.userId,
+          })),
+        };
+
+        setQuestion(questionData);
+        
+        // TODO: Implementar carga de historial de versiones desde Data Connect
+        setVersionHistory([questionData]);
+      } catch (err) {
+        console.error('Error loading question:', err);
+        setError(err instanceof Error ? err.message : 'Error cargando pregunta');
+        setQuestion(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuestion();
+  }, [show, questionId, user?.firebaseUid, user?.email, questionTypes]);
+
+  if (loading) {
+    return (
+      <Modal show={show} onHide={onHide} size="lg">
+        <Modal.Body className="text-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+        </Modal.Body>
+      </Modal>
+    );
+  }
+
+  if (error) {
+    return (
+      <Modal show={show} onHide={onHide} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Alert variant="danger">{error}</Alert>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onHide}>Cerrar</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
 
   if (!question) {
     return null;

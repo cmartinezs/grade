@@ -35,11 +35,27 @@ export function mapQuestionTypeCodeToId(code: string, questionTypes: QuestionTyp
 }
 
 /**
+ * Mapear UUID de tipo de pregunta a código
+ */
+export function mapQuestionTypeIdToCode(questionTypeId: string, questionTypes: QuestionType[]): string {
+  const type = questionTypes.find(qt => qt.questionTypeId === questionTypeId);
+  return type?.code || questionTypeId;
+}
+
+/**
  * Mapear nivel de dificultad a UUID
  */
 export function mapDifficultyLevelToId(level: string, difficulties: Difficulty[]): string | null {
   const diff = difficulties.find(d => d.level === level);
   return diff?.difficultyId || null;
+}
+
+/**
+ * Mapear UUID de dificultad a difficultyId (mantiene el UUID para compatibilidad)
+ */
+export function mapDifficultyIdToLevel(difficultyId: string, difficulties: Difficulty[]): string {
+  // Retorna el UUID mismo porque el sistema actual usa UUIDs en difficulty_fk
+  return difficultyId;
 }
 
 export interface QuestionWithOptions {
