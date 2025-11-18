@@ -10,9 +10,10 @@ import {
   QuestionValidationError,
   QuestionWithDetails,
 } from '@/types/question';
-import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
+import { questionStore } from '@/lib/questionStore';
 import { getAllTopics, getAllUnits } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import QuestionFormFields from './shared/QuestionFormFields';
 
 interface EditQuestionModalProps {

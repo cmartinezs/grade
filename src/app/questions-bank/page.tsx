@@ -53,8 +53,6 @@ export default function QuestionsBankPage() {
     includeInactive: showInactive,
   });
 
-  const difficultyLevels = questionStore.getDifficultyLevels();
-
   const loadQuestions = () => {
     refetch();
   };
@@ -298,7 +296,7 @@ export default function QuestionsBankPage() {
                             {questionTypes.find(qt => qt.code === question.type)?.name || question.type}
                           </Badge>
                           <Badge bg={getDifficultyColor(question.difficulty_fk)} className="me-2">
-                            {difficultyLevels.find(d => d.difficulty_id === question.difficulty_fk)?.name}
+                            {difficulties.find(d => d.difficultyId === question.difficulty_fk)?.level}
                           </Badge>
                           {(() => {
                             const versionCount = questionStore.getQuestionVersionHistory(question.question_id).length;
