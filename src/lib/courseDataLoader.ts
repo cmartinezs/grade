@@ -142,11 +142,13 @@ export function generateCoursesInMemory(options: CourseGenerationOptions): Cours
  * Genera masivamente cursos para una institución
  * @param options Opciones de generación (institución, letras, niveles)
  * @param coursesToCreate Array de cursos previamente generados en memoria (opcional)
+ * @param onProgress Callback para reportar progreso durante la generación
  * @returns Resultado con cantidad de cursos creados y errores
  */
 export async function generateCoursesInBulk(
   options: CourseGenerationOptions,
-  coursesToCreate?: CourseToCreate[]
+  coursesToCreate?: CourseToCreate[],
+  onProgress?: (progress: { currentIndex: number; total: number; currentStep: string; itemName: string; percentage: number }) => void
 ): Promise<CourseGenerationResult> {
   const result: CourseGenerationResult = {
     coursesCreated: 0,
@@ -197,7 +199,9 @@ export async function generateCoursesInBulk(
     console.log(`[CourseBulkGenerator] Will create ${courses.length} courses`);
 
     // Crear cursos
-    for (const course of courses) {
+    for (let idx = 0; idx < courses.length; idx++) {
+      const course = courses[idx];
+      
       try {
         const courseId = await courseStore.createCourse(
           {
@@ -212,11 +216,40 @@ export async function generateCoursesInBulk(
         );
         result.coursesCreated++;
         console.log(`[CourseBulkGenerator] Created course: ${course.name} (${courseId})`);
+        
+        // Reportar progreso después de cada curso creado
+        if (onProgress) {
+          const percentage = Math.round(((idx + 1) / courses.length) * 100);
+          onProgress({
+            currentIndex: idx + 1,
+            total: courses.length,
+            currentStep: '📚 Generando cursos',
+            itemName: course.name,
+            percentage,
+          });
+          
+          // Pequeño delay para que se note la transición (50ms)
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
       } catch (error) {
         const errorMsg = `Failed to create course ${course.name}: ${error instanceof Error ? error.message : String(error)}`;
         console.error(errorMsg);
         result.errors.push(errorMsg);
         // Continue with next course
+        
+        // Reportar progreso incluso en caso de error
+        if (onProgress) {
+          const percentage = Math.round(((idx + 1) / courses.length) * 100);
+          onProgress({
+            currentIndex: idx + 1,
+            total: courses.length,
+            currentStep: '📚 Generando cursos',
+            itemName: `${course.name} (❌ Error)`,
+            percentage,
+          });
+          
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
       }
     }
 

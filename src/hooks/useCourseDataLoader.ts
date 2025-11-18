@@ -75,23 +75,14 @@ export function useCourseDataLoader() {
             ...options,
             userId: user.id,
           },
-          coursesToCreate
+          coursesToCreate,
+          onProgress  // Pasar callback de progreso
         );
 
         // 2. Los cursos ya están en el store (courseStore.createCourse)
         // No es necesario recargar desde Data-Connect
         
         console.log('[useCourseGenerator] Bulk generation completed successfully');
-
-        if (onProgress) {
-          onProgress({
-            currentStep: '✅ Generación completada',
-            currentIndex: totalCourses,
-            total: totalCourses,
-            itemName: `${result.coursesCreated} cursos creados`,
-            percentage: 100,
-          });
-        }
 
         const success = result.errors.length === 0;
         const message = success

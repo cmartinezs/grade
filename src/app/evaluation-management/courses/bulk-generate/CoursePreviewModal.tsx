@@ -6,22 +6,32 @@ import {
   Button,
   Badge,
   Alert,
-  Spinner,
   Form,
+  ProgressBar,
 } from 'react-bootstrap';
 import DataTableContent from '@/components/shared/DataTableContent';
 import PaginationControl from '@/components/shared/PaginationControl';
 import { ColumnConfig } from '@/components/shared/MasterDataTable';
-import { CourseToCreate } from '@/lib/courseDataLoader';
+import { CourseToCreate, CourseGenerationOptions } from '@/lib/courseDataLoader';
+import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
+
+interface ProgressState {
+  currentStep: string;
+  currentIndex: number;
+  total: number;
+  itemName: string;
+  percentage: number;
+}
 
 interface CoursePreviewModalProps {
   show: boolean;
   courses: CourseToCreate[];
-  isLoading?: boolean;
-  onConfirm: (coursesToSave: CourseToCreate[]) => void;
-  onCancel: () => void;
-  title?: string;
+  generationOptions: CourseGenerationOptions | null;
   institution?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  onSuccess?: (coursesCreated: number) => void;
+  onError?: (error: string) => void;
 }
 
 const PAGE_SIZE = 10;
@@ -30,22 +40,36 @@ const PAGE_SIZE = 10;
  * CoursePreviewModal Component
  * 
  * Modal que muestra una vista previa paginada de los cursos a generar
- * antes de guardarlos en la base de datos.
+ * y ejecuta la generación con progress bar.
  */
 export default function CoursePreviewModal({
   show,
   courses,
-  isLoading = false,
+  generationOptions,
+  institution = '',
   onConfirm,
   onCancel,
-  title = 'Vista Previa de Cursos',
-  institution = '',
+  onSuccess,
+  onError,
 }: CoursePreviewModalProps) {
+  const { generateCourses } = useCourseDataLoader();
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<Set<string>>(
     new Set()
   );
+  
+  // Generation state
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState<ProgressState>({
+    currentStep: '',
+    currentIndex: 0,
+    total: 0,
+    itemName: '',
+    percentage: 0,
+  });
+  const [generationError, setGenerationError] = useState<string>('');
 
   // Calcular paginación
   const totalPages = Math.ceil(courses.length / PAGE_SIZE);
@@ -107,36 +131,92 @@ export default function CoursePreviewModal({
     }
   };
 
-  // Guardar solo los seleccionados
-  const handleConfirm = () => {
-    const coursesToSave = courses.filter((_, idx) =>
-      selectedCourses.has(String(idx))
-    );
-    onConfirm(coursesToSave);
+  // Generar cursos seleccionados
+  const handleConfirm = async () => {
+    if (!generationOptions) return;
+    
+    const selectedIndices = Array.from(selectedCourses).map(Number);
+    const coursesToSave = selectedIndices.map(idx => courses[idx]);
+
+    if (coursesToSave.length === 0) return;
+
+    setIsGenerating(true);
+    setGenerationError('');
+    
+    try {
+      const result = await generateCourses(
+        generationOptions,
+        (progressUpdate: ProgressState) => {
+          setProgress(progressUpdate);
+        },
+        coursesToSave
+      );
+
+      if (result.success) {
+        onSuccess?.(result.coursesCreated);
+        setTimeout(() => {
+          onConfirm();
+        }, 1500);
+      } else {
+        setGenerationError(result.message || '❌ Error al crear los cursos');
+        onError?.(result.message || '❌ Error al crear los cursos');
+        setIsGenerating(false);
+      }
+    } catch (err) {
+      const errorMsg = `Error: ${err instanceof Error ? err.message : 'Error desconocido'}`;
+      setGenerationError(errorMsg);
+      onError?.(errorMsg);
+      setIsGenerating(false);
+    }
   };
 
   const selectedCount = selectedCourses.size;
   const totalCount = courses.length;
 
   return (
-    <Modal show={show} onHide={onCancel} size="xl" backdrop="static">
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
+    <Modal show={show} onHide={onCancel} size="xl" backdrop={isGenerating ? 'static' : true}>
+      <Modal.Header closeButton={!isGenerating}>
+        <Modal.Title>Vista Previa de Cursos</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        {isLoading ? (
+        {/* PROGRESS BAR DURANTE LA GENERACIÓN */}
+        {isGenerating && (
           <div className="text-center py-5">
-            <Spinner animation="border" role="status" variant="primary">
-              <span className="visually-hidden">Generando vista previa...</span>
-            </Spinner>
-            <p className="mt-3 text-muted">Generando lista de cursos...</p>
+            <p className="mb-3">
+              <span style={{ fontSize: '2rem' }}>{progress.currentStep}</span>
+            </p>
+            <ProgressBar
+              animated
+              striped
+              variant="success"
+              now={progress.percentage}
+              label={`${Math.round(progress.percentage)}%`}
+              className="mb-3"
+              style={{ height: '30px' }}
+            />
+            <p className="mb-2">
+              <strong>
+                {progress.currentIndex} de {progress.total}
+              </strong>
+            </p>
+            <p className="text-muted">{progress.itemName}</p>
           </div>
-        ) : courses.length === 0 ? (
+        )}
+
+        {/* ERROR DURANTE LA GENERACIÓN */}
+        {generationError && (
+          <Alert variant="danger" dismissible onClose={() => setGenerationError('')}>
+            {generationError}
+          </Alert>
+        )}
+
+        {/* CONTENIDO PRINCIPAL */}
+        {!isGenerating && courses.length === 0 ? (
           <Alert variant="warning" className="mb-0">
             📭 No hay cursos para generar. Por favor revisa tu selección.
           </Alert>
-        ) : (
+        ) : !isGenerating && (
           <>
             {/* Información General */}
             <div className="mb-4 p-3 bg-light rounded">
@@ -182,7 +262,7 @@ export default function CoursePreviewModal({
                 actions={actions}
                 currentPage={currentPage}
                 pageSize={PAGE_SIZE}
-                isLoading={isLoading}
+                isLoading={false}
                 emptyMessage="No hay cursos en esta página"
                 emptyIcon="📋"
               />
@@ -191,13 +271,13 @@ export default function CoursePreviewModal({
       </Modal.Body>
 
       <Modal.Footer style={{display: 'block'}}>
-        {totalPages > 1 && (
+        {totalPages > 1 && !isGenerating && (
         <PaginationControl
             currentPage={currentPage}
             totalPages={totalPages}
             pageSize={PAGE_SIZE}
             totalItems={totalCount}
-            isLoading={isLoading}
+            isLoading={false}
             onPageChange={setCurrentPage}
         />
         )}
@@ -205,14 +285,14 @@ export default function CoursePreviewModal({
                 <Button
                   variant="outline-secondary"
                   onClick={onCancel}
-                  disabled={isLoading}
+                  disabled={isGenerating}
                 >
                   Cancelar
                 </Button>
                 <Button
                   variant="primary"
                   onClick={handleConfirm}
-                  disabled={isLoading || selectedCount === 0}
+                  disabled={isGenerating || selectedCount === 0}
                 >
                   💾 Guardar {selectedCount > 0 ? `(${selectedCount})` : ''}
                 </Button>

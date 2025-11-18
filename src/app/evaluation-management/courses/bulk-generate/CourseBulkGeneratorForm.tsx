@@ -22,13 +22,11 @@ type SectionIdentifierType = 'none' | 'letters' | 'numbers' | 'custom';
 interface CourseBulkGeneratorFormProps {
   onSuccess?: (coursesCreated: number) => void;
   onError?: (error: string) => void;
-  showSummary?: boolean;
 }
 
 export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = ({
   onSuccess,
   onError,
-  showSummary = false,
 }) => {
   const { previewCourses } = useCourseDataLoader();
 
@@ -43,8 +41,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
 
   // UI state
   const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState(false);
-  const [coursesCreated, setCoursesCreated] = useState(0);
 
   // Modal state
   const [showPreview, setShowPreview] = useState(false);
@@ -130,17 +126,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       setSelectedLevels(allLevels.map((l) => l.id));
     }
   }, [allLevels, selectedLevels.length]);
-
-  const resetForm = () => {
-    setInstitutionName('');
-    setSectionType('letters');
-    setSectionQuantity(1);
-    setCustomSections([]);
-    setSelectedLevels([]);
-    setError('');
-    setSuccess(false);
-    setCoursesCreated(0);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,7 +213,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
 
   return (
     <div className="course-bulk-generator-form">
-      {!success && (
+      {
         <Form onSubmit={handleSubmit}>
           {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
 
@@ -468,45 +453,16 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
             </Button>
           </div>
         </Form>
-      )}
-
-      {success && showSummary && (
-        <Alert variant="success">
-          <Alert.Heading>✅ ¡Éxito!</Alert.Heading>
-          <p>
-            Se crearon <strong>{coursesCreated}</strong> cursos exitosamente.
-          </p>
-          <hr />
-          <Button 
-            variant="success" 
-            onClick={() => {
-              resetForm();
-              window.location.href = '/evaluation-management/courses';
-            }}
-          >
-            Ver Cursos Creados →
-          </Button>
-        </Alert>
-      )}
-
-      {success && !showSummary && (
-        <Alert variant="success">
-          <Alert.Heading>✅ ¡Éxito!</Alert.Heading>
-          <p>
-            Se crearon <strong>{coursesCreated}</strong> cursos exitosamente.
-          </p>
-        </Alert>
-      )}
+      }
 
       {/* Modal de vista previa */}
       <CoursePreviewModal
         show={showPreview}
         courses={previewCoursesList}
+        generationOptions={generationOptions}
+        institution={institutionName}
         onConfirm={() => setShowPreview(false)}
         onCancel={() => setShowPreview(false)}
-        title="Vista Previa de Cursos a Generar"
-        institution={institutionName}
-        generationOptions={generationOptions}
         onSuccess={onSuccess}
         onError={onError}
       />

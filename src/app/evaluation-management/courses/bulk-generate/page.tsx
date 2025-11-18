@@ -68,7 +68,6 @@ export default function BulkGeneratePage() {
                 <Card.Body className="p-4">
                   <CourseBulkGeneratorForm
                     onSuccess={handleSuccess}
-                    showSummary={false}
                   />
                 </Card.Body>
               </Card>
