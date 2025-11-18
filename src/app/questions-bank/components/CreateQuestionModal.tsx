@@ -18,6 +18,10 @@ import {
 import { questionStore } from '@/lib/questionStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { useDifficulties } from '@/hooks/useDifficulties';
+import { useTaxonomies } from '@/hooks/useTaxonomies';
+import { createNewQuestion, mapQuestionTypeCodeToId, mapDifficultyLevelToId } from '@/lib/questionConnect';
+import { getUserByEmail } from '@/dataconnect-generated';
 import QuestionFormFields from './shared/QuestionFormFields';
 
 interface CreateQuestionModalProps {
@@ -41,6 +45,8 @@ export default function CreateQuestionModal({
 }: CreateQuestionModalProps) {
   const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
+  const { difficulties } = useDifficulties();
+  const { taxonomies } = useTaxonomies();
   
   // Form state
   const [questionType, setQuestionType] = useState<QuestionType>(initialType || '' as QuestionType);
@@ -204,12 +210,79 @@ export default function CreateQuestionModal({
         topic_fk: selectedTopic,
         difficulty_fk: difficulty,
         options: questionType === 'desarrollo' ? [] : options,
+        learning_outcome_fk: selectedTaxonomy || null,
       };
 
-      const newQuestion = await questionStore.createQuestion(input, user?.email || 'anonymous');
+      // Intentar usar Data Connect primero
+      let newQuestionId: string;
+      let useDataConnect = false;
+      
+      try {
+        // Validar que tenemos firebaseId y email
+        if (!user?.firebaseUid || !user?.email) {
+          throw new Error('Usuario no autenticado');
+        }
+
+        // Obtener userId desde Data Connect
+        const userResult = await getUserByEmail({ email: user.email });
+        const userData = userResult.data?.users?.[0];
+        
+        if (!userData?.userId) {
+          throw new Error('Usuario no encontrado en Data Connect');
+        }
+
+        // Mapear códigos a UUIDs
+        const questionTypeId = mapQuestionTypeCodeToId(questionType, questionTypes);
+        const difficultyId = mapDifficultyLevelToId(difficulty, difficulties);
+        
+        if (!questionTypeId) {
+          throw new Error(`Tipo de pregunta no encontrado: ${questionType}`);
+        }
+        
+        if (!difficultyId) {
+          throw new Error(`Dificultad no encontrada: ${difficulty}`);
+        }
+
+        // Obtener taxonomyId o usar el primero disponible
+        let taxonomyId = selectedTaxonomy;
+        if (!taxonomyId && taxonomies.length > 0) {
+          taxonomyId = taxonomies[0].taxonomyId;
+        }
+        
+        if (!taxonomyId) {
+          throw new Error('No hay taxonomías disponibles');
+        }
+
+        // Crear pregunta en Data Connect
+        const createdQuestion = await createNewQuestion(
+          input,
+          questionTypeId,
+          difficultyId,
+          taxonomyId,
+          userData.userId,
+          user.firebaseUid
+        );
+        
+        newQuestionId = createdQuestion.questionId;
+        useDataConnect = true;
+        
+        console.log('✅ Pregunta creada en Data Connect:', newQuestionId);
+      } catch (dcError) {
+        // Fallback a localStorage
+        console.warn('⚠️ Data Connect falló, usando localStorage:', dcError);
+        const localQuestion = await questionStore.createQuestion(input, user?.email || 'anonymous');
+        newQuestionId = localQuestion.question_id;
+        useDataConnect = false;
+      }
       
       setSubmitSuccess(true);
-      setCreatedQuestionId(newQuestion.question_id);
+      setCreatedQuestionId(newQuestionId);
+      
+      if (useDataConnect) {
+        console.log('📊 Pregunta guardada en Firebase Data Connect');
+      } else {
+        console.log('💾 Pregunta guardada en localStorage (fallback)');
+      }
       
       // Auto-close after 2 seconds or wait for user action
       setTimeout(() => {
