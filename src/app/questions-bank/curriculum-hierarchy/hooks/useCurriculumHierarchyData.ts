@@ -6,11 +6,13 @@ import {
   getAllTopics,
   searchCurriculumHierarchy,
 } from '@/lib/curriculumHierarchyStore';
+import { levelStore } from '@/lib/levelStore';
 
 export function useCurriculumHierarchyData() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [levelsLoaded, setLevelsLoaded] = useState(false);
   const loadAttemptRef = useRef(0);
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -33,6 +35,20 @@ export function useCurriculumHierarchyData() {
   useEffect(() => {
     setIsLoading(true);
     loadAttemptRef.current = 0;
+
+    // Cargar niveles y categorías de forma asíncrona (solo una vez)
+    const loadEducationalData = async () => {
+      try {
+        await levelStore.loadAll();
+        console.log('[useCurriculumHierarchyData] Educational levels and categories loaded');
+        setLevelsLoaded(true); // Marcar que los niveles están cargados
+      } catch (error) {
+        console.error('[useCurriculumHierarchyData] Error loading educational data:', error);
+        setLevelsLoaded(true); // Marcar como cargados incluso si hay error
+      }
+    };
+
+    loadEducationalData();
 
     const attemptLoad = () => {
       // Cargar todos los datos
@@ -117,6 +133,7 @@ export function useCurriculumHierarchyData() {
     handleSuccess,
     handleClearSearch,
     isLoading,
+    levelsLoaded,
   };
 }
 

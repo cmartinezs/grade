@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Accordion, Badge } from 'react-bootstrap';
 import { Subject } from '@/types/curriculumHierarchy';
 import {
@@ -10,22 +11,44 @@ import { CurriculumHierarchyUnitItem } from './CurriculumHierarchyUnitItem';
 
 interface CurriculumHierarchySubjectItemProps extends CurriculumHierarchyItemProps {
   subject: Subject;
+  levelsLoaded: boolean;
 }
 
 export function CurriculumHierarchySubjectItem({
   subject,
+  levelsLoaded,
   onEdit,
   onDelete,
   searchTerm,
 }: CurriculumHierarchySubjectItemProps) {
+  // Estado para forzar re-render cuando los niveles estén cargados
+  const [levelName, setLevelName] = useState<string>('Cargando...');
+
   // Obtener units de manera sincrónica del caché
   const units = searchTerm
     ? searchUnitsBySubject(subject.subject_id, searchTerm)
     : getUnitsBySubject(subject.subject_id);
 
-  // Obtener nivel educacional
-  const level = educationalLevelStore.getLevelById(subject.level_fk);
-  const levelName = level ? level.name : 'N/A';
+  // Cargar nivel educacional
+  useEffect(() => {
+    const loadLevel = () => {
+      const level = educationalLevelStore.getLevelById(subject.level_fk);
+      if (level) {
+        setLevelName(level.name);
+      } else {
+        // Si no se encuentra, intentar cargar todos los niveles
+        const allLevels = educationalLevelStore.getAllLevels();
+        if (allLevels.length > 0) {
+          const foundLevel = educationalLevelStore.getLevelById(subject.level_fk);
+          setLevelName(foundLevel ? foundLevel.name : 'N/A');
+        } else {
+          setLevelName('N/A');
+        }
+      }
+    };
+
+    loadLevel();
+  }, [subject.level_fk, levelsLoaded]); // Re-ejecutar cuando levelsLoaded cambie
 
   return (
     <Accordion.Item eventKey={subject.subject_id}>

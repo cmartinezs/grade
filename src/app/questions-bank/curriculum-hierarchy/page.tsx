@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateCurriculumHierarchyModal from '@/app/questions-bank/curriculum-hierarchy/components/CreateCurriculumHierarchyModal';
@@ -12,10 +13,12 @@ import {
   CurriculumHierarchyCatalog,
 } from './components';
 import { CurriculumHierarchyDebug } from './components/CurriculumHierarchyDebug';
+import { CurriculumHierarchyHelp } from './CurriculumHierarchyHelp';
 import { useCurriculumHierarchyData, useCurriculumHierarchyModals } from './hooks';
+import { useHelpContent } from '@/contexts/HelpContext';
 
 export default function CurriculumHierarchyPage() {
-  const { subjects, searchTerm, setSearchTerm, handleSuccess, handleClearSearch } =
+  const { subjects, searchTerm, setSearchTerm, handleSuccess, handleClearSearch, levelsLoaded } =
     useCurriculumHierarchyData();
   const {
     showCreateModal,
@@ -29,24 +32,26 @@ export default function CurriculumHierarchyPage() {
     handleDelete,
     handleDeleteModalHide,
   } = useCurriculumHierarchyModals();
+  const { setHelpContent } = useHelpContent();
+
+  // Definir el contenido de ayuda cuando la página carga
+  useEffect(() => {
+    setHelpContent({
+      title: 'ℹ️ Jerarquía Curricular',
+      children: <CurriculumHierarchyHelp />,
+    });
+
+    // Limpiar cuando el componente se desmonta
+    return () => setHelpContent(null);
+  }, [setHelpContent]);
 
   return (
     <ProtectedRoute>
-      <Container className="mt-4">
-        {/* Debug Component - only in development */}
-        {process.env.NODE_ENV === 'development' && <CurriculumHierarchyDebug />}
-
+      <Container fluid>
         {/* Header */}
         <Row className="mb-4">
           <Col>
             <CurriculumHierarchyHeader />
-          </Col>
-        </Row>
-
-        {/* Collapsible Info Card */}
-        <Row className="mb-3">
-          <Col>
-            <CurriculumHierarchyHelpCard />
           </Col>
         </Row>
 
@@ -68,6 +73,7 @@ export default function CurriculumHierarchyPage() {
             <CurriculumHierarchyCatalog
               subjects={subjects}
               searchTerm={searchTerm}
+              levelsLoaded={levelsLoaded}
               onCreateClick={() => setShowCreateModal(true)}
               onEdit={handleEdit}
               onDelete={handleDelete}

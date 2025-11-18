@@ -6,12 +6,14 @@ import { CurriculumHierarchySubjectItem } from './CurriculumHierarchySubjectItem
 interface CurriculumHierarchyCatalogProps extends CurriculumHierarchyContextProps {
   subjects: Subject[];
   searchTerm: string;
+  levelsLoaded: boolean;
   onCreateClick: () => void;
 }
 
 export function CurriculumHierarchyCatalog({
   subjects,
   searchTerm,
+  levelsLoaded,
   onCreateClick,
   onEdit,
   onDelete,
@@ -45,6 +47,7 @@ export function CurriculumHierarchyCatalog({
               <div key={subject.subject_id}>
                 <CurriculumHierarchySubjectItem
                   subject={subject}
+                  levelsLoaded={levelsLoaded}
                   onEdit={onEdit}
                   onDelete={onDelete}
                   searchTerm={searchTerm}
