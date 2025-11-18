@@ -637,6 +637,23 @@ export interface GetUserByEmailVariables {
   email: string;
 }
 
+export interface GetUserByIdData {
+  users: ({
+    userId: UUIDString;
+    name: string;
+    email: string;
+    role: string;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+    deletedAt?: TimestampString | null;
+  } & User_Key)[];
+}
+
+export interface GetUserByIdVariables {
+  userId: UUIDString;
+}
+
 export interface LevelCategory_Key {
   categoryId: UUIDString;
   __typename?: 'LevelCategory_Key';
@@ -1686,6 +1703,18 @@ export const getUserByEmailRef: GetUserByEmailRef;
 
 export function getUserByEmail(vars: GetUserByEmailVariables): QueryPromise<GetUserByEmailData, GetUserByEmailVariables>;
 export function getUserByEmail(dc: DataConnect, vars: GetUserByEmailVariables): QueryPromise<GetUserByEmailData, GetUserByEmailVariables>;
+
+interface GetUserByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserByIdVariables): QueryRef<GetUserByIdData, GetUserByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetUserByIdVariables): QueryRef<GetUserByIdData, GetUserByIdVariables>;
+  operationName: string;
+}
+export const getUserByIdRef: GetUserByIdRef;
+
+export function getUserById(vars: GetUserByIdVariables): QueryPromise<GetUserByIdData, GetUserByIdVariables>;
+export function getUserById(dc: DataConnect, vars: GetUserByIdVariables): QueryPromise<GetUserByIdData, GetUserByIdVariables>;
 
 interface ListSubjectsRef {
   /* Allow users to create refs without passing in DataConnect */

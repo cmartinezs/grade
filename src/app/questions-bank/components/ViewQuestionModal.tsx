@@ -6,7 +6,10 @@ import { QuestionWithDetails, QuestionOption, QuestionType, DifficultyLevel } fr
 import { fetchQuestionById, mapQuestionTypeIdToCode } from '@/lib/questionConnect';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
-import { getUserByEmail } from '@/dataconnect-generated';
+import { useDifficulties } from '@/hooks/useDifficulties';
+import { useTaxonomies } from '@/hooks/useTaxonomies';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
+import { getUserByEmail, getUserById } from '@/dataconnect-generated';
 
 interface ViewQuestionModalProps {
   show: boolean;
@@ -25,9 +28,15 @@ export default function ViewQuestionModal({
 }: ViewQuestionModalProps) {
   const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
+  const { difficulties } = useDifficulties();
+  const { taxonomies } = useTaxonomies();
+  const { subjects, units, topics } = useCurriculumHierarchy();
   const [question, setQuestion] = useState<QuestionWithDetails | null>(null);
   const [versionHistory, setVersionHistory] = useState<QuestionWithDetails[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [authorEmail, setAuthorEmail] = useState<string>('');
+  const [difficultyName, setDifficultyName] = useState<string>('');
+  const [taxonomyPath, setTaxonomyPath] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,6 +101,38 @@ export default function ViewQuestionModal({
 
         setQuestion(questionData);
         
+        // Cargar metadatos adicionales
+        // Obtener nombre de dificultad
+        const difficulty = difficulties.find(d => d.difficultyId === questionData.difficulty_fk);
+        setDifficultyName(difficulty?.level || 'N/A');
+
+        // Obtener ruta de taxonomía (asignatura → unidad → tema)
+        const topic = topics.find(t => t.topic_id === questionData.topic_fk);
+        const unit = topic ? units.find(u => u.unit_id === topic.unit_fk) : null;
+        const subject = unit ? subjects.find(s => s.subject_id === unit.subject_fk) : null;
+        
+        if (subject && unit && topic) {
+          setTaxonomyPath(`${subject.name} → ${unit.name} → ${topic.name}`);
+        } else {
+          setTaxonomyPath('N/A');
+        }
+
+        // Obtener email del autor (puede ser diferente al usuario actual)
+        try {
+          const authorResult = await getUserById({ userId: questionData.author_fk });
+          const authorData = authorResult.data?.users?.[0];
+          if (authorData?.name && authorData?.email) {
+            setAuthorEmail(`${authorData.name} (${authorData.email})`);
+          } else if (authorData?.email) {
+            setAuthorEmail(authorData.email);
+          } else {
+            setAuthorEmail('Usuario desconocido');
+          }
+        } catch (authorError) {
+          console.warn('No se pudo obtener información del autor:', authorError);
+          setAuthorEmail('Usuario desconocido');
+        }
+        
         // TODO: Implementar carga de historial de versiones desde Data Connect
         setVersionHistory([questionData]);
       } catch (err) {
@@ -104,7 +145,7 @@ export default function ViewQuestionModal({
     };
 
     loadQuestion();
-  }, [show, questionId, user?.firebaseUid, user?.email, questionTypes]);
+  }, [show, questionId, user?.firebaseUid, user?.email, questionTypes, difficulties, subjects, units, topics]);
 
   if (loading) {
     return (
@@ -151,16 +192,19 @@ export default function ViewQuestionModal({
   };
 
   const getDifficultyBadgeVariant = (difficulty: string) => {
-    switch (difficulty) {
-      case 'bajo': return 'success';
-      case 'medio': return 'warning';
-      case 'alto': return 'danger';
-      default: return 'secondary';
-    }
+    const lower = difficulty.toLowerCase();
+    if (lower.includes('fácil') || lower.includes('facil') || lower === 'bajo') return 'success';
+    if (lower.includes('medio') || lower.includes('intermedio')) return 'warning';
+    if (lower.includes('difícil') || lower.includes('dificil') || lower === 'alto') return 'danger';
+    return 'secondary';
   };
 
   const getTypeBadgeVariant = (type: string) => {
     switch (type) {
+      case 'TF': return 'info';
+      case 'SS': return 'primary';
+      case 'SM': return 'warning';
+      case 'D': return 'secondary';
       case 'verdadero_falso': return 'info';
       case 'seleccion_unica': return 'primary';
       case 'seleccion_multiple': return 'warning';
@@ -218,8 +262,8 @@ export default function ViewQuestionModal({
               </div>
               <div className="col-md-6">
                 <strong>Dificultad:</strong>
-                <Badge bg={getDifficultyBadgeVariant(question.difficulty_fk)} className="ms-2">
-                  {question.difficulty_fk.toUpperCase()}
+                <Badge bg={getDifficultyBadgeVariant(difficultyName)} className="ms-2">
+                  {difficultyName}
                 </Badge>
               </div>
             </div>
@@ -228,14 +272,14 @@ export default function ViewQuestionModal({
               <div className="col-md-12">
                 <strong>Taxonomía:</strong>
                 <div className="text-muted">
-                  {question.subject_name} → {question.unit_name} → {question.topic_name}
+                  {taxonomyPath}
                 </div>
               </div>
             </div>
 
             <div className="row mb-2">
               <div className="col-md-6">
-                <strong>Autor:</strong> {question.author_fk}
+                <strong>Autor:</strong> {authorEmail}
               </div>
               <div className="col-md-6">
                 <strong>Creada:</strong> {new Date(question.created_at).toLocaleDateString()}

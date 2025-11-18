@@ -22,6 +22,20 @@ query GetUserByEmail($email: String!) @auth(level: USER) {
   }
 }
 
+# Obtener usuario por userId
+query GetUserById($userId: UUID!) @auth(level: USER) {
+  users(where: {userId: {eq: $userId}}) {
+    userId
+    name
+    email
+    role
+    createdAt
+    updatedAt
+    updatedBy
+    deletedAt
+  }
+}
+
 # ===================================================================
 # ASIGNATURAS (Subjects)
 # ===================================================================
