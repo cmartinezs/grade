@@ -19,6 +19,11 @@ interface GenerateCoursesResult {
   errors: string[];
   success: boolean;
   message: string;
+  failedCourses?: Array<{
+    courseCode: string;
+    courseName: string;
+    error: string;
+  }>;
 }
 
 interface ProgressUpdate {
@@ -85,13 +90,22 @@ export function useCourseDataLoader() {
         console.log('[useCourseGenerator] Bulk generation completed successfully');
 
         const success = result.errors.length === 0;
-        const message = success
-          ? `✅ ${result.coursesCreated} cursos creados exitosamente`
-          : `⚠️ ${result.coursesCreated} cursos creados con ${result.errors.length} errores`;
+        const coursesCreated = result.coursesCreated;
+        const errorsCount = result.errors.length;
+        
+        let message: string;
+        if (success) {
+          message = `✅ ${coursesCreated} ${coursesCreated === 1 ? 'curso creado' : 'cursos creados'} exitosamente`;
+        } else if (coursesCreated === 0) {
+          message = `❌ No se pudo crear ningún curso. ${errorsCount} ${errorsCount === 1 ? 'error encontrado' : 'errores encontrados'}`;
+        } else {
+          message = `⚠️ ${coursesCreated} ${coursesCreated === 1 ? 'curso creado' : 'cursos creados'}, pero ${errorsCount} ${errorsCount === 1 ? 'falló' : 'fallaron'}`;
+        }
 
         return {
           coursesCreated: result.coursesCreated,
           errors: result.errors,
+          failedCourses: result.failedCourses,
           success,
           message,
         };
@@ -101,6 +115,7 @@ export function useCourseDataLoader() {
         return {
           coursesCreated: 0,
           errors: [errorMsg],
+          failedCourses: [],
           success: false,
           message: '❌ Error al generar cursos',
         };

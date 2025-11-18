@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Modal,
   Button,
@@ -70,6 +70,7 @@ export default function CoursePreviewModal({
     percentage: 0,
   });
   const [generationError, setGenerationError] = useState<string>('');
+  const [failedCourses, setFailedCourses] = useState<Map<string, string>>(new Map()); // Map<courseCode, errorMessage>
 
   // Calcular paginación
   const totalPages = Math.ceil(courses.length / PAGE_SIZE);
@@ -88,8 +89,8 @@ export default function CoursePreviewModal({
     },
   ];
 
-  // Acciones para cada fila
-  const actions = [
+  // Acciones para cada fila - useMemo para recalcular cuando failedCourses cambie
+  const actions = useMemo(() => [
     {
       label: (item: CourseToCreate) => {
         const itemIdx = courses.indexOf(item);
@@ -117,7 +118,27 @@ export default function CoursePreviewModal({
           : 'outline-secondary';
       },
     },
-  ];
+    {
+      label: () => 'Ver Error',
+      icon: (item: CourseToCreate) => {
+        const error = failedCourses.get(item.code);
+        console.log('[CoursePreviewModal] Rendering error action for course:', item.code, 'error:', error, 'failedCourses size:', failedCourses.size);
+        return error ? '❌' : '';
+      },
+      onClick: (item: CourseToCreate) => {
+        const error = failedCourses.get(item.code);
+        if (error) {
+          alert(`Error en ${item.code}:\n\n${error}`);
+        }
+      },
+      variant: () => 'outline-danger',
+      tooltip: (item: CourseToCreate) => {
+        const error = failedCourses.get(item.code);
+        return error ? `Error: ${error}` : 'Este curso no tiene errores';
+      },
+      hidden: (item: CourseToCreate) => !failedCourses.has(item.code),
+    },
+  ], [selectedCourses, failedCourses, courses]); // Re-calcular cuando cambien las dependencias
 
   // Manejar "Seleccionar todos"
   const handleSelectAll = (checked: boolean) => {
@@ -156,6 +177,18 @@ export default function CoursePreviewModal({
         },
         coursesToSave
       );
+
+      // Guardar información de cursos fallidos
+      if (result.failedCourses && result.failedCourses.length > 0) {
+        console.log('[CoursePreviewModal] Failed courses received:', result.failedCourses);
+        const newFailedCourses = new Map(failedCourses);
+        result.failedCourses.forEach(failed => {
+          console.log('[CoursePreviewModal] Adding failed course:', failed.courseCode, '→', failed.error);
+          newFailedCourses.set(failed.courseCode, failed.error);
+        });
+        console.log('[CoursePreviewModal] Updated failedCourses Map:', Array.from(newFailedCourses.entries()));
+        setFailedCourses(newFailedCourses);
+      }
 
       if (result.success) {
         if (isGeneratingAll) {

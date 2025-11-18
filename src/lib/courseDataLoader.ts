@@ -78,6 +78,11 @@ export interface CourseToCreate {
 export interface CourseGenerationResult {
   coursesCreated: number;
   errors: string[];
+  failedCourses?: Array<{
+    courseCode: string;
+    courseName: string;
+    error: string;
+  }>;
 }
 
 /**
@@ -153,6 +158,7 @@ export async function generateCoursesInBulk(
   const result: CourseGenerationResult = {
     coursesCreated: 0,
     errors: [],
+    failedCourses: [],
   };
 
   try {
@@ -235,6 +241,11 @@ export async function generateCoursesInBulk(
         const errorMsg = `Failed to create course ${course.name}: ${error instanceof Error ? error.message : String(error)}`;
         console.error(errorMsg);
         result.errors.push(errorMsg);
+        result.failedCourses?.push({
+          courseCode: course.code,
+          courseName: course.name,
+          error: error instanceof Error ? error.message : String(error),
+        });
         // Continue with next course
         
         // Reportar progreso incluso en caso de error

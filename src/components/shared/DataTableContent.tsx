@@ -175,9 +175,13 @@ export default function DataTableContent<T>(props: DataTableContentProps<T>) {
                   <td style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}>
                     <div className="d-flex gap-2">
                       {actions.map((action, actionIdx) => {
+                        // Soportar tanto 'show' como 'hidden'
                         const show = action.show ? action.show(item) : true;
+                        const hidden = (action as ActionButton<T> & { hidden?: (item: T) => boolean }).hidden 
+                          ? (action as ActionButton<T> & { hidden?: (item: T) => boolean }).hidden!(item) 
+                          : false;
 
-                        if (!show) return null;
+                        if (!show || hidden) return null;
 
                         const icon =
                           typeof action.icon === 'function'
