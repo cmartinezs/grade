@@ -140,6 +140,11 @@ export default function CoursePreviewModal({
 
     if (coursesToSave.length === 0) return;
 
+    // Determinar si se están generando TODOS los cursos o solo ALGUNOS
+    const totalCourses = courses.length;
+    const selectedCount = coursesToSave.length;
+    const isGeneratingAll = selectedCount === totalCourses;
+
     setIsGenerating(true);
     setGenerationError('');
     
@@ -153,10 +158,35 @@ export default function CoursePreviewModal({
       );
 
       if (result.success) {
-        onSuccess?.(result.coursesCreated);
-        setTimeout(() => {
-          onConfirm();
-        }, 1500);
+        if (isGeneratingAll) {
+          // TODOS los cursos generados → Llamar onSuccess → Cerrar modal
+          onSuccess?.(result.coursesCreated);
+          setTimeout(() => {
+            onConfirm();
+          }, 1500);
+        } else {
+          // ALGUNOS cursos generados → Deseleccionar → Mantener modal abierto
+          setTimeout(() => {
+            // Deseleccionar los cursos que ya fueron generados
+            const newSelectedCourses = new Set(selectedCourses);
+            selectedIndices.forEach(idx => {
+              newSelectedCourses.delete(String(idx));
+            });
+            setSelectedCourses(newSelectedCourses);
+            setSelectAll(false);
+            
+            // Mostrar mensaje de éxito sin cerrar
+            setProgress({
+              currentStep: '✅ Cursos creados exitosamente',
+              currentIndex: coursesToSave.length,
+              total: coursesToSave.length,
+              itemName: `${result.coursesCreated} de ${totalCourses} cursos creados`,
+              percentage: 100,
+            });
+            
+            setIsGenerating(false);
+          }, 1500);
+        }
       } else {
         setGenerationError(result.message || '❌ Error al crear los cursos');
         onError?.(result.message || '❌ Error al crear los cursos');
@@ -208,6 +238,16 @@ export default function CoursePreviewModal({
         {generationError && (
           <Alert variant="danger" dismissible onClose={() => setGenerationError('')}>
             {generationError}
+          </Alert>
+        )}
+
+        {/* MENSAJE DE ÉXITO PARCIAL (cuando modal se mantiene abierto) */}
+        {!isGenerating && progress.percentage === 100 && selectedCount < totalCount && (
+          <Alert variant="success" dismissible onClose={() => setProgress({ ...progress, percentage: 0 })}>
+            <Alert.Heading>✅ ¡Éxito Parcial!</Alert.Heading>
+            <p className="mb-0">
+              {progress.itemName}. Puedes seleccionar más cursos para generar.
+            </p>
           </Alert>
         )}
 
