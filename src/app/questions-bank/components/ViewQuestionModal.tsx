@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button, Badge, Card, ListGroup, Alert } from 'react-bootstrap';
 import { QuestionWithDetails, QuestionOption } from '@/types/question';
-import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
+import { questionStore } from '@/lib/questionStore';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 
 interface ViewQuestionModalProps {
   show: boolean;
@@ -20,6 +21,7 @@ export default function ViewQuestionModal({
   onCreateVersion,
   onEdit,
 }: ViewQuestionModalProps) {
+  const { questionTypes } = useQuestionTypes();
   const [question, setQuestion] = useState<QuestionWithDetails | null>(null);
   const [versionHistory, setVersionHistory] = useState<QuestionWithDetails[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -43,7 +45,11 @@ export default function ViewQuestionModal({
     return null;
   }
 
-  const typeMetadata = QUESTION_TYPE_RULES[question.type];
+  const currentQuestionType = questionTypes.find(qt => qt.code === question.type);
+  const typeMetadata = currentQuestionType ? {
+    name: currentQuestionType.name,
+    description: currentQuestionType.description
+  } : { name: question.type, description: '' };
   const hasMultipleVersions = versionHistory.length > 1;
   const isLatestVersion = versionHistory.length > 0 && versionHistory[0].question_id === question.question_id;
 

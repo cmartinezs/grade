@@ -11,8 +11,6 @@ import {
   QuestionValidationError,
   QuestionWithDetails,
   DuplicateDetectionResult,
-  Difficulty,
-  QuestionTypeMetadata,
   QuestionType,
   DifficultyLevel,
 } from '@/types/question';
@@ -24,140 +22,6 @@ const STORAGE_KEYS = {
   OPTIONS: 'questions_bank_options',
   COUNTERS: 'questions_bank_counters',
 };
-
-// Question type rules (RN-2)
-export const QUESTION_TYPE_RULES: Record<QuestionType, QuestionTypeMetadata> = {
-  verdadero_falso: {
-    type: 'verdadero_falso',
-    name: 'Verdadero/Falso',
-    description: 'Pregunta con dos opciones: verdadero o falso',
-    minOptions: 2,
-    maxOptions: 2,
-    exactlyOneCorrect: true,
-    atLeastOneCorrect: true,
-  },
-  seleccion_unica: {
-    type: 'seleccion_unica',
-    name: 'Selección Única',
-    description: 'Pregunta con múltiples opciones, solo una correcta',
-    minOptions: 2,
-    maxOptions: null,
-    exactlyOneCorrect: true,
-    atLeastOneCorrect: true,
-  },
-  seleccion_multiple: {
-    type: 'seleccion_multiple',
-    name: 'Selección Múltiple',
-    description: 'Pregunta con múltiples opciones, al menos una correcta',
-    minOptions: 2,
-    maxOptions: null,
-    exactlyOneCorrect: false,
-    atLeastOneCorrect: true,
-  },
-  desarrollo: {
-    type: 'desarrollo',
-    name: 'Desarrollo',
-    description: 'Pregunta de respuesta abierta',
-    minOptions: 0,
-    maxOptions: 0,
-    exactlyOneCorrect: false,
-    atLeastOneCorrect: false,
-  },
-};
-
-// Difficulty levels catalog
-export const DIFFICULTY_LEVELS: Difficulty[] = [
-  {
-    difficulty_id: 'bajo',
-    name: 'Bajo',
-    description: 'Nivel de dificultad básico',
-    active: true,
-  },
-  {
-    difficulty_id: 'medio',
-    name: 'Medio',
-    description: 'Nivel de dificultad intermedio',
-    active: true,
-  },
-  {
-    difficulty_id: 'alto',
-    name: 'Alto',
-    description: 'Nivel de dificultad avanzado',
-    active: true,
-  },
-];
-
-// Default sample data
-const DEFAULT_QUESTIONS: Question[] = [
-  {
-    question_id: 'q-1',
-    type: 'seleccion_unica',
-    enunciado: '¿Cuál es la solución de la ecuación 2x + 5 = 13?',
-    version: 1,
-    active: true,
-    original_version_fk: null,
-    topic_fk: 'topic-1',
-    difficulty_fk: 'medio',
-    learning_outcome_fk: null,
-    author_fk: 'admin@example.com',
-    created_at: new Date('2025-10-01'),
-    updated_at: new Date('2025-10-01'),
-    updated_by: 'admin@example.com',
-    deleted_at: null,
-    deleted_by: null,
-  },
-];
-
-const DEFAULT_OPTIONS: QuestionOption[] = [
-  {
-    question_option_id: 'opt-1',
-    question_fk: 'q-1',
-    text: 'x = 4',
-    is_correct: true,
-    position: 1,
-    partial_score: null,
-    created_at: new Date('2025-10-01'),
-    created_by: 'admin@example.com',
-    updated_at: new Date('2025-10-01'),
-    updated_by: 'admin@example.com',
-  },
-  {
-    question_option_id: 'opt-2',
-    question_fk: 'q-1',
-    text: 'x = 3',
-    is_correct: false,
-    position: 2,
-    partial_score: null,
-    created_at: new Date('2025-10-01'),
-    created_by: 'admin@example.com',
-    updated_at: new Date('2025-10-01'),
-    updated_by: 'admin@example.com',
-  },
-  {
-    question_option_id: 'opt-3',
-    question_fk: 'q-1',
-    text: 'x = 5',
-    is_correct: false,
-    position: 3,
-    partial_score: null,
-    created_at: new Date('2025-10-01'),
-    created_by: 'admin@example.com',
-    updated_at: new Date('2025-10-01'),
-    updated_by: 'admin@example.com',
-  },
-  {
-    question_option_id: 'opt-4',
-    question_fk: 'q-1',
-    text: 'x = 6',
-    is_correct: false,
-    position: 4,
-    partial_score: null,
-    created_at: new Date('2025-10-01'),
-    created_by: 'admin@example.com',
-    updated_at: new Date('2025-10-01'),
-    updated_by: 'admin@example.com',
-  },
-];
 
 class QuestionStore {
   private initialized = false;
@@ -171,10 +35,10 @@ class QuestionStore {
     // Check if data exists
     const existingQuestions = localStorage.getItem(STORAGE_KEYS.QUESTIONS);
     if (!existingQuestions) {
-      // First time - load defaults
-      this.saveQuestions(DEFAULT_QUESTIONS);
-      this.saveOptions(DEFAULT_OPTIONS);
-      this.saveCounters({ question: 1, option: 4 });
+      // First time - initialize with empty arrays
+      this.saveQuestions([]);
+      this.saveOptions([]);
+      this.saveCounters({ question: 0, option: 0 });
     }
 
     this.initialized = true;
@@ -237,7 +101,10 @@ class QuestionStore {
   }
 
   // Validation methods (RN-1, RN-2, RN-3, RN-6)
-  validateQuestion(input: CreateQuestionInput): QuestionValidationError[] {
+  validateQuestion(
+    input: CreateQuestionInput, 
+    questionTypeMetadata?: { minOptions: number; maxOptions: number; correctOptions: number; name: string }
+  ): QuestionValidationError[] {
     const errors: QuestionValidationError[] = [];
 
     // RN-1: Required fields
@@ -266,47 +133,38 @@ class QuestionStore {
       }
     }
 
-    // RN-3: Validate difficulty
-    if (input.difficulty_fk) {
-      const difficulty = DIFFICULTY_LEVELS.find(d => d.difficulty_id === input.difficulty_fk && d.active);
-      if (!difficulty) {
-        errors.push({ field: 'difficulty_fk', message: 'El nivel de dificultad no es válido' });
-      }
-    }
-
-    // Validate options for non-desarrollo questions
-    if (input.type !== 'desarrollo') {
-      const typeRules = QUESTION_TYPE_RULES[input.type];
+    // Validate options based on question type metadata
+    if (questionTypeMetadata && questionTypeMetadata.minOptions > 0) {
       
       // RN-2: Validate number of options
-      if (input.options.length < typeRules.minOptions) {
+      if (input.options.length < questionTypeMetadata.minOptions) {
         errors.push({
           field: 'options',
-          message: `Debe tener al menos ${typeRules.minOptions} opciones para preguntas de tipo ${typeRules.name}`
+          message: `Debe tener al menos ${questionTypeMetadata.minOptions} opciones para preguntas de tipo ${questionTypeMetadata.name}`
         });
       }
 
-      if (typeRules.maxOptions && input.options.length > typeRules.maxOptions) {
+      if (questionTypeMetadata.maxOptions > 0 && input.options.length > questionTypeMetadata.maxOptions) {
         errors.push({
           field: 'options',
-          message: `Debe tener exactamente ${typeRules.maxOptions} opciones para preguntas de tipo ${typeRules.name}`
+          message: `Debe tener exactamente ${questionTypeMetadata.maxOptions} opciones para preguntas de tipo ${questionTypeMetadata.name}`
         });
       }
 
       // RN-2: Validate correct answers
       const correctCount = input.options.filter(opt => opt.is_correct).length;
       
-      if (typeRules.atLeastOneCorrect && correctCount === 0) {
+      if (questionTypeMetadata.correctOptions > 0 && correctCount === 0) {
         errors.push({
           field: 'options',
           message: 'Debe marcar al menos una opción como correcta'
         });
       }
 
-      if (typeRules.exactlyOneCorrect && correctCount !== 1) {
+      if (correctCount !== questionTypeMetadata.correctOptions) {
         errors.push({
           field: 'options',
-          message: `Debe marcar exactamente una opción como correcta para preguntas de tipo ${typeRules.name}`
+          message: `Debe marcar exactamente ${questionTypeMetadata.correctOptions} ${questionTypeMetadata.correctOptions === 1 ? 'opción como correcta' : 'opciones como correctas'} para preguntas de tipo ${questionTypeMetadata.name}`
         });
       }
 
@@ -553,14 +411,6 @@ class QuestionStore {
       const topic = topics.find((t) => t.topic_id === input.topic_fk && !t.deleted_at);
       if (!topic) {
         throw new Error('El tema seleccionado no existe o no está vigente');
-      }
-    }
-
-    // Validate difficulty if changed
-    if (input.difficulty_fk && input.difficulty_fk !== question.difficulty_fk) {
-      const difficulty = DIFFICULTY_LEVELS.find(d => d.difficulty_id === input.difficulty_fk && d.active);
-      if (!difficulty) {
-        throw new Error('El nivel de dificultad no es válido');
       }
     }
 
@@ -1005,15 +855,6 @@ class QuestionStore {
     );
   }
 
-  // Get difficulty levels
-  getDifficultyLevels(): Difficulty[] {
-    return DIFFICULTY_LEVELS.filter(d => d.active);
-  }
-
-  // Get question type metadata
-  getQuestionTypeRules(): QuestionTypeMetadata[] {
-    return Object.values(QUESTION_TYPE_RULES);
-  }
 }
 
 export const questionStore = new QuestionStore();

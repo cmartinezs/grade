@@ -61,7 +61,12 @@ export default function AutocompleteSelect({
       if (selectedOption) {
         setInputValue(selectedOption.name);
       } else {
-        setInputValue(String(value));
+        // Si no se encuentra la opción, mostrar placeholder si no hay opciones cargadas aún
+        if (options.length === 0) {
+          setInputValue('');
+        } else {
+          setInputValue(String(value));
+        }
       }
     } else {
       setInputValue('');

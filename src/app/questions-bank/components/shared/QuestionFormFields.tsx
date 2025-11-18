@@ -17,6 +17,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { Form, Row, Col, Badge, Alert, Button } from 'react-bootstrap';
 import {
   QuestionType,
@@ -24,7 +25,6 @@ import {
   CreateQuestionOptionInput,
   QuestionValidationError,
 } from '@/types/question';
-import { QUESTION_TYPE_RULES } from '@/lib/questionStore';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { useTaxonomies } from '@/hooks/useTaxonomies';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
@@ -94,7 +94,6 @@ export default function QuestionFormFields({
   onRemoveOption,
   getErrorsForField,
   disabled = false,
-  showDifficultyAsRadio = false,
 }: QuestionFormFieldsProps) {
   
   // Load CurriculumHierarchy data from Data Connect
@@ -108,30 +107,6 @@ export default function QuestionFormFields({
   
   // Load Difficulties from Data Connect
   const { difficulties } = useDifficulties();
-  
-  // Helper function to validate and convert question type code to QuestionType
-  const validateQuestionType = (code: string | number): QuestionType => {
-    const codeStr = String(code);
-    const validTypes: QuestionType[] = ['verdadero_falso', 'seleccion_unica', 'seleccion_multiple', 'desarrollo'];
-    
-    if (validTypes.includes(codeStr as QuestionType)) {
-      return codeStr as QuestionType;
-    }
-    
-    // If code doesn't match, try to find the question type by matching with the fetched types
-    const matchingType = questionTypes.find(qt => qt.code === codeStr);
-    if (matchingType) {
-      // Try to extract the type from the name if possible
-      const name = matchingType.name.toLowerCase();
-      if (name.includes('verdadero') || name.includes('falso')) return 'verdadero_falso';
-      if (name.includes('múltiple')) return 'seleccion_multiple';
-      if (name.includes('selección') || name.includes('seleccion')) return 'seleccion_unica';
-      if (name.includes('desarrollo') || name.includes('abierta')) return 'desarrollo';
-    }
-    
-    // Default fallback
-    return 'seleccion_unica';
-  };
   
   // Filter active items
   const subjects: Subject[] = allSubjects.filter((s) => s.active && !s.deleted_at);
@@ -149,186 +124,119 @@ export default function QuestionFormFields({
   const activeDifficulties = difficulties.filter(d => d.active);
 
   // Check for missing CurriculumHierarchy levels
-  const selectedSubjectData = subjects.find(s => s.subject_id === selectedSubject);
-  const selectedUnitData = units.find(u => u.unit_id === selectedUnit);
   const hasNoUnits = selectedSubject && units.length === 0;
   const hasNoTopics = selectedUnit && topics.length === 0;
 
-  // Get rules for the current question type
-  const rules = QUESTION_TYPE_RULES[questionType] || QUESTION_TYPE_RULES.seleccion_unica;
+  // Get rules for the current question type from Data Connect
+  const currentQuestionType = questionTypes.find(qt => qt.code === questionType);
+  const rules = currentQuestionType ? {
+    minOptions: currentQuestionType.minOptions || 0,
+    maxOptions: currentQuestionType.maxOptions || 0,
+    correctOptions: currentQuestionType.correctOptions || 1,
+  } : {
+    minOptions: 2,
+    maxOptions: 0,
+    correctOptions: 1,
+  };
+
+  // Auto-generate minimum options when question type changes
+  useEffect(() => {
+    if (!currentQuestionType) {
+      // Clear all options if no question type selected
+      if (options.length > 0) {
+        // Remove all options
+        for (let i = options.length - 1; i >= 0; i--) {
+          onRemoveOption(i);
+        }
+      }
+      return;
+    }
+
+    if (rules.minOptions === 0) {
+      // Clear all options if question type doesn't require options (like 'desarrollo')
+      if (options.length > 0) {
+        for (let i = options.length - 1; i >= 0; i--) {
+          onRemoveOption(i);
+        }
+      }
+      return;
+    }
+
+    const currentCount = options.length;
+    
+    if (currentCount < rules.minOptions) {
+      // Need to add more options to meet minimum
+      const optionsToAdd = rules.minOptions - currentCount;
+      for (let i = 0; i < optionsToAdd; i++) {
+        onAddOption();
+      }
+    } else if (rules.maxOptions > 0 && currentCount > rules.maxOptions) {
+      // Need to remove options to meet maximum (only if maxOptions is not unlimited)
+      const optionsToRemove = currentCount - rules.maxOptions;
+      for (let i = 0; i < optionsToRemove; i++) {
+        onRemoveOption(currentCount - 1 - i);
+      }
+    }
+  }, [questionType, currentQuestionType, rules.minOptions, rules.maxOptions, options.length, onAddOption, onRemoveOption]);
 
   return (
     <>
       {/* 1. CurriculumHierarchy Selection */}
-      <div className="mb-4">
-        <h6 className="mb-3 fw-bold">Jerarquía Curricular *</h6>
-        <Row>
-          <Col md={4}>
-            <AutocompleteSelect
-              label="Asignatura"
-              value={selectedSubject}
-              onChange={(value) => onSubjectChange(String(value))}
-              options={subjects.map(s => ({
-                id: s.subject_id,
-                name: s.name,
-                description: s.code
-              }))}
-              placeholder="Busca una asignatura..."
-              disabled={disabled}
-              warningMessage={subjects.length === 0 ? "⚠️ No hay asignaturas disponibles" : undefined}
-              required
-            />
-          </Col>
-          <Col md={4}>
-            <AutocompleteSelect
-              label="Unidad"
-              value={selectedUnit}
-              onChange={(value) => onUnitChange(String(value))}
-              options={units.map(u => ({
-                id: u.unit_id,
-                name: u.name,
-                description: u.description
-              }))}
-              placeholder={!selectedSubject ? "Selecciona una asignatura primero..." : "Busca una unidad..."}
-              disabled={!selectedSubject || disabled}
-              warningMessage={hasNoUnits ? "⚠️ No hay unidades para esta asignatura" : undefined}
-              required
-            />
-          </Col>
-          <Col md={4}>
-            <AutocompleteSelect
-              label="Tema"
-              value={selectedTopic}
-              onChange={(value) => onTopicChange(String(value))}
-              options={topics.map(t => ({
-                id: t.topic_id,
-                name: t.name,
-                description: t.description
-              }))}
-              placeholder={!selectedUnit ? "Selecciona una unidad primero..." : "Busca un tema..."}
-              disabled={!selectedUnit || disabled}
-              isInvalid={getErrorsForField('topic_fk').length > 0}
-              errorMessage={getErrorsForField('topic_fk')[0]?.message}
-              warningMessage={hasNoTopics ? "⚠️ No hay temas para esta unidad" : undefined}
-              required
-            />
-          </Col>
-        </Row>
-
-        {/* Warning: No units for selected subject */}
-        {hasNoUnits && (
-          <Alert variant="warning" className="mb-0 mt-2">
-            <div className="d-flex align-items-start">
-              <span className="me-2">⚠️</span>
-              <div>
-                <strong>La asignatura &ldquo;{selectedSubjectData?.name}&rdquo; no tiene unidades.</strong>
-                <p className="mb-0 mt-1 small">
-                  Para poder crear una pregunta, primero debes crear al menos una unidad para esta asignatura.
-                  Ve a <strong>Gestión de Taxonomías</strong> para agregar unidades.
-                </p>
-              </div>
-            </div>
-          </Alert>
-        )}
-
-        {/* Warning: No topics for selected unit */}
-        {hasNoTopics && (
-          <Alert variant="warning" className="mb-0 mt-2">
-            <div className="d-flex align-items-start">
-              <span className="me-2">⚠️</span>
-              <div>
-                <strong>La unidad &ldquo;{selectedUnitData?.name}&rdquo; no tiene temas.</strong>
-                <p className="mb-0 mt-1 small">
-                  Para poder crear una pregunta, primero debes crear al menos un tema para esta unidad.
-                  Ve a <strong>Gestión de Taxonomías</strong> para agregar temas.
-                </p>
-              </div>
-            </div>
-          </Alert>
-        )}
-      </div>
-
-      {/* 2. Taxonomy Selection */}
-      <div className="mb-4">
-        <h6 className="mb-3 fw-bold">Taxonomía (Bloom) *</h6>
-        <AutocompleteSelect
-          label="Nivel de Taxonomía"
-          value={selectedTaxonomy}
-          onChange={(value) => onTaxonomyChange(String(value))}
-          options={activeTaxonomies.map(t => ({
-            id: t.taxonomyId,
-            name: t.name,
-            description: `Nivel ${t.level}: ${t.description || ''}`
-          }))}
-          placeholder="Busca un nivel de taxonomía..."
-          disabled={disabled}
-          isInvalid={getErrorsForField('taxonomy_fk').length > 0}
-          errorMessage={getErrorsForField('taxonomy_fk')[0]?.message}
-          warningMessage={activeTaxonomies.length === 0 ? "⚠️ No hay taxonomías disponibles" : undefined}
-          required
-        />
-      </div>
-
-      {/* 3. Question Type */}
-      <div className="mb-4">
-        <h6 className="mb-3 fw-bold">Tipo de Pregunta *</h6>
-        <AutocompleteSelect
-          label="Tipo"
-          value={questionType}
-          onChange={(value) => onQuestionTypeChange(validateQuestionType(value))}
-          options={questionTypes.map(qt => ({
-            id: qt.code,
-            name: qt.name,
-            description: qt.description
-          }))}
-          placeholder="Busca un tipo de pregunta..."
-          disabled={disabled}
-          isInvalid={getErrorsForField('type').length > 0}
-          errorMessage={getErrorsForField('type')[0]?.message}
-          required
-        />
-      </div>
-
-      {/* 4. Difficulty */}
-      <div className="mb-4">
-        <h6 className="mb-3 fw-bold">Dificultad *</h6>
-        {showDifficultyAsRadio ? (
-          <div className="d-flex gap-2">
-            {activeDifficulties.map((level) => (
-              <Form.Check
-                key={level.difficultyId}
-                type="radio"
-                id={`difficulty-${level.difficultyId}`}
-                label={level.level}
-                name="difficulty"
-                value={level.difficultyId}
-                checked={difficulty === level.difficultyId}
-                onChange={(e) => onDifficultyChange(e.target.value as DifficultyLevel)}
-                disabled={disabled}
-              />
-            ))}
-          </div>
-        ) : (
+      <Row>
+        <Col md={4}>
           <AutocompleteSelect
-            label="Nivel"
-            value={difficulty}
-            onChange={(value) => onDifficultyChange(value as DifficultyLevel)}
-            options={activeDifficulties.map(d => ({
-              id: d.difficultyId,
-              name: d.level,
-              description: d.description
+            label="Asignatura"
+            value={selectedSubject}
+            onChange={(value) => onSubjectChange(String(value))}
+            options={subjects.map(s => ({
+              id: s.subject_id,
+              name: s.name,
+              description: s.code
             }))}
-            placeholder="Busca un nivel de dificultad..."
+            placeholder="Busca una asignatura..."
             disabled={disabled}
-            isInvalid={getErrorsForField('difficulty_fk').length > 0}
-            errorMessage={getErrorsForField('difficulty_fk')[0]?.message}
+            warningMessage={subjects.length === 0 ? "⚠️ No hay asignaturas disponibles" : undefined}
             required
           />
-        )}
-      </div>
+        </Col>
+        <Col md={4}>
+          <AutocompleteSelect
+            label="Unidad"
+            value={selectedUnit}
+            onChange={(value) => onUnitChange(String(value))}
+            options={units.map(u => ({
+              id: u.unit_id,
+              name: u.name,
+              description: u.description
+            }))}
+            placeholder={!selectedSubject ? "Selecciona una asignatura primero..." : "Busca una unidad..."}
+            disabled={!selectedSubject || disabled}
+            warningMessage={hasNoUnits ? "⚠️ No hay unidades para esta asignatura" : undefined}
+            required
+          />
+        </Col>
+        <Col md={4}>
+          <AutocompleteSelect
+            label="Tema"
+            value={selectedTopic}
+            onChange={(value) => onTopicChange(String(value))}
+            options={topics.map(t => ({
+              id: t.topic_id,
+              name: t.name,
+              description: t.description
+            }))}
+            placeholder={!selectedUnit ? "Selecciona una unidad primero..." : "Busca un tema..."}
+            disabled={!selectedUnit || disabled}
+            isInvalid={getErrorsForField('topic_fk').length > 0}
+            errorMessage={getErrorsForField('topic_fk')[0]?.message}
+            warningMessage={hasNoTopics ? "⚠️ No hay temas para esta unidad" : undefined}
+            required
+          />
+        </Col>
+      </Row>
 
-      {/* 5. Question Statement */}
-      <Form.Group className="mb-3">
+      {/* 2. Question Statement */}
+      <Form.Group className="mb-4">
         <Form.Label>
           Enunciado de la Pregunta <span style={{ color: 'red' }}>*</span>
         </Form.Label>
@@ -348,18 +256,89 @@ export default function QuestionFormFields({
         ))}
       </Form.Group>
 
-      {/* 6. Options (if not desarrollo) */}
-      {questionType !== 'desarrollo' && (
+      {/* 3. Taxonomy Selection */}
+      <AutocompleteSelect
+        label="Nivel de Taxonomía"
+        value={selectedTaxonomy}
+        onChange={(value) => onTaxonomyChange(String(value))}
+        options={activeTaxonomies.map(t => ({
+          id: t.taxonomyId,
+          name: t.name,
+          description: `Nivel ${t.level}: ${t.description || ''}`
+        }))}
+        placeholder="Busca un nivel de taxonomía..."
+        disabled={disabled}
+        isInvalid={getErrorsForField('taxonomy_fk').length > 0}
+        errorMessage={getErrorsForField('taxonomy_fk')[0]?.message}
+        warningMessage={activeTaxonomies.length === 0 ? "⚠️ No hay taxonomías disponibles" : undefined}
+        required
+      />
+
+      {/* 4. Difficulty */}
+      <AutocompleteSelect
+        label="Nivel"
+        value={difficulty}
+        onChange={(value) => onDifficultyChange(value as DifficultyLevel)}
+        options={activeDifficulties.map(d => ({
+          id: d.difficultyId,
+          name: d.level,
+          description: d.description
+        }))}
+        placeholder="Busca un nivel de dificultad..."
+        disabled={disabled}
+        isInvalid={getErrorsForField('difficulty_fk').length > 0}
+        errorMessage={getErrorsForField('difficulty_fk')[0]?.message}
+        required
+      />
+
+      {/* 5. Question Type */}
+      <AutocompleteSelect
+        label="Tipo"
+        value={questionType}
+        onChange={(value) => onQuestionTypeChange(String(value) as QuestionType)}
+        options={questionTypes
+          .filter(qt => qt.active)
+          .map(qt => ({
+            id: qt.code,
+            name: qt.name,
+            description: qt.description
+          }))}
+        placeholder="Busca un tipo de pregunta..."
+        disabled={disabled || questionTypes.length === 0}
+        isInvalid={getErrorsForField('type').length > 0}
+        errorMessage={getErrorsForField('type')[0]?.message}
+        warningMessage={questionTypes.length === 0 ? "⚠️ Cargando tipos de pregunta..." : undefined}
+        required
+      />
+
+      {/* 6. Options */}
+      <div className="mb-4">
+        {!currentQuestionType && (
+          <Alert variant="info" className="mb-0">
+            <strong>Alternativas: </strong><small>Selecciona un tipo de pregunta para configurar las alternativas</small>
+          </Alert>
+        )}
+      </div>
+
+      {/* 6.1. Options fields (if question type selected and minOptions > 0) */}
+      {currentQuestionType && rules.minOptions > 0 && (
         <div className="mb-4">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <Form.Label className="mb-0">
               Alternativas <span style={{ color: 'red' }}>*</span>
             </Form.Label>
-            <Badge bg="secondary">
-              {rules.minOptions === rules.maxOptions
-                ? `Exactamente ${rules.minOptions} opciones`
-                : `Mínimo ${rules.minOptions} opciones`}
-            </Badge>
+            <div className="d-flex gap-2">
+              <Badge bg="secondary">
+                {rules.minOptions === rules.maxOptions && rules.maxOptions > 0
+                  ? `Exactamente ${rules.minOptions} opciones`
+                  : rules.maxOptions === 0
+                  ? `Mínimo ${rules.minOptions} opciones`
+                  : `Entre ${rules.minOptions} y ${rules.maxOptions} opciones`}
+              </Badge>
+              <Badge bg="info">
+                Debe marcar {rules.correctOptions} {rules.correctOptions === 1 ? 'opción correcta' : 'opciones correctas'}
+              </Badge>
+            </div>
           </div>
 
           {getErrorsForField('options').length > 0 && (
@@ -386,7 +365,7 @@ export default function QuestionFormFields({
                     placeholder={`Texto de la opción ${option.position}`}
                     isInvalid={getErrorsForField(`options[${index}].text`).length > 0}
                     disabled={disabled}
-                    readOnly={questionType === 'verdadero_falso'}
+                    readOnly={rules.minOptions === rules.maxOptions && rules.minOptions === 2}
                   />
                   {getErrorsForField(`options[${index}].text`).map((err, i) => (
                     <Form.Control.Feedback key={i} type="invalid">
@@ -396,7 +375,7 @@ export default function QuestionFormFields({
                 </Col>
                 <Col xs={3}>
                   <Form.Check
-                    type="checkbox"
+                    type="switch"
                     label="Correcta"
                     checked={option.is_correct}
                     onChange={(e) => onOptionCorrectChange(index, e.target.checked)}
@@ -404,7 +383,7 @@ export default function QuestionFormFields({
                   />
                 </Col>
                 <Col xs={1}>
-                  {questionType !== 'verdadero_falso' && options.length > rules.minOptions && (
+                  {!(rules.minOptions === rules.maxOptions) && options.length > rules.minOptions && (
                     <Button
                       variant="outline-danger"
                       size="sm"
@@ -420,7 +399,7 @@ export default function QuestionFormFields({
           ))}
 
           {/* Add option button (if allowed) */}
-          {questionType !== 'verdadero_falso' && (!rules.maxOptions || options.length < rules.maxOptions) && (
+          {!(rules.minOptions === rules.maxOptions) && (rules.maxOptions === 0 || options.length < rules.maxOptions) && (
             <Button 
               variant="outline-primary" 
               size="sm" 
@@ -429,17 +408,6 @@ export default function QuestionFormFields({
             >
               ➕ Agregar Opción
             </Button>
-          )}
-
-          {rules.exactlyOneCorrect && (
-            <Form.Text className="text-info d-block mt-2">
-              ℹ️ Debe marcar exactamente una opción como correcta
-            </Form.Text>
-          )}
-          {rules.atLeastOneCorrect && !rules.exactlyOneCorrect && (
-            <Form.Text className="text-info d-block mt-2">
-              ℹ️ Debe marcar al menos una opción como correcta
-            </Form.Text>
           )}
         </div>
       )}

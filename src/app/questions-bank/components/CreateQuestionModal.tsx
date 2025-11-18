@@ -15,8 +15,9 @@ import {
   QuestionValidationError,
   DuplicateDetectionResult,
 } from '@/types/question';
-import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
+import { questionStore } from '@/lib/questionStore';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import QuestionFormFields from './shared/QuestionFormFields';
 
 interface CreateQuestionModalProps {
@@ -39,15 +40,16 @@ export default function CreateQuestionModal({
   initialSubject,
 }: CreateQuestionModalProps) {
   const { user } = useAuth();
+  const { questionTypes } = useQuestionTypes();
   
   // Form state
-  const [questionType, setQuestionType] = useState<QuestionType>(initialType || 'seleccion_unica');
+  const [questionType, setQuestionType] = useState<QuestionType>(initialType || '' as QuestionType);
   const [enunciado, setEnunciado] = useState(initialEnunciado || '');
   const [selectedSubject, setSelectedSubject] = useState(initialSubject || '');
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedTaxonomy, setSelectedTaxonomy] = useState('');
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty || 'medio');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty || '' as DifficultyLevel);
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([
     { text: '', is_correct: false, position: 1 },
     { text: '', is_correct: false, position: 2 },
@@ -74,21 +76,22 @@ export default function CreateQuestionModal({
 
   // Update options when question type changes
   useEffect(() => {
-    const rules = QUESTION_TYPE_RULES[questionType] || QUESTION_TYPE_RULES.seleccion_unica;
+    // Wait for question types to load
+    if (questionTypes.length === 0 || !questionType) return;
     
-    if (questionType === 'desarrollo') {
+    const currentQuestionType = questionTypes.find(qt => qt.code === questionType);
+    if (!currentQuestionType) return;
+    
+    const minOptions = currentQuestionType.minOptions || 0;
+    
+    if (minOptions === 0) {
       setOptions([]);
-    } else if (questionType === 'verdadero_falso') {
-      setOptions([
-        { text: 'Verdadero', is_correct: false, position: 1 },
-        { text: 'Falso', is_correct: false, position: 2 },
-      ]);
     } else {
       // Ensure minimum options
       setOptions((prevOptions) => {
-        if (prevOptions.length < rules.minOptions) {
+        if (prevOptions.length < minOptions) {
           const newOptions = [...prevOptions];
-          while (newOptions.length < rules.minOptions) {
+          while (newOptions.length < minOptions) {
             newOptions.push({
               text: '',
               is_correct: false,
@@ -100,17 +103,17 @@ export default function CreateQuestionModal({
         return prevOptions;
       });
     }
-  }, [questionType]);
+  }, [questionType, questionTypes]);
 
   const resetForm = () => {
     // Reset to initial values if provided, otherwise use defaults
-    setQuestionType(initialType || 'seleccion_unica');
+    setQuestionType(initialType || '' as QuestionType);
     setEnunciado(initialEnunciado || '');
     setSelectedSubject(initialSubject || '');
     setSelectedUnit('');
     setSelectedTopic('');
     setSelectedTaxonomy('');
-    setDifficulty(initialDifficulty || 'medio');
+    setDifficulty(initialDifficulty || '' as DifficultyLevel);
     setOptions([
       { text: '', is_correct: false, position: 1 },
       { text: '', is_correct: false, position: 2 },
@@ -154,9 +157,10 @@ export default function CreateQuestionModal({
 
   const handleOptionCorrectChange = (index: number, isCorrect: boolean) => {
     const newOptions = [...options];
-    const rules = QUESTION_TYPE_RULES[questionType];
+    const currentQuestionType = questionTypes.find(qt => qt.code === questionType);
+    const correctOptions = currentQuestionType?.correctOptions || 1;
     
-    if (rules.exactlyOneCorrect) {
+    if (correctOptions === 1) {
       // For single answer questions, uncheck all others
       newOptions.forEach((opt, i) => {
         opt.is_correct = i === index ? isCorrect : false;

@@ -10,7 +10,7 @@ import CloneQuestionModal from './components/CloneQuestionModal';
 import RetireQuestionModal from './components/RetireQuestionModal';
 import ReactivateQuestionModal from './components/ReactivateQuestionModal';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
-import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
+import { questionStore } from '@/lib/questionStore';
 import type { QuestionType, DifficultyLevel } from '@/types/question';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { useQuestions } from '@/hooks/useQuestions';
@@ -295,7 +295,7 @@ export default function QuestionsBankPage() {
                       <Col md={9}>
                         <div className="d-flex align-items-center mb-2">
                           <Badge bg={getTypeColor(question.type)} className="me-2">
-                            {QUESTION_TYPE_RULES[question.type].name}
+                            {questionTypes.find(qt => qt.code === question.type)?.name || question.type}
                           </Badge>
                           <Badge bg={getDifficultyColor(question.difficulty_fk)} className="me-2">
                             {difficultyLevels.find(d => d.difficulty_id === question.difficulty_fk)?.name}

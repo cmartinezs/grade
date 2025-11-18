@@ -20,9 +20,10 @@ import {
   QuestionValidationError,
   QuestionWithDetails,
 } from '@/types/question';
-import { questionStore, QUESTION_TYPE_RULES } from '@/lib/questionStore';
+import { questionStore } from '@/lib/questionStore';
 import { getAllUnits, getAllTopics } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import QuestionFormFields from './shared/QuestionFormFields';
 
 interface CloneQuestionModalProps {
@@ -39,6 +40,7 @@ export default function CloneQuestionModal({
   questionId,
 }: CloneQuestionModalProps) {
   const { user } = useAuth();
+  const { questionTypes } = useQuestionTypes();
 
   // Original question data
   const [originalQuestion, setOriginalQuestion] = useState<QuestionWithDetails | null>(null);
@@ -119,23 +121,21 @@ export default function CloneQuestionModal({
 
   // Update options when question type changes
   useEffect(() => {
-    if (!originalQuestion) return; // Only auto-adjust if we have original data
+    if (!originalQuestion || questionTypes.length === 0) return; // Only auto-adjust if we have original data and types loaded
     
-    const rules = QUESTION_TYPE_RULES[questionType];
+    const currentQuestionType = questionTypes.find(qt => qt.code === questionType);
+    if (!currentQuestionType) return;
+    
+    const minOptions = currentQuestionType.minOptions || 0;
 
-    if (questionType === 'desarrollo') {
+    if (minOptions === 0) {
       setOptions([]);
-    } else if (questionType === 'verdadero_falso') {
-      setOptions([
-        { text: 'Verdadero', is_correct: false, position: 1 },
-        { text: 'Falso', is_correct: false, position: 2 },
-      ]);
     } else {
-      // Keep existing options if changing between seleccion_unica/multiple
+      // Keep existing options if changing between types
       setOptions((prevOptions) => {
-        if (prevOptions.length < rules.minOptions) {
+        if (prevOptions.length < minOptions) {
           const newOptions = [...prevOptions];
-          while (newOptions.length < rules.minOptions) {
+          while (newOptions.length < minOptions) {
             newOptions.push({
               text: '',
               is_correct: false,
@@ -192,9 +192,10 @@ export default function CloneQuestionModal({
 
   const handleOptionCorrectChange = (index: number, isCorrect: boolean) => {
     const newOptions = [...options];
-    const rules = QUESTION_TYPE_RULES[questionType];
+    const currentQuestionType = questionTypes.find(qt => qt.code === questionType);
+    const correctOptions = currentQuestionType?.correctOptions || 1;
     
-    if (rules.exactlyOneCorrect) {
+    if (correctOptions === 1) {
       // For single answer questions, uncheck all others
       newOptions.forEach((opt, i) => {
         opt.is_correct = i === index ? isCorrect : false;
@@ -373,7 +374,7 @@ export default function CloneQuestionModal({
               <Alert variant="light">
                 <h6>Resumen del clon:</h6>
                 <ul className="mb-0">
-                  <li><strong>Tipo:</strong> {QUESTION_TYPE_RULES[questionType].name}</li>
+                  <li><strong>Tipo:</strong> {questionTypes.find(qt => qt.code === questionType)?.name || questionType}</li>
                   <li><strong>Dificultad:</strong> {difficulty}</li>
                   <li><strong>Alternativas:</strong> {options.length}</li>
                   <li>
