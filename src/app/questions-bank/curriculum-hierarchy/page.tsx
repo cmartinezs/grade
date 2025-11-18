@@ -9,10 +9,8 @@ import DeleteCurriculumHierarchyModal from './components/DeleteCurriculumHierarc
 import {
   CurriculumHierarchyHeader,
   CurriculumHierarchySearchBar,
-  CurriculumHierarchyHelpCard,
   CurriculumHierarchyCatalog,
 } from './components';
-import { CurriculumHierarchyDebug } from './components/CurriculumHierarchyDebug';
 import { CurriculumHierarchyHelp } from './CurriculumHierarchyHelp';
 import { useCurriculumHierarchyData, useCurriculumHierarchyModals } from './hooks';
 import { useHelpContent } from '@/contexts/HelpContext';
