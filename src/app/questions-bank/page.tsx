@@ -137,6 +137,12 @@ export default function QuestionsBankPage() {
 
   const getTypeColor = (type: QuestionType) => {
     const colors: Record<QuestionType, string> = {
+      // Nuevos códigos
+      TF: 'secondary',
+      SS: 'primary',
+      SM: 'info',
+      D: 'warning',
+      // Códigos legacy
       verdadero_falso: 'secondary',
       seleccion_unica: 'primary',
       seleccion_multiple: 'info',
@@ -358,8 +364,12 @@ export default function QuestionsBankPage() {
                             <Dropdown.Item onClick={() => handleCreateVersion(question.question_id)}>
                               🔄 Crear Nueva Versión
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleEditQuestion(question.question_id)}>
-                              ✏️ Editar
+                            <Dropdown.Item 
+                              onClick={() => handleEditQuestion(question.question_id)}
+                              disabled
+                              className="text-muted"
+                            >
+                              ✏️ Editar (proximamente)
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => handleCloneQuestion(question.question_id)}>
                               📋 Clonar Pregunta

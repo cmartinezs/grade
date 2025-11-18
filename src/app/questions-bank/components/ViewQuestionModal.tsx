@@ -7,7 +7,6 @@ import { fetchQuestionById, mapQuestionTypeIdToCode } from '@/lib/questionConnec
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useDifficulties } from '@/hooks/useDifficulties';
-import { useTaxonomies } from '@/hooks/useTaxonomies';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { getUserByEmail, getUserById } from '@/dataconnect-generated';
 
@@ -29,7 +28,6 @@ export default function ViewQuestionModal({
   const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
   const { difficulties } = useDifficulties();
-  const { taxonomies } = useTaxonomies();
   const { subjects, units, topics } = useCurriculumHierarchy();
   const [question, setQuestion] = useState<QuestionWithDetails | null>(null);
   const [versionHistory, setVersionHistory] = useState<QuestionWithDetails[]>([]);
@@ -394,6 +392,8 @@ export default function ViewQuestionModal({
               onEdit(question.question_id);
               onHide();
             }}
+            disabled
+            title="Edición temporalmente deshabilitada"
           >
             ✏️ Editar
           </Button>

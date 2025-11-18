@@ -11,6 +11,8 @@ import {
   QuestionWithDetails,
 } from '@/types/question';
 import { questionStore } from '@/lib/questionStore';
+import { fetchQuestionById, mapQuestionTypeIdToCode } from '@/lib/questionConnect';
+import { getUserByEmail } from '@/dataconnect-generated';
 import { getAllTopics, getAllUnits } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
@@ -56,32 +58,88 @@ export default function EditQuestionModal({
 
   // Load question data when modal opens
   useEffect(() => {
-    if (show && questionId) {
-      const question = questionStore.getQuestionWithDetails(questionId);
-      if (question) {
-        setIsLoadingQuestion(true);
-        setOriginalQuestion(question);
-        
-        // Populate form with question data (non-CurriculumHierarchy fields)
-        setQuestionType(question.type);
-        setEnunciado(question.enunciado);
-        setDifficulty(question.difficulty_fk);
+    const loadQuestion = async () => {
+      if (show && questionId && user?.firebaseUid && user?.email) {
+        try {
+          setIsLoadingQuestion(true);
+          
+          // Obtener userId desde Data Connect
+          const userResult = await getUserByEmail({ email: user.email });
+          const userData = userResult.data?.users?.[0];
+          
+          if (!userData?.userId) {
+            throw new Error('Usuario no encontrado en Data Connect');
+          }
 
-        // Populate options
-        if (question.type !== 'desarrollo' && question.options) {
-          setOptions(question.options.map(opt => ({
-            text: opt.text,
-            is_correct: opt.is_correct,
-            position: opt.position,
-            partial_score: opt.partial_score,
-          })));
+          // Cargar pregunta desde Data Connect
+          const dcQuestion = await fetchQuestionById(questionId, userData.userId, user.firebaseUid);
+          
+          if (!dcQuestion) {
+            throw new Error('Pregunta no encontrada');
+          }
+
+          // Transformar a formato local
+          const question: QuestionWithDetails = {
+            question_id: dcQuestion.questionId,
+            type: mapQuestionTypeIdToCode(dcQuestion.questionTypeId, questionTypes) as QuestionType,
+            enunciado: dcQuestion.text,
+            version: dcQuestion.version,
+            active: dcQuestion.active,
+            original_version_fk: dcQuestion.originalQuestionId || null,
+            topic_fk: dcQuestion.topicId,
+            difficulty_fk: dcQuestion.difficultyId as DifficultyLevel,
+            learning_outcome_fk: dcQuestion.taxonomyId,
+            author_fk: dcQuestion.userId,
+            created_at: new Date(),
+            updated_at: new Date(),
+            updated_by: dcQuestion.userId,
+            deleted_at: null,
+            deleted_by: null,
+            options: (dcQuestion.options || []).map(opt => ({
+              question_option_id: opt.questionOptionId,
+              question_fk: opt.questionId,
+              text: opt.text,
+              is_correct: opt.isCorrect,
+              position: opt.position,
+              partial_score: opt.score,
+              created_at: new Date(),
+              created_by: dcQuestion.userId,
+              updated_at: new Date(),
+              updated_by: dcQuestion.userId,
+            })),
+          };
+
+          setOriginalQuestion(question);
+          
+          // Populate form with question data (non-CurriculumHierarchy fields)
+          setQuestionType(question.type);
+          setEnunciado(question.enunciado);
+          setDifficulty(question.difficulty_fk);
+
+          // Populate options
+          if (question.type !== 'desarrollo' && question.options) {
+            setOptions(question.options.map(opt => ({
+              text: opt.text,
+              is_correct: opt.is_correct,
+              position: opt.position,
+              partial_score: opt.partial_score,
+            })));
+          }
+        } catch (error) {
+          console.error('Error loading question:', error);
+          setValidationErrors([{ field: 'general', message: 'Error cargando pregunta' }]);
+        } finally {
+          setIsLoadingQuestion(false);
         }
+      } else {
+        // Reset form if no questionId or user not ready
+        setIsLoadingQuestion(false);
+        resetForm();
       }
-    } else {
-      setIsLoadingQuestion(false);
-      resetForm();
-    }
-  }, [show, questionId]);
+    };
+
+    loadQuestion();
+  }, [show, questionId, user?.firebaseUid, user?.email, questionTypes]);
 
   // Load CurriculumHierarchy hierarchy separately after originalQuestion is set
   useEffect(() => {
