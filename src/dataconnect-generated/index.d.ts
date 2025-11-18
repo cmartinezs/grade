@@ -468,6 +468,14 @@ export interface GetQuestionData {
     deletedAt?: TimestampString | null;
     deletedBy?: UUIDString | null;
   } & Question_Key)[];
+    questionOptions: ({
+      questionOptionId: UUIDString;
+      text: string;
+      isCorrect: boolean;
+      position: number;
+      score?: number | null;
+      questionId: UUIDString;
+    } & QuestionOption_Key)[];
 }
 
 export interface GetQuestionOptionsData {

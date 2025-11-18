@@ -16,6 +16,7 @@ import { getUserByEmail } from '@/dataconnect-generated';
 import { getAllTopics, getAllUnits } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import QuestionFormFields from './shared/QuestionFormFields';
 
 interface EditQuestionModalProps {
@@ -35,6 +36,7 @@ export default function EditQuestionModal({
 }: EditQuestionModalProps) {
   const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
+  const { subjects, units, topics } = useCurriculumHierarchy();
 
   // Original question data
   const [originalQuestion, setOriginalQuestion] = useState<QuestionWithDetails | null>(null);
@@ -111,19 +113,35 @@ export default function EditQuestionModal({
 
           setOriginalQuestion(question);
           
-          // Populate form with question data (non-CurriculumHierarchy fields)
+          // Populate form with question data
           setQuestionType(question.type);
           setEnunciado(question.enunciado);
           setDifficulty(question.difficulty_fk);
+          setSelectedTaxonomy(question.learning_outcome_fk || '');
+
+          // Populate curriculum hierarchy fields
+          const topic = topics.find(t => t.topic_id === question.topic_fk);
+          if (topic) {
+            const unit = units.find(u => u.unit_id === topic.unit_fk);
+            if (unit) {
+              const subject = subjects.find(s => s.subject_id === unit.subject_fk);
+              if (subject) {
+                setSelectedSubject(subject.subject_id);
+                setSelectedUnit(unit.unit_id);
+                setSelectedTopic(topic.topic_id);
+              }
+            }
+          }
 
           // Populate options
-          if (question.type !== 'desarrollo' && question.options) {
-            setOptions(question.options.map(opt => ({
-              text: opt.text,
-              is_correct: opt.is_correct,
-              position: opt.position,
-              partial_score: opt.partial_score,
-            })));
+          if (question.type !== 'desarrollo' && question.type !== 'D' && question.options && question.options.length > 0) {
+            const mappedOptions = question.options.map(opt => ({
+              text: opt.text || '',
+              is_correct: opt.is_correct || false,
+              position: opt.position || 0,
+              partial_score: opt.partial_score || null,
+            }));
+            setOptions(mappedOptions);
           }
         } catch (error) {
           console.error('Error loading question:', error);
@@ -139,35 +157,11 @@ export default function EditQuestionModal({
     };
 
     loadQuestion();
-  }, [show, questionId, user?.firebaseUid, user?.email, questionTypes]);
+  }, [show, questionId, user?.firebaseUid, user?.email, questionTypes, subjects, units, topics]);
 
   // Load CurriculumHierarchy hierarchy separately after originalQuestion is set
-  useEffect(() => {
-    if (originalQuestion && isLoadingQuestion) {
-      const allTopics = getAllTopics();
-      const allUnits = getAllUnits();
-      const topic = allTopics.find(t => t.topic_id === originalQuestion.topic_fk);
-      
-      if (topic) {
-        const unit = allUnits.find(u => u.unit_id === topic.unit_fk);
-        if (unit) {
-          // Batch all state updates together
-          Promise.resolve().then(() => {
-            setSelectedSubject(unit.subject_fk);
-            setSelectedUnit(topic.unit_fk);
-            setSelectedTopic(originalQuestion.topic_fk);
-          }).then(() => {
-            // Give React a moment to process all state updates
-            setTimeout(() => setIsLoadingQuestion(false), 100);
-          });
-        } else {
-          setIsLoadingQuestion(false);
-        }
-      } else {
-        setIsLoadingQuestion(false);
-      }
-    }
-  }, [originalQuestion, isLoadingQuestion]);
+  // Este efecto ya no es necesario porque los datos se cargan directamente en el primer useEffect
+  // y QuestionFormFields manejará la carga de la jerarquía usando los hooks correspondientes
 
   // Update options when question type changes
   useEffect(() => {

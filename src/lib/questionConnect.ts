@@ -110,9 +110,20 @@ export async function fetchQuestionById(
     const variables: GetQuestionVariables = { questionId, userId, firebaseId };
     const result = await dcGetQuestion(variables);
     
-    // GetQuestion retorna un array 'questions'
+    // GetQuestion retorna 'questions' y 'questionOptions' como arrays separados
     const questions = result.data?.questions || [];
-    return questions.length > 0 ? (questions[0] as unknown as QuestionWithOptions) : null;
+    const options = result.data?.questionOptions || [];
+    
+    if (questions.length === 0) {
+      return null;
+    }
+    
+    // Combinar la pregunta con sus opciones
+    const question = questions[0];
+    return {
+      ...question,
+      options
+    } as unknown as QuestionWithOptions;
   } catch (error) {
     console.error('Error fetching question:', error);
     throw error;

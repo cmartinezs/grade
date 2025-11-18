@@ -3257,6 +3257,14 @@ export interface GetQuestionData {
     deletedAt?: TimestampString | null;
     deletedBy?: UUIDString | null;
   } & Question_Key)[];
+    questionOptions: ({
+      questionOptionId: UUIDString;
+      text: string;
+      isCorrect: boolean;
+      position: number;
+      score?: number | null;
+      questionId: UUIDString;
+    } & QuestionOption_Key)[];
 }
 ```
 ### Using `GetQuestion`'s action shortcut function
@@ -3283,11 +3291,13 @@ const dataConnect = getDataConnect(connectorConfig);
 const { data } = await getQuestion(dataConnect, getQuestionVars);
 
 console.log(data.questions);
+console.log(data.questionOptions);
 
 // Or, you can use the `Promise` API.
 getQuestion(getQuestionVars).then((response) => {
   const data = response.data;
   console.log(data.questions);
+  console.log(data.questionOptions);
 });
 ```
 
@@ -3318,11 +3328,13 @@ const ref = getQuestionRef(dataConnect, getQuestionVars);
 const { data } = await executeQuery(ref);
 
 console.log(data.questions);
+console.log(data.questionOptions);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.questions);
+  console.log(data.questionOptions);
 });
 ```
 

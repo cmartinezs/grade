@@ -456,6 +456,14 @@ query GetQuestion($questionId: UUID!, $userId: UUID!, $firebaseId: String!) @aut
     deletedAt
     deletedBy
   }
+  questionOptions(where: { questionId: { eq: $questionId } }) {
+    questionOptionId
+    text
+    isCorrect
+    position
+    score
+    questionId
+  }
 }
 
 # Listar preguntas públicas (disponibles para todos)

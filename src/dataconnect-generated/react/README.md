@@ -2602,6 +2602,14 @@ export interface GetQuestionData {
     deletedAt?: TimestampString | null;
     deletedBy?: UUIDString | null;
   } & Question_Key)[];
+    questionOptions: ({
+      questionOptionId: UUIDString;
+      text: string;
+      isCorrect: boolean;
+      position: number;
+      score?: number | null;
+      questionId: UUIDString;
+    } & QuestionOption_Key)[];
 }
 ```
 
@@ -2653,6 +2661,7 @@ export default function GetQuestionComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.questions);
+    console.log(query.data.questionOptions);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
