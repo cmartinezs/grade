@@ -9,11 +9,11 @@ interface TopicFormProps {
   subject_fk: string;
   unit_fk: string;
   subjects: Subject[];
+  filteredUnits: Unit[];
   onNameChange: (value: string) => void;
   onSubjectChange: (value: string) => void;
   onUnitChange: (value: string) => void;
   getError: (field: string) => string | undefined;
-  getFilteredUnitsBySubject: () => Unit[];
 }
 
 export default function TopicForm({
@@ -21,13 +21,12 @@ export default function TopicForm({
   subject_fk,
   unit_fk,
   subjects,
+  filteredUnits,
   onNameChange,
   onSubjectChange,
   onUnitChange,
   getError,
-  getFilteredUnitsBySubject,
 }: TopicFormProps) {
-  const filteredUnits = getFilteredUnitsBySubject();
   const hasUnitsForSubject = filteredUnits.length > 0;
   const showNoUnitsWarning = subject_fk && !hasUnitsForSubject;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import {
   createSubject,
@@ -155,6 +155,11 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
     } else if (CurriculumHierarchyType === 'unit') {
       await createUnit(formData.name.trim(), formData.subject_fk, userId, formData.description.trim());
     } else {
+      // Verificar que unit_fk no esté vacío
+      if (!formData.unit_fk) {
+        throw new Error('El ID de la unidad es requerido');
+      }
+      
       await createTopic(formData.name.trim(), formData.unit_fk, userId);
     }
   };
@@ -220,10 +225,18 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
     return error ? error.message : undefined;
   };
 
-  // Renderizar opciones de temas filtradas
-  const getFilteredUnitsBySubject = () => {
-    return units.filter((unit) => unit.subject_fk === formData.subject_fk);
-  };
+  // Renderizar opciones de temas filtradas (optimizado con useMemo)
+  const filteredUnits = useMemo(() => {
+    const filtered = units.filter((unit) => unit.subject_fk === formData.subject_fk);
+    return filtered;
+  }, [units, formData.subject_fk]);
+  
+  // Solo necesario para debugging:
+  // useEffect(() => {
+  //   if (CurriculumHierarchyType === 'topic' && formData.subject_fk && filteredUnits.length > 0) {
+  //     console.log('🔍 Filtered units:', filteredUnits.length);
+  //   }
+  // }, [formData.subject_fk, CurriculumHierarchyType]); // Solo cuando cambia subject_fk o el tipo
 
   // Renderizar botones de tipo
   const renderTypeButtons = () => (
@@ -327,11 +340,18 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
               subject_fk={formData.subject_fk}
               unit_fk={formData.unit_fk}
               subjects={subjects}
+              filteredUnits={filteredUnits}
               onNameChange={(name) => setFormData({ ...formData, name })}
               onSubjectChange={(value) => setFormData({ ...formData, subject_fk: value, unit_fk: '' })}
-              onUnitChange={(value) => setFormData({ ...formData, unit_fk: value })}
+              onUnitChange={(value) => {
+                console.log('🔄 CreateModal - onUnitChange called:', {
+                  newValue: value,
+                  valueType: typeof value,
+                  currentFormData: formData
+                });
+                setFormData({ ...formData, unit_fk: value });
+              }}
               getError={getErrorForField}
-              getFilteredUnitsBySubject={getFilteredUnitsBySubject}
             />
           )}
 

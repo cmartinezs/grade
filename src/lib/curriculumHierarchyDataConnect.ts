@@ -62,11 +62,12 @@ export const createNewSubject = async (
   code: string,
   levelId: string,
   createdBy: string
-): Promise<void> => {
+): Promise<string> => {
   try {
     // Generate UUID for subjectId
     const subjectId = generateUUID();
     await dcCreateSubject({ subjectId, name, code, levelId, createdBy });
+    return subjectId;
   } catch (error) {
     console.error('Error creating subject:', error);
     throw error;
@@ -165,11 +166,12 @@ export const createNewUnit = async (
   subjectId: string,
   createdBy: string,
   description?: string
-): Promise<void> => {
+): Promise<string> => {
   try {
     // Generate UUID for unitId
     const unitId = generateUUID();
     await dcCreateUnit({ unitId, name, description, subjectId, createdBy });
+    return unitId;
   } catch (error) {
     console.error('Error creating unit:', error);
     throw error;
@@ -270,13 +272,18 @@ export const createNewTopic = async (
   name: string,
   unitId: string,
   createdBy: string
-): Promise<void> => {
+): Promise<string> => {
   try {
     // Generate UUID for topicId
     const topicId = generateUUID();
+    
     await dcCreateTopic({ topicId, name, unitId, createdBy });
+    
+    // Retornar el topicId generado
+    return topicId;
   } catch (error) {
-    console.error('Error creating topic:', error);
+    console.error('❌ Error creating topic:', error);
+    console.error('Parameters were:', { name, unitId, createdBy });
     throw error;
   }
 };

@@ -175,8 +175,7 @@ export const getSubjectById = (subjectId: string): Subject | undefined => {
  */
 export const createSubject = async (name: string, code: string, levelId: string, createdBy: string): Promise<void> => {
   try {
-    const subjectId = generateUUID();
-    await createNewSubject(name, code, levelId, createdBy);
+    const subjectId = await createNewSubject(name, code, levelId, createdBy);
     
     // Agregar el nuevo elemento al caché local para reflejar cambios inmediatamente
     const newSubject: Subject = {
@@ -438,6 +437,7 @@ export const loadUnitsAsync = async (): Promise<Unit[]> => {
       deleted_at: null,
       deleted_by: null,
     }));
+    
     cache.units = units;
     cache.lastFetch.units = Date.now();
     return units;
@@ -489,8 +489,7 @@ export const createUnit = async (
   description?: string
 ): Promise<void> => {
   try {
-    const unitId = generateUUID();
-    await createNewUnit(name, subjectId, createdBy, description);
+    const unitId = await createNewUnit(name, subjectId, createdBy, description);
     
     // Agregar el nuevo elemento al caché local
     const newUnit: Unit = {
@@ -727,6 +726,7 @@ export const loadTopicsAsync = async (): Promise<Topic[]> => {
       deleted_at: null,
       deleted_by: null,
     }));
+    
     cache.topics = topics;
     cache.lastFetch.topics = Date.now();
     return topics;
@@ -796,10 +796,10 @@ export const createTopic = async (
   createdBy: string
 ): Promise<void> => {
   try {
-    const topicId = generateUUID();
-    await createNewTopic(name, unitId, createdBy);
+    // Llamar a createNewTopic y obtener el topicId generado
+    const topicId = await createNewTopic(name, unitId, createdBy);
     
-    // Agregar el nuevo elemento al caché local
+    // Agregar el nuevo elemento al caché local con el ID correcto
     const newTopic: Topic = {
       topic_id: topicId,
       name,
