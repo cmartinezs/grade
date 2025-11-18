@@ -26,6 +26,7 @@
   transition: background-color 0.15s ease-in-out;
   border-left: 3px solid transparent;
   padding-left: calc(1rem - 3px);
+  overflow: hidden; /* Evitar scroll horizontal */
 }
 
 /* Even Row (index 0, 2, 4...) */
@@ -145,6 +146,13 @@
   align-items: flex-start;
   width: 100%;
   gap: 0.5rem;
+}
+
+/* Text Container - Permite que el texto se trunque correctamente */
+.optionContent > div:first-child {
+  flex: 1;
+  min-width: 0; /* Crítico: permite que el texto se trunque */
+  overflow: hidden;
 }
 
 /* Clear Button in Dropdown */
