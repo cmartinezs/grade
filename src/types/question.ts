@@ -4,7 +4,7 @@
  */
 
 // Enum types matching database
-export type QuestionType = 'verdadero_falso' | 'seleccion_unica' | 'seleccion_multiple' | 'desarrollo';
+export type QuestionType = 'TF' | 'SS' | 'SM' | 'D' | 'verdadero_falso' | 'seleccion_unica' | 'seleccion_multiple' | 'desarrollo';
 
 export type DifficultyLevel = 'bajo' | 'medio' | 'alto';
 

@@ -179,6 +179,19 @@ export default function QuestionFormFields({
     }
   }, [questionType, currentQuestionType, rules.minOptions, rules.maxOptions, options.length, onAddOption, onRemoveOption]);
 
+  // Separate effect to set Verdadero/Falso texts for TF (Verdadero/Falso) type
+  useEffect(() => {
+    if (questionType === 'TF' && options.length === 2) {
+      // Only set texts if they are not already set correctly
+      if (options[0].text !== 'Verdadero') {
+        onOptionTextChange(0, 'Verdadero');
+      }
+      if (options[1].text !== 'Falso') {
+        onOptionTextChange(1, 'Falso');
+      }
+    }
+  }, [questionType, options.length, options, onOptionTextChange]);
+
   return (
     <>
       {/* 1. CurriculumHierarchy Selection */}
@@ -328,18 +341,35 @@ export default function QuestionFormFields({
               Alternativas <span style={{ color: 'red' }}>*</span>
             </Form.Label>
             <div className="d-flex gap-2">
-              <Badge bg="secondary">
-                {rules.minOptions === rules.maxOptions && rules.maxOptions > 0
-                  ? `Exactamente ${rules.minOptions} opciones`
-                  : rules.maxOptions === 0
-                  ? `Mínimo ${rules.minOptions} opciones`
-                  : `Entre ${rules.minOptions} y ${rules.maxOptions} opciones`}
-              </Badge>
-              <Badge bg="info">
-                Debe marcar {rules.correctOptions} {rules.correctOptions === 1 ? 'opción correcta' : 'opciones correctas'}
-              </Badge>
+              {questionType === 'TF' ? (
+                <Badge bg="primary">
+                  ✓ Opciones fijas: Verdadero / Falso
+                </Badge>
+              ) : (
+                <>
+                  <Badge bg="secondary">
+                    {rules.minOptions === rules.maxOptions && rules.maxOptions > 0
+                      ? `Exactamente ${rules.minOptions} opciones`
+                      : rules.maxOptions === 0
+                      ? `Mínimo ${rules.minOptions} opciones`
+                      : `Entre ${rules.minOptions} y ${rules.maxOptions} opciones`}
+                  </Badge>
+                  <Badge bg="info">
+                    Debe marcar {rules.correctOptions} {rules.correctOptions === 1 ? 'opción correcta' : 'opciones correctas'}
+                  </Badge>
+                </>
+              )}
             </div>
           </div>
+
+          {questionType === 'TF' && (
+            <Alert variant="info" className="mb-3">
+              <small>
+                <strong>📌 Nota:</strong> Para preguntas de Verdadero/Falso, las alternativas están predefinidas. 
+                Solo marca cuál es la respuesta correcta.
+              </small>
+            </Alert>
+          )}
 
           {getErrorsForField('options').length > 0 && (
             <Alert variant="danger">
@@ -365,7 +395,8 @@ export default function QuestionFormFields({
                     placeholder={`Texto de la opción ${option.position}`}
                     isInvalid={getErrorsForField(`options[${index}].text`).length > 0}
                     disabled={disabled}
-                    readOnly={rules.minOptions === rules.maxOptions && rules.minOptions === 2}
+                    readOnly={questionType === 'TF'}
+                    style={questionType === 'TF' ? { backgroundColor: '#e9ecef', cursor: 'not-allowed' } : {}}
                   />
                   {getErrorsForField(`options[${index}].text`).map((err, i) => (
                     <Form.Control.Feedback key={i} type="invalid">
@@ -383,7 +414,7 @@ export default function QuestionFormFields({
                   />
                 </Col>
                 <Col xs={1}>
-                  {!(rules.minOptions === rules.maxOptions) && options.length > rules.minOptions && (
+                  {!(rules.minOptions === rules.maxOptions) && options.length > rules.minOptions && questionType !== 'TF' && (
                     <Button
                       variant="outline-danger"
                       size="sm"
@@ -399,7 +430,7 @@ export default function QuestionFormFields({
           ))}
 
           {/* Add option button (if allowed) */}
-          {!(rules.minOptions === rules.maxOptions) && (rules.maxOptions === 0 || options.length < rules.maxOptions) && (
+          {questionType !== 'TF' && !(rules.minOptions === rules.maxOptions) && (rules.maxOptions === 0 || options.length < rules.maxOptions) && (
             <Button 
               variant="outline-primary" 
               size="sm" 
