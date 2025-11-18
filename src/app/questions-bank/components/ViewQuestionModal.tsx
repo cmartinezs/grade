@@ -199,15 +199,15 @@ export default function ViewQuestionModal({
 
   const getTypeBadgeVariant = (type: string) => {
     switch (type) {
-      case 'TF': return 'info';
+      case 'TF': return 'success';
       case 'SS': return 'primary';
-      case 'SM': return 'warning';
-      case 'D': return 'secondary';
-      case 'verdadero_falso': return 'info';
+      case 'SM': return 'danger';
+      case 'D': return 'dark';
+      case 'verdadero_falso': return 'success';
       case 'seleccion_unica': return 'primary';
-      case 'seleccion_multiple': return 'warning';
-      case 'desarrollo': return 'secondary';
-      default: return 'light';
+      case 'seleccion_multiple': return 'danger';
+      case 'desarrollo': return 'dark';
+      default: return 'secondary';
     }
   };
 
@@ -254,13 +254,21 @@ export default function ViewQuestionModal({
             <div className="row mb-2">
               <div className="col-md-6">
                 <strong>Tipo:</strong>
-                <Badge bg={getTypeBadgeVariant(question.type)} className="ms-2">
+                <Badge 
+                  bg={getTypeBadgeVariant(question.type)} 
+                  className="ms-2"
+                  style={{ fontSize: '0.9rem', padding: '0.4em 0.8em' }}
+                >
                   {typeMetadata.name}
                 </Badge>
               </div>
               <div className="col-md-6">
                 <strong>Dificultad:</strong>
-                <Badge bg={getDifficultyBadgeVariant(difficultyName)} className="ms-2">
+                <Badge 
+                  bg={getDifficultyBadgeVariant(difficultyName)} 
+                  className="ms-2"
+                  style={{ fontSize: '0.9rem', padding: '0.4em 0.8em' }}
+                >
                   {difficultyName}
                 </Badge>
               </div>

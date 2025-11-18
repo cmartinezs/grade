@@ -371,8 +371,11 @@ export default function QuestionsBankPage() {
                             >
                               ✏️ Editar (proximamente)
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleCloneQuestion(question.question_id)}>
-                              📋 Clonar Pregunta
+                            <Dropdown.Item 
+                              disabled
+                              className="text-muted"
+                            >
+                              📋 Clonar Pregunta (proximamente)
                             </Dropdown.Item>
                             <Dropdown.Item>📊 Ver Estadísticas</Dropdown.Item>
                             <Dropdown.Divider />

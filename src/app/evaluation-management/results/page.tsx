@@ -1,21 +1,18 @@
 'use client'
 
 import { Container } from 'react-bootstrap';
-import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import UnderMaintenance from '@/components/UnderMaintenance';
 
-export default function ProfilePage() {
+export default function EvaluationResultsPage() {
   return (
     <ProtectedRoute>
       <PageWrapper>
-        <NavigationBar />
-        
         <Container className="mt-4">
-          <h1 className="mb-4">Mi Perfil</h1>
+          <h1 className="mb-4">Resultados de Evaluaciones</h1>
           <UnderMaintenance 
-            message="Estamos implementando nuevas funcionalidades para que puedas gestionar tu información personal, cambiar tu contraseña y personalizar tu experiencia. Esta sección estará disponible muy pronto."
+            message="Estamos construyendo un sistema completo de análisis de resultados donde podrás visualizar estadísticas detalladas, revisar el desempeño de estudiantes, generar reportes y obtener insights valiosos sobre las evaluaciones aplicadas."
           />
         </Container>
       </PageWrapper>

@@ -1,9 +1,10 @@
 'use client'
 
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import NavigationBar from '@/components/NavigationBar';
 import PageWrapper from '@/components/PageWrapper';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import UnderMaintenance from '@/components/UnderMaintenance';
 
 export default function SettingsPage() {
   return (
@@ -12,20 +13,10 @@ export default function SettingsPage() {
         <NavigationBar />
         
         <Container className="mt-4">
-          <Row>
-            <Col>
-              <h1>Configuración</h1>
-              <p className="text-muted">Ajusta las preferencias de tu cuenta</p>
-              
-              <Card>
-                <Card.Body>
-                  <h5>⚙️ Configuración General</h5>
-                  <p>Personaliza tu experiencia en GRADE: Generación y Registro Automatizado De Evaluaciones.</p>
-                  <Button variant="primary">💾 Guardar Cambios</Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+          <h1 className="mb-4">Configuración</h1>
+          <UnderMaintenance 
+            message="Estamos desarrollando un panel de configuración completo donde podrás personalizar tu experiencia, ajustar preferencias y gestionar las opciones de tu cuenta."
+          />
         </Container>
       </PageWrapper>
     </ProtectedRoute>

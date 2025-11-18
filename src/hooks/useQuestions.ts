@@ -8,6 +8,7 @@ import { QuestionWithDetails, QuestionType, DifficultyLevel } from '@/types/ques
 import { fetchQuestionsByUser, mapQuestionTypeIdToCode } from '@/lib/questionConnect';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { getUserByEmail } from '@/dataconnect-generated';
 
 interface UseQuestionsResult {
@@ -26,11 +27,12 @@ interface UseQuestionsFilters {
 }
 
 export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult => {
-  const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
+  const [allQuestions, setAllQuestions] = useState<QuestionWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
+  const { topics, units } = useCurriculumHierarchy();
 
   useEffect(() => {
     const loadQuestions = async () => {
@@ -86,27 +88,66 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
         }));
         
         console.log(`✅ Cargadas ${loadedQuestions.length} preguntas desde Data Connect`);
-        setQuestions(loadedQuestions);
+        setAllQuestions(loadedQuestions);
       } catch (err) {
         console.error('Error loading questions:', err);
         setError(err instanceof Error ? err.message : 'Error cargando preguntas');
-        setQuestions([]);
+        setAllQuestions([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadQuestions();
-  }, [
-    filters?.searchText,
-    filters?.type,
-    filters?.difficulty_fk,
-    filters?.subject_fk,
-    filters?.includeInactive,
-    user?.firebaseUid,
-    user?.email,
-    questionTypes,
-  ]);
+  }, [user?.firebaseUid, user?.email, questionTypes]);
+
+  // Aplicar filtros localmente
+  const questions = allQuestions.filter(q => {
+    // Filtro de búsqueda por texto
+    if (filters?.searchText && filters.searchText.trim() !== '') {
+      const searchLower = filters.searchText.toLowerCase();
+      if (!q.enunciado.toLowerCase().includes(searchLower)) {
+        return false;
+      }
+    }
+
+    // Filtro por tipo
+    if (filters?.type && filters.type.length > 0) {
+      if (q.type !== filters.type) {
+        return false;
+      }
+    }
+
+    // Filtro por dificultad
+    if (filters?.difficulty_fk && filters.difficulty_fk.length > 0) {
+      if (q.difficulty_fk !== filters.difficulty_fk) {
+        return false;
+      }
+    }
+
+    // Filtro por asignatura (necesita buscar en la jerarquía)
+    if (filters?.subject_fk && filters.subject_fk !== '') {
+      // Buscar el tema de la pregunta
+      const topic = topics.find(t => t.topic_id === q.topic_fk);
+      if (!topic) return false;
+      
+      // Buscar la unidad del tema
+      const unit = units.find(u => u.unit_id === topic.unit_fk);
+      if (!unit) return false;
+      
+      // Verificar si la asignatura coincide
+      if (unit.subject_fk !== filters.subject_fk) {
+        return false;
+      }
+    }
+
+    // Filtro de activo/inactivo
+    if (filters?.includeInactive === false && !q.active) {
+      return false;
+    }
+
+    return true;
+  });
 
   const refetch = useCallback(async () => {
     try {
@@ -156,11 +197,11 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
         })),
       }));
 
-      setQuestions(loadedQuestions);
+      setAllQuestions(loadedQuestions);
     } catch (err) {
       console.error('Error refetching questions:', err);
       setError(err instanceof Error ? err.message : 'Error cargando preguntas');
-      setQuestions([]);
+      setAllQuestions([]);
     } finally {
       setLoading(false);
     }
