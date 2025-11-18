@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { Form, Button, Card, Alert, ProgressBar, Spinner } from 'react-bootstrap';
+import { Form, Button, Card, Alert } from 'react-bootstrap';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import BadgeInput from '@/components/shared/BadgeInput';
 import CoursePreviewModal from './CoursePreviewModal';
@@ -15,14 +15,6 @@ import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
 import { CourseGenerationOptions, CourseToCreate } from '@/lib/courseDataLoader';
 import { LevelCategory } from '@/types/level';
-
-interface ProgressState {
-  currentStep: string;
-  currentIndex: number;
-  total: number;
-  itemName: string;
-  percentage: number;
-}
 
 // Tipos de identificadores de paralelo
 type SectionIdentifierType = 'none' | 'letters' | 'numbers' | 'custom';
@@ -38,7 +30,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   onError,
   showSummary = false,
 }) => {
-  const { generateCourses, previewCourses } = useCourseDataLoader();
+  const { previewCourses } = useCourseDataLoader();
 
   // Form state
   const [institutionName, setInstitutionName] = useState('');
@@ -49,15 +41,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   const [allLevels, setAllLevels] = useState<Array<{ id: string; name: string; categoryId: string }>>([]);
   const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>([]);
 
-  // Loading state
-  const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState<ProgressState>({
-    currentStep: '',
-    currentIndex: 0,
-    total: 0,
-    itemName: '',
-    percentage: 0,
-  });
+  // UI state
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState(false);
   const [coursesCreated, setCoursesCreated] = useState(0);
@@ -153,13 +137,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
     setSectionQuantity(1);
     setCustomSections([]);
     setSelectedLevels([]);
-    setProgress({
-      currentStep: '',
-      currentIndex: 0,
-      total: 0,
-      itemName: '',
-      percentage: 0,
-    });
     setError('');
     setSuccess(false);
     setCoursesCreated(0);
@@ -249,51 +226,9 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
     setShowPreview(true);
   };
 
-  // Manejador para cuando el usuario confirma desde el modal
-  const handleConfirmPreview = async (selectedCourses: CourseToCreate[]) => {
-    if (!generationOptions) return;
-
-    setIsLoading(true);
-    setError('');
-    setSuccess(false);
-    setShowPreview(false);
-
-    try {
-      const result = await generateCourses(
-        generationOptions,
-        (progressUpdate: ProgressState) => {
-          setProgress({
-            currentStep: progressUpdate.currentStep,
-            currentIndex: progressUpdate.currentIndex,
-            total: progressUpdate.total,
-            itemName: progressUpdate.itemName,
-            percentage: progressUpdate.percentage,
-          });
-        },
-        selectedCourses
-      );
-
-      if (result.success) {
-        setSuccess(true);
-        setCoursesCreated(result.coursesCreated);
-        onSuccess?.(result.coursesCreated);
-      } else {
-        setError(result.message || '❌ Error al crear los cursos');
-        onError?.(result.message || '❌ Error al crear los cursos');
-        setCoursesCreated(result.coursesCreated);
-      }
-    } catch (err) {
-      const errorMsg = `Error: ${err instanceof Error ? err.message : 'Error desconocido'}`;
-      setError(errorMsg);
-      onError?.(errorMsg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="course-bulk-generator-form">
-      {!isLoading && !success && (
+      {!success && (
         <Form onSubmit={handleSubmit}>
           {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
 
@@ -310,7 +245,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                       placeholder="ej. Colegio San Miguel"
                       value={institutionName}
                       onChange={(e) => setInstitutionName(e.target.value)}
-                      disabled={isLoading}
                     />
                   </Form.Group>
                 </div>
@@ -322,7 +256,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                     <AutocompleteSelect
                       value={sectionType}
                       onChange={(value) => setSectionType(value as SectionIdentifierType)}
-                      disabled={isLoading}
                       options={[
                         { id: 'none', name: '🔘 Sin paralelo' },
                         { id: 'letters', name: '🔤 Letras (A, B, C...)' },
@@ -347,7 +280,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                             max={sectionType === 'letters' ? 26 : 100}
                             value={sectionQuantity}
                             onChange={(e) => setSectionQuantity(Math.max(1, Math.min(sectionType === 'letters' ? 26 : 100, parseInt(e.target.value) || 1)))}
-                            disabled={isLoading}
                           />
                           <Form.Text className="text-muted">
                             {sectionType === 'letters' ? 'Máximo 26' : 'Máximo 100'}
@@ -360,7 +292,6 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
                           value={customSections}
                           onChange={setCustomSections}
                           placeholder="Escribe y presiona Enter para agregar"
-                          disabled={isLoading}
                           helperText="Ej: Ositos, Delfines, Exploradores"
                         />
                       )}
@@ -531,42 +462,12 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
             <Button
               variant="success"
               type="submit"
-              disabled={isLoading || selectedLevels.length === 0 || !institutionName.trim()}
+              disabled={selectedLevels.length === 0 || !institutionName.trim()}
             >
-              {isLoading ? (
-                <>
-                  <Spinner animation="border" size="sm" className="me-2" />
-                  Generando...
-                </>
-              ) : (
-                '✨ Generar Cursos'
-              )}
+              ✨ Generar Cursos
             </Button>
           </div>
         </Form>
-      )}
-
-      {isLoading && (
-        <div className="text-center py-5">
-          <p className="mb-3">
-            <span style={{ fontSize: '2rem' }}>{progress.currentStep}</span>
-          </p>
-          <ProgressBar
-            animated
-            striped
-            variant="success"
-            now={progress.percentage}
-            label={`${Math.round(progress.percentage)}%`}
-            className="mb-3"
-            style={{ height: '30px' }}
-          />
-          <p className="mb-2">
-            <strong>
-              {progress.currentIndex} de {progress.total}
-            </strong>
-          </p>
-          <p className="text-muted">{progress.itemName}</p>
-        </div>
       )}
 
       {success && showSummary && (
@@ -601,11 +502,13 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       <CoursePreviewModal
         show={showPreview}
         courses={previewCoursesList}
-        isLoading={isLoading}
-        onConfirm={handleConfirmPreview}
+        onConfirm={() => setShowPreview(false)}
         onCancel={() => setShowPreview(false)}
         title="Vista Previa de Cursos a Generar"
         institution={institutionName}
+        generationOptions={generationOptions}
+        onSuccess={onSuccess}
+        onError={onError}
       />
     </div>
   );
