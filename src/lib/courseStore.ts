@@ -35,6 +35,13 @@ class CourseStore {
     return this.loadCoursesAsync(userId, firebaseUid);
   }
 
+  // Invalidate cache to force reload from Data-Connect on next load
+  public invalidateCache(): void {
+    memoryCache.courses = null;
+    memoryCache.coursesLoaded = false;
+    console.log('[COURSE STORE] Cache invalidated - next loadCourses will fetch fresh data from Data-Connect');
+  }
+
   // Load courses from in-memory cache (synchronous - returns cached data)
   private loadCoursesSync(): Course[] {
     // Return from cache if already loaded

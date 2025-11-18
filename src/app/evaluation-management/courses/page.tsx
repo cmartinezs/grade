@@ -29,6 +29,11 @@ export default function CoursesPage() {
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Invalidate cache when component mounts to ensure fresh data from Data-Connect
+  useEffect(() => {
+    courseStore.invalidateCache();
+  }, []);
+
   // Load courses when page or search changes
   useEffect(() => {
     if (!user?.firebaseUid || !user?.id) return; // Wait for user to be authenticated
