@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react';
-import { Row, Col, Card, Button, Badge, Form, InputGroup, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { Row, Col, Card, Button, Badge, Form, Dropdown, ButtonGroup } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from './components/CreateQuestionModal';
 import ViewQuestionModal from './components/ViewQuestionModal';
@@ -171,27 +171,24 @@ export default function QuestionsBankPage() {
           </p>
         </div>
 
-        {/* Filtros */}
-        <Card className="mb-4">
-          <Card.Body>
-            <Row className="align-items-end">
-              <Col md={4}>
-                <Form.Group>
+        <Row>
+          {/* Sidebar de Filtros - Izquierda */}
+          <Col lg={3} className="mb-4">
+            <Card className="sticky-top" style={{ top: '20px' }}>
+              <Card.Header className="bg-primary text-white">
+                <h5 className="mb-0">🔍 Filtros</h5>
+              </Card.Header>
+              <Card.Body>
+                <Form.Group className="mb-3">
                   <Form.Label>Buscar</Form.Label>
-                  <InputGroup>
-                    <Form.Control
-                      placeholder="Buscar en enunciados y opciones..."
-                      type="text"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                    />
-                    <Button variant="outline-secondary">
-                      🔍
-                    </Button>
-                  </InputGroup>
+                  <Form.Control
+                    placeholder="Buscar..."
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                  />
                 </Form.Group>
-              </Col>
-              <Col md={2}>
+
                 <AutocompleteSelect
                   label="Tipo"
                   value={filterType}
@@ -204,26 +201,26 @@ export default function QuestionsBankPage() {
                       description: qt.description
                     }))
                   ]}
-                  placeholder="Busca un tipo de pregunta..."
+                  placeholder="Tipo..."
                 />
-              </Col>
-              <Col md={2}>
-                <AutocompleteSelect
-                  label="Dificultad"
-                  value={filterDifficulty}
-                  onChange={(value) => setFilterDifficulty(value as DifficultyLevel | '')}
-                  options={[
-                    { id: '', name: 'Todas' },
-                    ...difficulties.map(d => ({
-                      id: d.difficultyId,
-                      name: d.level,
-                      description: d.description
-                    }))
-                  ]}
-                  placeholder="Busca un nivel de dificultad..."
-                />
-              </Col>
-              <Col md={3}>
+
+                <div className="mb-3">
+                  <AutocompleteSelect
+                    label="Dificultad"
+                    value={filterDifficulty}
+                    onChange={(value) => setFilterDifficulty(value as DifficultyLevel | '')}
+                    options={[
+                      { id: '', name: 'Todas' },
+                      ...difficulties.map(d => ({
+                        id: d.difficultyId,
+                        name: d.level,
+                        description: d.description
+                      }))
+                    ]}
+                    placeholder="Dificultad..."
+                  />
+                </div>
+
                 <AutocompleteSelect
                   label="Asignatura"
                   value={filterSubject}
@@ -236,174 +233,202 @@ export default function QuestionsBankPage() {
                       description: s.code
                     }))
                   ]}
-                  placeholder="Busca una asignatura..."
+                  placeholder="Asignatura..."
                 />
-              </Col>
-            </Row>
-            <Row className="mt-2">
-              <Col>
+
                 <Form.Check
                   type="checkbox"
                   id="show-inactive"
-                  label="Mostrar preguntas inactivas"
+                  label="Mostrar inactivas"
                   checked={showInactive}
                   onChange={(e) => setShowInactive(e.target.checked)}
+                  className="mt-3"
                 />
-              </Col>
-            </Row>
-            <Row className="mt-3">
-              <Col md={1}>
+
                 <Button
                   variant="outline-secondary"
+                  className="w-100 mt-3"
                   onClick={() => {
                     setSearchText('');
                     setFilterType('');
                     setFilterDifficulty('');
                     setFilterSubject('');
                   }}
-                  title="Limpiar filtros"
                 >
-                  🔄
+                  🔄 Limpiar Filtros
                 </Button>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
 
-        {/* Lista de Preguntas */}
-        {questions.length === 0 ? (
-          <Card>
-            <Card.Body className="text-center py-5">
-              <h4 className="text-muted">No se encontraron preguntas</h4>
-              <p className="text-muted">
-                {searchText || filterType || filterDifficulty || filterSubject
-                  ? 'Intenta ajustar los filtros de búsqueda'
-                  : 'Comienza creando tu primera pregunta'}
-              </p>
-              <span
-                className="btn btn-sm btn-outline-success"
-                style={{ cursor: 'pointer' }}
-                onClick={() => setShowCreateModal(true)}
-              >
-                ➕ Crear Primera Pregunta
-              </span>
-            </Card.Body>
-          </Card>
-        ) : (
-          <Row>
-            {questions.map((question) => (
-              <Col key={question.question_id} xs={12} className="mb-3">
-                <Card className={!question.active ? 'card-inactive' : ''}>
-                  <Card.Body>
-                    <Row>
-                      <Col md={9}>
-                        <div className="d-flex align-items-center mb-2">
-                          <Badge bg={getTypeColor(question.type)} className="me-2">
+                <Button
+                  variant="success"
+                  className="w-100 mt-2"
+                  onClick={() => setShowCreateModal(true)}
+                >
+                  ➕ Nueva Pregunta
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          {/* Grid de Preguntas - Derecha */}
+          <Col lg={9}>
+            {questions.length === 0 ? (
+              <Card>
+                <Card.Body className="text-center py-5">
+                  <h4 className="text-muted">No se encontraron preguntas</h4>
+                  <p className="text-muted">
+                    {searchText || filterType || filterDifficulty || filterSubject
+                      ? 'Intenta ajustar los filtros de búsqueda'
+                      : 'Comienza creando tu primera pregunta'}
+                  </p>
+                  <Button
+                    variant="outline-success"
+                    onClick={() => setShowCreateModal(true)}
+                  >
+                    ➕ Crear Primera Pregunta
+                  </Button>
+                </Card.Body>
+              </Card>
+            ) : (
+              <Row>
+                {questions.map((question) => (
+                  <Col key={question.question_id} lg={4} md={6} xs={12} className="mb-3">
+                    <Card 
+                      className={`h-100 ${!question.active ? 'card-inactive' : ''}`}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleViewQuestion(question.question_id)}
+                    >
+                      <Card.Body className="d-flex flex-column">
+                        {/* Badges superiores */}
+                        <div className="d-flex flex-wrap gap-1 mb-2">
+                          <Badge bg={getTypeColor(question.type)} style={{ fontSize: '0.7rem' }}>
                             {questionTypes.find(qt => qt.code === question.type)?.name || question.type}
                           </Badge>
-                          <Badge bg={getDifficultyColor(question.difficulty_fk)} className="me-2">
+                          <Badge bg={getDifficultyColor(question.difficulty_fk)} style={{ fontSize: '0.7rem' }}>
                             {difficulties.find(d => d.difficultyId === question.difficulty_fk)?.level}
                           </Badge>
                           {(() => {
                             const versionCount = questionStore.getQuestionVersionHistory(question.question_id).length;
                             if (versionCount > 1) {
                               return (
-                                <Badge bg="info" className="me-2">
-                                  v{question.version} ({versionCount})
+                                <Badge bg="info" style={{ fontSize: '0.7rem' }}>
+                                  v{question.version}
                                 </Badge>
                               );
                             }
                           })()}
-                          {question.topic_name && (
-                            <span className="badge bg-light text-dark">
-                              {question.topic_name}
-                            </span>
+                          {!question.active && (
+                            <Badge bg="warning" style={{ fontSize: '0.7rem' }}>
+                              ⚠️ Inactiva
+                            </Badge>
                           )}
                         </div>
                         
-                        <Card.Title className="h6 mb-2">
-                          {question.enunciado.length > 150 
-                            ? `${question.enunciado.substring(0, 150)}...` 
-                            : question.enunciado}
-                        </Card.Title>
+                        {/* Enunciado */}
+                        <Card.Text 
+                          className="mb-2 flex-grow-1" 
+                          style={{ 
+                            fontSize: '0.9rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical'
+                          }}
+                        >
+                          {question.enunciado}
+                        </Card.Text>
                         
-                        <div className="small text-muted">
-                          {question.options.length > 0 && (
-                            <span className="me-3">
-                              📝 {question.options.length} {question.options.length === 1 ? 'alternativa' : 'alternativas'}
-                            </span>
-                          )}
-                          <span className="me-3">
-                            🕒 {new Date(question.updated_at).toLocaleDateString()}
+                        {/* Info inferior */}
+                        <div className="small text-muted d-flex justify-content-between align-items-center mt-auto">
+                          <span>
+                            📝 {question.options.length}
                           </span>
-                          <span className="text-muted" style={{ fontSize: '0.75rem' }}>
-                            ID: {question.question_id.substring(0, 8)}...
+                          <span style={{ fontSize: '0.7rem' }}>
+                            {new Date(question.updated_at).toLocaleDateString()}
                           </span>
                         </div>
-                      </Col>
-                      <Col md={3} className="text-end d-flex align-items-start justify-content-end gap-2" style={{ position: 'relative', zIndex: 2 }}>
-                        {!question.active && (
-                          <span 
-                            className="text-warning" 
-                            style={{ fontSize: '1.5rem', lineHeight: 1 }}
-                            title="Pregunta inactiva"
-                          >
-                            ⚠️
-                          </span>
-                        )}
-                        <Dropdown as={ButtonGroup}>
+
+                        {/* Botones de acción */}
+                        <div className="d-flex gap-1 mt-2" onClick={(e) => e.stopPropagation()}>
                           <Button
                             variant="outline-primary"
                             size="sm"
-                            onClick={() => handleViewQuestion(question.question_id)}
+                            className="flex-grow-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleViewQuestion(question.question_id);
+                            }}
+                            style={{ fontSize: '0.75rem' }}
                           >
-                            👁️ Ver Detalle
+                            👁️
                           </Button>
-                          <Dropdown.Toggle split variant="outline-primary" size="sm" />
-                          <Dropdown.Menu style={{ position: 'absolute', zIndex: 1055 }}>
-                            <Dropdown.Item onClick={() => handleCreateVersion(question.question_id)}>
-                              🔄 Crear Nueva Versión
-                            </Dropdown.Item>
-                            <Dropdown.Item 
-                              onClick={() => handleEditQuestion(question.question_id)}
-                              disabled
-                              className="text-muted"
+                          <Dropdown as={ButtonGroup} size="sm">
+                            <Dropdown.Toggle 
+                              variant="outline-secondary" 
+                              size="sm"
+                              style={{ fontSize: '0.75rem' }}
                             >
-                              ✏️ Editar (proximamente)
-                            </Dropdown.Item>
-                            <Dropdown.Item 
-                              disabled
-                              className="text-muted"
-                            >
-                              📋 Clonar Pregunta (proximamente)
-                            </Dropdown.Item>
-                            <Dropdown.Item>📊 Ver Estadísticas</Dropdown.Item>
-                            <Dropdown.Divider />
-                            {question.active ? (
-                              <Dropdown.Item 
-                                className="text-warning"
-                                onClick={() => handleRetireQuestion(question.question_id)}
-                              >
-                                ⚠️ Retirar Pregunta
+                              ⋮
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              <Dropdown.Item onClick={(e) => {
+                                e.stopPropagation();
+                                handleCreateVersion(question.question_id);
+                              }}>
+                                🔄 Crear Nueva Versión
                               </Dropdown.Item>
-                            ) : (
                               <Dropdown.Item 
-                                className="text-success"
-                                onClick={() => handleReactivateQuestion(question.question_id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditQuestion(question.question_id);
+                                }}
+                                disabled
+                                className="text-muted"
                               >
-                                ✅ Reactivar Pregunta
+                                ✏️ Editar (proximamente)
                               </Dropdown.Item>
-                            )}
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        )}
+                              <Dropdown.Item 
+                                disabled
+                                className="text-muted"
+                              >
+                                📋 Clonar Pregunta (proximamente)
+                              </Dropdown.Item>
+                              <Dropdown.Item onClick={(e) => e.stopPropagation()}>
+                                📊 Ver Estadísticas
+                              </Dropdown.Item>
+                              <Dropdown.Divider />
+                              {question.active ? (
+                                <Dropdown.Item 
+                                  className="text-warning"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRetireQuestion(question.question_id);
+                                  }}
+                                >
+                                  ⚠️ Retirar Pregunta
+                                </Dropdown.Item>
+                              ) : (
+                                <Dropdown.Item 
+                                  className="text-success"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleReactivateQuestion(question.question_id);
+                                  }}
+                                >
+                                  ✅ Reactivar Pregunta
+                                </Dropdown.Item>
+                              )}
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            )}
+          </Col>
+        </Row>
       </div>
 
       {/* Create Question Modal */}
