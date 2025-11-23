@@ -31,6 +31,7 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
   const [allQuestions, setAllQuestions] = useState<QuestionWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLoaded, setHasLoaded] = useState(false); // Flag para evitar recargas
   const { user } = useAuth();
   const { questionTypes } = useQuestionTypes();
   const { topics, units } = useCurriculumHierarchy();
@@ -43,6 +44,18 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
 
         // Esperar hasta que el usuario esté disponible
         if (!user?.firebaseUid || !user?.email) {
+          setLoading(false);
+          return;
+        }
+
+        // Esperar a que questionTypes esté cargado (necesario para mapear tipos)
+        if (questionTypes.length === 0) {
+          setLoading(false);
+          return;
+        }
+
+        // Si ya cargamos una vez, no recargar (evita llamadas duplicadas)
+        if (hasLoaded) {
           setLoading(false);
           return;
         }
@@ -100,6 +113,7 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
         
         console.log(`✅ Cargadas ${loadedQuestions.length} preguntas desde Data Connect`);
         setAllQuestions(loadedQuestions);
+        setHasLoaded(true); // Marcar como cargado
       } catch (err) {
         console.error('Error loading questions:', err);
         setError(err instanceof Error ? err.message : 'Error cargando preguntas');
@@ -110,7 +124,7 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
     };
 
     loadQuestions();
-  }, [user?.firebaseUid, user?.email, questionTypes]);
+  }, [user?.firebaseUid, user?.email, questionTypes.length, hasLoaded]);
 
   // Aplicar filtros localmente
   const questions = allQuestions.filter(q => {
@@ -164,6 +178,7 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
     try {
       setLoading(true);
       setError(null);
+      setHasLoaded(false); // Reset flag para permitir recarga
 
       if (!user?.firebaseUid || !user?.email) {
         throw new Error('Usuario no autenticado');

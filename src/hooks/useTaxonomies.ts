@@ -5,11 +5,13 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   fetchAllTaxonomies,
   createNewTaxonomy,
   Taxonomy,
 } from '@/lib/masterDataConnect';
+import { retryWithBackoff } from '@/lib/retryWithBackoff';
 
 interface UseTaxonomiesResult {
   taxonomies: Taxonomy[];
@@ -21,6 +23,7 @@ interface UseTaxonomiesResult {
 }
 
 export const useTaxonomies = (): UseTaxonomiesResult => {
+  const { user } = useAuth();
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,10 +32,16 @@ export const useTaxonomies = (): UseTaxonomiesResult => {
   // Cargar taxonomías
   useEffect(() => {
     const loadData = async () => {
+      // Esperar hasta que el usuario esté autenticado
+      if (!user?.firebaseUid) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchAllTaxonomies();
+        const data = await retryWithBackoff(() => fetchAllTaxonomies(), 3, 500, 'useTaxonomies');
         setTaxonomies(data);
       } catch (err) {
         console.error('Error loading taxonomies:', err);
@@ -43,7 +52,7 @@ export const useTaxonomies = (): UseTaxonomiesResult => {
     };
 
     loadData();
-  }, []);
+  }, [user?.firebaseUid]);
 
   // Crear nueva taxonomía
   const create = useCallback(
@@ -70,7 +79,7 @@ export const useTaxonomies = (): UseTaxonomiesResult => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchAllTaxonomies();
+      const data = await retryWithBackoff(() => fetchAllTaxonomies(), 3, 500, 'useTaxonomies.refetch');
       setTaxonomies(data);
     } catch (err) {
       console.error('Error refetching taxonomies:', err);

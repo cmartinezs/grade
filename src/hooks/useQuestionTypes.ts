@@ -5,6 +5,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   fetchAllQuestionTypes,
   createNewQuestionType,
@@ -22,6 +23,7 @@ interface UseQuestionTypesResult {
 }
 
 export const useQuestionTypes = (): UseQuestionTypesResult => {
+  const { user } = useAuth();
   const [questionTypes, setQuestionTypes] = useState<QuestionType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,12 @@ export const useQuestionTypes = (): UseQuestionTypesResult => {
   // Cargar tipos de preguntas
   useEffect(() => {
     const loadData = async () => {
+      // Esperar hasta que el usuario esté autenticado
+      if (!user?.firebaseUid) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
@@ -44,7 +52,7 @@ export const useQuestionTypes = (): UseQuestionTypesResult => {
     };
 
     loadData();
-  }, []);
+  }, [user?.firebaseUid]);
 
   // Crear nuevo tipo de pregunta
   const create = useCallback(

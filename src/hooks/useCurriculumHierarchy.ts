@@ -7,6 +7,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { Subject, Unit, Topic } from '@/types/curriculumHierarchy';
 import {
   fetchAllSubjects,
@@ -24,6 +25,7 @@ interface UseCurriculumHierarchyResult {
 }
 
 export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
+  const { user } = useAuth();
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -32,6 +34,12 @@ export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
 
   useEffect(() => {
     const loadCurriculumHierarchy = async () => {
+      // Esperar hasta que el usuario esté autenticado
+      if (!user?.firebaseUid) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
@@ -101,7 +109,7 @@ export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
     };
 
     loadCurriculumHierarchy();
-  }, []);
+  }, [user?.firebaseUid]);
 
   return {
     subjects,

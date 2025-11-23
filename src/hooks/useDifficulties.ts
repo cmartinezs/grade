@@ -5,6 +5,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   fetchAllDifficulties,
   createNewDifficulty,
@@ -22,6 +23,7 @@ interface UseDifficultiesResult {
 }
 
 export const useDifficulties = (): UseDifficultiesResult => {
+  const { user } = useAuth();
   const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,12 @@ export const useDifficulties = (): UseDifficultiesResult => {
   // Cargar dificultades
   useEffect(() => {
     const loadData = async () => {
+      // Esperar hasta que el usuario esté autenticado
+      if (!user?.firebaseUid) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
@@ -44,7 +52,7 @@ export const useDifficulties = (): UseDifficultiesResult => {
     };
 
     loadData();
-  }, []);
+  }, [user?.firebaseUid]);
 
   // Crear nueva dificultad
   const create = useCallback(

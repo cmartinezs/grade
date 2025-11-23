@@ -22,20 +22,26 @@ export async function retryWithBackoff<T>(
 
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return await fn();
+      const result = await fn();
+      // Si hubo errores previos pero ahora funcionó, loguearlo
+      if (i > 0) {
+        console.log(`✅ [${context}] Success after ${i} retry(ies)`);
+      }
+      return result;
     } catch (err) {
       lastError = err as Error;
       
       // Si es el último intento, lanzar el error
       if (i >= maxRetries - 1) {
+        console.error(`❌ [${context}] All ${maxRetries} attempts failed:`, err);
         break;
       }
 
       // Calcular delay con backoff exponencial
       const delay = initialDelay * Math.pow(2, i);
       
-      console.log(
-        `[${context}] Retry ${i + 1}/${maxRetries} after ${delay}ms...`,
+      console.warn(
+        `⚠️ [${context}] Attempt ${i + 1}/${maxRetries} failed, retrying in ${delay}ms...`,
         err instanceof Error ? err.message : err
       );
 
