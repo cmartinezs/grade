@@ -37,7 +37,8 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetTaxonomyByCode*](#gettaxonomybycode)
   - [*ListTaxonomiesByLevel*](#listtaxonomiesbylevel)
   - [*ListQuestionsByUser*](#listquestionsbyuser)
-  - [*GetDashboardStats*](#getdashboardstats)
+  - [*GetDashboardQuestions*](#getdashboardquestions)
+  - [*GetDashboardSystemData*](#getdashboardsystemdata)
   - [*GetQuestion*](#getquestion)
   - [*ListPublicQuestions*](#listpublicquestions)
   - [*ListPublicQuestionsByDifficulty*](#listpublicquestionsbydifficulty)
@@ -3194,50 +3195,50 @@ executeQuery(ref).then((response) => {
 });
 ```
 
-## GetDashboardStats
-You can execute the `GetDashboardStats` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+## GetDashboardQuestions
+You can execute the `GetDashboardQuestions` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
 ```typescript
-getDashboardStats(vars: GetDashboardStatsVariables): QueryPromise<GetDashboardStatsData, GetDashboardStatsVariables>;
+getDashboardQuestions(vars: GetDashboardQuestionsVariables): QueryPromise<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
 
-interface GetDashboardStatsRef {
+interface GetDashboardQuestionsRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: GetDashboardStatsVariables): QueryRef<GetDashboardStatsData, GetDashboardStatsVariables>;
+  (vars: GetDashboardQuestionsVariables): QueryRef<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
 }
-export const getDashboardStatsRef: GetDashboardStatsRef;
+export const getDashboardQuestionsRef: GetDashboardQuestionsRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-getDashboardStats(dc: DataConnect, vars: GetDashboardStatsVariables): QueryPromise<GetDashboardStatsData, GetDashboardStatsVariables>;
+getDashboardQuestions(dc: DataConnect, vars: GetDashboardQuestionsVariables): QueryPromise<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
 
-interface GetDashboardStatsRef {
+interface GetDashboardQuestionsRef {
   ...
-  (dc: DataConnect, vars: GetDashboardStatsVariables): QueryRef<GetDashboardStatsData, GetDashboardStatsVariables>;
+  (dc: DataConnect, vars: GetDashboardQuestionsVariables): QueryRef<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
 }
-export const getDashboardStatsRef: GetDashboardStatsRef;
+export const getDashboardQuestionsRef: GetDashboardQuestionsRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getDashboardStatsRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getDashboardQuestionsRef:
 ```typescript
-const name = getDashboardStatsRef.operationName;
+const name = getDashboardQuestionsRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `GetDashboardStats` query requires an argument of type `GetDashboardStatsVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+The `GetDashboardQuestions` query requires an argument of type `GetDashboardQuestionsVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface GetDashboardStatsVariables {
+export interface GetDashboardQuestionsVariables {
   userId: UUIDString;
   firebaseId: string;
 }
 ```
 ### Return Type
-Recall that executing the `GetDashboardStats` query returns a `QueryPromise` that resolves to an object with a `data` property.
+Recall that executing the `GetDashboardQuestions` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `GetDashboardStatsData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `GetDashboardQuestionsData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface GetDashboardStatsData {
+export interface GetDashboardQuestionsData {
   questions: ({
     questionId: UUIDString;
     active: boolean;
@@ -3248,62 +3249,158 @@ export interface GetDashboardStatsData {
     isPublic: boolean;
     createdAt: TimestampString;
   } & Question_Key)[];
-    taxonomies: ({
-      taxonomyId: UUIDString;
-      name: string;
-      code: string;
-      level: number;
-    } & Taxonomy_Key)[];
-      difficulties: ({
-        difficultyId: UUIDString;
-        level: string;
-        weight: number;
-      } & Difficulty_Key)[];
-        questionTypes: ({
-          questionTypeId: UUIDString;
-          name: string;
-          code: string;
-        } & QuestionType_Key)[];
-          subjects: ({
-            subjectId: UUIDString;
-            name: string;
-            levelId: UUIDString;
-          } & Subject_Key)[];
-            units: ({
-              unitId: UUIDString;
-              name: string;
-              subjectId: UUIDString;
-            } & Unit_Key)[];
-              topics: ({
-                topicId: UUIDString;
-                name: string;
-                unitId: UUIDString;
-              } & Topic_Key)[];
 }
 ```
-### Using `GetDashboardStats`'s action shortcut function
+### Using `GetDashboardQuestions`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, getDashboardStats, GetDashboardStatsVariables } from '@dataconnect/generated';
+import { connectorConfig, getDashboardQuestions, GetDashboardQuestionsVariables } from '@dataconnect/generated';
 
-// The `GetDashboardStats` query requires an argument of type `GetDashboardStatsVariables`:
-const getDashboardStatsVars: GetDashboardStatsVariables = {
+// The `GetDashboardQuestions` query requires an argument of type `GetDashboardQuestionsVariables`:
+const getDashboardQuestionsVars: GetDashboardQuestionsVariables = {
   userId: ..., 
   firebaseId: ..., 
 };
 
-// Call the `getDashboardStats()` function to execute the query.
+// Call the `getDashboardQuestions()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await getDashboardStats(getDashboardStatsVars);
+const { data } = await getDashboardQuestions(getDashboardQuestionsVars);
 // Variables can be defined inline as well.
-const { data } = await getDashboardStats({ userId: ..., firebaseId: ..., });
+const { data } = await getDashboardQuestions({ userId: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await getDashboardStats(dataConnect, getDashboardStatsVars);
+const { data } = await getDashboardQuestions(dataConnect, getDashboardQuestionsVars);
 
 console.log(data.questions);
+
+// Or, you can use the `Promise` API.
+getDashboardQuestions(getDashboardQuestionsVars).then((response) => {
+  const data = response.data;
+  console.log(data.questions);
+});
+```
+
+### Using `GetDashboardQuestions`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getDashboardQuestionsRef, GetDashboardQuestionsVariables } from '@dataconnect/generated';
+
+// The `GetDashboardQuestions` query requires an argument of type `GetDashboardQuestionsVariables`:
+const getDashboardQuestionsVars: GetDashboardQuestionsVariables = {
+  userId: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `getDashboardQuestionsRef()` function to get a reference to the query.
+const ref = getDashboardQuestionsRef(getDashboardQuestionsVars);
+// Variables can be defined inline as well.
+const ref = getDashboardQuestionsRef({ userId: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getDashboardQuestionsRef(dataConnect, getDashboardQuestionsVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.questions);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questions);
+});
+```
+
+## GetDashboardSystemData
+You can execute the `GetDashboardSystemData` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getDashboardSystemData(): QueryPromise<GetDashboardSystemDataData, undefined>;
+
+interface GetDashboardSystemDataRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetDashboardSystemDataData, undefined>;
+}
+export const getDashboardSystemDataRef: GetDashboardSystemDataRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getDashboardSystemData(dc: DataConnect): QueryPromise<GetDashboardSystemDataData, undefined>;
+
+interface GetDashboardSystemDataRef {
+  ...
+  (dc: DataConnect): QueryRef<GetDashboardSystemDataData, undefined>;
+}
+export const getDashboardSystemDataRef: GetDashboardSystemDataRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getDashboardSystemDataRef:
+```typescript
+const name = getDashboardSystemDataRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetDashboardSystemData` query has no variables.
+### Return Type
+Recall that executing the `GetDashboardSystemData` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetDashboardSystemDataData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetDashboardSystemDataData {
+  taxonomies: ({
+    taxonomyId: UUIDString;
+    name: string;
+    code: string;
+    level: number;
+  } & Taxonomy_Key)[];
+    difficulties: ({
+      difficultyId: UUIDString;
+      level: string;
+      weight: number;
+    } & Difficulty_Key)[];
+      questionTypes: ({
+        questionTypeId: UUIDString;
+        name: string;
+        code: string;
+      } & QuestionType_Key)[];
+        subjects: ({
+          subjectId: UUIDString;
+          name: string;
+          levelId: UUIDString;
+        } & Subject_Key)[];
+          units: ({
+            unitId: UUIDString;
+            name: string;
+            subjectId: UUIDString;
+          } & Unit_Key)[];
+            topics: ({
+              topicId: UUIDString;
+              name: string;
+              unitId: UUIDString;
+            } & Topic_Key)[];
+}
+```
+### Using `GetDashboardSystemData`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getDashboardSystemData } from '@dataconnect/generated';
+
+
+// Call the `getDashboardSystemData()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getDashboardSystemData();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getDashboardSystemData(dataConnect);
+
 console.log(data.taxonomies);
 console.log(data.difficulties);
 console.log(data.questionTypes);
@@ -3312,9 +3409,8 @@ console.log(data.units);
 console.log(data.topics);
 
 // Or, you can use the `Promise` API.
-getDashboardStats(getDashboardStatsVars).then((response) => {
+getDashboardSystemData().then((response) => {
   const data = response.data;
-  console.log(data.questions);
   console.log(data.taxonomies);
   console.log(data.difficulties);
   console.log(data.questionTypes);
@@ -3324,32 +3420,24 @@ getDashboardStats(getDashboardStatsVars).then((response) => {
 });
 ```
 
-### Using `GetDashboardStats`'s `QueryRef` function
+### Using `GetDashboardSystemData`'s `QueryRef` function
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, getDashboardStatsRef, GetDashboardStatsVariables } from '@dataconnect/generated';
+import { connectorConfig, getDashboardSystemDataRef } from '@dataconnect/generated';
 
-// The `GetDashboardStats` query requires an argument of type `GetDashboardStatsVariables`:
-const getDashboardStatsVars: GetDashboardStatsVariables = {
-  userId: ..., 
-  firebaseId: ..., 
-};
 
-// Call the `getDashboardStatsRef()` function to get a reference to the query.
-const ref = getDashboardStatsRef(getDashboardStatsVars);
-// Variables can be defined inline as well.
-const ref = getDashboardStatsRef({ userId: ..., firebaseId: ..., });
+// Call the `getDashboardSystemDataRef()` function to get a reference to the query.
+const ref = getDashboardSystemDataRef();
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = getDashboardStatsRef(dataConnect, getDashboardStatsVars);
+const ref = getDashboardSystemDataRef(dataConnect);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeQuery(ref);
 
-console.log(data.questions);
 console.log(data.taxonomies);
 console.log(data.difficulties);
 console.log(data.questionTypes);
@@ -3360,7 +3448,6 @@ console.log(data.topics);
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
-  console.log(data.questions);
   console.log(data.taxonomies);
   console.log(data.difficulties);
   console.log(data.questionTypes);

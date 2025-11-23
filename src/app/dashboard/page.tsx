@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Alert } from "react-bootstrap";
 import { EntityStatsCard } from "@/components/EntityStatsCard";
 import { PieChartCard } from "@/components/charts/PieChartCard";
 import { BarChartCard } from "@/components/charts/BarChartCard";
@@ -11,7 +11,10 @@ import { courseStore } from "@/lib/courseStore";
 import { EducationalLevel } from "@/types/level";
 import { Course } from "@/types/course";
 import { useAuth } from "@/contexts/AuthContext";
-import { getDashboardStats } from "@/dataconnect-generated";
+import {
+  getDashboardQuestions,
+  getDashboardSystemData,
+} from "@/dataconnect-generated";
 
 interface EntityStats {
   total: number;
@@ -109,15 +112,47 @@ export default function DashboardPage() {
     },
   });
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Función auxiliar para reintentos con backoff exponencial
+  const retryWithBackoff = async <T,>(
+    fn: () => Promise<T>,
+    maxRetries = 3,
+    initialDelay = 500
+  ): Promise<T> => {
+    let lastError: Error | null = null;
+    
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        return await fn();
+      } catch (err) {
+        lastError = err as Error;
+        if (i < maxRetries - 1) {
+          const delay = initialDelay * Math.pow(2, i);
+          console.log(`Retry ${i + 1}/${maxRetries} after ${delay}ms...`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
+    }
+    
+    throw lastError;
+  };
+
   useEffect(() => {
     if (!user?.id || !user?.firebaseUid) return;
 
     const loadDashboardData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        // Ensure caches are populated from Data Connect
+        // Load levels and courses from stores (with retry)
         const [levels, courses] = await Promise.all([
-          levelStore.loadLevels(),
-          courseStore.loadCourses(user.id, user.firebaseUid),
+          retryWithBackoff(() => levelStore.loadLevels()),
+          retryWithBackoff(() =>
+            courseStore.loadCourses(user.id, user.firebaseUid)
+          ),
         ]);
 
         const activeLevels = levels.filter((l) => l.isActive).length;
@@ -133,14 +168,29 @@ export default function DashboardPage() {
           coursesByLevel[levelId] = (coursesByLevel[levelId] || 0) + 1;
         });
 
-        // Load dashboard statistics from DataConnect
-        const statsResult = await getDashboardStats({
-          userId: user.id,
-          firebaseId: user.firebaseUid,
-        });
+        // Load system data (taxonomies, difficulties, question types, etc.)
+        // These queries don't depend on specific user auth, just USER level
+        const systemDataResult = await retryWithBackoff(() =>
+          getDashboardSystemData()
+        );
+
+        // Load user's questions separately with retry
+        let questionsResult;
+        try {
+          questionsResult = await retryWithBackoff(() =>
+            getDashboardQuestions({
+              userId: user.id,
+              firebaseId: user.firebaseUid,
+            })
+          );
+        } catch (err) {
+          console.error("Error loading questions:", err);
+          // Continue without questions data
+          questionsResult = { data: { questions: [] } };
+        }
 
         // Process questions data
-        const questions = statsResult.data.questions || [];
+        const questions = questionsResult.data.questions || [];
         const activeQuestions = questions.filter((q) => q.active).length;
         const inactiveQuestions = questions.length - activeQuestions;
 
@@ -170,13 +220,15 @@ export default function DashboardPage() {
         questions.forEach((q) => {
           if (q.createdAt) {
             const date = new Date(q.createdAt);
-            const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+            const monthKey = `${date.getFullYear()}-${String(
+              date.getMonth() + 1
+            ).padStart(2, "0")}`;
             byMonth[monthKey] = (byMonth[monthKey] || 0) + 1;
           }
         });
 
         // Process subjects data
-        const subjects = statsResult.data.subjects || [];
+        const subjects = systemDataResult.data.subjects || [];
         const subjectsByLevel: Record<string, number> = {};
         subjects.forEach((s) => {
           const levelId = s.levelId;
@@ -184,8 +236,8 @@ export default function DashboardPage() {
         });
 
         // Content hierarchy
-        const units = statsResult.data.units || [];
-        const topics = statsResult.data.topics || [];
+        const units = systemDataResult.data.units || [];
+        const topics = systemDataResult.data.topics || [];
 
         setDashboardData({
           levels: {
@@ -205,7 +257,9 @@ export default function DashboardPage() {
             activePercentage:
               courses.length > 0 ? (activeCourses / courses.length) * 100 : 0,
             inactivePercentage:
-              courses.length > 0 ? (inactiveCourses / courses.length) * 100 : 0,
+              courses.length > 0
+                ? (inactiveCourses / courses.length) * 100
+                : 0,
             items: courses,
             byLevel: coursesByLevel,
           },
@@ -218,22 +272,26 @@ export default function DashboardPage() {
             byQuestionType,
             byMonth,
           },
-          taxonomy: (statsResult.data.taxonomies || []).map((t) => ({
+          taxonomy: (systemDataResult.data.taxonomies || []).map((t) => ({
             taxonomyId: t.taxonomyId,
             name: t.name,
             code: t.code,
             level: t.level,
           })),
-          difficulties: (statsResult.data.difficulties || []).map((d) => ({
-            difficultyId: d.difficultyId,
-            level: d.level,
-            weight: d.weight,
-          })),
-          questionTypes: (statsResult.data.questionTypes || []).map((qt) => ({
-            questionTypeId: qt.questionTypeId,
-            name: qt.name,
-            code: qt.code,
-          })),
+          difficulties: (systemDataResult.data.difficulties || []).map(
+            (d) => ({
+              difficultyId: d.difficultyId,
+              level: d.level,
+              weight: d.weight,
+            })
+          ),
+          questionTypes: (systemDataResult.data.questionTypes || []).map(
+            (qt) => ({
+              questionTypeId: qt.questionTypeId,
+              name: qt.name,
+              code: qt.code,
+            })
+          ),
           subjects: {
             total: subjects.length,
             byLevel: subjectsByLevel,
@@ -246,6 +304,11 @@ export default function DashboardPage() {
         });
       } catch (error) {
         console.error("Error loading dashboard data:", error);
+        setError(
+          "Error al cargar los datos del dashboard. Por favor, intenta recargar la página."
+        );
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -263,6 +326,37 @@ export default function DashboardPage() {
           </p>
         </Col>
       </Row>
+
+      {/* Loading State */}
+      {loading && (
+        <Row className="mb-4">
+          <Col>
+            <Alert variant="info">
+              <div className="d-flex align-items-center">
+                <div
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                >
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+                <span>Cargando datos del dashboard...</span>
+              </div>
+            </Alert>
+          </Col>
+        </Row>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <Row className="mb-4">
+          <Col>
+            <Alert variant="danger" dismissible onClose={() => setError(null)}>
+              <Alert.Heading>Error al cargar datos</Alert.Heading>
+              <p>{error}</p>
+            </Alert>
+          </Col>
+        </Row>
+      )}
 
       {/* Niveles Educacionales & Cursos Cards */}
       <Row className="mb-4">

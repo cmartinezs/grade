@@ -439,9 +439,8 @@ query ListQuestionsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "fir
 # ESTADÍSTICAS DEL DASHBOARD
 # ===================================================================
 
-# Obtener estadísticas agregadas para el dashboard
-query GetDashboardStats($userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
-  # Preguntas del usuario
+# Obtener preguntas del usuario para el dashboard
+query GetDashboardQuestions($userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
   questions(where: { userId: { eq: $userId }, deletedAt: { eq: null } }) {
     questionId
     active
@@ -452,7 +451,10 @@ query GetDashboardStats($userId: UUID!, $firebaseId: String!) @auth(expr: "fireb
     isPublic
     createdAt
   }
-  
+}
+
+# Obtener datos del sistema para el dashboard (sin autenticación de usuario específico)
+query GetDashboardSystemData @auth(level: USER) {
   # Taxonomías disponibles
   taxonomies(where: { active: { eq: true } }) {
     taxonomyId
