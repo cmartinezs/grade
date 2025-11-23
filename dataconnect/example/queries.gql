@@ -435,6 +435,68 @@ query ListQuestionsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "fir
   }
 }
 
+# ===================================================================
+# ESTADÍSTICAS DEL DASHBOARD
+# ===================================================================
+
+# Obtener estadísticas agregadas para el dashboard
+query GetDashboardStats($userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
+  # Preguntas del usuario
+  questions(where: { userId: { eq: $userId }, deletedAt: { eq: null } }) {
+    questionId
+    active
+    topicId
+    difficultyId
+    questionTypeId
+    taxonomyId
+    isPublic
+    createdAt
+  }
+  
+  # Taxonomías disponibles
+  taxonomies(where: { active: { eq: true } }) {
+    taxonomyId
+    name
+    code
+    level
+  }
+  
+  # Dificultades disponibles
+  difficulties(where: { active: { eq: true } }) {
+    difficultyId
+    level
+    weight
+  }
+  
+  # Tipos de pregunta disponibles
+  questionTypes(where: { active: { eq: true } }) {
+    questionTypeId
+    name
+    code
+  }
+  
+  # Asignaturas
+  subjects(where: { active: { eq: true }, deletedAt: { eq: null } }) {
+    subjectId
+    name
+    levelId
+  }
+  
+  # Unidades
+  units(where: { active: { eq: true }, deletedAt: { eq: null } }) {
+    unitId
+    name
+    subjectId
+  }
+  
+  # Temas
+  topics(where: { active: { eq: true }, deletedAt: { eq: null } }) {
+    topicId
+    name
+    unitId
+  }
+}
+
 # Obtener una pregunta por ID (solo del usuario autenticado)
 query GetQuestion($questionId: UUID!, $userId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
   questions(where: { questionId: { eq: $questionId }, userId: { eq: $userId } }) {

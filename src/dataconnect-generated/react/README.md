@@ -44,6 +44,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetTaxonomyByCode*](#gettaxonomybycode)
   - [*ListTaxonomiesByLevel*](#listtaxonomiesbylevel)
   - [*ListQuestionsByUser*](#listquestionsbyuser)
+  - [*GetDashboardStats*](#getdashboardstats)
   - [*GetQuestion*](#getquestion)
   - [*ListPublicQuestions*](#listpublicquestions)
   - [*ListPublicQuestionsByDifficulty*](#listpublicquestionsbydifficulty)
@@ -2549,6 +2550,136 @@ export default function ListQuestionsByUserComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.questions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetDashboardStats
+You can execute the `GetDashboardStats` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetDashboardStats(dc: DataConnect, vars: GetDashboardStatsVariables, options?: useDataConnectQueryOptions<GetDashboardStatsData>): UseDataConnectQueryResult<GetDashboardStatsData, GetDashboardStatsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetDashboardStats(vars: GetDashboardStatsVariables, options?: useDataConnectQueryOptions<GetDashboardStatsData>): UseDataConnectQueryResult<GetDashboardStatsData, GetDashboardStatsVariables>;
+```
+
+### Variables
+The `GetDashboardStats` Query requires an argument of type `GetDashboardStatsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetDashboardStatsVariables {
+  userId: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that calling the `GetDashboardStats` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetDashboardStats` Query is of type `GetDashboardStatsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetDashboardStatsData {
+  questions: ({
+    questionId: UUIDString;
+    active: boolean;
+    topicId: UUIDString;
+    difficultyId: UUIDString;
+    questionTypeId: UUIDString;
+    taxonomyId: UUIDString;
+    isPublic: boolean;
+    createdAt: TimestampString;
+  } & Question_Key)[];
+    taxonomies: ({
+      taxonomyId: UUIDString;
+      name: string;
+      code: string;
+      level: number;
+    } & Taxonomy_Key)[];
+      difficulties: ({
+        difficultyId: UUIDString;
+        level: string;
+        weight: number;
+      } & Difficulty_Key)[];
+        questionTypes: ({
+          questionTypeId: UUIDString;
+          name: string;
+          code: string;
+        } & QuestionType_Key)[];
+          subjects: ({
+            subjectId: UUIDString;
+            name: string;
+            levelId: UUIDString;
+          } & Subject_Key)[];
+            units: ({
+              unitId: UUIDString;
+              name: string;
+              subjectId: UUIDString;
+            } & Unit_Key)[];
+              topics: ({
+                topicId: UUIDString;
+                name: string;
+                unitId: UUIDString;
+              } & Topic_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetDashboardStats`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetDashboardStatsVariables } from '@dataconnect/generated';
+import { useGetDashboardStats } from '@dataconnect/generated/react'
+
+export default function GetDashboardStatsComponent() {
+  // The `useGetDashboardStats` Query hook requires an argument of type `GetDashboardStatsVariables`:
+  const getDashboardStatsVars: GetDashboardStatsVariables = {
+    userId: ..., 
+    firebaseId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetDashboardStats(getDashboardStatsVars);
+  // Variables can be defined inline as well.
+  const query = useGetDashboardStats({ userId: ..., firebaseId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetDashboardStats(dataConnect, getDashboardStatsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetDashboardStats(getDashboardStatsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetDashboardStats(dataConnect, getDashboardStatsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.questions);
+    console.log(query.data.taxonomies);
+    console.log(query.data.difficulties);
+    console.log(query.data.questionTypes);
+    console.log(query.data.subjects);
+    console.log(query.data.units);
+    console.log(query.data.topics);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
