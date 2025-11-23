@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { getUserByEmail } from '@/dataconnect-generated';
+import { retryWithBackoff } from '@/lib/retryWithBackoff';
 
 interface UseQuestionsResult {
   questions: QuestionWithDetails[];
@@ -46,15 +47,25 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
           return;
         }
 
-        // Obtener userId desde Data Connect
-        const userResult = await getUserByEmail({ email: user.email });
+        // Obtener userId desde Data Connect con retry
+        const userResult = await retryWithBackoff(
+          () => getUserByEmail({ email: user.email }),
+          3,
+          500,
+          'useQuestions.getUserByEmail'
+        );
         const userData = userResult.data?.users?.[0];
         
         if (!userData?.userId) {
           throw new Error('Usuario no encontrado en Data Connect');
         }
 
-        const dcQuestions = await fetchQuestionsByUser(userData.userId, user.firebaseUid);
+        const dcQuestions = await retryWithBackoff(
+          () => fetchQuestionsByUser(userData.userId, user.firebaseUid),
+          3,
+          500,
+          'useQuestions.fetchQuestionsByUser'
+        );
         
         // Transformar formato de Data Connect a formato local
         const loadedQuestions: QuestionWithDetails[] = dcQuestions.map(q => ({

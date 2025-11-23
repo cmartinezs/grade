@@ -10,6 +10,7 @@ import {
   createNewQuestionType,
   QuestionType,
 } from '@/lib/masterDataConnect';
+import { retryWithBackoff } from '@/lib/retryWithBackoff';
 
 interface UseQuestionTypesResult {
   questionTypes: QuestionType[];
@@ -32,7 +33,7 @@ export const useQuestionTypes = (): UseQuestionTypesResult => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchAllQuestionTypes();
+        const data = await retryWithBackoff(() => fetchAllQuestionTypes(), 3, 500, 'useQuestionTypes');
         setQuestionTypes(data);
       } catch (err) {
         console.error('Error loading question types:', err);
@@ -70,7 +71,7 @@ export const useQuestionTypes = (): UseQuestionTypesResult => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchAllQuestionTypes();
+      const data = await retryWithBackoff(() => fetchAllQuestionTypes(), 3, 500, 'useQuestionTypes.refetch');
       setQuestionTypes(data);
     } catch (err) {
       console.error('Error refetching question types:', err);

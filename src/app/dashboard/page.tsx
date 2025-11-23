@@ -15,6 +15,7 @@ import {
   getDashboardQuestions,
   getDashboardSystemData,
 } from "@/dataconnect-generated";
+import { retryWithBackoff } from "@/lib/retryWithBackoff";
 
 interface EntityStats {
   total: number;
@@ -115,30 +116,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Función auxiliar para reintentos con backoff exponencial
-  const retryWithBackoff = async <T,>(
-    fn: () => Promise<T>,
-    maxRetries = 3,
-    initialDelay = 500
-  ): Promise<T> => {
-    let lastError: Error | null = null;
-    
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        return await fn();
-      } catch (err) {
-        lastError = err as Error;
-        if (i < maxRetries - 1) {
-          const delay = initialDelay * Math.pow(2, i);
-          console.log(`Retry ${i + 1}/${maxRetries} after ${delay}ms...`);
-          await new Promise((resolve) => setTimeout(resolve, delay));
-        }
-      }
-    }
-    
-    throw lastError;
-  };
-
   useEffect(() => {
     if (!user?.id || !user?.firebaseUid) return;
 
@@ -149,9 +126,12 @@ export default function DashboardPage() {
       try {
         // Load levels and courses from stores (with retry)
         const [levels, courses] = await Promise.all([
-          retryWithBackoff(() => levelStore.loadLevels()),
-          retryWithBackoff(() =>
-            courseStore.loadCourses(user.id, user.firebaseUid)
+          retryWithBackoff(() => levelStore.loadLevels(), 3, 500, 'dashboard.loadLevels'),
+          retryWithBackoff(
+            () => courseStore.loadCourses(user.id, user.firebaseUid),
+            3,
+            500,
+            'dashboard.loadCourses'
           ),
         ]);
 
@@ -170,18 +150,25 @@ export default function DashboardPage() {
 
         // Load system data (taxonomies, difficulties, question types, etc.)
         // These queries don't depend on specific user auth, just USER level
-        const systemDataResult = await retryWithBackoff(() =>
-          getDashboardSystemData()
+        const systemDataResult = await retryWithBackoff(
+          () => getDashboardSystemData(),
+          3,
+          500,
+          'dashboard.getDashboardSystemData'
         );
 
         // Load user's questions separately with retry
         let questionsResult;
         try {
-          questionsResult = await retryWithBackoff(() =>
-            getDashboardQuestions({
-              userId: user.id,
-              firebaseId: user.firebaseUid,
-            })
+          questionsResult = await retryWithBackoff(
+            () =>
+              getDashboardQuestions({
+                userId: user.id,
+                firebaseId: user.firebaseUid,
+              }),
+            3,
+            500,
+            'dashboard.getDashboardQuestions'
           );
         } catch (err) {
           console.error("Error loading questions:", err);

@@ -10,6 +10,7 @@ import {
   createNewDifficulty,
   Difficulty,
 } from '@/lib/masterDataConnect';
+import { retryWithBackoff } from '@/lib/retryWithBackoff';
 
 interface UseDifficultiesResult {
   difficulties: Difficulty[];
@@ -32,7 +33,7 @@ export const useDifficulties = (): UseDifficultiesResult => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchAllDifficulties();
+        const data = await retryWithBackoff(() => fetchAllDifficulties(), 3, 500, 'useDifficulties');
         setDifficulties(data);
       } catch (err) {
         console.error('Error loading difficulties:', err);
@@ -70,7 +71,7 @@ export const useDifficulties = (): UseDifficultiesResult => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchAllDifficulties();
+      const data = await retryWithBackoff(() => fetchAllDifficulties(), 3, 500, 'useDifficulties.refetch');
       setDifficulties(data);
     } catch (err) {
       console.error('Error refetching difficulties:', err);

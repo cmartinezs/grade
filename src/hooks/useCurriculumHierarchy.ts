@@ -13,6 +13,7 @@ import {
   fetchAllUnits,
   fetchAllTopics,
 } from '@/lib/curriculumHierarchyDataConnect';
+import { retryWithBackoff } from '@/lib/retryWithBackoff';
 
 interface UseCurriculumHierarchyResult {
   subjects: Subject[];
@@ -35,11 +36,11 @@ export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
         setLoading(true);
         setError(null);
 
-        // Cargar todas las taxonomías en paralelo
+        // Cargar todas las taxonomías en paralelo con retry
         const [subjectsData, unitsData, topicsData] = await Promise.all([
-          fetchAllSubjects(),
-          fetchAllUnits(),
-          fetchAllTopics(),
+          retryWithBackoff(() => fetchAllSubjects(), 3, 500, 'useCurriculumHierarchy.subjects'),
+          retryWithBackoff(() => fetchAllUnits(), 3, 500, 'useCurriculumHierarchy.units'),
+          retryWithBackoff(() => fetchAllTopics(), 3, 500, 'useCurriculumHierarchy.topics'),
         ]);
 
         // Transformar datos de Data Connect a nuestro formato interno
