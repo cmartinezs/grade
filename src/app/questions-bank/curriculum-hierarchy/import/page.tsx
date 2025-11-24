@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, Button, Alert, Table, Badge, Row, Col } from 'react-bootstrap';
+import { Card, Button, Alert, Table, Badge, Row, Col, ProgressBar } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useHelpContent } from '@/contexts/HelpContext';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
+import { useAuth } from '@/contexts/AuthContext';
+import { createNewSubject, createNewUnit, createNewTopic, fetchAllSubjects, fetchAllUnits } from '@/lib/curriculumHierarchyDataConnect';
+import { fetchEducationalLevelsFromDataConnect } from '@/lib/levelDataConnect';
 import { CurriculumImportHelp } from './CurriculumImportHelp';
 
 export default function ImportCurriculumPage() {
   const { setHelpContent } = useHelpContent();
+  const { user } = useAuth();
   const { subjects, units, topics } = useCurriculumHierarchy();
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -17,6 +21,12 @@ export default function ImportCurriculumPage() {
   const [uploadMessage, setUploadMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationStatus, setValidationStatus] = useState<'idle' | 'validating' | 'valid' | 'invalid'>('idle');
+  const [parsedData, setParsedData] = useState<{subjects: number; units: number; topics: number} | null>(null);
+  const [importProgress, setImportProgress] = useState(0);
+  const [importStatus, setImportStatus] = useState<string>('');
 
   // Configurar contenido de ayuda
   useEffect(() => {
@@ -69,13 +79,179 @@ export default function ImportCurriculumPage() {
     });
   };
 
-  const validateAndSetFile = (file: File) => {
+  const validateAndSetFile = async (file: File) => {
     if (file.type !== 'text/csv' && file.type !== 'application/vnd.ms-excel') {
       setUploadMessage({ type: 'error', text: 'Por favor selecciona un archivo CSV válido' });
       return;
     }
+    
     setSelectedFile(file);
     setUploadMessage(null);
+    setValidationErrors([]);
+    setValidationStatus('validating');
+    setUploadProgress(0);
+    
+    // Pequeño delay para que se vea el estado inicial
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    try {
+      // Simular lectura del archivo
+      setUploadProgress(10);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      const text = await file.text();
+      const lines = text.split('\n').filter(line => line.trim());
+      
+      setUploadProgress(20);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      if (lines.length === 0) {
+        setValidationErrors(['El archivo está vacío']);
+        setValidationStatus('invalid');
+        setUploadMessage({ type: 'error', text: 'El archivo está vacío' });
+        return;
+      }
+      
+      // Validar encabezados
+      setUploadProgress(30);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      const headers = lines[0].split(';').map(h => h.trim().replace(/"/g, ''));
+      const expectedHeaders = ['tipo', 'nombre', 'codigo', 'nivel_educativo', 'asignatura_padre', 'unidad_padre', 'descripcion'];
+      const errors: string[] = [];
+      
+      // Verificar que los headers sean exactamente los esperados
+      if (headers.length !== expectedHeaders.length) {
+        errors.push(`Se esperan ${expectedHeaders.length} columnas, pero se encontraron ${headers.length}`);
+      }
+      
+      expectedHeaders.forEach((expected, idx) => {
+        if (headers[idx] !== expected) {
+          errors.push(`Columna ${idx + 1}: se esperaba "${expected}" pero se encontró "${headers[idx] || '(vacío)'}"}`);
+        }
+      });
+      
+      // Verificar columnas extra
+      if (headers.length > expectedHeaders.length) {
+        const extraHeaders = headers.slice(expectedHeaders.length);
+        errors.push(`Columnas extra no permitidas: ${extraHeaders.join(', ')}`);
+      }
+      
+      setUploadProgress(40);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      if (errors.length > 0) {
+        setValidationErrors(errors);
+        setValidationStatus('invalid');
+        setUploadMessage({ type: 'error', text: `Se encontraron ${errors.length} error(es) en el formato del archivo` });
+        return;
+      }
+      
+      // Validar filas de datos
+      setUploadProgress(50);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      let subjectsCount = 0;
+      let unitsCount = 0;
+      let topicsCount = 0;
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        
+        if (values.length !== expectedHeaders.length) {
+          errors.push(`Fila ${i + 1}: número incorrecto de columnas (${values.length} en lugar de ${expectedHeaders.length})`);
+          continue;
+        }
+        
+        const [tipo, nombre, codigo, nivelEducativo, asignaturaPadre, unidadPadre] = values;
+        
+        // Validar tipo
+        if (!['asignatura', 'unidad', 'tema'].includes(tipo.toLowerCase())) {
+          errors.push(`Fila ${i + 1}: tipo "${tipo}" no válido. Debe ser: asignatura, unidad o tema`);
+          continue;
+        }
+        
+        // Validar nombre (obligatorio para todos)
+        if (!nombre) {
+          errors.push(`Fila ${i + 1}: el campo "nombre" es obligatorio`);
+        }
+        
+        // Validaciones específicas por tipo
+        const tipoLower = tipo.toLowerCase();
+        
+        if (tipoLower === 'asignatura') {
+          subjectsCount++;
+          if (!codigo) {
+            errors.push(`Fila ${i + 1}: el campo "codigo" es obligatorio para asignaturas`);
+          }
+          if (!nivelEducativo) {
+            errors.push(`Fila ${i + 1}: el campo "nivel_educativo" es obligatorio para asignaturas`);
+          }
+          if (asignaturaPadre || unidadPadre) {
+            errors.push(`Fila ${i + 1}: las asignaturas no deben tener "asignatura_padre" ni "unidad_padre"`);
+          }
+        } else if (tipoLower === 'unidad') {
+          unitsCount++;
+          if (!asignaturaPadre) {
+            errors.push(`Fila ${i + 1}: el campo "asignatura_padre" es obligatorio para unidades`);
+          }
+          if (codigo || nivelEducativo) {
+            errors.push(`Fila ${i + 1}: las unidades no deben tener "codigo" ni "nivel_educativo"`);
+          }
+          if (unidadPadre) {
+            errors.push(`Fila ${i + 1}: las unidades no deben tener "unidad_padre"`);
+          }
+        } else if (tipoLower === 'tema') {
+          topicsCount++;
+          if (!asignaturaPadre) {
+            errors.push(`Fila ${i + 1}: el campo "asignatura_padre" es obligatorio para temas`);
+          }
+          if (!unidadPadre) {
+            errors.push(`Fila ${i + 1}: el campo "unidad_padre" es obligatorio para temas`);
+          }
+          if (codigo || nivelEducativo) {
+            errors.push(`Fila ${i + 1}: los temas no deben tener "codigo" ni "nivel_educativo"`);
+          }
+        }
+        
+        // Actualizar progreso periódicamente
+        if (i % 5 === 0) {
+          const progress = 50 + Math.floor((i / (lines.length - 1)) * 30);
+          setUploadProgress(progress);
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+      }
+      
+      setUploadProgress(85);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      if (errors.length > 0) {
+        setValidationErrors(errors);
+        setValidationStatus('invalid');
+        setUploadMessage({ 
+          type: 'error', 
+          text: `Se encontraron ${errors.length} error(es) de validación. Revisa los detalles abajo.` 
+        });
+      } else {
+        setParsedData({ subjects: subjectsCount, units: unitsCount, topics: topicsCount });
+        setValidationStatus('valid');
+        setUploadMessage({ 
+          type: 'success', 
+          text: `✅ Archivo válido: ${subjectsCount} asignatura(s), ${unitsCount} unidad(es), ${topicsCount} tema(s)` 
+        });
+      }
+      
+      setUploadProgress(100);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+    } catch (error) {
+      console.error('Error validating file:', error);
+      setValidationErrors(['Error al leer el archivo. Verifica que sea un CSV válido con codificación UTF-8']);
+      setValidationStatus('invalid');
+      setUploadMessage({ type: 'error', text: 'Error al procesar el archivo' });
+      setUploadProgress(0);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,14 +298,217 @@ export default function ImportCurriculumPage() {
       setUploadMessage({ type: 'error', text: 'Por favor selecciona un archivo' });
       return;
     }
+    
+    if (validationStatus !== 'valid') {
+      setUploadMessage({ type: 'error', text: 'El archivo debe ser válido antes de importar' });
+      return;
+    }
+    
+    if (!user?.id) {
+      setUploadMessage({ type: 'error', text: 'Debes estar autenticado para importar' });
+      return;
+    }
 
     setIsLoading(true);
+    setImportProgress(0);
+    setImportStatus('Iniciando importación...');
+    
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setUploadMessage({ type: 'success', text: 'Jerarquía curricular importada correctamente' });
-      setSelectedFile(null);
-    } catch {
-      setUploadMessage({ type: 'error', text: 'Error al importar el archivo' });
+      // Leer archivo nuevamente
+      const text = await selectedFile.text();
+      const lines = text.split('\n').filter(line => line.trim());
+      const dataLines = lines.slice(1); // Saltar header
+      
+      // Mapas para almacenar IDs (por nombre)
+      const subjectIdMap = new Map<string, string>();
+      const unitIdMap = new Map<string, string>(); // key: "asignatura|unidad"
+      
+      // Cargar elementos existentes primero
+      setImportStatus('Cargando elementos existentes...');
+      setImportProgress(2);
+      
+      // Cargar asignaturas existentes
+      const existingSubjectsData = await fetchAllSubjects();
+      existingSubjectsData.subjects.forEach(subject => {
+        if (subject.active) {
+          subjectIdMap.set(subject.name, subject.subjectId);
+        }
+      });
+      console.log(`Asignaturas existentes cargadas: ${subjectIdMap.size}`);
+      
+      // Crear un mapa inverso: subjectId -> subjectName
+      const subjectIdToName = new Map<string, string>();
+      existingSubjectsData.subjects.forEach(subject => {
+        if (subject.active) {
+          subjectIdToName.set(subject.subjectId, subject.name);
+        }
+      });
+      
+      // Cargar unidades existentes
+      const existingUnitsData = await fetchAllUnits();
+      existingUnitsData.units.forEach(unit => {
+        if (unit.active) {
+          const subjectName = subjectIdToName.get(unit.subjectId);
+          if (subjectName) {
+            unitIdMap.set(`${subjectName}|${unit.name}`, unit.unitId);
+          }
+        }
+      });
+      console.log(`Unidades existentes cargadas: ${unitIdMap.size}`);
+      
+      // Cargar niveles educativos existentes
+      setImportStatus('Cargando niveles educativos...');
+      setImportProgress(5);
+      
+      const educationalLevels = await fetchEducationalLevelsFromDataConnect();
+      console.log('Niveles educativos cargados:', educationalLevels);
+      
+      // Crear un mapa de niveles por nombre (case-insensitive)
+      const levelMap = new Map<string, string>();
+      educationalLevels.forEach((level: { name: string; levelId: string }) => {
+        levelMap.set(level.name.toLowerCase(), level.levelId);
+      });
+      
+      let created = 0;
+      const total = dataLines.length;
+      
+      // Fase 1: Crear asignaturas (solo las que no existen)
+      setImportStatus('Procesando asignaturas...');
+      for (let i = 0; i < dataLines.length; i++) {
+        const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        const [tipo, nombre, codigo, nivelEducativo] = values;
+        
+        if (tipo.toLowerCase() === 'asignatura') {
+          try {
+            // Verificar si ya existe
+            if (subjectIdMap.has(nombre)) {
+              console.log(`Asignatura "${nombre}" ya existe, usando ID existente`);
+              created++;
+              setImportProgress(5 + (created / total) * 30);
+              continue;
+            }
+            
+            // Buscar nivel educativo por nombre
+            const levelId = levelMap.get(nivelEducativo.toLowerCase());
+            
+            if (!levelId) {
+              throw new Error(`Nivel educativo "${nivelEducativo}" no encontrado. Niveles disponibles: ${Array.from(levelMap.keys()).join(', ')}`);
+            }
+            
+            const subjectId = await createNewSubject(
+              nombre,
+              codigo,
+              levelId,
+              user.id
+            );
+            
+            subjectIdMap.set(nombre, subjectId);
+            created++;
+            setImportProgress(5 + (created / total) * 30);
+          } catch (error) {
+            console.error(`Error creando asignatura "${nombre}":`, error);
+            throw new Error(`Error creando asignatura "${nombre}": ${error}`);
+          }
+        }
+      }
+      
+      // Fase 2: Crear unidades (solo las que no existen)
+      setImportStatus('Procesando unidades...');
+      for (let i = 0; i < dataLines.length; i++) {
+        const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        const [tipo, nombre, , , asignaturaPadre, , descripcion] = values;
+        
+        if (tipo.toLowerCase() === 'unidad') {
+          try {
+            const unitKey = `${asignaturaPadre}|${nombre}`;
+            
+            // Verificar si ya existe
+            if (unitIdMap.has(unitKey)) {
+              console.log(`Unidad "${nombre}" en asignatura "${asignaturaPadre}" ya existe, usando ID existente`);
+              created++;
+              setImportProgress(35 + (created / total) * 30);
+              continue;
+            }
+            
+            const subjectId = subjectIdMap.get(asignaturaPadre);
+            if (!subjectId) {
+              throw new Error(`Asignatura "${asignaturaPadre}" no encontrada`);
+            }
+            
+            const unitId = await createNewUnit(
+              nombre,
+              subjectId,
+              user.id,
+              descripcion || undefined
+            );
+            
+            unitIdMap.set(unitKey, unitId);
+            created++;
+            setImportProgress(35 + (created / total) * 30);
+          } catch (error) {
+            console.error(`Error creando unidad "${nombre}":`, error);
+            throw new Error(`Error creando unidad "${nombre}": ${error}`);
+          }
+        }
+      }
+      
+      // Fase 3: Crear temas
+      setImportStatus('Creando temas...');
+      for (let i = 0; i < dataLines.length; i++) {
+        const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        const [tipo, nombre, , , asignaturaPadre, unidadPadre] = values;
+        
+        if (tipo.toLowerCase() === 'tema') {
+          try {
+            const unitId = unitIdMap.get(`${asignaturaPadre}|${unidadPadre}`);
+            if (!unitId) {
+              throw new Error(`Unidad "${unidadPadre}" en asignatura "${asignaturaPadre}" no encontrada`);
+            }
+            
+            await createNewTopic(
+              nombre,
+              unitId,
+              user.id
+            );
+            
+            created++;
+            setImportProgress(65 + (created / total) * 30);
+          } catch (error) {
+            console.error(`Error creando tema "${nombre}":`, error);
+            throw new Error(`Error creando tema "${nombre}": ${error}`);
+          }
+        }
+      }
+      
+      setImportProgress(95);
+      setImportStatus('Finalizando...');
+      
+      setImportProgress(100);
+      setImportStatus('Completado');
+      
+      setUploadMessage({ 
+        type: 'success', 
+        text: `✅ Jerarquía curricular importada: ${created} elementos creados` 
+      });
+      
+      // Limpiar estados
+      setTimeout(() => {
+        setSelectedFile(null);
+        setValidationStatus('idle');
+        setParsedData(null);
+        setUploadProgress(0);
+        setImportProgress(0);
+        setImportStatus('');
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error importing:', error);
+      setUploadMessage({ 
+        type: 'error', 
+        text: `Error al importar: ${error instanceof Error ? error.message : 'Error desconocido'}` 
+      });
+      setImportProgress(0);
+      setImportStatus('');
     } finally {
       setIsLoading(false);
     }
@@ -330,6 +709,60 @@ export default function ImportCurriculumPage() {
                   )}
                 </div>
 
+                {/* Progress Bar */}
+                {validationStatus === 'validating' && (
+                  <div className="mb-4">
+                    <h6 className="mb-2">📊 Validando archivo...</h6>
+                    <ProgressBar 
+                      now={uploadProgress} 
+                      label={`${uploadProgress}%`}
+                      animated
+                      striped
+                      variant="info"
+                    />
+                  </div>
+                )}
+
+                {/* Validation Results */}
+                {validationStatus === 'valid' && parsedData && (
+                  <Alert variant="success" className="mb-4">
+                    <h6 className="mb-2">✅ Archivo validado correctamente</h6>
+                    <ul className="mb-0">
+                      <li><strong>{parsedData.subjects}</strong> asignatura(s)</li>
+                      <li><strong>{parsedData.units}</strong> unidad(es)</li>
+                      <li><strong>{parsedData.topics}</strong> tema(s)</li>
+                    </ul>
+                  </Alert>
+                )}
+
+                {/* Validation Errors */}
+                {validationStatus === 'invalid' && validationErrors.length > 0 && (
+                  <Alert variant="danger" className="mb-4">
+                    <h6 className="mb-2">❌ Errores de validación ({validationErrors.length})</h6>
+                    <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                      <ul className="mb-0">
+                        {validationErrors.map((error, idx) => (
+                          <li key={idx}><small>{error}</small></li>
+                        ))}
+                      </ul>
+                    </div>
+                  </Alert>
+                )}
+
+                {/* Import Progress */}
+                {isLoading && (
+                  <div className="mb-4">
+                    <h6 className="mb-2">⚙️ {importStatus}</h6>
+                    <ProgressBar 
+                      now={importProgress} 
+                      label={`${importProgress}%`}
+                      animated
+                      striped
+                      variant="success"
+                    />
+                  </div>
+                )}
+
                 {/* Stats actuales */}
                 <Alert variant="light" className="mb-4">
                   <h6 className="mb-2">📊 Elementos actuales en el sistema:</h6>
@@ -344,7 +777,7 @@ export default function ImportCurriculumPage() {
                   <Button
                     variant="primary"
                     onClick={handleImport}
-                    disabled={!selectedFile || isLoading}
+                    disabled={!selectedFile || isLoading || validationStatus !== 'valid'}
                   >
                     {isLoading ? '⏳ Importando...' : '📥 Importar Jerarquía'}
                   </Button>
