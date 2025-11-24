@@ -289,7 +289,7 @@ export default function QuestionFormFields({
 
       {/* 4. Difficulty */}
       <AutocompleteSelect
-        label="Nivel"
+        label="Nivel de dificultad"
         value={difficulty}
         onChange={(value) => onDifficultyChange(value as DifficultyLevel)}
         options={activeDifficulties.map(d => ({
@@ -306,7 +306,7 @@ export default function QuestionFormFields({
 
       {/* 5. Question Type */}
       <AutocompleteSelect
-        label="Tipo"
+        label="Tipo de pregunta"
         value={questionType}
         onChange={(value) => onQuestionTypeChange(String(value) as QuestionType)}
         options={questionTypes
@@ -371,6 +371,17 @@ export default function QuestionFormFields({
             </Alert>
           )}
 
+          {/* Mensaje cuando se alcanza el máximo de opciones correctas */}
+          {questionType && rules.correctOptions > 0 && 
+           options.filter(opt => opt.is_correct).length >= rules.correctOptions && (
+            <Alert variant="success" className="mb-3">
+              <small>
+                <strong>✅ Máximo alcanzado:</strong> Ya has marcado {rules.correctOptions} {rules.correctOptions === 1 ? 'opción correcta' : 'opciones correctas'}. 
+                Para marcar otra, primero desmarca una de las seleccionadas.
+              </small>
+            </Alert>
+          )}
+
           {getErrorsForField('options').length > 0 && (
             <Alert variant="danger">
               {getErrorsForField('options').map((err, i) => (
@@ -405,24 +416,53 @@ export default function QuestionFormFields({
                   ))}
                 </Col>
                 <Col xs={3}>
-                  <Form.Check
-                    type="switch"
-                    label="Correcta"
-                    checked={option.is_correct}
-                    onChange={(e) => onOptionCorrectChange(index, e.target.checked)}
-                    disabled={disabled}
-                  />
+                  <div 
+                    title={
+                      !option.is_correct && 
+                      options.filter(opt => opt.is_correct).length >= rules.correctOptions
+                        ? `Ya has marcado el máximo de ${rules.correctOptions} ${rules.correctOptions === 1 ? 'opción correcta' : 'opciones correctas'}`
+                        : ''
+                    }
+                  >
+                    <Form.Check
+                      type="switch"
+                      label="Correcta"
+                      checked={option.is_correct}
+                      onChange={(e) => onOptionCorrectChange(index, e.target.checked)}
+                      disabled={
+                        disabled || 
+                        (!option.is_correct && 
+                         options.filter(opt => opt.is_correct).length >= rules.correctOptions)
+                      }
+                    />
+                  </div>
                 </Col>
                 <Col xs={1}>
-                  {!(rules.minOptions === rules.maxOptions) && options.length > rules.minOptions && questionType !== 'TF' && (
+                  {!(rules.minOptions === rules.maxOptions) && 
+                   options.length > rules.minOptions && 
+                   questionType !== 'TF' && 
+                   !option.is_correct && (
                     <Button
                       variant="outline-danger"
                       size="sm"
                       onClick={() => onRemoveOption(index)}
                       disabled={disabled}
+                      title="Eliminar opción"
                     >
                       🗑️
                     </Button>
+                  )}
+                  {!(rules.minOptions === rules.maxOptions) && 
+                   options.length > rules.minOptions && 
+                   questionType !== 'TF' && 
+                   option.is_correct && (
+                    <span 
+                      className="d-inline-block" 
+                      style={{ opacity: 0.3, cursor: 'not-allowed' }}
+                      title="No puedes eliminar una opción marcada como correcta. Primero desmárcala."
+                    >
+                      🔒
+                    </span>
                   )}
                 </Col>
               </Row>

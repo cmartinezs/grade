@@ -32,7 +32,7 @@ export default function CreateQuestionPage() {
   const { questionTypes } = useQuestionTypes();
   const { difficulties } = useDifficulties();
   const { taxonomies } = useTaxonomies();
-  const { subjects, units, topics } = useCurriculumHierarchy();
+  const { topics } = useCurriculumHierarchy();
   const { setHelpContent } = useHelpContent();
   
   // Cargar todas las preguntas para detectar duplicados
@@ -514,7 +514,7 @@ export default function CreateQuestionPage() {
 
           {/* Columna de preguntas similares */}
           <Col lg={4}>
-            <Card className="border-warning border-2 sticky-top" style={{ top: '20px' }}>
+            <Card className="border-warning border-2 sticky-top">
               <Card.Header className="bg-warning text-dark">
                 <h5 className="mb-1">🔍 Preguntas Similares</h5>
                 {(questionType || selectedTopic || difficulty || selectedTaxonomy) && (
