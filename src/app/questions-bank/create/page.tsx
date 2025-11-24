@@ -12,12 +12,15 @@ import {
   CreateQuestionOptionInput,
   QuestionValidationError,
   DuplicateDetectionResult,
+  QuestionWithDetails,
 } from '@/types/question';
 import { questionStore } from '@/lib/questionStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useDifficulties } from '@/hooks/useDifficulties';
 import { useTaxonomies } from '@/hooks/useTaxonomies';
+import { useQuestions } from '@/hooks/useQuestions';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { createNewQuestion, mapQuestionTypeCodeToId } from '@/lib/questionConnect';
 import { getUserByEmail } from '@/dataconnect-generated';
 import QuestionFormFields from '../components/shared/QuestionFormFields';
@@ -29,7 +32,14 @@ export default function CreateQuestionPage() {
   const { questionTypes } = useQuestionTypes();
   const { difficulties } = useDifficulties();
   const { taxonomies } = useTaxonomies();
+  const { subjects, units, topics } = useCurriculumHierarchy();
   const { setHelpContent } = useHelpContent();
+  
+  // Cargar todas las preguntas para detectar duplicados
+  const { questions: allQuestions } = useQuestions({
+    searchText: '',
+    includeInactive: true,
+  });
   
   // Form state
   const [questionType, setQuestionType] = useState<QuestionType>('' as QuestionType);
@@ -51,6 +61,7 @@ export default function CreateQuestionPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [createdQuestionId, setCreatedQuestionId] = useState('');
+  const [similarQuestions, setSimilarQuestions] = useState<DuplicateDetectionResult | null>(null);
 
   // Definir el contenido de ayuda cuando la página carga
   useEffect(() => {
@@ -92,6 +103,128 @@ export default function CreateQuestionPage() {
     }
   }, [questionType, questionTypes]);
 
+  // Detectar preguntas similares en tiempo real
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Requerir al menos enunciado con más de 10 caracteres
+      if (enunciado.trim().length < 10 || allQuestions.length === 0) {
+        setSimilarQuestions(null);
+        return;
+      }
+
+      console.log('🔍 Buscando similares con filtros:', { 
+        enunciadoLength: enunciado.trim().length,
+        questionType: questionType || 'no seleccionado',
+        selectedTopic: selectedTopic || 'no seleccionado',
+        selectedUnit: selectedUnit || 'no seleccionado', 
+        selectedSubject: selectedSubject || 'no seleccionado',
+        difficulty: difficulty || 'no seleccionado',
+        selectedTaxonomy: selectedTaxonomy || 'no seleccionado',
+        totalQuestions: allQuestions.length 
+      });
+      
+      // Función local de detección usando TODOS los campos seleccionados
+      const detectSimilarQuestions = (): DuplicateDetectionResult => {
+        const similarQuestions: QuestionWithDetails[] = [];
+        const enunciadoLower = enunciado.toLowerCase().trim();
+        const enunciadoWords = enunciadoLower.split(/\s+/).filter(w => w.length > 3);
+        const optionsTexts = options.map(opt => opt.text).filter(t => t.trim().length > 0);
+        const optionsLower = optionsTexts.map(t => t.toLowerCase().trim());
+        const optionsWords = optionsLower.flatMap(opt => opt.split(/\s+/).filter(w => w.length > 3));
+
+        for (const question of allQuestions) {
+          // Aplicar filtros de coincidencia exacta (AND lógico)
+          let matchesFilters = true;
+
+          // Si hay tipo seleccionado, debe coincidir
+          if (questionType && question.type !== questionType) {
+            matchesFilters = false;
+          }
+
+          // Si hay tema seleccionado, debe coincidir
+          if (selectedTopic && question.topic_fk !== selectedTopic) {
+            matchesFilters = false;
+          }
+
+          // Si hay dificultad seleccionada, debe coincidir
+          if (difficulty && question.difficulty_fk !== difficulty) {
+            matchesFilters = false;
+          }
+
+          // Si hay taxonomía seleccionada, debe coincidir
+          if (selectedTaxonomy && question.learning_outcome_fk !== selectedTaxonomy) {
+            matchesFilters = false;
+          }
+
+          // Si no pasa los filtros de coincidencia exacta, saltar esta pregunta
+          if (!matchesFilters) {
+            continue;
+          }
+
+          // Calcular score de similitud en contenido
+          let score = 0;
+
+          // Similitud en enunciado: hasta 60 puntos
+          const qEnunciadoLower = question.enunciado.toLowerCase();
+          const matchingEnunciadoWords = enunciadoWords.filter(word => 
+            word.length > 3 && qEnunciadoLower.includes(word)
+          ).length;
+          const textSimilarity = enunciadoWords.length > 0 
+            ? (matchingEnunciadoWords / enunciadoWords.length) * 60 
+            : 0;
+          score += textSimilarity;
+
+          // Similitud en opciones: hasta 40 puntos
+          if (optionsWords.length > 0 && question.options && question.options.length > 0) {
+            const qOptionsLower = question.options.map(opt => opt.text.toLowerCase());
+            const qOptionsWords = qOptionsLower.flatMap(opt => opt.split(/\s+/).filter(w => w.length > 3));
+            
+            const matchingOptionsWords = optionsWords.filter(word => 
+              qOptionsWords.some(qWord => qWord.includes(word) || word.includes(qWord))
+            ).length;
+            
+            const optionsSimilarity = optionsWords.length > 0
+              ? (matchingOptionsWords / optionsWords.length) * 40
+              : 0;
+            score += optionsSimilarity;
+          }
+
+          // Umbral de similitud: 30 puntos (más bajo porque ya filtramos por coincidencias exactas)
+          if (score >= 30) {
+            similarQuestions.push(question);
+          }
+        }
+
+        // Ordenar por score de similitud (mayor primero)
+        similarQuestions.sort((a, b) => {
+          const scoreA = calculateDetailedScore(a);
+          const scoreB = calculateDetailedScore(b);
+          return scoreB - scoreA;
+        });
+
+        function calculateDetailedScore(q: QuestionWithDetails): number {
+          let s = 0;
+          const qEnunciadoLower = q.enunciado.toLowerCase();
+          const matchingWords = enunciadoWords.filter(w => qEnunciadoLower.includes(w)).length;
+          s += enunciadoWords.length > 0 ? (matchingWords / enunciadoWords.length) * 100 : 0;
+          return s;
+        }
+
+        return {
+          isDuplicate: similarQuestions.length > 0,
+          similarQuestions,
+          similarityScore: similarQuestions.length > 0 ? 70 : 0,
+        };
+      };
+
+      const result = detectSimilarQuestions();
+      console.log('✅ Resultado búsqueda:', result);
+      setSimilarQuestions(result);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [enunciado, questionType, selectedTopic, selectedUnit, selectedSubject, difficulty, selectedTaxonomy, options, allQuestions]);
+
   const handleAddOption = () => {
     setOptions([
       ...options,
@@ -131,7 +264,8 @@ export default function CreateQuestionPage() {
 
   const checkForDuplicates = () => {
     if (enunciado.trim() && selectedTopic) {
-      const result = questionStore.detectDuplicates(enunciado, selectedTopic, questionType);
+      const optionsTexts = options.map(opt => opt.text).filter(t => t.trim().length > 0);
+      const result = questionStore.detectDuplicates(enunciado, selectedTopic, questionType, optionsTexts);
       if (result.isDuplicate) {
         setDuplicateWarning(result);
         setShowDuplicateWarning(true);
@@ -305,8 +439,8 @@ export default function CreateQuestionPage() {
         )}
 
         <Row>
-          {/* Formulario principal */}
-          <Col>
+          {/* Formulario principal - 2 columnas */}
+          <Col lg={8}>
             <Card className="border-primary border-2">
               <Card.Header className="bg-primary text-white">
                 <h4 className="mb-0">➕ Nueva Pregunta</h4>
@@ -374,6 +508,155 @@ export default function CreateQuestionPage() {
                     </Button>
                   </div>
                 </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          {/* Columna de preguntas similares */}
+          <Col lg={4}>
+            <Card className="border-warning border-2 sticky-top" style={{ top: '20px' }}>
+              <Card.Header className="bg-warning text-dark">
+                <h5 className="mb-1">🔍 Preguntas Similares</h5>
+                {(questionType || selectedTopic || difficulty || selectedTaxonomy) && (
+                  <div className="mt-2" style={{ fontSize: '0.7rem' }}>
+                    <div className="fw-bold mb-1">Filtros activos:</div>
+                    <div className="d-flex flex-wrap gap-1">
+                      {questionType && (
+                        <span className="badge bg-secondary">
+                          Tipo: {questionTypes.find(qt => qt.code === questionType)?.name || questionType}
+                        </span>
+                      )}
+                      {selectedTopic && (
+                        <span className="badge bg-secondary">
+                          Tema: {topics.find(t => t.topic_id === selectedTopic)?.name || 'N/A'}
+                        </span>
+                      )}
+                      {difficulty && (
+                        <span className="badge bg-secondary">
+                          Dificultad: {difficulties.find(d => d.difficultyId === difficulty)?.level || difficulty}
+                        </span>
+                      )}
+                      {selectedTaxonomy && (
+                        <span className="badge bg-secondary">
+                          Taxonomía: {taxonomies.find(t => t.taxonomyId === selectedTaxonomy)?.name || 'N/A'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </Card.Header>
+              <Card.Body style={{ maxHeight: 'calc(100vh - 150px)', overflowY: 'auto' }}>
+                {enunciado.trim().length < 10 ? (
+                  <div className="text-center text-muted py-4">
+                    <p className="mb-2">
+                      💡 <strong>Escribe al menos 10 caracteres</strong>
+                    </p>
+                    <p className="mb-0">
+                      <small>
+                        La búsqueda de similares se activará automáticamente.<br />
+                        Los campos seleccionados (tipo, tema, dificultad, taxonomía) se usarán como filtros.
+                      </small>
+                    </p>
+                  </div>
+                ) : similarQuestions === null ? (
+                  <div className="text-center text-muted py-4">
+                    <p className="mb-0">
+                      <small>
+                        ⏳ Buscando preguntas similares...
+                      </small>
+                    </p>
+                  </div>
+                ) : similarQuestions.isDuplicate ? (
+                  <>
+                    <Alert variant="warning" className="mb-3 py-2">
+                      <div className="d-flex align-items-center">
+                        <strong className="me-2">⚠️</strong>
+                        <div>
+                          <strong>{similarQuestions.similarQuestions.length}</strong> pregunta(s) similar(es)
+                        </div>
+                      </div>
+                    </Alert>
+                    {similarQuestions.similarQuestions.map((q) => (
+                      <Card key={q.question_id} className="mb-3 shadow-sm border-0" style={{ borderLeft: '4px solid #ffc107' }}>
+                        <Card.Body className="p-3">
+                          {/* Header con badges */}
+                          <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <div className="d-flex gap-1">
+                              <span className="badge bg-secondary" style={{ fontSize: '0.7rem' }}>
+                                {questionTypes.find(qt => qt.code === q.type)?.name || q.type}
+                              </span>
+                              <span className="badge bg-primary" style={{ fontSize: '0.7rem' }}>
+                                {difficulties.find(d => d.difficultyId === q.difficulty_fk)?.level || 'N/A'}
+                              </span>
+                              <span className="badge bg-info" style={{ fontSize: '0.7rem' }}>
+                                v{q.version}
+                              </span>
+                            </div>
+                            {!q.active && (
+                              <span className="badge bg-warning" style={{ fontSize: '0.7rem' }}>
+                                Inactiva
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Enunciado */}
+                          <div className="mb-3">
+                            <div className="d-flex align-items-start">
+                              <span className="text-primary me-2" style={{ fontSize: '1.2rem' }}>📝</span>
+                              <div className="flex-grow-1">
+                                <p className="mb-0" style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
+                                  {q.enunciado}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Opciones */}
+                          {q.options && q.options.length > 0 && (
+                            <div className="mt-3 pt-2 border-top">
+                              <div className="d-flex align-items-center mb-2">
+                                <span className="text-secondary me-2" style={{ fontSize: '0.9rem' }}>📋</span>
+                                <small className="text-muted fw-bold">Alternativas:</small>
+                              </div>
+                              <div className="ps-3">
+                                {q.options.slice(0, 3).map((opt, optIdx) => (
+                                  <div key={optIdx} className="d-flex align-items-start mb-2">
+                                    <span className="me-2" style={{ fontSize: '0.9rem' }}>
+                                      {opt.is_correct ? '✅' : '⭕'}
+                                    </span>
+                                    <span style={{ fontSize: '0.85rem', lineHeight: '1.4' }}>
+                                      {opt.text.length > 80 ? opt.text.substring(0, 80) + '...' : opt.text}
+                                    </span>
+                                  </div>
+                                ))}
+                                {q.options.length > 3 && (
+                                  <div className="text-muted" style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+                                    + {q.options.length - 3} alternativa(s) más
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Footer con ID */}
+                          <div className="mt-3 pt-2 border-top">
+                            <small className="text-muted d-flex align-items-center" style={{ fontSize: '0.7rem' }}>
+                              <span className="me-1">🔑</span>
+                              ID: <code className="ms-1">{q.question_id.substring(0, 8)}...</code>
+                            </small>
+                          </div>
+                        </Card.Body>
+                      </Card>
+                    ))}
+                  </>
+                ) : (
+                  <div className="text-center text-success py-4">
+                    <h5>✅ No hay duplicados</h5>
+                    <p className="text-muted mb-0">
+                      <small>No se encontraron preguntas similares</small>
+                    </p>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </Col>

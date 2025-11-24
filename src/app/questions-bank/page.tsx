@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from 'react';
-import { Row, Col, Card, Button, Badge, Form, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
+import { Row, Col, Card, Button, Badge, Form, Dropdown, ButtonGroup, Alert } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from './components/CreateQuestionModal';
 import ViewQuestionModal from './components/ViewQuestionModal';
@@ -11,13 +12,18 @@ import RetireQuestionModal from './components/RetireQuestionModal';
 import ReactivateQuestionModal from './components/ReactivateQuestionModal';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import { questionStore } from '@/lib/questionStore';
-import type { QuestionType, DifficultyLevel } from '@/types/question';
+import { deactivateExistingQuestion, reactivateExistingQuestion } from '@/lib/questionConnect';
+import { getUserByEmail } from '@/dataconnect-generated';
+import type { QuestionType, DifficultyLevel, QuestionWithDetails } from '@/types/question';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { useQuestions } from '@/hooks/useQuestions';
 import { useDifficulties } from '@/hooks/useDifficulties';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function QuestionsBankPage() {
+  const router = useRouter();
+  const { user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -25,6 +31,7 @@ export default function QuestionsBankPage() {
   const [showRetireModal, setShowRetireModal] = useState(false);
   const [showReactivateModal, setShowReactivateModal] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<QuestionWithDetails | null>(null);
   const [editMode, setEditMode] = useState<'edit' | 'version'>('version');
   const [isRetiring, setIsRetiring] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
@@ -33,6 +40,8 @@ export default function QuestionsBankPage() {
   const [filterDifficulty, setFilterDifficulty] = useState<DifficultyLevel | ''>('');
   const [filterSubject, setFilterSubject] = useState('');
   const [showInactive, setShowInactive] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Load subjects from Data Connect
   const { subjects: allSubjects } = useCurriculumHierarchy();
@@ -92,20 +101,44 @@ export default function QuestionsBankPage() {
   };
 
   const handleRetireQuestion = (questionId: string) => {
+    const question = questions.find(q => q.question_id === questionId);
     setSelectedQuestionId(questionId);
+    setSelectedQuestion(question || null);
     setShowRetireModal(true);
   };
 
   const handleConfirmRetire = async (reason?: string): Promise<void> => {
-    if (!selectedQuestionId) return;
+    if (!selectedQuestionId || !user?.firebaseUid || !user?.email) {
+      setError('Usuario no autenticado');
+      return;
+    }
 
     setIsRetiring(true);
+    setError(null);
     try {
-      await questionStore.retireQuestion(selectedQuestionId, 'current-user@example.com', reason);
+      // Obtener userId desde Data Connect
+      const userResult = await getUserByEmail({ email: user.email });
+      const userData = userResult.data?.users?.[0];
+      
+      if (!userData?.userId) {
+        throw new Error('Usuario no encontrado en Data Connect');
+      }
+
+      // Desactivar pregunta en DataConnect
+      await deactivateExistingQuestion(
+        selectedQuestionId,
+        userData.userId,
+        user.firebaseUid
+      );
+      
       loadQuestions();
+      setSuccessMessage('✅ Pregunta retirada exitosamente');
+      setTimeout(() => setSuccessMessage(null), 5000);
     } catch (error) {
       if (error instanceof Error) {
-        alert(`Error al retirar pregunta: ${error.message}`);
+        setError(`Error al retirar pregunta: ${error.message}`);
+      } else {
+        setError('Error desconocido al retirar pregunta');
       }
       throw error;
     } finally {
@@ -114,20 +147,44 @@ export default function QuestionsBankPage() {
   };
 
   const handleReactivateQuestion = (questionId: string) => {
+    const question = questions.find(q => q.question_id === questionId);
     setSelectedQuestionId(questionId);
+    setSelectedQuestion(question || null);
     setShowReactivateModal(true);
   };
 
   const handleConfirmReactivate = async (reason?: string): Promise<void> => {
-    if (!selectedQuestionId) return;
+    if (!selectedQuestionId || !user?.firebaseUid || !user?.email) {
+      setError('Usuario no autenticado');
+      return;
+    }
 
     setIsReactivating(true);
+    setError(null);
     try {
-      await questionStore.reactivateQuestion(selectedQuestionId, 'current-user@example.com', reason);
+      // Obtener userId desde Data Connect
+      const userResult = await getUserByEmail({ email: user.email });
+      const userData = userResult.data?.users?.[0];
+      
+      if (!userData?.userId) {
+        throw new Error('Usuario no encontrado en Data Connect');
+      }
+
+      // Reactivar pregunta en DataConnect
+      await reactivateExistingQuestion(
+        selectedQuestionId,
+        userData.userId,
+        user.firebaseUid
+      );
+      
       loadQuestions();
+      setSuccessMessage('✅ Pregunta reactivada exitosamente');
+      setTimeout(() => setSuccessMessage(null), 5000);
     } catch (error) {
       if (error instanceof Error) {
-        alert(`Error al reactivar pregunta: ${error.message}`);
+        setError(`Error al reactivar pregunta: ${error.message}`);
+      } else {
+        setError('Error desconocido al reactivar pregunta');
       }
       throw error;
     } finally {
@@ -171,10 +228,24 @@ export default function QuestionsBankPage() {
           </p>
         </div>
 
+        {/* Success Message */}
+        {successMessage && (
+          <Alert variant="success" dismissible onClose={() => setSuccessMessage(null)} className="mb-3">
+            {successMessage}
+          </Alert>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <Alert variant="danger" dismissible onClose={() => setError(null)} className="mb-3">
+            <strong>Error:</strong> {error}
+          </Alert>
+        )}
+
         <Row>
           {/* Sidebar de Filtros - Izquierda */}
           <Col lg={3} className="mb-4">
-            <Card className="sticky-top" style={{ top: '20px' }}>
+            <Card className="sticky-top">
               <Card.Header className="bg-primary text-white">
                 <h5 className="mb-0">🔍 Filtros</h5>
               </Card.Header>
@@ -261,7 +332,7 @@ export default function QuestionsBankPage() {
                 <Button
                   variant="success"
                   className="w-100 mt-2"
-                  onClick={() => setShowCreateModal(true)}
+                  onClick={() => router.push('/questions-bank/create')}
                 >
                   ➕ Nueva Pregunta
                 </Button>
@@ -282,7 +353,7 @@ export default function QuestionsBankPage() {
                   </p>
                   <Button
                     variant="outline-success"
-                    onClick={() => setShowCreateModal(true)}
+                    onClick={() => router.push('/questions-bank/create')}
                   >
                     ➕ Crear Primera Pregunta
                   </Button>
@@ -473,7 +544,7 @@ export default function QuestionsBankPage() {
         show={showRetireModal}
         onHide={() => setShowRetireModal(false)}
         onConfirm={handleConfirmRetire}
-        question={selectedQuestionId ? questionStore.getQuestionWithDetails(selectedQuestionId) : null}
+        question={selectedQuestion}
         isSubmitting={isRetiring}
       />
 
@@ -482,7 +553,7 @@ export default function QuestionsBankPage() {
         show={showReactivateModal}
         onHide={() => setShowReactivateModal(false)}
         onConfirm={handleConfirmReactivate}
-        question={selectedQuestionId ? questionStore.getQuestionWithDetails(selectedQuestionId) : null}
+        question={selectedQuestion}
         isSubmitting={isReactivating}
       />
     </ProtectedRoute>

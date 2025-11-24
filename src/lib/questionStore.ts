@@ -344,12 +344,16 @@ class QuestionStore {
   }
 
   // Detect potential duplicates
-  detectDuplicates(enunciado: string, topicFk: string, type: QuestionType): DuplicateDetectionResult {
+  detectDuplicates(enunciado: string, topicFk: string, type: QuestionType, optionsTexts?: string[]): DuplicateDetectionResult {
     const allQuestions = this.getAllQuestionsWithDetails();
     const similarQuestions: QuestionWithDetails[] = [];
 
     const enunciadoLower = enunciado.toLowerCase().trim();
-    const words = enunciadoLower.split(/\s+/);
+    const enunciadoWords = enunciadoLower.split(/\s+/).filter(w => w.length > 3); // Solo palabras >3 chars
+
+    // Preparar textos de opciones para comparación
+    const optionsLower = optionsTexts?.map(t => t.toLowerCase().trim()) || [];
+    const optionsWords = optionsLower.flatMap(opt => opt.split(/\s+/).filter(w => w.length > 3));
 
     for (const question of allQuestions) {
       const qEnunciadoLower = question.enunciado.toLowerCase();
@@ -367,15 +371,47 @@ class QuestionStore {
         score += 20;
       }
 
-      // Text similarity: up to 50 points
-      const matchingWords = words.filter(word => qEnunciadoLower.includes(word)).length;
-      const textSimilarity = (matchingWords / words.length) * 50;
+      // Text similarity in enunciado: up to 40 points
+      const matchingEnunciadoWords = enunciadoWords.filter(word => 
+        word.length > 3 && qEnunciadoLower.includes(word)
+      ).length;
+      const textSimilarity = enunciadoWords.length > 0 
+        ? (matchingEnunciadoWords / enunciadoWords.length) * 40 
+        : 0;
       score += textSimilarity;
 
-      if (score >= 60) { // Threshold for considering it a duplicate
+      // Options similarity: up to 30 points (if options provided)
+      if (optionsWords.length > 0 && question.options && question.options.length > 0) {
+        const qOptionsLower = question.options.map(opt => opt.text.toLowerCase());
+        const qOptionsWords = qOptionsLower.flatMap(opt => opt.split(/\s+/).filter(w => w.length > 3));
+        
+        const matchingOptionsWords = optionsWords.filter(word => 
+          qOptionsWords.some(qWord => qWord.includes(word) || word.includes(qWord))
+        ).length;
+        
+        const optionsSimilarity = optionsWords.length > 0
+          ? (matchingOptionsWords / optionsWords.length) * 30
+          : 0;
+        score += optionsSimilarity;
+      }
+
+      if (score >= 50) { // Threshold for considering it a duplicate (reducido de 60 a 50)
         similarQuestions.push(question);
       }
     }
+
+    // Ordenar por score (calculado aproximadamente)
+    similarQuestions.sort((a, b) => {
+      // Re-calcular scores para ordenar
+      let scoreA = 0, scoreB = 0;
+      
+      if (a.topic_fk === topicFk) scoreA += 30;
+      if (b.topic_fk === topicFk) scoreB += 30;
+      if (a.type === type) scoreA += 20;
+      if (b.type === type) scoreB += 20;
+      
+      return scoreB - scoreA;
+    });
 
     return {
       isDuplicate: similarQuestions.length > 0,

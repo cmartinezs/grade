@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { Modal, Button, Alert, Form } from 'react-bootstrap';
+import { Modal, Button, Alert, Form, Card, Badge } from 'react-bootstrap';
 import { QuestionWithDetails } from '@/types/question';
+import { useQuestionTypes } from '@/hooks/useQuestionTypes';
+import { useDifficulties } from '@/hooks/useDifficulties';
+import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 
 interface RetireQuestionModalProps {
   show: boolean;
@@ -21,6 +24,9 @@ export default function RetireQuestionModal({
 }: RetireQuestionModalProps) {
   const [reason, setReason] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const { questionTypes } = useQuestionTypes();
+  const { difficulties } = useDifficulties();
+  const { subjects, units, topics } = useCurriculumHierarchy();
 
   const handleConfirm = async () => {
     try {
@@ -46,8 +52,49 @@ export default function RetireQuestionModal({
 
   if (!question) return null;
 
+  // Get metadata
+  const currentQuestionType = questionTypes.find(qt => qt.code === question.type);
+  const typeMetadata = currentQuestionType ? {
+    name: currentQuestionType.name,
+    description: currentQuestionType.description
+  } : { name: question.type, description: '' };
+
+  const difficulty = difficulties.find(d => d.difficultyId === question.difficulty_fk);
+  const difficultyName = difficulty?.level || 'N/A';
+
+  // Get taxonomy path
+  const topic = topics.find(t => t.topic_id === question.topic_fk);
+  const unit = topic ? units.find(u => u.unit_id === topic.unit_fk) : null;
+  const subject = unit ? subjects.find(s => s.subject_id === unit.subject_fk) : null;
+  
+  const taxonomyPath = (subject && unit && topic)
+    ? `${subject.name} → ${unit.name} → ${topic.name}`
+    : 'N/A';
+
+  const getDifficultyBadgeVariant = (difficulty: string) => {
+    const lower = difficulty.toLowerCase();
+    if (lower.includes('fácil') || lower.includes('facil') || lower === 'bajo') return 'success';
+    if (lower.includes('medio') || lower.includes('intermedio')) return 'warning';
+    if (lower.includes('difícil') || lower.includes('dificil') || lower === 'alto') return 'danger';
+    return 'secondary';
+  };
+
+  const getTypeBadgeVariant = (type: string) => {
+    switch (type) {
+      case 'TF': return 'success';
+      case 'SS': return 'primary';
+      case 'SM': return 'danger';
+      case 'D': return 'dark';
+      case 'verdadero_falso': return 'success';
+      case 'seleccion_unica': return 'primary';
+      case 'seleccion_multiple': return 'danger';
+      case 'desarrollo': return 'dark';
+      default: return 'secondary';
+    }
+  };
+
   return (
-    <Modal show={show} onHide={handleCancel} backdrop={isSubmitting ? 'static' : true}>
+    <Modal show={show} onHide={handleCancel} backdrop={isSubmitting ? 'static' : true} size="lg">
       <Modal.Header closeButton={!isSubmitting && !submitSuccess}>
         <Modal.Title>
           {submitSuccess ? '✅ Pregunta Retirada' : '⚠️ Confirmar Retiro de Pregunta'}
@@ -78,25 +125,62 @@ export default function RetireQuestionModal({
               </p>
             </Alert>
 
-            {/* Question details */}
-            <div className="mb-3">
-              <h6>Detalles de la pregunta:</h6>
-              <div className="border rounded p-3 bg-light">
-                <p className="mb-2">
-                  <strong>ID:</strong> {question.question_id} <span className="badge bg-info">v{question.version}</span>
-                </p>
-                <p className="mb-2">
-                  <strong>Tipo:</strong> {question.type}
-                </p>
-                <p className="mb-2">
-                  <strong>Enunciado:</strong> {question.enunciado.substring(0, 100)}
-                  {question.enunciado.length > 100 ? '...' : ''}
-                </p>
-                <p className="mb-0">
-                  <strong>Tema:</strong> {question.topic_name}
-                </p>
-              </div>
-            </div>
+            {/* Question details - same format as ViewQuestionModal */}
+            <Card className="mb-3">
+              <Card.Header>
+                <strong>📋 Detalle de la pregunta</strong>
+                <Badge bg="secondary" className="ms-2">ID: {question.question_id}</Badge>
+                <Badge bg="info" className="ms-2">v{question.version}</Badge>
+              </Card.Header>
+              <Card.Body>
+                {/* Question text */}
+                <div className="mb-3">
+                  <strong>Enunciado:</strong>
+                  <div className="mt-2 p-3 bg-light border rounded">
+                    {question.enunciado}
+                  </div>
+                </div>
+
+                {/* Metadata */}
+                <div className="row mb-2">
+                  <div className="col-md-6">
+                    <strong>Tipo:</strong>
+                    <Badge 
+                      bg={getTypeBadgeVariant(question.type)} 
+                      className="ms-2"
+                      style={{ fontSize: '0.9rem', padding: '0.4em 0.8em' }}
+                    >
+                      {typeMetadata.name}
+                    </Badge>
+                  </div>
+                  <div className="col-md-6">
+                    <strong>Dificultad:</strong>
+                    <Badge 
+                      bg={getDifficultyBadgeVariant(difficultyName)} 
+                      className="ms-2"
+                      style={{ fontSize: '0.9rem', padding: '0.4em 0.8em' }}
+                    >
+                      {difficultyName}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="row mb-2">
+                  <div className="col-md-12">
+                    <strong>Taxonomía:</strong>
+                    <div className="text-muted">
+                      {taxonomyPath}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row mb-2">
+                  <div className="col-md-12">
+                    <strong>Opciones:</strong> {question.options.length} alternativas
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
 
             {/* Optional reason */}
             <Form.Group className="mb-3">
