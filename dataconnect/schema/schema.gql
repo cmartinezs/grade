@@ -48,6 +48,9 @@ type Subject @table(name: "subjects", key: "subjectId") {
   # Código de la asignatura (ej. MAT-101, ENG-102)
   code: String!
   
+  # Descripción de la asignatura
+  description: String
+  
   # ID del nivel educacional al que pertenece esta asignatura
   levelId: UUID! @col(name: "level_fk")
   
@@ -79,6 +82,9 @@ type Unit @table(name: "units", key: "unitId") {
   
   # Identificador de la asignatura padre
   subjectId: UUID! @col(name: "subject_fk")
+  
+  # Código de la unidad (ej. UNIT_1, UNIT_2)
+  code: String! @unique
   
   # Nombre de la unidad
   name: String!
@@ -114,6 +120,9 @@ type Topic @table(name: "topics", key: "topicId") {
   
   # Identificador de la unidad padre
   unitId: UUID! @col(name: "unit_fk")
+  
+  #Código del tema (ej. TOPIC_1, TOPIC_2)
+  code: String! @unique
   
   # Nombre del tema
   name: String!

@@ -51,15 +51,15 @@ export default function ImportCurriculumPage() {
     ];
 
     const exampleRows = [
-      ['asignatura', 'Matemática', 'MAT', 'Básica', '', '', 'Asignatura de matemáticas'],
-      ['unidad', 'Números', '', '', 'Matemática', '', 'Operaciones con números'],
-      ['tema', 'Suma', '', '', 'Matemática', 'Números', 'Operaciones de adición'],
-      ['tema', 'Resta', '', '', 'Matemática', 'Números', 'Operaciones de sustracción'],
-      ['unidad', 'Geometría', '', '', 'Matemática', '', 'Figuras geométricas'],
-      ['tema', 'Triángulos', '', '', 'Matemática', 'Geometría', 'Propiedades de triángulos'],
-      ['asignatura', 'Lenguaje', 'LEN', 'Básica', '', '', 'Lenguaje y comunicación'],
-      ['unidad', 'Comprensión Lectora', '', '', 'Lenguaje', '', 'Estrategias de lectura'],
-      ['tema', 'Textos Narrativos', '', '', 'Lenguaje', 'Comprensión Lectora', 'Cuentos y novelas']
+      ['asignatura', 'Matemática', 'MAT', 'BAS', '', '', 'Asignatura de matemáticas'],
+      ['unidad', 'Números', 'MAT-NUM', '', 'MAT', '', 'Operaciones con números'],
+      ['tema', 'Suma', 'MAT-NUM-SUM', '', 'MAT', 'MAT-NUM', 'Operaciones de adición'],
+      ['tema', 'Resta', 'MAT-NUM-RES', '', 'MAT', 'MAT-NUM', 'Operaciones de sustracción'],
+      ['unidad', 'Geometría', 'MAT-GEO', '', 'MAT', '', 'Figuras geométricas'],
+      ['tema', 'Triángulos', 'MAT-GEO-TRI', '', 'MAT', 'MAT-GEO', 'Propiedades de triángulos'],
+      ['asignatura', 'Lenguaje', 'LEN', 'BAS', '', '', 'Lenguaje y comunicación'],
+      ['unidad', 'Comprensión Lectora', 'LEN-COM', '', 'LEN', '', 'Estrategias de lectura'],
+      ['tema', 'Textos Narrativos', 'LEN-COM-NAR', '', 'LEN', 'LEN-COM', 'Cuentos y novelas']
     ];
 
     const csvContent = [
@@ -177,14 +177,16 @@ export default function ImportCurriculumPage() {
           errors.push(`Fila ${i + 1}: el campo "nombre" es obligatorio`);
         }
         
+        // Validar código (obligatorio para todos)
+        if (!codigo) {
+          errors.push(`Fila ${i + 1}: el campo "codigo" es obligatorio`);
+        }
+        
         // Validaciones específicas por tipo
         const tipoLower = tipo.toLowerCase();
         
         if (tipoLower === 'asignatura') {
           subjectsCount++;
-          if (!codigo) {
-            errors.push(`Fila ${i + 1}: el campo "codigo" es obligatorio para asignaturas`);
-          }
           if (!nivelEducativo) {
             errors.push(`Fila ${i + 1}: el campo "nivel_educativo" es obligatorio para asignaturas`);
           }
@@ -196,8 +198,8 @@ export default function ImportCurriculumPage() {
           if (!asignaturaPadre) {
             errors.push(`Fila ${i + 1}: el campo "asignatura_padre" es obligatorio para unidades`);
           }
-          if (codigo || nivelEducativo) {
-            errors.push(`Fila ${i + 1}: las unidades no deben tener "codigo" ni "nivel_educativo"`);
+          if (nivelEducativo) {
+            errors.push(`Fila ${i + 1}: las unidades no deben tener "nivel_educativo"`);
           }
           if (unidadPadre) {
             errors.push(`Fila ${i + 1}: las unidades no deben tener "unidad_padre"`);
@@ -210,8 +212,8 @@ export default function ImportCurriculumPage() {
           if (!unidadPadre) {
             errors.push(`Fila ${i + 1}: el campo "unidad_padre" es obligatorio para temas`);
           }
-          if (codigo || nivelEducativo) {
-            errors.push(`Fila ${i + 1}: los temas no deben tener "codigo" ni "nivel_educativo"`);
+          if (nivelEducativo) {
+            errors.push(`Fila ${i + 1}: los temas no deben tener "nivel_educativo"`);
           }
         }
         
@@ -329,9 +331,11 @@ export default function ImportCurriculumPage() {
       
       // Cargar asignaturas existentes
       const existingSubjectsData = await fetchAllSubjects();
+      const subjectByCodeMap = new Map<string, string>();
       existingSubjectsData.subjects.forEach(subject => {
         if (subject.active) {
           subjectIdMap.set(subject.name, subject.subjectId);
+          subjectByCodeMap.set(subject.code, subject.subjectId);
         }
       });
       console.log(`Asignaturas existentes cargadas: ${subjectIdMap.size}`);
@@ -346,11 +350,13 @@ export default function ImportCurriculumPage() {
       
       // Cargar unidades existentes
       const existingUnitsData = await fetchAllUnits();
+      const unitByCodeMap = new Map<string, string>();
       existingUnitsData.units.forEach(unit => {
         if (unit.active) {
           const subjectName = subjectIdToName.get(unit.subjectId);
           if (subjectName) {
             unitIdMap.set(`${subjectName}|${unit.name}`, unit.unitId);
+            unitByCodeMap.set(unit.code, unit.unitId);
           }
         }
       });
@@ -363,10 +369,12 @@ export default function ImportCurriculumPage() {
       const educationalLevels = await fetchEducationalLevelsFromDataConnect();
       console.log('Niveles educativos cargados:', educationalLevels);
       
-      // Crear un mapa de niveles por nombre (case-insensitive)
-      const levelMap = new Map<string, string>();
-      educationalLevels.forEach((level: { name: string; levelId: string }) => {
-        levelMap.set(level.name.toLowerCase(), level.levelId);
+      // Crear mapas de niveles por código y nombre (case-insensitive)
+      const levelByCodeMap = new Map<string, string>();
+      const levelByNameMap = new Map<string, string>();
+      educationalLevels.forEach((level: { code: string; name: string; levelId: string }) => {
+        levelByCodeMap.set(level.code.toLowerCase(), level.levelId);
+        levelByNameMap.set(level.name.toLowerCase(), level.levelId);
       });
       
       let created = 0;
@@ -388,11 +396,15 @@ export default function ImportCurriculumPage() {
               continue;
             }
             
-            // Buscar nivel educativo por nombre
-            const levelId = levelMap.get(nivelEducativo.toLowerCase());
+            // Buscar nivel educativo por código o nombre
+            let levelId = levelByCodeMap.get(nivelEducativo.toLowerCase());
+            if (!levelId) {
+              levelId = levelByNameMap.get(nivelEducativo.toLowerCase());
+            }
             
             if (!levelId) {
-              throw new Error(`Nivel educativo "${nivelEducativo}" no encontrado. Niveles disponibles: ${Array.from(levelMap.keys()).join(', ')}`);
+              const availableCodes = Array.from(levelByCodeMap.keys()).join(', ');
+              throw new Error(`Nivel educativo "${nivelEducativo}" no encontrado. Códigos disponibles: ${availableCodes}`);
             }
             
             const subjectId = await createNewSubject(
@@ -403,6 +415,7 @@ export default function ImportCurriculumPage() {
             );
             
             subjectIdMap.set(nombre, subjectId);
+            subjectByCodeMap.set(codigo, subjectId);
             created++;
             setImportProgress(5 + (created / total) * 30);
           } catch (error) {
@@ -416,11 +429,26 @@ export default function ImportCurriculumPage() {
       setImportStatus('Procesando unidades...');
       for (let i = 0; i < dataLines.length; i++) {
         const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        const [tipo, nombre, , , asignaturaPadre, , descripcion] = values;
+        const [tipo, nombre, codigo, , asignaturaPadre, , descripcion] = values;
         
         if (tipo.toLowerCase() === 'unidad') {
           try {
-            const unitKey = `${asignaturaPadre}|${nombre}`;
+            // Buscar asignatura por código o nombre
+            let subjectId = subjectByCodeMap.get(asignaturaPadre);
+            if (!subjectId) {
+              subjectId = subjectIdMap.get(asignaturaPadre);
+            }
+            if (!subjectId) {
+              throw new Error(`Asignatura "${asignaturaPadre}" no encontrada`);
+            }
+            
+            // Obtener el nombre real de la asignatura para la clave
+            const subjectName = subjectIdToName.get(subjectId);
+            if (!subjectName) {
+              throw new Error(`No se pudo obtener el nombre de la asignatura con ID "${subjectId}"`);
+            }
+            
+            const unitKey = `${subjectName}|${nombre}`;
             
             // Verificar si ya existe
             if (unitIdMap.has(unitKey)) {
@@ -430,19 +458,16 @@ export default function ImportCurriculumPage() {
               continue;
             }
             
-            const subjectId = subjectIdMap.get(asignaturaPadre);
-            if (!subjectId) {
-              throw new Error(`Asignatura "${asignaturaPadre}" no encontrada`);
-            }
-            
             const unitId = await createNewUnit(
               nombre,
+              codigo,
               subjectId,
               user.id,
               descripcion || undefined
             );
             
             unitIdMap.set(unitKey, unitId);
+            unitByCodeMap.set(codigo, unitId);
             created++;
             setImportProgress(35 + (created / total) * 30);
           } catch (error) {
@@ -456,17 +481,30 @@ export default function ImportCurriculumPage() {
       setImportStatus('Creando temas...');
       for (let i = 0; i < dataLines.length; i++) {
         const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        const [tipo, nombre, , , asignaturaPadre, unidadPadre] = values;
+        const [tipo, nombre, codigo, , asignaturaPadre, unidadPadre] = values;
         
         if (tipo.toLowerCase() === 'tema') {
           try {
-            const unitId = unitIdMap.get(`${asignaturaPadre}|${unidadPadre}`);
+            // Buscar asignatura por código o nombre para construir la clave
+            let subjectIdForKey = subjectByCodeMap.get(asignaturaPadre);
+            if (!subjectIdForKey) {
+              subjectIdForKey = subjectIdMap.get(asignaturaPadre);
+            }
+            const subjectNameForKey = subjectIdForKey ? subjectIdToName.get(subjectIdForKey) : asignaturaPadre;
+            
+            // Buscar unidad por código o nombre
+            let unitId = unitByCodeMap.get(unidadPadre);
+            if (!unitId) {
+              unitId = unitIdMap.get(`${subjectNameForKey}|${unidadPadre}`);
+            }
+            
             if (!unitId) {
               throw new Error(`Unidad "${unidadPadre}" en asignatura "${asignaturaPadre}" no encontrada`);
             }
             
             await createNewTopic(
               nombre,
+              codigo,
               unitId,
               user.id
             );
@@ -585,22 +623,22 @@ export default function ImportCurriculumPage() {
                         <tr>
                           <td><code>codigo</code></td>
                           <td>Código único</td>
-                          <td>Solo para asignaturas (ej: MAT, LEN)</td>
+                          <td><Badge bg="warning">Obligatorio</Badge> Debe ser único (ej: MAT, LEN, MAT-NUM)</td>
                         </tr>
                         <tr>
                           <td><code>nivel_educativo</code></td>
                           <td>Nivel educacional</td>
-                          <td>Solo para asignaturas (ej: Básica, Media)</td>
+                          <td>Obligatorio para asignaturas. Usa <strong>código</strong> (recomendado) o nombre (ej: BAS, Básica)</td>
                         </tr>
                         <tr>
                           <td><code>asignatura_padre</code></td>
                           <td>Asignatura a la que pertenece</td>
-                          <td>Para unidades y temas (nombre de la asignatura)</td>
+                          <td>Para unidades y temas. Usa <strong>código</strong> (recomendado) o nombre (ej: MAT, Matemática)</td>
                         </tr>
                         <tr>
                           <td><code>unidad_padre</code></td>
                           <td>Unidad a la que pertenece</td>
-                          <td>Solo para temas (nombre de la unidad)</td>
+                          <td>Solo para temas. Usa <strong>código</strong> (recomendado) o nombre de la unidad</td>
                         </tr>
                         <tr>
                           <td><code>descripcion</code></td>
@@ -613,8 +651,8 @@ export default function ImportCurriculumPage() {
                     <h6 className="mt-3">💡 Consejos:</h6>
                     <ul className="mb-3">
                       <li>Define primero las <strong>asignaturas</strong>, luego las <strong>unidades</strong> y finalmente los <strong>temas</strong></li>
-                      <li>Los códigos de asignatura deben ser <strong>únicos</strong></li>
-                      <li>Usa nombres exactos en las columnas de referencia (asignatura_padre, unidad_padre)</li>
+                      <li>El campo <code>codigo</code> es <strong>obligatorio para todos</strong> y debe ser único en el sistema</li>
+                      <li><strong>Recomendado:</strong> Usa códigos en lugar de nombres en <code>nivel_educativo</code>, <code>asignatura_padre</code> y <code>unidad_padre</code> (más preciso)</li>
                       <li>Las descripciones son opcionales pero recomendadas</li>
                     </ul>
 

@@ -414,6 +414,7 @@ export interface ListSubjectsData {
     name: string;
     code: string;
     levelId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
   } & Subject_Key)[];
@@ -517,6 +518,7 @@ export interface GetSubjectData {
     subjectId: UUIDString;
     name: string;
     code: string;
+    description?: string | null;
     active: boolean;
     levelId: UUIDString;
     createdAt: TimestampString;
@@ -630,8 +632,10 @@ The `data` property is an object of type `ListUnitsData`, which is defined in [d
 export interface ListUnitsData {
   units: ({
     unitId: UUIDString;
+    code: string;
     name: string;
     subjectId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
   } & Unit_Key)[];
@@ -733,8 +737,10 @@ The `data` property is an object of type `GetUnitData`, which is defined in [dat
 export interface GetUnitData {
   unit?: {
     unitId: UUIDString;
+    code: string;
     name: string;
     subjectId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
     createdBy: UUIDString;
@@ -847,7 +853,9 @@ The `data` property is an object of type `ListTopicsData`, which is defined in [
 export interface ListTopicsData {
   topics: ({
     topicId: UUIDString;
+    code: string;
     name: string;
+    description?: string | null;
     unitId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
@@ -950,7 +958,9 @@ The `data` property is an object of type `GetTopicData`, which is defined in [da
 export interface GetTopicData {
   topic?: {
     topicId: UUIDString;
+    code: string;
     name: string;
+    description?: string | null;
     unitId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
@@ -3371,18 +3381,24 @@ export interface GetDashboardSystemDataData {
       } & QuestionType_Key)[];
         subjects: ({
           subjectId: UUIDString;
+          code: string;
           name: string;
           levelId: UUIDString;
+          description?: string | null;
         } & Subject_Key)[];
           units: ({
             unitId: UUIDString;
+            code: string;
             name: string;
             subjectId: UUIDString;
+            description?: string | null;
           } & Unit_Key)[];
             topics: ({
               topicId: UUIDString;
+              code: string;
               name: string;
               unitId: UUIDString;
+              description?: string | null;
             } & Topic_Key)[];
 }
 ```
@@ -4370,6 +4386,7 @@ export interface CreateSubjectVariables {
   name: string;
   code: string;
   levelId: UUIDString;
+  description?: string | null;
   createdBy: UUIDString;
 }
 ```
@@ -4394,6 +4411,7 @@ const createSubjectVars: CreateSubjectVariables = {
   name: ..., 
   code: ..., 
   levelId: ..., 
+  description: ..., // optional
   createdBy: ..., 
 };
 
@@ -4401,7 +4419,7 @@ const createSubjectVars: CreateSubjectVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createSubject(createSubjectVars);
 // Variables can be defined inline as well.
-const { data } = await createSubject({ subjectId: ..., name: ..., code: ..., levelId: ..., createdBy: ..., });
+const { data } = await createSubject({ subjectId: ..., name: ..., code: ..., levelId: ..., description: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4428,13 +4446,14 @@ const createSubjectVars: CreateSubjectVariables = {
   name: ..., 
   code: ..., 
   levelId: ..., 
+  description: ..., // optional
   createdBy: ..., 
 };
 
 // Call the `createSubjectRef()` function to get a reference to the mutation.
 const ref = createSubjectRef(createSubjectVars);
 // Variables can be defined inline as well.
-const ref = createSubjectRef({ subjectId: ..., name: ..., code: ..., levelId: ..., createdBy: ..., });
+const ref = createSubjectRef({ subjectId: ..., name: ..., code: ..., levelId: ..., description: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4490,6 +4509,7 @@ export interface UpdateSubjectVariables {
   subjectId: UUIDString;
   name?: string | null;
   code?: string | null;
+  description?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -4515,6 +4535,7 @@ const updateSubjectVars: UpdateSubjectVariables = {
   subjectId: ..., 
   name: ..., // optional
   code: ..., // optional
+  description: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
   firebaseId: ..., 
@@ -4524,7 +4545,7 @@ const updateSubjectVars: UpdateSubjectVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateSubject(updateSubjectVars);
 // Variables can be defined inline as well.
-const { data } = await updateSubject({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateSubject({ subjectId: ..., name: ..., code: ..., description: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4550,6 +4571,7 @@ const updateSubjectVars: UpdateSubjectVariables = {
   subjectId: ..., 
   name: ..., // optional
   code: ..., // optional
+  description: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
   firebaseId: ..., 
@@ -4558,7 +4580,7 @@ const updateSubjectVars: UpdateSubjectVariables = {
 // Call the `updateSubjectRef()` function to get a reference to the mutation.
 const ref = updateSubjectRef(updateSubjectVars);
 // Variables can be defined inline as well.
-const ref = updateSubjectRef({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateSubjectRef({ subjectId: ..., name: ..., code: ..., description: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4842,6 +4864,7 @@ The `CreateUnit` mutation requires an argument of type `CreateUnitVariables`, wh
 ```typescript
 export interface CreateUnitVariables {
   unitId: UUIDString;
+  code: string;
   name: string;
   description?: string | null;
   subjectId: UUIDString;
@@ -4866,6 +4889,7 @@ import { connectorConfig, createUnit, CreateUnitVariables } from '@dataconnect/g
 // The `CreateUnit` mutation requires an argument of type `CreateUnitVariables`:
 const createUnitVars: CreateUnitVariables = {
   unitId: ..., 
+  code: ..., 
   name: ..., 
   description: ..., // optional
   subjectId: ..., 
@@ -4876,7 +4900,7 @@ const createUnitVars: CreateUnitVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createUnit(createUnitVars);
 // Variables can be defined inline as well.
-const { data } = await createUnit({ unitId: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
+const { data } = await createUnit({ unitId: ..., code: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4900,6 +4924,7 @@ import { connectorConfig, createUnitRef, CreateUnitVariables } from '@dataconnec
 // The `CreateUnit` mutation requires an argument of type `CreateUnitVariables`:
 const createUnitVars: CreateUnitVariables = {
   unitId: ..., 
+  code: ..., 
   name: ..., 
   description: ..., // optional
   subjectId: ..., 
@@ -4909,7 +4934,7 @@ const createUnitVars: CreateUnitVariables = {
 // Call the `createUnitRef()` function to get a reference to the mutation.
 const ref = createUnitRef(createUnitVars);
 // Variables can be defined inline as well.
-const ref = createUnitRef({ unitId: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
+const ref = createUnitRef({ unitId: ..., code: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -4963,6 +4988,7 @@ The `UpdateUnit` mutation requires an argument of type `UpdateUnitVariables`, wh
 ```typescript
 export interface UpdateUnitVariables {
   unitId: UUIDString;
+  code: string;
   name: string;
   description?: string | null;
   subjectId: UUIDString;
@@ -4989,6 +5015,7 @@ import { connectorConfig, updateUnit, UpdateUnitVariables } from '@dataconnect/g
 // The `UpdateUnit` mutation requires an argument of type `UpdateUnitVariables`:
 const updateUnitVars: UpdateUnitVariables = {
   unitId: ..., 
+  code: ..., 
   name: ..., 
   description: ..., // optional
   subjectId: ..., 
@@ -5001,7 +5028,7 @@ const updateUnitVars: UpdateUnitVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateUnit(updateUnitVars);
 // Variables can be defined inline as well.
-const { data } = await updateUnit({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateUnit({ unitId: ..., code: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5025,6 +5052,7 @@ import { connectorConfig, updateUnitRef, UpdateUnitVariables } from '@dataconnec
 // The `UpdateUnit` mutation requires an argument of type `UpdateUnitVariables`:
 const updateUnitVars: UpdateUnitVariables = {
   unitId: ..., 
+  code: ..., 
   name: ..., 
   description: ..., // optional
   subjectId: ..., 
@@ -5036,7 +5064,7 @@ const updateUnitVars: UpdateUnitVariables = {
 // Call the `updateUnitRef()` function to get a reference to the mutation.
 const ref = updateUnitRef(updateUnitVars);
 // Variables can be defined inline as well.
-const ref = updateUnitRef({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateUnitRef({ unitId: ..., code: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5320,6 +5348,7 @@ The `CreateTopic` mutation requires an argument of type `CreateTopicVariables`, 
 ```typescript
 export interface CreateTopicVariables {
   topicId: UUIDString;
+  code: string;
   name: string;
   unitId: UUIDString;
   createdBy: UUIDString;
@@ -5343,6 +5372,7 @@ import { connectorConfig, createTopic, CreateTopicVariables } from '@dataconnect
 // The `CreateTopic` mutation requires an argument of type `CreateTopicVariables`:
 const createTopicVars: CreateTopicVariables = {
   topicId: ..., 
+  code: ..., 
   name: ..., 
   unitId: ..., 
   createdBy: ..., 
@@ -5352,7 +5382,7 @@ const createTopicVars: CreateTopicVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createTopic(createTopicVars);
 // Variables can be defined inline as well.
-const { data } = await createTopic({ topicId: ..., name: ..., unitId: ..., createdBy: ..., });
+const { data } = await createTopic({ topicId: ..., code: ..., name: ..., unitId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5376,6 +5406,7 @@ import { connectorConfig, createTopicRef, CreateTopicVariables } from '@dataconn
 // The `CreateTopic` mutation requires an argument of type `CreateTopicVariables`:
 const createTopicVars: CreateTopicVariables = {
   topicId: ..., 
+  code: ..., 
   name: ..., 
   unitId: ..., 
   createdBy: ..., 
@@ -5384,7 +5415,7 @@ const createTopicVars: CreateTopicVariables = {
 // Call the `createTopicRef()` function to get a reference to the mutation.
 const ref = createTopicRef(createTopicVars);
 // Variables can be defined inline as well.
-const ref = createTopicRef({ topicId: ..., name: ..., unitId: ..., createdBy: ..., });
+const ref = createTopicRef({ topicId: ..., code: ..., name: ..., unitId: ..., createdBy: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5439,6 +5470,7 @@ The `UpdateTopic` mutation requires an argument of type `UpdateTopicVariables`, 
 export interface UpdateTopicVariables {
   topicId: UUIDString;
   unitId: UUIDString;
+  code: string;
   name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
@@ -5464,6 +5496,7 @@ import { connectorConfig, updateTopic, UpdateTopicVariables } from '@dataconnect
 const updateTopicVars: UpdateTopicVariables = {
   topicId: ..., 
   unitId: ..., 
+  code: ..., 
   name: ..., 
   updatedBy: ..., 
   updatedAt: ..., 
@@ -5474,7 +5507,7 @@ const updateTopicVars: UpdateTopicVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateTopic(updateTopicVars);
 // Variables can be defined inline as well.
-const { data } = await updateTopic({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateTopic({ topicId: ..., unitId: ..., code: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5499,6 +5532,7 @@ import { connectorConfig, updateTopicRef, UpdateTopicVariables } from '@dataconn
 const updateTopicVars: UpdateTopicVariables = {
   topicId: ..., 
   unitId: ..., 
+  code: ..., 
   name: ..., 
   updatedBy: ..., 
   updatedAt: ..., 
@@ -5508,7 +5542,7 @@ const updateTopicVars: UpdateTopicVariables = {
 // Call the `updateTopicRef()` function to get a reference to the mutation.
 const ref = updateTopicRef(updateTopicVars);
 // Variables can be defined inline as well.
-const ref = updateTopicRef({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateTopicRef({ topicId: ..., unitId: ..., code: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);

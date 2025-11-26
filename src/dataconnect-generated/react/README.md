@@ -396,6 +396,7 @@ export interface ListSubjectsData {
     name: string;
     code: string;
     levelId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
   } & Subject_Key)[];
@@ -477,6 +478,7 @@ export interface GetSubjectData {
     subjectId: UUIDString;
     name: string;
     code: string;
+    description?: string | null;
     active: boolean;
     levelId: UUIDString;
     createdAt: TimestampString;
@@ -563,8 +565,10 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface ListUnitsData {
   units: ({
     unitId: UUIDString;
+    code: string;
     name: string;
     subjectId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
   } & Unit_Key)[];
@@ -644,8 +648,10 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetUnitData {
   unit?: {
     unitId: UUIDString;
+    code: string;
     name: string;
     subjectId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
     createdBy: UUIDString;
@@ -731,7 +737,9 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface ListTopicsData {
   topics: ({
     topicId: UUIDString;
+    code: string;
     name: string;
+    description?: string | null;
     unitId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
@@ -812,7 +820,9 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetTopicData {
   topic?: {
     topicId: UUIDString;
+    code: string;
     name: string;
+    description?: string | null;
     unitId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
@@ -2688,18 +2698,24 @@ export interface GetDashboardSystemDataData {
       } & QuestionType_Key)[];
         subjects: ({
           subjectId: UUIDString;
+          code: string;
           name: string;
           levelId: UUIDString;
+          description?: string | null;
         } & Subject_Key)[];
           units: ({
             unitId: UUIDString;
+            code: string;
             name: string;
             subjectId: UUIDString;
+            description?: string | null;
           } & Unit_Key)[];
             topics: ({
               topicId: UUIDString;
+              code: string;
               name: string;
               unitId: UUIDString;
+              description?: string | null;
             } & Topic_Key)[];
 }
 ```
@@ -3481,6 +3497,7 @@ export interface CreateSubjectVariables {
   name: string;
   code: string;
   levelId: UUIDString;
+  description?: string | null;
   createdBy: UUIDString;
 }
 ```
@@ -3535,11 +3552,12 @@ export default function CreateSubjectComponent() {
     name: ..., 
     code: ..., 
     levelId: ..., 
+    description: ..., // optional
     createdBy: ..., 
   };
   mutation.mutate(createSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ subjectId: ..., name: ..., code: ..., levelId: ..., createdBy: ..., });
+  mutation.mutate({ subjectId: ..., name: ..., code: ..., levelId: ..., description: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3582,6 +3600,7 @@ export interface UpdateSubjectVariables {
   subjectId: UUIDString;
   name?: string | null;
   code?: string | null;
+  description?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -3637,13 +3656,14 @@ export default function UpdateSubjectComponent() {
     subjectId: ..., 
     name: ..., // optional
     code: ..., // optional
+    description: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(updateSubjectVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ subjectId: ..., name: ..., code: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ subjectId: ..., name: ..., code: ..., description: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3880,6 +3900,7 @@ The `CreateUnit` Mutation requires an argument of type `CreateUnitVariables`, wh
 ```javascript
 export interface CreateUnitVariables {
   unitId: UUIDString;
+  code: string;
   name: string;
   description?: string | null;
   subjectId: UUIDString;
@@ -3934,6 +3955,7 @@ export default function CreateUnitComponent() {
   // The `useCreateUnit` Mutation requires an argument of type `CreateUnitVariables`:
   const createUnitVars: CreateUnitVariables = {
     unitId: ..., 
+    code: ..., 
     name: ..., 
     description: ..., // optional
     subjectId: ..., 
@@ -3941,7 +3963,7 @@ export default function CreateUnitComponent() {
   };
   mutation.mutate(createUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ unitId: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
+  mutation.mutate({ unitId: ..., code: ..., name: ..., description: ..., subjectId: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -3982,6 +4004,7 @@ The `UpdateUnit` Mutation requires an argument of type `UpdateUnitVariables`, wh
 ```javascript
 export interface UpdateUnitVariables {
   unitId: UUIDString;
+  code: string;
   name: string;
   description?: string | null;
   subjectId: UUIDString;
@@ -4038,6 +4061,7 @@ export default function UpdateUnitComponent() {
   // The `useUpdateUnit` Mutation requires an argument of type `UpdateUnitVariables`:
   const updateUnitVars: UpdateUnitVariables = {
     unitId: ..., 
+    code: ..., 
     name: ..., 
     description: ..., // optional
     subjectId: ..., 
@@ -4047,7 +4071,7 @@ export default function UpdateUnitComponent() {
   };
   mutation.mutate(updateUnitVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ unitId: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ unitId: ..., code: ..., name: ..., description: ..., subjectId: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4284,6 +4308,7 @@ The `CreateTopic` Mutation requires an argument of type `CreateTopicVariables`, 
 ```javascript
 export interface CreateTopicVariables {
   topicId: UUIDString;
+  code: string;
   name: string;
   unitId: UUIDString;
   createdBy: UUIDString;
@@ -4337,13 +4362,14 @@ export default function CreateTopicComponent() {
   // The `useCreateTopic` Mutation requires an argument of type `CreateTopicVariables`:
   const createTopicVars: CreateTopicVariables = {
     topicId: ..., 
+    code: ..., 
     name: ..., 
     unitId: ..., 
     createdBy: ..., 
   };
   mutation.mutate(createTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ topicId: ..., name: ..., unitId: ..., createdBy: ..., });
+  mutation.mutate({ topicId: ..., code: ..., name: ..., unitId: ..., createdBy: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4385,6 +4411,7 @@ The `UpdateTopic` Mutation requires an argument of type `UpdateTopicVariables`, 
 export interface UpdateTopicVariables {
   topicId: UUIDString;
   unitId: UUIDString;
+  code: string;
   name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
@@ -4440,6 +4467,7 @@ export default function UpdateTopicComponent() {
   const updateTopicVars: UpdateTopicVariables = {
     topicId: ..., 
     unitId: ..., 
+    code: ..., 
     name: ..., 
     updatedBy: ..., 
     updatedAt: ..., 
@@ -4447,7 +4475,7 @@ export default function UpdateTopicComponent() {
   };
   mutation.mutate(updateTopicVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ topicId: ..., unitId: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ topicId: ..., unitId: ..., code: ..., name: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

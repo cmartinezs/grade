@@ -61,6 +61,7 @@ mutation CreateSubject(
   $name: String!
   $code: String!
   $levelId: UUID!
+  $description: String
   $createdBy: UUID!
 ) @auth(level: USER) {
   subject_insert(
@@ -68,6 +69,7 @@ mutation CreateSubject(
       subjectId: $subjectId
       name: $name
       code: $code
+      description: $description
       levelId: $levelId
       createdBy: $createdBy
       active: true
@@ -80,6 +82,7 @@ mutation UpdateSubject(
   $subjectId: UUID!
   $name: String
   $code: String
+  $description: String
   $updatedBy: UUID!
   $updatedAt: Timestamp!
   $firebaseId: String!
@@ -89,6 +92,7 @@ mutation UpdateSubject(
     data: {
       name: $name
       code: $code
+      description: $description
       updatedBy: $updatedBy
       updatedAt: $updatedAt
     }
@@ -134,6 +138,7 @@ mutation ReactivateSubject(
 # Crear una nueva unidad dentro de una asignatura
 mutation CreateUnit(
   $unitId: UUID!
+  $code: String!
   $name: String!
   $description: String
   $subjectId: UUID!
@@ -142,6 +147,7 @@ mutation CreateUnit(
   unit_insert(
     data: {
       unitId: $unitId
+      code: $code
       name: $name
       description: $description
       subjectId: $subjectId
@@ -154,6 +160,7 @@ mutation CreateUnit(
 # Actualizar una unidad
 mutation UpdateUnit(
   $unitId: UUID!
+  $code: String!
   $name: String!
   $description: String
   $subjectId: UUID!
@@ -164,6 +171,7 @@ mutation UpdateUnit(
   unit_update(
     key: { unitId: $unitId }
     data: {
+      code: $code
       name: $name
       description: $description
       updatedBy: $updatedBy
@@ -212,6 +220,7 @@ mutation ReactivateUnit(
 # Crear un nuevo tema dentro de una unidad
 mutation CreateTopic(
   $topicId: UUID!
+  $code: String!
   $name: String!
   $unitId: UUID!
   $createdBy: UUID!
@@ -219,6 +228,7 @@ mutation CreateTopic(
   topic_insert(
     data: {
       topicId: $topicId
+      code: $code
       name: $name
       unitId: $unitId
       createdBy: $createdBy
@@ -231,6 +241,7 @@ mutation CreateTopic(
 mutation UpdateTopic(
   $topicId: UUID!
   $unitId: UUID!
+  $code: String!
   $name: String!
   $updatedBy: UUID!
   $updatedAt: Timestamp!
@@ -240,6 +251,7 @@ mutation UpdateTopic(
     key: { topicId: $topicId }
     data: {
       unitId: $unitId
+      code: $code
       name: $name
       updatedBy: $updatedBy
       updatedAt: $updatedAt

@@ -163,6 +163,7 @@ export const fetchUnitsBySubject = async (subjectId: string): Promise<ListUnitsD
 
 export const createNewUnit = async (
   name: string,
+  code: string,
   subjectId: string,
   createdBy: string,
   description?: string
@@ -170,7 +171,7 @@ export const createNewUnit = async (
   try {
     // Generate UUID for unitId
     const unitId = generateUUID();
-    await dcCreateUnit({ unitId, name, description, subjectId, createdBy });
+    await dcCreateUnit({ unitId, code, name, description, subjectId, createdBy });
     return unitId;
   } catch (error) {
     console.error('Error creating unit:', error);
@@ -270,6 +271,7 @@ export const fetchTopicsByUnit = async (unitId: string): Promise<ListTopicsData>
 
 export const createNewTopic = async (
   name: string,
+  code: string,
   unitId: string,
   createdBy: string
 ): Promise<string> => {
@@ -277,7 +279,7 @@ export const createNewTopic = async (
     // Generate UUID for topicId
     const topicId = generateUUID();
     
-    await dcCreateTopic({ topicId, name, unitId, createdBy });
+    await dcCreateTopic({ topicId, code, name, unitId, createdBy });
     
     // Retornar el topicId generado
     return topicId;

@@ -1095,6 +1095,15 @@ extend type Subject {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Subject.deletedBy", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Subject` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Subject.description", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Subject` table where the `levelId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   levelId_count(
@@ -1359,6 +1368,15 @@ extend type Topic {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Topic.active", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Topic` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Topic.code", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Topic` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   createdAt_count(
@@ -1495,6 +1513,15 @@ extend type Unit {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Unit.active", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Unit` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Unit.code", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Unit` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """

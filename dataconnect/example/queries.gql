@@ -47,6 +47,7 @@ query ListSubjects @auth(level: USER) {
     name
     code
     levelId
+    description
     active
     createdAt
   }
@@ -58,6 +59,7 @@ query GetSubject($subjectId: UUID!) @auth(level: USER) {
     subjectId
     name
     code
+    description
     active
     levelId
     createdAt
@@ -77,8 +79,10 @@ query GetSubject($subjectId: UUID!) @auth(level: USER) {
 query ListUnits @auth(level: USER) {
   units {
     unitId
+    code
     name
     subjectId
+    description
     active
     createdAt
   }
@@ -88,8 +92,10 @@ query ListUnits @auth(level: USER) {
 query GetUnit($unitId: UUID!) @auth(level: USER) {
   unit(key: { unitId: $unitId }) {
     unitId
+    code
     name
     subjectId
+    description
     active
     createdAt
     createdBy
@@ -108,7 +114,9 @@ query GetUnit($unitId: UUID!) @auth(level: USER) {
 query ListTopics @auth(level: USER) {
   topics {
     topicId
+    code
     name
+    description
     unitId
     active
     createdAt
@@ -119,7 +127,9 @@ query ListTopics @auth(level: USER) {
 query GetTopic($topicId: UUID!) @auth(level: USER) {
   topic(key: { topicId: $topicId }) {
     topicId
+    code
     name
+    description
     unitId
     active
     createdAt
@@ -480,22 +490,28 @@ query GetDashboardSystemData @auth(level: USER) {
   # Asignaturas
   subjects(where: { active: { eq: true }, deletedAt: { eq: null } }) {
     subjectId
+    code
     name
     levelId
+    description
   }
   
   # Unidades
   units(where: { active: { eq: true }, deletedAt: { eq: null } }) {
     unitId
+    code
     name
     subjectId
+    description
   }
   
   # Temas
   topics(where: { active: { eq: true }, deletedAt: { eq: null } }) {
     topicId
+    code
     name
     unitId
+    description
   }
 }
 

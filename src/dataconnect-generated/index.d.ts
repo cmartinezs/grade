@@ -139,6 +139,7 @@ export interface CreateSubjectVariables {
   name: string;
   code: string;
   levelId: UUIDString;
+  description?: string | null;
   createdBy: UUIDString;
 }
 
@@ -161,6 +162,7 @@ export interface CreateTopicData {
 
 export interface CreateTopicVariables {
   topicId: UUIDString;
+  code: string;
   name: string;
   unitId: UUIDString;
   createdBy: UUIDString;
@@ -172,6 +174,7 @@ export interface CreateUnitData {
 
 export interface CreateUnitVariables {
   unitId: UUIDString;
+  code: string;
   name: string;
   description?: string | null;
   subjectId: UUIDString;
@@ -415,18 +418,24 @@ export interface GetDashboardSystemDataData {
       } & QuestionType_Key)[];
         subjects: ({
           subjectId: UUIDString;
+          code: string;
           name: string;
           levelId: UUIDString;
+          description?: string | null;
         } & Subject_Key)[];
           units: ({
             unitId: UUIDString;
+            code: string;
             name: string;
             subjectId: UUIDString;
+            description?: string | null;
           } & Unit_Key)[];
             topics: ({
               topicId: UUIDString;
+              code: string;
               name: string;
               unitId: UUIDString;
+              description?: string | null;
             } & Topic_Key)[];
 }
 
@@ -590,6 +599,7 @@ export interface GetSubjectData {
     subjectId: UUIDString;
     name: string;
     code: string;
+    description?: string | null;
     active: boolean;
     levelId: UUIDString;
     createdAt: TimestampString;
@@ -645,7 +655,9 @@ export interface GetTaxonomyVariables {
 export interface GetTopicData {
   topic?: {
     topicId: UUIDString;
+    code: string;
     name: string;
+    description?: string | null;
     unitId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
@@ -664,8 +676,10 @@ export interface GetTopicVariables {
 export interface GetUnitData {
   unit?: {
     unitId: UUIDString;
+    code: string;
     name: string;
     subjectId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
     createdBy: UUIDString;
@@ -876,6 +890,7 @@ export interface ListSubjectsData {
     name: string;
     code: string;
     levelId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
   } & Subject_Key)[];
@@ -908,7 +923,9 @@ export interface ListTaxonomiesData {
 export interface ListTopicsData {
   topics: ({
     topicId: UUIDString;
+    code: string;
     name: string;
+    description?: string | null;
     unitId: UUIDString;
     active: boolean;
     createdAt: TimestampString;
@@ -918,8 +935,10 @@ export interface ListTopicsData {
 export interface ListUnitsData {
   units: ({
     unitId: UUIDString;
+    code: string;
     name: string;
     subjectId: UUIDString;
+    description?: string | null;
     active: boolean;
     createdAt: TimestampString;
   } & Unit_Key)[];
@@ -1146,6 +1165,7 @@ export interface UpdateSubjectVariables {
   subjectId: UUIDString;
   name?: string | null;
   code?: string | null;
+  description?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -1173,6 +1193,7 @@ export interface UpdateTopicData {
 export interface UpdateTopicVariables {
   topicId: UUIDString;
   unitId: UUIDString;
+  code: string;
   name: string;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
@@ -1185,6 +1206,7 @@ export interface UpdateUnitData {
 
 export interface UpdateUnitVariables {
   unitId: UUIDString;
+  code: string;
   name: string;
   description?: string | null;
   subjectId: UUIDString;
