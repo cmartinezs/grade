@@ -6,10 +6,12 @@ import { Subject } from "@/types/curriculumHierarchy";
 
 interface UnitFormProps {
   name: string;
+  code: string;
   description: string;
   subject_fk: string;
   subjects: Subject[];
   onNameChange: (value: string) => void;
+  onCodeChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubjectChange: (value: string) => void;
   getError: (field: string) => string | undefined;
@@ -17,10 +19,12 @@ interface UnitFormProps {
 
 export default function UnitForm({
   name,
+  code,
   description,
   subject_fk,
   subjects,
   onNameChange,
+  onCodeChange,
   onDescriptionChange,
   onSubjectChange,
   getError,
@@ -46,6 +50,25 @@ export default function UnitForm({
         }
         required
       />
+
+      <Form.Group className="mb-3">
+        <Form.Label>
+          Código de la Unidad <span className="text-danger">*</span>
+        </Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ej: MAT-ALG"
+          value={code}
+          onChange={(e) => onCodeChange(e.target.value.toUpperCase())}
+          isInvalid={!!getError("code")}
+        />
+        <Form.Control.Feedback type="invalid">
+          {getError("code")}
+        </Form.Control.Feedback>
+        <Form.Text>
+          Código único para identificar la unidad (se convertirá a mayúsculas).
+        </Form.Text>
+      </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>

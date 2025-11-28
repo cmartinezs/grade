@@ -29,6 +29,7 @@ export function CurriculumHierarchyUnitItem({
           <span className="d-flex align-items-center gap-2">
             <span style={{ fontSize: '1.1rem' }}>📂</span>
             <span>{unit.name}</span>
+            <Badge bg="secondary" className="ms-1">{unit.code}</Badge>
           </span>
           <div className="d-flex gap-2 align-items-center">
             <Badge bg="info">{topics.length} tema(s)</Badge>

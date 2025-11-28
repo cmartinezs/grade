@@ -370,6 +370,7 @@ export const getAllUnits = (): Unit[] => {
         // Se mapean los campos disponibles y se asignan valores por defecto para los que no existen
         const units = (data.units || []).map((u: any) => ({
           unit_id: u.unitId,
+          code: u.code,
           name: u.name,
           subject_fk: u.subjectId,
           description: undefined, // Not provided by ListUnits query
@@ -426,6 +427,7 @@ export const loadUnitsAsync = async (): Promise<Unit[]> => {
     const data: any = await fetchAllUnits();
     const units = (data.units || []).map((u: any) => ({
       unit_id: u.unitId,
+      code: u.code,
       name: u.name,
       subject_fk: u.subjectId,
       description: undefined,
@@ -484,16 +486,18 @@ export const searchUnitsBySubject = (subjectId: string, searchTerm?: string): Un
  */
 export const createUnit = async (
   name: string,
+  code: string,
   subjectId: string,
   createdBy: string,
   description?: string
 ): Promise<void> => {
   try {
-    const unitId = await createNewUnit(name, subjectId, createdBy, description);
+    const unitId = await createNewUnit(name, code, subjectId, createdBy, description);
     
     // Agregar el nuevo elemento al caché local
     const newUnit: Unit = {
       unit_id: unitId,
+      code,
       name,
       subject_fk: subjectId,
       description: description || undefined,
@@ -659,6 +663,7 @@ export const getAllTopics = (): Topic[] => {
         // Se mapean los campos disponibles y se asignan valores por defecto para los que no existen
         const topics = (data.topics || []).map((t: any) => ({
           topic_id: t.topicId,
+          code: t.code,
           name: t.name,
           unit_fk: t.unitId,
           description: undefined, // Not provided by ListTopics query
@@ -715,6 +720,7 @@ export const loadTopicsAsync = async (): Promise<Topic[]> => {
     const data: any = await fetchAllTopics();
     const topics = (data.topics || []).map((t: any) => ({
       topic_id: t.topicId,
+      code: t.code,
       name: t.name,
       unit_fk: t.unitId,
       description: undefined,
@@ -792,16 +798,18 @@ export const searchCurriculumHierarchy = (query: string): { subjects: Subject[];
  */
 export const createTopic = async (
   name: string,
+  code: string,
   unitId: string,
   createdBy: string
 ): Promise<void> => {
   try {
     // Llamar a createNewTopic y obtener el topicId generado
-    const topicId = await createNewTopic(name, unitId, createdBy);
+    const topicId = await createNewTopic(name, code, unitId, createdBy);
     
     // Agregar el nuevo elemento al caché local con el ID correcto
     const newTopic: Topic = {
       topic_id: topicId,
+      code,
       name,
       unit_fk: unitId,
       active: true,

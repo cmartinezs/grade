@@ -19,6 +19,7 @@ export interface Subject {
 
 export interface Unit {
   unit_id: string; // UUID
+  code: string; // Unique code
   name: string;
   subject_fk: string; // References subject_id (UUID)
   description?: string; // Optional description
@@ -33,6 +34,7 @@ export interface Unit {
 
 export interface Topic {
   topic_id: string; // UUID
+  code: string; // Unique code
   name: string;
   unit_fk: string; // References unit_id (UUID)
   description?: string; // Optional description
@@ -55,11 +57,13 @@ export interface CreateSubjectInput {
 
 export interface CreateUnitInput {
   name: string;
+  code: string;
   subject_fk: string;
 }
 
 export interface CreateTopicInput {
   name: string;
+  code: string;
   unit_fk: string;
 }
 
@@ -76,11 +80,13 @@ export interface UpdateSubjectInput {
 
 export interface UpdateUnitInput {
   name: string;
+  code: string;
   subject_fk: string; // Permite reasignar a otra asignatura
 }
 
 export interface UpdateTopicInput {
   name: string;
+  code: string;
   unit_fk: string; // Permite reasignar a otra unidad
 }
 

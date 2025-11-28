@@ -1,4 +1,4 @@
-import { Button } from 'react-bootstrap';
+import { Button, Badge } from 'react-bootstrap';
 import { Topic } from '@/types/curriculumHierarchy';
 import { CurriculumHierarchyContextProps } from '../types';
 
@@ -16,6 +16,7 @@ export function CurriculumHierarchyTopicItem({
       <span className="d-flex align-items-center gap-2">
         <span style={{ fontSize: '1rem' }}>📄</span>
         <span>{topic.name}</span>
+        <Badge bg="secondary" className="ms-1">{topic.code}</Badge>
       </span>
       <div className="d-flex gap-2">
         <Button

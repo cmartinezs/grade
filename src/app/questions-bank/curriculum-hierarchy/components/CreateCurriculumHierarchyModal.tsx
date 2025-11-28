@@ -134,6 +134,9 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
       if (!formData.name || formData.name.trim() === '') {
         newErrors.push({ field: 'name', message: 'El nombre de la unidad es obligatorio' });
       }
+      if (!formData.code || formData.code.trim() === '') {
+        newErrors.push({ field: 'code', message: 'El código de la unidad es obligatorio' });
+      }
     } else if (CurriculumHierarchyType === 'topic') {
       if (!formData.subject_fk || formData.subject_fk === '') {
         newErrors.push({ field: 'subject_fk', message: 'Debes seleccionar una asignatura' });
@@ -144,6 +147,9 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
       if (!formData.name || formData.name.trim() === '') {
         newErrors.push({ field: 'name', message: 'El nombre del tema es obligatorio' });
       }
+      if (!formData.code || formData.code.trim() === '') {
+        newErrors.push({ field: 'code', message: 'El código del tema es obligatorio' });
+      }
     }
 
     return newErrors;
@@ -153,14 +159,14 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
     if (CurriculumHierarchyType === 'subject') {
       await createSubject(formData.name.trim(), formData.code.trim(), formData.level_fk, userId);
     } else if (CurriculumHierarchyType === 'unit') {
-      await createUnit(formData.name.trim(), formData.subject_fk, userId, formData.description.trim());
+      await createUnit(formData.name.trim(), formData.code.trim(), formData.subject_fk, userId, formData.description.trim());
     } else {
       // Verificar que unit_fk no esté vacío
       if (!formData.unit_fk) {
         throw new Error('El ID de la unidad es requerido');
       }
       
-      await createTopic(formData.name.trim(), formData.unit_fk, userId);
+      await createTopic(formData.name.trim(), formData.code.trim(), formData.unit_fk, userId);
     }
   };
 
@@ -323,10 +329,12 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
           {CurriculumHierarchyType === 'unit' && (
             <UnitForm
               name={formData.name}
+              code={formData.code}
               description={formData.description}
               subject_fk={formData.subject_fk}
               subjects={subjects}
               onNameChange={(name) => setFormData({ ...formData, name })}
+              onCodeChange={(code) => setFormData({ ...formData, code })}
               onDescriptionChange={(description) => setFormData({ ...formData, description })}
               onSubjectChange={(value) => setFormData({ ...formData, subject_fk: value })}
               getError={getErrorForField}
@@ -337,20 +345,15 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
           {CurriculumHierarchyType === 'topic' && (
             <TopicForm
               name={formData.name}
+              code={formData.code}
               subject_fk={formData.subject_fk}
               unit_fk={formData.unit_fk}
               subjects={subjects}
               filteredUnits={filteredUnits}
               onNameChange={(name) => setFormData({ ...formData, name })}
+              onCodeChange={(code) => setFormData({ ...formData, code })}
               onSubjectChange={(value) => setFormData({ ...formData, subject_fk: value, unit_fk: '' })}
-              onUnitChange={(value) => {
-                console.log('🔄 CreateModal - onUnitChange called:', {
-                  newValue: value,
-                  valueType: typeof value,
-                  currentFormData: formData
-                });
-                setFormData({ ...formData, unit_fk: value });
-              }}
+              onUnitChange={(value) => setFormData({ ...formData, unit_fk: value })}
               getError={getErrorForField}
             />
           )}

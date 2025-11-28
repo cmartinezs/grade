@@ -6,11 +6,13 @@ import { Subject, Unit } from '@/types/curriculumHierarchy';
 
 interface TopicFormProps {
   name: string;
+  code: string;
   subject_fk: string;
   unit_fk: string;
   subjects: Subject[];
   filteredUnits: Unit[];
   onNameChange: (value: string) => void;
+  onCodeChange: (value: string) => void;
   onSubjectChange: (value: string) => void;
   onUnitChange: (value: string) => void;
   getError: (field: string) => string | undefined;
@@ -18,11 +20,13 @@ interface TopicFormProps {
 
 export default function TopicForm({
   name,
+  code,
   subject_fk,
   unit_fk,
   subjects,
   filteredUnits,
   onNameChange,
+  onCodeChange,
   onSubjectChange,
   onUnitChange,
   getError,
@@ -63,6 +67,19 @@ export default function TopicForm({
           warningMessage={showNoUnitsWarning ? "⚠️ No hay unidades disponibles para esta asignatura." : undefined}
           required
         />
+
+      <Form.Group className="mb-3">
+        <Form.Label>Código del Tema <span className="text-danger">*</span></Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ej: MAT-ALG-ECU"
+          value={code}
+          onChange={(e) => onCodeChange(e.target.value.toUpperCase())}
+          isInvalid={!!getError('code')}
+        />
+        <Form.Control.Feedback type="invalid">{getError('code')}</Form.Control.Feedback>
+        <Form.Text>Código único para identificar el tema (se convertirá a mayúsculas).</Form.Text>
+      </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>Nombre del Tema <span className="text-danger">*</span></Form.Label>
