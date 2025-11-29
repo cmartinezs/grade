@@ -5,6 +5,18 @@ It has the same format as `Course_Key`, but is only used as mutation return valu
 """
 scalar Course_KeyOutput
 """
+✨ `CourseEvaluation_KeyOutput` returns the primary key fields of table type `CourseEvaluation`.
+
+It has the same format as `CourseEvaluation_Key`, but is only used as mutation return value.
+"""
+scalar CourseEvaluation_KeyOutput
+"""
+✨ `CourseStudent_KeyOutput` returns the primary key fields of table type `CourseStudent`.
+
+It has the same format as `CourseStudent_Key`, but is only used as mutation return value.
+"""
+scalar CourseStudent_KeyOutput
+"""
 ✨ `Difficulty_KeyOutput` returns the primary key fields of table type `Difficulty`.
 
 It has the same format as `Difficulty_Key`, but is only used as mutation return value.
@@ -16,6 +28,18 @@ scalar Difficulty_KeyOutput
 It has the same format as `EducationalLevel_Key`, but is only used as mutation return value.
 """
 scalar EducationalLevel_KeyOutput
+"""
+✨ `Evaluation_KeyOutput` returns the primary key fields of table type `Evaluation`.
+
+It has the same format as `Evaluation_Key`, but is only used as mutation return value.
+"""
+scalar Evaluation_KeyOutput
+"""
+✨ `EvaluationQuestion_KeyOutput` returns the primary key fields of table type `EvaluationQuestion`.
+
+It has the same format as `EvaluationQuestion_Key`, but is only used as mutation return value.
+"""
+scalar EvaluationQuestion_KeyOutput
 """
 ✨ `LevelCategory_KeyOutput` returns the primary key fields of table type `LevelCategory`.
 
@@ -40,6 +64,30 @@ scalar QuestionOption_KeyOutput
 It has the same format as `QuestionType_Key`, but is only used as mutation return value.
 """
 scalar QuestionType_KeyOutput
+"""
+✨ `Student_KeyOutput` returns the primary key fields of table type `Student`.
+
+It has the same format as `Student_Key`, but is only used as mutation return value.
+"""
+scalar Student_KeyOutput
+"""
+✨ `StudentAnswerOption_KeyOutput` returns the primary key fields of table type `StudentAnswerOption`.
+
+It has the same format as `StudentAnswerOption_Key`, but is only used as mutation return value.
+"""
+scalar StudentAnswerOption_KeyOutput
+"""
+✨ `StudentCourseEvaluation_KeyOutput` returns the primary key fields of table type `StudentCourseEvaluation`.
+
+It has the same format as `StudentCourseEvaluation_Key`, but is only used as mutation return value.
+"""
+scalar StudentCourseEvaluation_KeyOutput
+"""
+✨ `StudentEvaluationQuestion_KeyOutput` returns the primary key fields of table type `StudentEvaluationQuestion`.
+
+It has the same format as `StudentEvaluationQuestion_Key`, but is only used as mutation return value.
+"""
+scalar StudentEvaluationQuestion_KeyOutput
 """
 ✨ `Subject_KeyOutput` returns the primary key fields of table type `Subject`.
 
@@ -570,6 +618,676 @@ input Course_Order {
   deletedAt_max: OrderDirection
   """
   ✨ Generated from Field `Course`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'CourseEvaluation'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input CourseEvaluation_Data {
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `courseEvaluationId` (✨ Generated from Field `CourseEvaluation`.`courseEvaluationId` of type `UUID!`)
+  """
+  courseEvaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
+  """
+  courseId: UUID
+  """
+  ✨ `_expr` server value variant of `courseId` (✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`)
+  """
+  courseId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `CourseEvaluation`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`)
+  """
+  evaluationId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'CourseEvaluation'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CourseEvaluation_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [CourseEvaluation_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: CourseEvaluation_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [CourseEvaluation_Filter!]
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
+  """
+  courseId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'CourseEvaluation'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input CourseEvaluation_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [CourseEvaluation_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: CourseEvaluation_Filter
+}
+"""
+✨ Generated having input type for table 'CourseEvaluation'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CourseEvaluation_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [CourseEvaluation_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: CourseEvaluation_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [CourseEvaluation_Having!]
+  """
+  ✨ Generated from Field `CourseEvaluation`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId_count` of type `Int!`
+  """
+  courseEvaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseId_count` of type `Int!`
+  """
+  courseId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId_count` of type `Int!`
+  """
+  evaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'CourseEvaluation'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input CourseEvaluation_Key {
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `courseEvaluationId` (✨ Generated from Field `CourseEvaluation`.`courseEvaluationId` of type `UUID!`)
+  """
+  courseEvaluationId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'CourseEvaluation'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CourseEvaluation_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CourseEvaluation_Filter
+}
+"""
+✨ Generated order input type for table 'CourseEvaluation'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input CourseEvaluation_Order {
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
+  """
+  courseId: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId_count` of type `Int!`
+  """
+  courseEvaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`courseId_count` of type `Int!`
+  """
+  courseId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId_count` of type `Int!`
+  """
+  evaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'CourseStudent'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input CourseStudent_Data {
+  """
+  ✨ Generated from Field `CourseStudent`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: UUID
+  """
+  ✨ `_expr` server value variant of `courseStudentId` (✨ Generated from Field `CourseStudent`.`courseStudentId` of type `UUID!`)
+  """
+  courseStudentId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseStudent`.`courseId` of type `UUID!`
+  """
+  courseId: UUID
+  """
+  ✨ `_expr` server value variant of `courseId` (✨ Generated from Field `CourseStudent`.`courseId` of type `UUID!`)
+  """
+  courseId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `CourseStudent`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `CourseStudent`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `CourseStudent`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `CourseStudent`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `CourseStudent`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `CourseStudent`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`
+  """
+  enrolledOn: Date
+  """
+  ✨ `_date` server value variant of `enrolledOn` (✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`)
+  """
+  enrolledOn_date: Date_Relative
+  """
+  ✨ `_expr` server value variant of `enrolledOn` (✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`)
+  """
+  enrolledOn_expr: Date_Expr
+  """
+  ✨ `_update` server value variant of `enrolledOn` (✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`)
+  """
+  enrolledOn_update: [Date_Update!]
+  """
+  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
+  """
+  studentId: UUID
+  """
+  ✨ `_expr` server value variant of `studentId` (✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`)
+  """
+  studentId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `CourseStudent`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'CourseStudent'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CourseStudent_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [CourseStudent_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: CourseStudent_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [CourseStudent_Filter!]
+  """
+  ✨ Generated from Field `CourseStudent`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`courseId` of type `UUID!`
+  """
+  courseId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`
+  """
+  enrolledOn: Date_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
+  """
+  studentId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'CourseStudent'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input CourseStudent_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [CourseStudent_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: CourseStudent_Filter
+}
+"""
+✨ Generated having input type for table 'CourseStudent'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input CourseStudent_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [CourseStudent_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: CourseStudent_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [CourseStudent_Having!]
+  """
+  ✨ Generated from Field `CourseStudent`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`courseId_count` of type `Int!`
+  """
+  courseId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`courseStudentId_count` of type `Int!`
+  """
+  courseStudentId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn_count` of type `Int!`
+  """
+  enrolledOn_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`studentId_count` of type `Int!`
+  """
+  studentId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn_min` of type `Date`
+  """
+  enrolledOn_min: Date_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn_max` of type `Date`
+  """
+  enrolledOn_max: Date_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'CourseStudent'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input CourseStudent_Key {
+  """
+  ✨ Generated from Field `CourseStudent`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: UUID
+  """
+  ✨ `_expr` server value variant of `courseStudentId` (✨ Generated from Field `CourseStudent`.`courseStudentId` of type `UUID!`)
+  """
+  courseStudentId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'CourseStudent'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input CourseStudent_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: CourseStudent_Filter
+}
+"""
+✨ Generated order input type for table 'CourseStudent'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input CourseStudent_Order {
+  """
+  ✨ Generated from Field `CourseStudent`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`courseId` of type `UUID!`
+  """
+  courseId: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`
+  """
+  enrolledOn: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
+  """
+  studentId: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`courseId_count` of type `Int!`
+  """
+  courseId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`courseStudentId_count` of type `Int!`
+  """
+  courseStudentId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn_count` of type `Int!`
+  """
+  enrolledOn_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`studentId_count` of type `Int!`
+  """
+  studentId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn_min` of type `Date`
+  """
+  enrolledOn_min: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`enrolledOn_max` of type `Date`
+  """
+  enrolledOn_max: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`updatedAt_max` of type `Timestamp`
   """
   updatedAt_max: OrderDirection
 }
@@ -1278,6 +1996,856 @@ input EducationalLevel_Order {
   ✨ Generated from Field `EducationalLevel`.`updatedAt_max` of type `Timestamp`
   """
   updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Evaluation'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Evaluation_Data {
+  """
+  ✨ Generated from Field `Evaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `Evaluation`.`evaluationId` of type `UUID!`)
+  """
+  evaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `Evaluation`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `Evaluation`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `Evaluation`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Evaluation`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `Evaluation`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`
+  """
+  durationMinutes: Int
+  """
+  ✨ `_expr` server value variant of `durationMinutes` (✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`)
+  """
+  durationMinutes_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `durationMinutes` (✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`)
+  """
+  durationMinutes_update: [Int_Update!]
+  """
+  ✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`
+  """
+  gradeScale: String
+  """
+  ✨ `_expr` server value variant of `gradeScale` (✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`)
+  """
+  gradeScale_expr: String_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`pdfPath` of type `String`
+  """
+  pdfPath: String
+  """
+  ✨ `_expr` server value variant of `pdfPath` (✨ Generated from Field `Evaluation`.`pdfPath` of type `String`)
+  """
+  pdfPath_expr: String_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`
+  """
+  scheduledDate: Date
+  """
+  ✨ `_date` server value variant of `scheduledDate` (✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`)
+  """
+  scheduledDate_date: Date_Relative
+  """
+  ✨ `_expr` server value variant of `scheduledDate` (✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`)
+  """
+  scheduledDate_expr: Date_Expr
+  """
+  ✨ `_update` server value variant of `scheduledDate` (✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`)
+  """
+  scheduledDate_update: [Date_Update!]
+  """
+  ✨ Generated from Field `Evaluation`.`state` of type `String!`
+  """
+  state: String
+  """
+  ✨ `_expr` server value variant of `state` (✨ Generated from Field `Evaluation`.`state` of type `String!`)
+  """
+  state_expr: String_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`subjectId` of type `UUID!`
+  """
+  subjectId: UUID
+  """
+  ✨ `_expr` server value variant of `subjectId` (✨ Generated from Field `Evaluation`.`subjectId` of type `UUID!`)
+  """
+  subjectId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`title` of type `String!`
+  """
+  title: String
+  """
+  ✨ `_expr` server value variant of `title` (✨ Generated from Field `Evaluation`.`title` of type `String!`)
+  """
+  title_expr: String_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Evaluation`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Evaluation`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Evaluation`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Evaluation`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `Evaluation`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Evaluation`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Evaluation`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'Evaluation'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Evaluation_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Evaluation_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Evaluation_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Evaluation_Filter!]
+  """
+  ✨ Generated from Field `Evaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`
+  """
+  durationMinutes: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`
+  """
+  gradeScale: String_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`pdfPath` of type `String`
+  """
+  pdfPath: String_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`
+  """
+  scheduledDate: Date_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`state` of type `String!`
+  """
+  state: String_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`subjectId` of type `UUID!`
+  """
+  subjectId: UUID_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`title` of type `String!`
+  """
+  title: String_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`userId` of type `UUID!`
+  """
+  userId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'Evaluation'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Evaluation_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Evaluation_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Evaluation_Filter
+}
+"""
+✨ Generated having input type for table 'Evaluation'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Evaluation_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Evaluation_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Evaluation_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Evaluation_Having!]
+  """
+  ✨ Generated from Field `Evaluation`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_count` of type `Int!`
+  """
+  durationMinutes_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`evaluationId_count` of type `Int!`
+  """
+  evaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`gradeScale_count` of type `Int!`
+  """
+  gradeScale_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`pdfPath_count` of type `Int!`
+  """
+  pdfPath_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate_count` of type `Int!`
+  """
+  scheduledDate_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`state_count` of type `Int!`
+  """
+  state_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`subjectId_count` of type `Int!`
+  """
+  subjectId_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`title_count` of type `Int!`
+  """
+  title_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_sum` of type `Int`
+  """
+  durationMinutes_sum: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_avg` of type `Float`
+  """
+  durationMinutes_avg: Float_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_min` of type `Int`
+  """
+  durationMinutes_min: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate_min` of type `Date`
+  """
+  scheduledDate_min: Date_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_max` of type `Int`
+  """
+  durationMinutes_max: Int_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate_max` of type `Date`
+  """
+  scheduledDate_max: Date_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Evaluation'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Evaluation_Key {
+  """
+  ✨ Generated from Field `Evaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `Evaluation`.`evaluationId` of type `UUID!`)
+  """
+  evaluationId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Evaluation'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Evaluation_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Evaluation_Filter
+}
+"""
+✨ Generated order input type for table 'Evaluation'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Evaluation_Order {
+  """
+  ✨ Generated from Field `Evaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`
+  """
+  durationMinutes: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`
+  """
+  gradeScale: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`pdfPath` of type `String`
+  """
+  pdfPath: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`
+  """
+  scheduledDate: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`state` of type `String!`
+  """
+  state: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`subjectId` of type `UUID!`
+  """
+  subjectId: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`title` of type `String!`
+  """
+  title: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`userId` of type `UUID!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_count` of type `Int!`
+  """
+  durationMinutes_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`evaluationId_count` of type `Int!`
+  """
+  evaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`gradeScale_count` of type `Int!`
+  """
+  gradeScale_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`pdfPath_count` of type `Int!`
+  """
+  pdfPath_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate_count` of type `Int!`
+  """
+  scheduledDate_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`state_count` of type `Int!`
+  """
+  state_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`subjectId_count` of type `Int!`
+  """
+  subjectId_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`title_count` of type `Int!`
+  """
+  title_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_sum` of type `Int`
+  """
+  durationMinutes_sum: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_avg` of type `Float`
+  """
+  durationMinutes_avg: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_min` of type `Int`
+  """
+  durationMinutes_min: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate_min` of type `Date`
+  """
+  scheduledDate_min: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`durationMinutes_max` of type `Int`
+  """
+  durationMinutes_max: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`scheduledDate_max` of type `Date`
+  """
+  scheduledDate_max: OrderDirection
+  """
+  ✨ Generated from Field `Evaluation`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'EvaluationQuestion'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input EvaluationQuestion_Data {
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationQuestionId` (✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId` of type `UUID!`)
+  """
+  evaluationQuestionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `EvaluationQuestion`.`evaluationId` of type `UUID!`)
+  """
+  evaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points` of type `Float!`
+  """
+  points: Float
+  """
+  ✨ `_expr` server value variant of `points` (✨ Generated from Field `EvaluationQuestion`.`points` of type `Float!`)
+  """
+  points_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `points` (✨ Generated from Field `EvaluationQuestion`.`points` of type `Float!`)
+  """
+  points_update: [Float_Update!]
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position` of type `Int!`
+  """
+  position: Int
+  """
+  ✨ `_expr` server value variant of `position` (✨ Generated from Field `EvaluationQuestion`.`position` of type `Int!`)
+  """
+  position_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `position` (✨ Generated from Field `EvaluationQuestion`.`position` of type `Int!`)
+  """
+  position_update: [Int_Update!]
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`questionId` of type `UUID!`
+  """
+  questionId: UUID
+  """
+  ✨ `_expr` server value variant of `questionId` (✨ Generated from Field `EvaluationQuestion`.`questionId` of type `UUID!`)
+  """
+  questionId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'EvaluationQuestion'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input EvaluationQuestion_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [EvaluationQuestion_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: EvaluationQuestion_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [EvaluationQuestion_Filter!]
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: UUID_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points` of type `Float!`
+  """
+  points: Float_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position` of type `Int!`
+  """
+  position: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`questionId` of type `UUID!`
+  """
+  questionId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'EvaluationQuestion'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input EvaluationQuestion_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [EvaluationQuestion_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: EvaluationQuestion_Filter
+}
+"""
+✨ Generated having input type for table 'EvaluationQuestion'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input EvaluationQuestion_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [EvaluationQuestion_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: EvaluationQuestion_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [EvaluationQuestion_Having!]
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationId_count` of type `Int!`
+  """
+  evaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId_count` of type `Int!`
+  """
+  evaluationQuestionId_count: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_count` of type `Int!`
+  """
+  points_count: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_count` of type `Int!`
+  """
+  position_count: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`questionId_count` of type `Int!`
+  """
+  questionId_count: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_sum` of type `Float`
+  """
+  points_sum: Float_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_sum` of type `Int`
+  """
+  position_sum: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_avg` of type `Float`
+  """
+  points_avg: Float_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_avg` of type `Float`
+  """
+  position_avg: Float_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_min` of type `Float`
+  """
+  points_min: Float_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_min` of type `Int`
+  """
+  position_min: Int_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_max` of type `Float`
+  """
+  points_max: Float_Filter
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_max` of type `Int`
+  """
+  position_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'EvaluationQuestion'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input EvaluationQuestion_Key {
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationQuestionId` (✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId` of type `UUID!`)
+  """
+  evaluationQuestionId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'EvaluationQuestion'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input EvaluationQuestion_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: EvaluationQuestion_Filter
+}
+"""
+✨ Generated order input type for table 'EvaluationQuestion'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input EvaluationQuestion_Order {
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points` of type `Float!`
+  """
+  points: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position` of type `Int!`
+  """
+  position: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`questionId` of type `UUID!`
+  """
+  questionId: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationId_count` of type `Int!`
+  """
+  evaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`evaluationQuestionId_count` of type `Int!`
+  """
+  evaluationQuestionId_count: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_count` of type `Int!`
+  """
+  points_count: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_count` of type `Int!`
+  """
+  position_count: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`questionId_count` of type `Int!`
+  """
+  questionId_count: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_sum` of type `Float`
+  """
+  points_sum: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_sum` of type `Int`
+  """
+  position_sum: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_avg` of type `Float`
+  """
+  points_avg: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_avg` of type `Float`
+  """
+  position_avg: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_min` of type `Float`
+  """
+  points_min: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_min` of type `Int`
+  """
+  position_min: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`points_max` of type `Float`
+  """
+  points_max: OrderDirection
+  """
+  ✨ Generated from Field `EvaluationQuestion`.`position_max` of type `Int`
+  """
+  position_max: OrderDirection
 }
 """
 ✨ Generated data input type for table 'LevelCategory'. It includes all necessary fields for creating or upserting rows into table.
@@ -3026,6 +4594,1310 @@ input QuestionType_Order {
   ✨ Generated from Field `QuestionType`.`minOptions_max` of type `Int`
   """
   minOptions_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Student'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Student_Data {
+  """
+  ✨ Generated from Field `Student`.`studentId` of type `UUID!`
+  """
+  studentId: UUID
+  """
+  ✨ `_expr` server value variant of `studentId` (✨ Generated from Field `Student`.`studentId` of type `UUID!`)
+  """
+  studentId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Student`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Student`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Student`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Student`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Student`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Student`.`createdBy` of type `UUID!`)
+  """
+  createdBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Student`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `deletedAt` (✨ Generated from Field `Student`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `deletedAt` (✨ Generated from Field `Student`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `deletedAt` (✨ Generated from Field `Student`.`deletedAt` of type `Timestamp`)
+  """
+  deletedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Student`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID
+  """
+  ✨ `_expr` server value variant of `deletedBy` (✨ Generated from Field `Student`.`deletedBy` of type `UUID`)
+  """
+  deletedBy_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Student`.`firstName` of type `String!`
+  """
+  firstName: String
+  """
+  ✨ `_expr` server value variant of `firstName` (✨ Generated from Field `Student`.`firstName` of type `String!`)
+  """
+  firstName_expr: String_Expr
+  """
+  ✨ Generated from Field `Student`.`identifier` of type `String!`
+  """
+  identifier: String
+  """
+  ✨ `_expr` server value variant of `identifier` (✨ Generated from Field `Student`.`identifier` of type `String!`)
+  """
+  identifier_expr: String_Expr
+  """
+  ✨ Generated from Field `Student`.`lastName` of type `String!`
+  """
+  lastName: String
+  """
+  ✨ `_expr` server value variant of `lastName` (✨ Generated from Field `Student`.`lastName` of type `String!`)
+  """
+  lastName_expr: String_Expr
+  """
+  ✨ Generated from Field `Student`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Student`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Student`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Student`.`updatedAt` of type `Timestamp`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Student`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID
+  """
+  ✨ `_expr` server value variant of `updatedBy` (✨ Generated from Field `Student`.`updatedBy` of type `UUID`)
+  """
+  updatedBy_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'Student'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Student_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Student_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Student_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Student_Filter!]
+  """
+  ✨ Generated from Field `Student`.`studentId` of type `UUID!`
+  """
+  studentId: UUID_Filter
+  """
+  ✨ Generated from Field `Student`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`createdBy` of type `UUID!`
+  """
+  createdBy: UUID_Filter
+  """
+  ✨ Generated from Field `Student`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`deletedBy` of type `UUID`
+  """
+  deletedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Student`.`firstName` of type `String!`
+  """
+  firstName: String_Filter
+  """
+  ✨ Generated from Field `Student`.`identifier` of type `String!`
+  """
+  identifier: String_Filter
+  """
+  ✨ Generated from Field `Student`.`lastName` of type `String!`
+  """
+  lastName: String_Filter
+  """
+  ✨ Generated from Field `Student`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`updatedBy` of type `UUID`
+  """
+  updatedBy: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'Student'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Student_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Student_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Student_Filter
+}
+"""
+✨ Generated having input type for table 'Student'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Student_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Student_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Student_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Student_Having!]
+  """
+  ✨ Generated from Field `Student`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`firstName_count` of type `Int!`
+  """
+  firstName_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`identifier_count` of type `Int!`
+  """
+  identifier_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`lastName_count` of type `Int!`
+  """
+  lastName_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`studentId_count` of type `Int!`
+  """
+  studentId_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Student`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Student'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Student_Key {
+  """
+  ✨ Generated from Field `Student`.`studentId` of type `UUID!`
+  """
+  studentId: UUID
+  """
+  ✨ `_expr` server value variant of `studentId` (✨ Generated from Field `Student`.`studentId` of type `UUID!`)
+  """
+  studentId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Student'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Student_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Student_Filter
+}
+"""
+✨ Generated order input type for table 'Student'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Student_Order {
+  """
+  ✨ Generated from Field `Student`.`studentId` of type `UUID!`
+  """
+  studentId: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`createdBy` of type `UUID!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`deletedAt` of type `Timestamp`
+  """
+  deletedAt: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`deletedBy` of type `UUID`
+  """
+  deletedBy: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`firstName` of type `String!`
+  """
+  firstName: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`identifier` of type `String!`
+  """
+  identifier: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`lastName` of type `String!`
+  """
+  lastName: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`updatedAt` of type `Timestamp`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`updatedBy` of type `UUID`
+  """
+  updatedBy: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`deletedAt_count` of type `Int!`
+  """
+  deletedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`deletedBy_count` of type `Int!`
+  """
+  deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`firstName_count` of type `Int!`
+  """
+  firstName_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`identifier_count` of type `Int!`
+  """
+  identifier_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`lastName_count` of type `Int!`
+  """
+  lastName_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`studentId_count` of type `Int!`
+  """
+  studentId_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`updatedBy_count` of type `Int!`
+  """
+  updatedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`deletedAt_min` of type `Timestamp`
+  """
+  deletedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`deletedAt_max` of type `Timestamp`
+  """
+  deletedAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'StudentAnswerOption'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input StudentAnswerOption_Data {
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId` of type `UUID!`
+  """
+  studentAnswerOptionId: UUID
+  """
+  ✨ `_expr` server value variant of `studentAnswerOptionId` (✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId` of type `UUID!`)
+  """
+  studentAnswerOptionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`questionOptionId` of type `UUID!`
+  """
+  questionOptionId: UUID
+  """
+  ✨ `_expr` server value variant of `questionOptionId` (✨ Generated from Field `StudentAnswerOption`.`questionOptionId` of type `UUID!`)
+  """
+  questionOptionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: UUID
+  """
+  ✨ `_expr` server value variant of `studentEvaluationQuestionId` (✨ Generated from Field `StudentAnswerOption`.`studentEvaluationQuestionId` of type `UUID!`)
+  """
+  studentEvaluationQuestionId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'StudentAnswerOption'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input StudentAnswerOption_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [StudentAnswerOption_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: StudentAnswerOption_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [StudentAnswerOption_Filter!]
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId` of type `UUID!`
+  """
+  studentAnswerOptionId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`questionOptionId` of type `UUID!`
+  """
+  questionOptionId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'StudentAnswerOption'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input StudentAnswerOption_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [StudentAnswerOption_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: StudentAnswerOption_Filter
+}
+"""
+✨ Generated having input type for table 'StudentAnswerOption'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input StudentAnswerOption_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [StudentAnswerOption_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: StudentAnswerOption_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [StudentAnswerOption_Having!]
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`questionOptionId_count` of type `Int!`
+  """
+  questionOptionId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId_count` of type `Int!`
+  """
+  studentAnswerOptionId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentEvaluationQuestionId_count` of type `Int!`
+  """
+  studentEvaluationQuestionId_count: Int_Filter
+}
+"""
+✨ Generated key input type for table 'StudentAnswerOption'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input StudentAnswerOption_Key {
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId` of type `UUID!`
+  """
+  studentAnswerOptionId: UUID
+  """
+  ✨ `_expr` server value variant of `studentAnswerOptionId` (✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId` of type `UUID!`)
+  """
+  studentAnswerOptionId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'StudentAnswerOption'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input StudentAnswerOption_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: StudentAnswerOption_Filter
+}
+"""
+✨ Generated order input type for table 'StudentAnswerOption'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input StudentAnswerOption_Order {
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId` of type `UUID!`
+  """
+  studentAnswerOptionId: OrderDirection
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`questionOptionId` of type `UUID!`
+  """
+  questionOptionId: OrderDirection
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: OrderDirection
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`questionOptionId_count` of type `Int!`
+  """
+  questionOptionId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentAnswerOptionId_count` of type `Int!`
+  """
+  studentAnswerOptionId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentAnswerOption`.`studentEvaluationQuestionId_count` of type `Int!`
+  """
+  studentEvaluationQuestionId_count: OrderDirection
+}
+"""
+✨ Generated data input type for table 'StudentCourseEvaluation'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input StudentCourseEvaluation_Data {
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId` of type `UUID!`
+  """
+  studentCourseEvaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `studentCourseEvaluationId` (✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId` of type `UUID!`)
+  """
+  studentCourseEvaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo` of type `Int`
+  """
+  attemptNo: Int
+  """
+  ✨ `_expr` server value variant of `attemptNo` (✨ Generated from Field `StudentCourseEvaluation`.`attemptNo` of type `Int`)
+  """
+  attemptNo_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `attemptNo` (✨ Generated from Field `StudentCourseEvaluation`.`attemptNo` of type `Int`)
+  """
+  attemptNo_update: [Int_Update!]
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `courseEvaluationId` (✨ Generated from Field `StudentCourseEvaluation`.`courseEvaluationId` of type `UUID!`)
+  """
+  courseEvaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: UUID
+  """
+  ✨ `_expr` server value variant of `courseStudentId` (✨ Generated from Field `StudentCourseEvaluation`.`courseStudentId` of type `UUID!`)
+  """
+  courseStudentId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade` of type `Float`
+  """
+  grade: Float
+  """
+  ✨ `_expr` server value variant of `grade` (✨ Generated from Field `StudentCourseEvaluation`.`grade` of type `Float`)
+  """
+  grade_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `grade` (✨ Generated from Field `StudentCourseEvaluation`.`grade` of type `Float`)
+  """
+  grade_update: [Float_Update!]
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`state` of type `String!`
+  """
+  state: String
+  """
+  ✨ `_expr` server value variant of `state` (✨ Generated from Field `StudentCourseEvaluation`.`state` of type `String!`)
+  """
+  state_expr: String_Expr
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn` of type `Timestamp`
+  """
+  takenOn: Timestamp
+  """
+  ✨ `_expr` server value variant of `takenOn` (✨ Generated from Field `StudentCourseEvaluation`.`takenOn` of type `Timestamp`)
+  """
+  takenOn_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `takenOn` (✨ Generated from Field `StudentCourseEvaluation`.`takenOn` of type `Timestamp`)
+  """
+  takenOn_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `takenOn` (✨ Generated from Field `StudentCourseEvaluation`.`takenOn` of type `Timestamp`)
+  """
+  takenOn_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore` of type `Float!`
+  """
+  totalScore: Float
+  """
+  ✨ `_expr` server value variant of `totalScore` (✨ Generated from Field `StudentCourseEvaluation`.`totalScore` of type `Float!`)
+  """
+  totalScore_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `totalScore` (✨ Generated from Field `StudentCourseEvaluation`.`totalScore` of type `Float!`)
+  """
+  totalScore_update: [Float_Update!]
+}
+"""
+✨ Generated filter input type for table 'StudentCourseEvaluation'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input StudentCourseEvaluation_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [StudentCourseEvaluation_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: StudentCourseEvaluation_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [StudentCourseEvaluation_Filter!]
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId` of type `UUID!`
+  """
+  studentCourseEvaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo` of type `Int`
+  """
+  attemptNo: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade` of type `Float`
+  """
+  grade: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`state` of type `String!`
+  """
+  state: String_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn` of type `Timestamp`
+  """
+  takenOn: Timestamp_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore` of type `Float!`
+  """
+  totalScore: Float_Filter
+}
+"""
+✨ Generated first-row input type for table 'StudentCourseEvaluation'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input StudentCourseEvaluation_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [StudentCourseEvaluation_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: StudentCourseEvaluation_Filter
+}
+"""
+✨ Generated having input type for table 'StudentCourseEvaluation'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input StudentCourseEvaluation_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [StudentCourseEvaluation_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: StudentCourseEvaluation_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [StudentCourseEvaluation_Having!]
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_count` of type `Int!`
+  """
+  attemptNo_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseEvaluationId_count` of type `Int!`
+  """
+  courseEvaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseStudentId_count` of type `Int!`
+  """
+  courseStudentId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_count` of type `Int!`
+  """
+  grade_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`state_count` of type `Int!`
+  """
+  state_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId_count` of type `Int!`
+  """
+  studentCourseEvaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn_count` of type `Int!`
+  """
+  takenOn_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_count` of type `Int!`
+  """
+  totalScore_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_sum` of type `Int`
+  """
+  attemptNo_sum: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_sum` of type `Float`
+  """
+  grade_sum: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_sum` of type `Float`
+  """
+  totalScore_sum: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_avg` of type `Float`
+  """
+  attemptNo_avg: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_avg` of type `Float`
+  """
+  grade_avg: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_avg` of type `Float`
+  """
+  totalScore_avg: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_min` of type `Int`
+  """
+  attemptNo_min: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_min` of type `Float`
+  """
+  grade_min: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn_min` of type `Timestamp`
+  """
+  takenOn_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_min` of type `Float`
+  """
+  totalScore_min: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_max` of type `Int`
+  """
+  attemptNo_max: Int_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_max` of type `Float`
+  """
+  grade_max: Float_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn_max` of type `Timestamp`
+  """
+  takenOn_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_max` of type `Float`
+  """
+  totalScore_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'StudentCourseEvaluation'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input StudentCourseEvaluation_Key {
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId` of type `UUID!`
+  """
+  studentCourseEvaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `studentCourseEvaluationId` (✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId` of type `UUID!`)
+  """
+  studentCourseEvaluationId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'StudentCourseEvaluation'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input StudentCourseEvaluation_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: StudentCourseEvaluation_Filter
+}
+"""
+✨ Generated order input type for table 'StudentCourseEvaluation'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input StudentCourseEvaluation_Order {
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId` of type `UUID!`
+  """
+  studentCourseEvaluationId: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo` of type `Int`
+  """
+  attemptNo: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseEvaluationId` of type `UUID!`
+  """
+  courseEvaluationId: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseStudentId` of type `UUID!`
+  """
+  courseStudentId: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade` of type `Float`
+  """
+  grade: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`state` of type `String!`
+  """
+  state: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn` of type `Timestamp`
+  """
+  takenOn: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore` of type `Float!`
+  """
+  totalScore: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_count` of type `Int!`
+  """
+  attemptNo_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseEvaluationId_count` of type `Int!`
+  """
+  courseEvaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`courseStudentId_count` of type `Int!`
+  """
+  courseStudentId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_count` of type `Int!`
+  """
+  grade_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`state_count` of type `Int!`
+  """
+  state_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`studentCourseEvaluationId_count` of type `Int!`
+  """
+  studentCourseEvaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn_count` of type `Int!`
+  """
+  takenOn_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_count` of type `Int!`
+  """
+  totalScore_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_sum` of type `Int`
+  """
+  attemptNo_sum: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_sum` of type `Float`
+  """
+  grade_sum: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_sum` of type `Float`
+  """
+  totalScore_sum: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_avg` of type `Float`
+  """
+  attemptNo_avg: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_avg` of type `Float`
+  """
+  grade_avg: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_avg` of type `Float`
+  """
+  totalScore_avg: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_min` of type `Int`
+  """
+  attemptNo_min: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_min` of type `Float`
+  """
+  grade_min: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn_min` of type `Timestamp`
+  """
+  takenOn_min: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_min` of type `Float`
+  """
+  totalScore_min: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`attemptNo_max` of type `Int`
+  """
+  attemptNo_max: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`grade_max` of type `Float`
+  """
+  grade_max: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`takenOn_max` of type `Timestamp`
+  """
+  takenOn_max: OrderDirection
+  """
+  ✨ Generated from Field `StudentCourseEvaluation`.`totalScore_max` of type `Float`
+  """
+  totalScore_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'StudentEvaluationQuestion'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input StudentEvaluationQuestion_Data {
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: UUID
+  """
+  ✨ `_expr` server value variant of `studentEvaluationQuestionId` (✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId` of type `UUID!`)
+  """
+  studentEvaluationQuestionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationQuestionId` (✨ Generated from Field `StudentEvaluationQuestion`.`evaluationQuestionId` of type `UUID!`)
+  """
+  evaluationQuestionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`isCorrect` of type `Boolean`
+  """
+  isCorrect: Boolean
+  """
+  ✨ `_expr` server value variant of `isCorrect` (✨ Generated from Field `StudentEvaluationQuestion`.`isCorrect` of type `Boolean`)
+  """
+  isCorrect_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position` of type `Int!`
+  """
+  position: Int
+  """
+  ✨ `_expr` server value variant of `position` (✨ Generated from Field `StudentEvaluationQuestion`.`position` of type `Int!`)
+  """
+  position_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `position` (✨ Generated from Field `StudentEvaluationQuestion`.`position` of type `Int!`)
+  """
+  position_update: [Int_Update!]
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained` of type `Float`
+  """
+  scoreObtained: Float
+  """
+  ✨ `_expr` server value variant of `scoreObtained` (✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained` of type `Float`)
+  """
+  scoreObtained_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `scoreObtained` (✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained` of type `Float`)
+  """
+  scoreObtained_update: [Float_Update!]
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationId` of type `UUID!`
+  """
+  studentEvaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `studentEvaluationId` (✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationId` of type `UUID!`)
+  """
+  studentEvaluationId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'StudentEvaluationQuestion'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input StudentEvaluationQuestion_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [StudentEvaluationQuestion_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: StudentEvaluationQuestion_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [StudentEvaluationQuestion_Filter!]
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: UUID_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`isCorrect` of type `Boolean`
+  """
+  isCorrect: Boolean_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position` of type `Int!`
+  """
+  position: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained` of type `Float`
+  """
+  scoreObtained: Float_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationId` of type `UUID!`
+  """
+  studentEvaluationId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'StudentEvaluationQuestion'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input StudentEvaluationQuestion_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [StudentEvaluationQuestion_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: StudentEvaluationQuestion_Filter
+}
+"""
+✨ Generated having input type for table 'StudentEvaluationQuestion'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input StudentEvaluationQuestion_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [StudentEvaluationQuestion_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: StudentEvaluationQuestion_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [StudentEvaluationQuestion_Having!]
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`evaluationQuestionId_count` of type `Int!`
+  """
+  evaluationQuestionId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`isCorrect_count` of type `Int!`
+  """
+  isCorrect_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_count` of type `Int!`
+  """
+  position_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_count` of type `Int!`
+  """
+  scoreObtained_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationId_count` of type `Int!`
+  """
+  studentEvaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId_count` of type `Int!`
+  """
+  studentEvaluationQuestionId_count: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_sum` of type `Int`
+  """
+  position_sum: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_sum` of type `Float`
+  """
+  scoreObtained_sum: Float_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_avg` of type `Float`
+  """
+  position_avg: Float_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_avg` of type `Float`
+  """
+  scoreObtained_avg: Float_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_min` of type `Int`
+  """
+  position_min: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_min` of type `Float`
+  """
+  scoreObtained_min: Float_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_max` of type `Int`
+  """
+  position_max: Int_Filter
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_max` of type `Float`
+  """
+  scoreObtained_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'StudentEvaluationQuestion'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input StudentEvaluationQuestion_Key {
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: UUID
+  """
+  ✨ `_expr` server value variant of `studentEvaluationQuestionId` (✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId` of type `UUID!`)
+  """
+  studentEvaluationQuestionId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'StudentEvaluationQuestion'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input StudentEvaluationQuestion_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: StudentEvaluationQuestion_Filter
+}
+"""
+✨ Generated order input type for table 'StudentEvaluationQuestion'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input StudentEvaluationQuestion_Order {
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId` of type `UUID!`
+  """
+  studentEvaluationQuestionId: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`evaluationQuestionId` of type `UUID!`
+  """
+  evaluationQuestionId: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`isCorrect` of type `Boolean`
+  """
+  isCorrect: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position` of type `Int!`
+  """
+  position: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained` of type `Float`
+  """
+  scoreObtained: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationId` of type `UUID!`
+  """
+  studentEvaluationId: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`evaluationQuestionId_count` of type `Int!`
+  """
+  evaluationQuestionId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`isCorrect_count` of type `Int!`
+  """
+  isCorrect_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_count` of type `Int!`
+  """
+  position_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_count` of type `Int!`
+  """
+  scoreObtained_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationId_count` of type `Int!`
+  """
+  studentEvaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`studentEvaluationQuestionId_count` of type `Int!`
+  """
+  studentEvaluationQuestionId_count: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_sum` of type `Int`
+  """
+  position_sum: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_sum` of type `Float`
+  """
+  scoreObtained_sum: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_avg` of type `Float`
+  """
+  position_avg: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_avg` of type `Float`
+  """
+  scoreObtained_avg: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_min` of type `Int`
+  """
+  position_min: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_min` of type `Float`
+  """
+  scoreObtained_min: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`position_max` of type `Int`
+  """
+  position_max: OrderDirection
+  """
+  ✨ Generated from Field `StudentEvaluationQuestion`.`scoreObtained_max` of type `Float`
+  """
+  scoreObtained_max: OrderDirection
 }
 """
 ✨ Generated data input type for table 'Subject'. It includes all necessary fields for creating or upserting rows into table.

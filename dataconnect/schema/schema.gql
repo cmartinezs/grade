@@ -422,3 +422,201 @@ type Course @table(name: "courses", key: "courseId") {
   # ID del usuario que realizó la eliminación
   deletedBy: UUID @col(name: "deleted_by")
 }
+
+type Evaluation @table(name: "evaluations", key: "evaluationId") {
+  # Identificador único de la evaluación
+  evaluationId: UUID! @col(name: "evaluation_id")
+  
+  # Título de la evaluación
+  title: String!
+  
+  # Fecha programada de la evaluación
+  scheduledDate: Date! @col(name: "scheduled_date")
+  
+  # Duración en minutos
+  durationMinutes: Int! @col(name: "duration_minutes")
+  
+  # Escala de calificación (ej. "0-100_to_1-7")
+  gradeScale: String! @col(name: "grade_scale")
+  
+  # Estado de la evaluación (Draft/Published/Applied/Graded/Archived)
+  state: String!
+  
+  # Ruta del archivo PDF
+  pdfPath: String @col(name: "pdf_path")
+  
+  # ID de la asignatura
+  subjectId: UUID! @col(name: "subject_fk")
+  
+  # ID del usuario creador
+  userId: UUID! @col(name: "user_fk")
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type EvaluationQuestion @table(name: "evaluation_questions", key: "evaluationQuestionId") {
+  # Identificador único de la pregunta de evaluación
+  evaluationQuestionId: UUID! @col(name: "evaluation_question_id")
+  
+  # ID de la evaluación
+  evaluationId: UUID! @col(name: "evaluation_fk")
+  
+  # ID de la pregunta
+  questionId: UUID! @col(name: "question_fk")
+  
+  # Puntos asignados a la pregunta
+  points: Float!
+  
+  # Posición de la pregunta en la evaluación
+  position: Int!
+}
+
+type CourseEvaluation @table(name: "course_evaluations", key: "courseEvaluationId") {
+  # Identificador único de la evaluación del curso
+  courseEvaluationId: UUID! @col(name: "course_evaluation_id")
+  # ID del curso
+  courseId: UUID! @col(name: "course_fk")
+  
+  # ID de la evaluación
+  evaluationId: UUID! @col(name: "evaluation_fk")
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+}
+
+type Student @table(name: "students", key: "studentId") {
+  # Identificador único del estudiante
+  studentId: UUID! @col(name: "student_id")
+  
+  # Nombre del estudiante
+  firstName: String! @col(name: "first_name")
+  
+  # Apellido del estudiante
+  lastName: String! @col(name: "last_name")
+  
+  # Identificador único del estudiante (RUT, ID, etc.)
+  identifier: String! @unique
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type CourseStudent @table(name: "course_students", key: "courseStudentId") {
+  # Identificador único de la matrícula
+  courseStudentId: UUID! @col(name: "course_student_id")
+  
+  # ID del curso
+  courseId: UUID! @col(name: "course_fk")
+  
+  # ID del estudiante
+  studentId: UUID! @col(name: "student_fk")
+  
+  # Fecha de matrícula
+  enrolledOn: Date! @col(name: "enrolled_on")
+  
+  # Fecha de creación
+  createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
+  
+  # ID del usuario que realizó la creación
+  createdBy: UUID! @col(name: "created_by")
+  
+  # Fecha de última actualización
+  updatedAt: Timestamp @col(name: "updated_at")
+  
+  # ID del usuario que realizó la última actualización
+  updatedBy: UUID @col(name: "updated_by")
+  
+  # Fecha de eliminación (soft delete)
+  deletedAt: Timestamp @col(name: "deleted_at")
+  
+  # ID del usuario que realizó la eliminación
+  deletedBy: UUID @col(name: "deleted_by")
+}
+
+type StudentCourseEvaluation @table(name: "student_evaluations", key: "studentCourseEvaluationId") {
+  # Identificador único de la rendición
+  studentCourseEvaluationId: UUID! @col(name: "student_evaluation_id")
+  
+  # ID del curso-evaluación (garantiza que la evaluación pertenece a un curso específico)
+  courseEvaluationId: UUID! @col(name: "course_evaluation_fk")
+
+  # ID del curso-estudiante (garantiza que el estudiante pertenece a ese curso)
+  courseStudentId: UUID! @col(name: "course_student_fk")
+
+  # Puntaje total obtenido
+  totalScore: Float! @col(name: "total_score") @default(value: 0)
+  
+  # Nota final
+  grade: Float
+  
+  # Fecha de rendición
+  takenOn: Timestamp @col(name: "taken_on")
+  
+  # Número de intento
+  attemptNo: Int @col(name: "attempt_no")
+  
+  # Estado de la rendición: CREATED, ASSIGNED, IN_PROGRESS, COMPLETED, GRADED
+  state: String! @default(value: "CREATED")
+}
+
+type StudentEvaluationQuestion @table(name: "student_evaluation_questions", key: "studentEvaluationQuestionId") {
+  # Identificador único de la pregunta asignada al estudiante
+  studentEvaluationQuestionId: UUID! @col(name: "student_evaluation_question_id")
+  
+  # ID de la rendición del estudiante
+  studentEvaluationId: UUID! @col(name: "student_evaluation_fk")
+  
+  # ID de la pregunta de evaluación (del pool de preguntas de la evaluación)
+  evaluationQuestionId: UUID! @col(name: "evaluation_question_fk")
+  
+  # Posición de la pregunta en la evaluación del estudiante
+  position: Int!
+  
+  # Puntaje obtenido por el estudiante en esta pregunta
+  scoreObtained: Float @col(name: "score_obtained")
+  
+  # Indica si la respuesta es correcta
+  isCorrect: Boolean @col(name: "is_correct")
+}
+
+type StudentAnswerOption @table(name: "student_answer_options", key: "studentAnswerOptionId") {
+  # Identificador único de la selección de alternativa
+  studentAnswerOptionId: UUID! @col(name: "student_answer_option_id")
+  
+  # ID de la pregunta asignada al estudiante
+  studentEvaluationQuestionId: UUID! @col(name: "student_evaluation_question_fk")
+  
+  # ID de la opción de pregunta seleccionada
+  questionOptionId: UUID! @col(name: "question_option_fk")
+}

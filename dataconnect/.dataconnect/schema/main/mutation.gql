@@ -9,6 +9,24 @@ extend type Mutation {
     data: Course_Data!
   ): Course_KeyOutput! @fdc_generated(from: "Course", purpose: INSERT_SINGLE)
   """
+  ✨ Insert a single `CourseEvaluation` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  courseEvaluation_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CourseEvaluation_Data!
+  ): CourseEvaluation_KeyOutput! @fdc_generated(from: "CourseEvaluation", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `CourseStudent` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  courseStudent_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CourseStudent_Data!
+  ): CourseStudent_KeyOutput! @fdc_generated(from: "CourseStudent", purpose: INSERT_SINGLE)
+  """
   ✨ Insert a single `Difficulty` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   difficulty_insert(
@@ -26,6 +44,24 @@ extend type Mutation {
     """
     data: EducationalLevel_Data!
   ): EducationalLevel_KeyOutput! @fdc_generated(from: "EducationalLevel", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Evaluation` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  evaluation_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Evaluation_Data!
+  ): Evaluation_KeyOutput! @fdc_generated(from: "Evaluation", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `EvaluationQuestion` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  evaluationQuestion_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: EvaluationQuestion_Data!
+  ): EvaluationQuestion_KeyOutput! @fdc_generated(from: "EvaluationQuestion", purpose: INSERT_SINGLE)
   """
   ✨ Insert a single `LevelCategory` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -62,6 +98,42 @@ extend type Mutation {
     """
     data: QuestionType_Data!
   ): QuestionType_KeyOutput! @fdc_generated(from: "QuestionType", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Student` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  student_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Student_Data!
+  ): Student_KeyOutput! @fdc_generated(from: "Student", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `StudentAnswerOption` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  studentAnswerOption_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: StudentAnswerOption_Data!
+  ): StudentAnswerOption_KeyOutput! @fdc_generated(from: "StudentAnswerOption", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `StudentCourseEvaluation` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  studentCourseEvaluation_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: StudentCourseEvaluation_Data!
+  ): StudentCourseEvaluation_KeyOutput! @fdc_generated(from: "StudentCourseEvaluation", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `StudentEvaluationQuestion` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  studentEvaluationQuestion_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: StudentEvaluationQuestion_Data!
+  ): StudentEvaluationQuestion_KeyOutput! @fdc_generated(from: "StudentEvaluationQuestion", purpose: INSERT_SINGLE)
   """
   ✨ Insert a single `Subject` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -117,6 +189,24 @@ extend type Mutation {
     data: [Course_Data!]!
   ): [Course_KeyOutput!]! @fdc_generated(from: "Course", purpose: INSERT_MULTIPLE)
   """
+  ✨ Insert `CourseEvaluation` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  courseEvaluation_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CourseEvaluation_Data!]!
+  ): [CourseEvaluation_KeyOutput!]! @fdc_generated(from: "CourseEvaluation", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `CourseStudent` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  courseStudent_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CourseStudent_Data!]!
+  ): [CourseStudent_KeyOutput!]! @fdc_generated(from: "CourseStudent", purpose: INSERT_MULTIPLE)
+  """
   ✨ Insert `Difficulty` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   difficulty_insertMany(
@@ -134,6 +224,24 @@ extend type Mutation {
     """
     data: [EducationalLevel_Data!]!
   ): [EducationalLevel_KeyOutput!]! @fdc_generated(from: "EducationalLevel", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Evaluation` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  evaluation_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Evaluation_Data!]!
+  ): [Evaluation_KeyOutput!]! @fdc_generated(from: "Evaluation", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `EvaluationQuestion` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  evaluationQuestion_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [EvaluationQuestion_Data!]!
+  ): [EvaluationQuestion_KeyOutput!]! @fdc_generated(from: "EvaluationQuestion", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `LevelCategory` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -170,6 +278,42 @@ extend type Mutation {
     """
     data: [QuestionType_Data!]!
   ): [QuestionType_KeyOutput!]! @fdc_generated(from: "QuestionType", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Student` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  student_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Student_Data!]!
+  ): [Student_KeyOutput!]! @fdc_generated(from: "Student", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `StudentAnswerOption` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  studentAnswerOption_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [StudentAnswerOption_Data!]!
+  ): [StudentAnswerOption_KeyOutput!]! @fdc_generated(from: "StudentAnswerOption", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `StudentCourseEvaluation` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  studentCourseEvaluation_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [StudentCourseEvaluation_Data!]!
+  ): [StudentCourseEvaluation_KeyOutput!]! @fdc_generated(from: "StudentCourseEvaluation", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `StudentEvaluationQuestion` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  studentEvaluationQuestion_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [StudentEvaluationQuestion_Data!]!
+  ): [StudentEvaluationQuestion_KeyOutput!]! @fdc_generated(from: "StudentEvaluationQuestion", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Subject` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -225,6 +369,24 @@ extend type Mutation {
     data: Course_Data!
   ): Course_KeyOutput! @fdc_generated(from: "Course", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update a single `CourseEvaluation` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CourseEvaluation`.
+  """
+  courseEvaluation_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CourseEvaluation_Data!
+  ): CourseEvaluation_KeyOutput! @fdc_generated(from: "CourseEvaluation", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `CourseStudent` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CourseStudent`.
+  """
+  courseStudent_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CourseStudent_Data!
+  ): CourseStudent_KeyOutput! @fdc_generated(from: "CourseStudent", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update a single `Difficulty` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Difficulty`.
   """
   difficulty_upsert(
@@ -242,6 +404,24 @@ extend type Mutation {
     """
     data: EducationalLevel_Data!
   ): EducationalLevel_KeyOutput! @fdc_generated(from: "EducationalLevel", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Evaluation` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Evaluation`.
+  """
+  evaluation_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Evaluation_Data!
+  ): Evaluation_KeyOutput! @fdc_generated(from: "Evaluation", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `EvaluationQuestion` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EvaluationQuestion`.
+  """
+  evaluationQuestion_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: EvaluationQuestion_Data!
+  ): EvaluationQuestion_KeyOutput! @fdc_generated(from: "EvaluationQuestion", purpose: UPSERT_SINGLE)
   """
   ✨ Insert or update a single `LevelCategory` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LevelCategory`.
   """
@@ -278,6 +458,42 @@ extend type Mutation {
     """
     data: QuestionType_Data!
   ): QuestionType_KeyOutput! @fdc_generated(from: "QuestionType", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Student` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Student`.
+  """
+  student_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Student_Data!
+  ): Student_KeyOutput! @fdc_generated(from: "Student", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `StudentAnswerOption` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `StudentAnswerOption`.
+  """
+  studentAnswerOption_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: StudentAnswerOption_Data!
+  ): StudentAnswerOption_KeyOutput! @fdc_generated(from: "StudentAnswerOption", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `StudentCourseEvaluation` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `StudentCourseEvaluation`.
+  """
+  studentCourseEvaluation_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: StudentCourseEvaluation_Data!
+  ): StudentCourseEvaluation_KeyOutput! @fdc_generated(from: "StudentCourseEvaluation", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `StudentEvaluationQuestion` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `StudentEvaluationQuestion`.
+  """
+  studentEvaluationQuestion_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: StudentEvaluationQuestion_Data!
+  ): StudentEvaluationQuestion_KeyOutput! @fdc_generated(from: "StudentEvaluationQuestion", purpose: UPSERT_SINGLE)
   """
   ✨ Insert or update a single `Subject` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Subject`.
   """
@@ -333,6 +549,24 @@ extend type Mutation {
     data: [Course_Data!]!
   ): [Course_KeyOutput!]! @fdc_generated(from: "Course", purpose: UPSERT_MULTIPLE)
   """
+  ✨ Insert or update `CourseEvaluation` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CourseEvaluation`.
+  """
+  courseEvaluation_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CourseEvaluation_Data!]!
+  ): [CourseEvaluation_KeyOutput!]! @fdc_generated(from: "CourseEvaluation", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `CourseStudent` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CourseStudent`.
+  """
+  courseStudent_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CourseStudent_Data!]!
+  ): [CourseStudent_KeyOutput!]! @fdc_generated(from: "CourseStudent", purpose: UPSERT_MULTIPLE)
+  """
   ✨ Insert or update `Difficulty` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Difficulty`.
   """
   difficulty_upsertMany(
@@ -350,6 +584,24 @@ extend type Mutation {
     """
     data: [EducationalLevel_Data!]!
   ): [EducationalLevel_KeyOutput!]! @fdc_generated(from: "EducationalLevel", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Evaluation` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Evaluation`.
+  """
+  evaluation_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Evaluation_Data!]!
+  ): [Evaluation_KeyOutput!]! @fdc_generated(from: "Evaluation", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `EvaluationQuestion` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EvaluationQuestion`.
+  """
+  evaluationQuestion_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [EvaluationQuestion_Data!]!
+  ): [EvaluationQuestion_KeyOutput!]! @fdc_generated(from: "EvaluationQuestion", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `LevelCategory` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LevelCategory`.
   """
@@ -386,6 +638,42 @@ extend type Mutation {
     """
     data: [QuestionType_Data!]!
   ): [QuestionType_KeyOutput!]! @fdc_generated(from: "QuestionType", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Student` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Student`.
+  """
+  student_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Student_Data!]!
+  ): [Student_KeyOutput!]! @fdc_generated(from: "Student", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `StudentAnswerOption` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `StudentAnswerOption`.
+  """
+  studentAnswerOption_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [StudentAnswerOption_Data!]!
+  ): [StudentAnswerOption_KeyOutput!]! @fdc_generated(from: "StudentAnswerOption", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `StudentCourseEvaluation` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `StudentCourseEvaluation`.
+  """
+  studentCourseEvaluation_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [StudentCourseEvaluation_Data!]!
+  ): [StudentCourseEvaluation_KeyOutput!]! @fdc_generated(from: "StudentCourseEvaluation", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `StudentEvaluationQuestion` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `StudentEvaluationQuestion`.
+  """
+  studentEvaluationQuestion_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [StudentEvaluationQuestion_Data!]!
+  ): [StudentEvaluationQuestion_KeyOutput!]! @fdc_generated(from: "StudentEvaluationQuestion", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Subject` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Subject`.
   """
@@ -451,6 +739,44 @@ extend type Mutation {
     data: Course_Data!
   ): Course_KeyOutput @fdc_generated(from: "Course", purpose: UPDATE_SINGLE)
   """
+  ✨ Update a single `CourseEvaluation` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CourseEvaluation` or `null` if not found.
+  """
+  courseEvaluation_update(
+    """
+    The key used to identify the object.
+    """
+    key: CourseEvaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CourseEvaluation_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CourseEvaluation_Data!
+  ): CourseEvaluation_KeyOutput @fdc_generated(from: "CourseEvaluation", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `CourseStudent` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CourseStudent` or `null` if not found.
+  """
+  courseStudent_update(
+    """
+    The key used to identify the object.
+    """
+    key: CourseStudent_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CourseStudent_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CourseStudent_Data!
+  ): CourseStudent_KeyOutput @fdc_generated(from: "CourseStudent", purpose: UPDATE_SINGLE)
+  """
   ✨ Update a single `Difficulty` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Difficulty` or `null` if not found.
   """
   difficulty_update(
@@ -488,6 +814,44 @@ extend type Mutation {
     """
     data: EducationalLevel_Data!
   ): EducationalLevel_KeyOutput @fdc_generated(from: "EducationalLevel", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Evaluation` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Evaluation` or `null` if not found.
+  """
+  evaluation_update(
+    """
+    The key used to identify the object.
+    """
+    key: Evaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Evaluation_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Evaluation_Data!
+  ): Evaluation_KeyOutput @fdc_generated(from: "Evaluation", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `EvaluationQuestion` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `EvaluationQuestion` or `null` if not found.
+  """
+  evaluationQuestion_update(
+    """
+    The key used to identify the object.
+    """
+    key: EvaluationQuestion_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EvaluationQuestion_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: EvaluationQuestion_Data!
+  ): EvaluationQuestion_KeyOutput @fdc_generated(from: "EvaluationQuestion", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `LevelCategory` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `LevelCategory` or `null` if not found.
   """
@@ -564,6 +928,82 @@ extend type Mutation {
     """
     data: QuestionType_Data!
   ): QuestionType_KeyOutput @fdc_generated(from: "QuestionType", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Student` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Student` or `null` if not found.
+  """
+  student_update(
+    """
+    The key used to identify the object.
+    """
+    key: Student_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Student_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Student_Data!
+  ): Student_KeyOutput @fdc_generated(from: "Student", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `StudentAnswerOption` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `StudentAnswerOption` or `null` if not found.
+  """
+  studentAnswerOption_update(
+    """
+    The key used to identify the object.
+    """
+    key: StudentAnswerOption_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentAnswerOption_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: StudentAnswerOption_Data!
+  ): StudentAnswerOption_KeyOutput @fdc_generated(from: "StudentAnswerOption", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `StudentCourseEvaluation` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `StudentCourseEvaluation` or `null` if not found.
+  """
+  studentCourseEvaluation_update(
+    """
+    The key used to identify the object.
+    """
+    key: StudentCourseEvaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentCourseEvaluation_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: StudentCourseEvaluation_Data!
+  ): StudentCourseEvaluation_KeyOutput @fdc_generated(from: "StudentCourseEvaluation", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `StudentEvaluationQuestion` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `StudentEvaluationQuestion` or `null` if not found.
+  """
+  studentEvaluationQuestion_update(
+    """
+    The key used to identify the object.
+    """
+    key: StudentEvaluationQuestion_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentEvaluationQuestion_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: StudentEvaluationQuestion_Data!
+  ): StudentEvaluationQuestion_KeyOutput @fdc_generated(from: "StudentEvaluationQuestion", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Subject` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Subject` or `null` if not found.
   """
@@ -679,6 +1119,44 @@ extend type Mutation {
     data: Course_Data!
   ): Int! @fdc_generated(from: "Course", purpose: UPDATE_MULTIPLE)
   """
+  ✨ Update `CourseEvaluation` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  courseEvaluation_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CourseEvaluation_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CourseEvaluation_Data!
+  ): Int! @fdc_generated(from: "CourseEvaluation", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `CourseStudent` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  courseStudent_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CourseStudent_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CourseStudent_Data!
+  ): Int! @fdc_generated(from: "CourseStudent", purpose: UPDATE_MULTIPLE)
+  """
   ✨ Update `Difficulty` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   difficulty_updateMany(
@@ -716,6 +1194,44 @@ extend type Mutation {
     """
     data: EducationalLevel_Data!
   ): Int! @fdc_generated(from: "EducationalLevel", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Evaluation` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  evaluation_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Evaluation_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Evaluation_Data!
+  ): Int! @fdc_generated(from: "Evaluation", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `EvaluationQuestion` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  evaluationQuestion_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: EvaluationQuestion_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: EvaluationQuestion_Data!
+  ): Int! @fdc_generated(from: "EvaluationQuestion", purpose: UPDATE_MULTIPLE)
   """
   ✨ Update `LevelCategory` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
@@ -792,6 +1308,82 @@ extend type Mutation {
     """
     data: QuestionType_Data!
   ): Int! @fdc_generated(from: "QuestionType", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Student` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  student_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Student_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Student_Data!
+  ): Int! @fdc_generated(from: "Student", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `StudentAnswerOption` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  studentAnswerOption_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: StudentAnswerOption_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: StudentAnswerOption_Data!
+  ): Int! @fdc_generated(from: "StudentAnswerOption", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `StudentCourseEvaluation` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  studentCourseEvaluation_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: StudentCourseEvaluation_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: StudentCourseEvaluation_Data!
+  ): Int! @fdc_generated(from: "StudentCourseEvaluation", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `StudentEvaluationQuestion` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  studentEvaluationQuestion_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: StudentEvaluationQuestion_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: StudentEvaluationQuestion_Data!
+  ): Int! @fdc_generated(from: "StudentEvaluationQuestion", purpose: UPDATE_MULTIPLE)
   """
   ✨ Update `Subject` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
@@ -902,6 +1494,34 @@ extend type Mutation {
     first: Course_FirstRow
   ): Course_KeyOutput @fdc_generated(from: "Course", purpose: DELETE_SINGLE)
   """
+  ✨ Delete a single `CourseEvaluation` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  courseEvaluation_delete(
+    """
+    The key used to identify the object.
+    """
+    key: CourseEvaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CourseEvaluation_FirstRow
+  ): CourseEvaluation_KeyOutput @fdc_generated(from: "CourseEvaluation", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `CourseStudent` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  courseStudent_delete(
+    """
+    The key used to identify the object.
+    """
+    key: CourseStudent_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CourseStudent_FirstRow
+  ): CourseStudent_KeyOutput @fdc_generated(from: "CourseStudent", purpose: DELETE_SINGLE)
+  """
   ✨ Delete a single `Difficulty` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   difficulty_delete(
@@ -929,6 +1549,34 @@ extend type Mutation {
     """
     first: EducationalLevel_FirstRow
   ): EducationalLevel_KeyOutput @fdc_generated(from: "EducationalLevel", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Evaluation` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  evaluation_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Evaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Evaluation_FirstRow
+  ): Evaluation_KeyOutput @fdc_generated(from: "Evaluation", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `EvaluationQuestion` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  evaluationQuestion_delete(
+    """
+    The key used to identify the object.
+    """
+    key: EvaluationQuestion_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EvaluationQuestion_FirstRow
+  ): EvaluationQuestion_KeyOutput @fdc_generated(from: "EvaluationQuestion", purpose: DELETE_SINGLE)
   """
   ✨ Delete a single `LevelCategory` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
@@ -985,6 +1633,62 @@ extend type Mutation {
     """
     first: QuestionType_FirstRow
   ): QuestionType_KeyOutput @fdc_generated(from: "QuestionType", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Student` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  student_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Student_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Student_FirstRow
+  ): Student_KeyOutput @fdc_generated(from: "Student", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `StudentAnswerOption` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  studentAnswerOption_delete(
+    """
+    The key used to identify the object.
+    """
+    key: StudentAnswerOption_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentAnswerOption_FirstRow
+  ): StudentAnswerOption_KeyOutput @fdc_generated(from: "StudentAnswerOption", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `StudentCourseEvaluation` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  studentCourseEvaluation_delete(
+    """
+    The key used to identify the object.
+    """
+    key: StudentCourseEvaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentCourseEvaluation_FirstRow
+  ): StudentCourseEvaluation_KeyOutput @fdc_generated(from: "StudentCourseEvaluation", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `StudentEvaluationQuestion` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  studentEvaluationQuestion_delete(
+    """
+    The key used to identify the object.
+    """
+    key: StudentEvaluationQuestion_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentEvaluationQuestion_FirstRow
+  ): StudentEvaluationQuestion_KeyOutput @fdc_generated(from: "StudentEvaluationQuestion", purpose: DELETE_SINGLE)
   """
   ✨ Delete a single `Subject` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
@@ -1070,6 +1774,34 @@ extend type Mutation {
     all: Boolean = false
   ): Int! @fdc_generated(from: "Course", purpose: DELETE_MULTIPLE)
   """
+  ✨ Delete `CourseEvaluation` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  courseEvaluation_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CourseEvaluation_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CourseEvaluation", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `CourseStudent` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  courseStudent_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CourseStudent_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CourseStudent", purpose: DELETE_MULTIPLE)
+  """
   ✨ Delete `Difficulty` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
   difficulty_deleteMany(
@@ -1097,6 +1829,34 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "EducationalLevel", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Evaluation` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  evaluation_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Evaluation_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Evaluation", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `EvaluationQuestion` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  evaluationQuestion_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: EvaluationQuestion_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "EvaluationQuestion", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `LevelCategory` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
@@ -1153,6 +1913,62 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "QuestionType", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Student` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  student_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Student_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Student", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `StudentAnswerOption` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  studentAnswerOption_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: StudentAnswerOption_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "StudentAnswerOption", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `StudentCourseEvaluation` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  studentCourseEvaluation_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: StudentCourseEvaluation_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "StudentCourseEvaluation", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `StudentEvaluationQuestion` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  studentEvaluationQuestion_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: StudentEvaluationQuestion_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "StudentEvaluationQuestion", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Subject` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

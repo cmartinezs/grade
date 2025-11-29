@@ -68,6 +68,7 @@ export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
 
         const transformedUnits = (unitsData.units || []).map((u: any) => ({
           unit_id: u.unitId,
+          code: u.code,
           subject_fk: u.subjectId,
           name: u.name,
           description: u.description,
@@ -82,6 +83,7 @@ export const useCurriculumHierarchy = (): UseCurriculumHierarchyResult => {
 
         const transformedTopics = (topicsData.topics || []).map((t: any) => ({
           topic_id: t.topicId,
+          code: t.code,
           unit_fk: t.unitId,
           name: t.name,
           description: t.description,

@@ -14,6 +14,34 @@ extend type Query {
     first: Course_FirstRow
   ): Course @fdc_generated(from: "Course", purpose: QUERY_SINGLE)
   """
+  ✨ Look up a single `CourseEvaluation` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  courseEvaluation(
+    """
+    The key used to identify the object.
+    """
+    key: CourseEvaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CourseEvaluation_FirstRow
+  ): CourseEvaluation @fdc_generated(from: "CourseEvaluation", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `CourseStudent` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  courseStudent(
+    """
+    The key used to identify the object.
+    """
+    key: CourseStudent_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CourseStudent_FirstRow
+  ): CourseStudent @fdc_generated(from: "CourseStudent", purpose: QUERY_SINGLE)
+  """
   ✨ Look up a single `Difficulty` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
   difficulty(
@@ -41,6 +69,34 @@ extend type Query {
     """
     first: EducationalLevel_FirstRow
   ): EducationalLevel @fdc_generated(from: "EducationalLevel", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Evaluation` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  evaluation(
+    """
+    The key used to identify the object.
+    """
+    key: Evaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Evaluation_FirstRow
+  ): Evaluation @fdc_generated(from: "Evaluation", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `EvaluationQuestion` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  evaluationQuestion(
+    """
+    The key used to identify the object.
+    """
+    key: EvaluationQuestion_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EvaluationQuestion_FirstRow
+  ): EvaluationQuestion @fdc_generated(from: "EvaluationQuestion", purpose: QUERY_SINGLE)
   """
   ✨ Look up a single `LevelCategory` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
@@ -97,6 +153,62 @@ extend type Query {
     """
     first: QuestionType_FirstRow
   ): QuestionType @fdc_generated(from: "QuestionType", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Student` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  student(
+    """
+    The key used to identify the object.
+    """
+    key: Student_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Student_FirstRow
+  ): Student @fdc_generated(from: "Student", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `StudentAnswerOption` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  studentAnswerOption(
+    """
+    The key used to identify the object.
+    """
+    key: StudentAnswerOption_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentAnswerOption_FirstRow
+  ): StudentAnswerOption @fdc_generated(from: "StudentAnswerOption", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `StudentCourseEvaluation` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  studentCourseEvaluation(
+    """
+    The key used to identify the object.
+    """
+    key: StudentCourseEvaluation_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentCourseEvaluation_FirstRow
+  ): StudentCourseEvaluation @fdc_generated(from: "StudentCourseEvaluation", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `StudentEvaluationQuestion` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  studentEvaluationQuestion(
+    """
+    The key used to identify the object.
+    """
+    key: StudentEvaluationQuestion_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: StudentEvaluationQuestion_FirstRow
+  ): StudentEvaluationQuestion @fdc_generated(from: "StudentEvaluationQuestion", purpose: QUERY_SINGLE)
   """
   ✨ Look up a single `Subject` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
@@ -202,6 +314,74 @@ extend type Query {
     having: Course_Having
   ): [Course!]! @fdc_generated(from: "Course", purpose: QUERY_MULTIPLE)
   """
+  ✨ List `CourseEvaluation` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  courseEvaluations(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CourseEvaluation_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CourseEvaluation_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CourseEvaluation_Having
+  ): [CourseEvaluation!]! @fdc_generated(from: "CourseEvaluation", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `CourseStudent` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  courseStudents(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CourseStudent_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CourseStudent_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CourseStudent_Having
+  ): [CourseStudent!]! @fdc_generated(from: "CourseStudent", purpose: QUERY_MULTIPLE)
+  """
   ✨ List `Difficulty` objects in the table and return selected fields, optionally filtered by `where` conditions
   """
   difficulties(
@@ -269,6 +449,74 @@ extend type Query {
     """
     having: EducationalLevel_Having
   ): [EducationalLevel!]! @fdc_generated(from: "EducationalLevel", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Evaluation` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  evaluations(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Evaluation_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Evaluation_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Evaluation_Having
+  ): [Evaluation!]! @fdc_generated(from: "Evaluation", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `EvaluationQuestion` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  evaluationQuestions(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: EvaluationQuestion_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [EvaluationQuestion_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: EvaluationQuestion_Having
+  ): [EvaluationQuestion!]! @fdc_generated(from: "EvaluationQuestion", purpose: QUERY_MULTIPLE)
   """
   ✨ List `LevelCategory` objects in the table and return selected fields, optionally filtered by `where` conditions
   """
@@ -405,6 +653,142 @@ extend type Query {
     """
     having: QuestionType_Having
   ): [QuestionType!]! @fdc_generated(from: "QuestionType", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Student` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  students(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Student_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Student_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Student_Having
+  ): [Student!]! @fdc_generated(from: "Student", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `StudentAnswerOption` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  studentAnswerOptions(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: StudentAnswerOption_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [StudentAnswerOption_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: StudentAnswerOption_Having
+  ): [StudentAnswerOption!]! @fdc_generated(from: "StudentAnswerOption", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `StudentCourseEvaluation` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  studentCourseEvaluations(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: StudentCourseEvaluation_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [StudentCourseEvaluation_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: StudentCourseEvaluation_Having
+  ): [StudentCourseEvaluation!]! @fdc_generated(from: "StudentCourseEvaluation", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `StudentEvaluationQuestion` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  studentEvaluationQuestions(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: StudentEvaluationQuestion_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [StudentEvaluationQuestion_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: StudentEvaluationQuestion_Having
+  ): [StudentEvaluationQuestion!]! @fdc_generated(from: "StudentEvaluationQuestion", purpose: QUERY_MULTIPLE)
   """
   ✨ List `Subject` objects in the table and return selected fields, optionally filtered by `where` conditions
   """

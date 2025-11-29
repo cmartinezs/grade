@@ -916,5 +916,542 @@ mutation ReactivateTaxonomy(
 }
 
 # ===================================================================
+# EVALUACIONES (Evaluations)
+# ===================================================================
+
+# Crear una nueva evaluación
+mutation CreateEvaluation(
+  $evaluationId: UUID!
+  $title: String!
+  $scheduledDate: Date!
+  $durationMinutes: Int!
+  $gradeScale: String!
+  $subjectId: UUID!
+  $userId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  evaluation_insert(
+    data: {
+      evaluationId: $evaluationId
+      title: $title
+      scheduledDate: $scheduledDate
+      durationMinutes: $durationMinutes
+      gradeScale: $gradeScale
+      state: "DRAFT"
+      subjectId: $subjectId
+      userId: $userId
+    }
+  )
+}
+
+# Actualizar una evaluación
+mutation UpdateEvaluation(
+  $evaluationId: UUID!
+  $title: String
+  $scheduledDate: Date
+  $durationMinutes: Int
+  $gradeScale: String
+  $subjectId: UUID
+  $pdfPath: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  evaluation_update(
+    key: { evaluationId: $evaluationId }
+    data: {
+      title: $title
+      scheduledDate: $scheduledDate
+      durationMinutes: $durationMinutes
+      gradeScale: $gradeScale
+      subjectId: $subjectId
+      pdfPath: $pdfPath
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Cambiar estado de una evaluación
+# Estados: DRAFT -> PUBLISHED -> APPLIED -> GRADED -> ARCHIVED
+mutation UpdateEvaluationState(
+  $evaluationId: UUID!
+  $state: String!
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  evaluation_update(
+    key: { evaluationId: $evaluationId }
+    data: {
+      state: $state
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar una evaluación (soft delete)
+mutation DeactivateEvaluation(
+  $evaluationId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  evaluation_update(
+    key: { evaluationId: $evaluationId }
+    data: {
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar una evaluación (undo soft delete)
+mutation ReactivateEvaluation(
+  $evaluationId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  evaluation_update(
+    key: { evaluationId: $evaluationId }
+    data: {
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# ===================================================================
+# PREGUNTAS DE EVALUACIÓN (Evaluation Questions)
+# ===================================================================
+
+# Asignar una pregunta a una evaluación
+mutation AddQuestionToEvaluation(
+  $evaluationQuestionId: UUID!
+  $evaluationId: UUID!
+  $questionId: UUID!
+  $points: Float!
+  $position: Int!
+) @auth(level: USER) {
+  evaluationQuestion_insert(
+    data: {
+      evaluationQuestionId: $evaluationQuestionId
+      evaluationId: $evaluationId
+      questionId: $questionId
+      points: $points
+      position: $position
+    }
+  )
+}
+
+# Actualizar puntos o posición de una pregunta en evaluación
+mutation UpdateEvaluationQuestion(
+  $evaluationQuestionId: UUID!
+  $points: Float
+  $position: Int
+) @auth(level: USER) {
+  evaluationQuestion_update(
+    key: { evaluationQuestionId: $evaluationQuestionId }
+    data: {
+      points: $points
+      position: $position
+    }
+  )
+}
+
+# Remover una pregunta de una evaluación
+mutation RemoveQuestionFromEvaluation(
+  $evaluationQuestionId: UUID!
+) @auth(level: USER) {
+  evaluationQuestion_delete(
+    key: { evaluationQuestionId: $evaluationQuestionId }
+  )
+}
+
+# ===================================================================
+# ASIGNACIÓN DE EVALUACIONES A CURSOS (Course Evaluations)
+# ===================================================================
+
+# Asignar una evaluación a un curso
+mutation AssignEvaluationToCourse(
+  $courseEvaluationId: UUID!
+  $courseId: UUID!
+  $evaluationId: UUID!
+  $createdBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseEvaluation_insert(
+    data: {
+      courseEvaluationId: $courseEvaluationId
+      courseId: $courseId
+      evaluationId: $evaluationId
+      createdBy: $createdBy
+    }
+  )
+}
+
+# Remover asignación de evaluación de un curso
+mutation RemoveEvaluationFromCourse(
+  $courseEvaluationId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseEvaluation_delete(
+    key: { courseEvaluationId: $courseEvaluationId }
+  )
+}
+
+# ===================================================================
+# ESTUDIANTES (Students)
+# ===================================================================
+
+# Crear un nuevo estudiante
+mutation CreateStudent(
+  $studentId: UUID!
+  $firstName: String!
+  $lastName: String!
+  $identifier: String!
+  $createdBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  student_insert(
+    data: {
+      studentId: $studentId
+      firstName: $firstName
+      lastName: $lastName
+      identifier: $identifier
+      createdBy: $createdBy
+    }
+  )
+}
+
+# Actualizar un estudiante
+mutation UpdateStudent(
+  $studentId: UUID!
+  $firstName: String
+  $lastName: String
+  $identifier: String
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  student_update(
+    key: { studentId: $studentId }
+    data: {
+      firstName: $firstName
+      lastName: $lastName
+      identifier: $identifier
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desactivar un estudiante (soft delete)
+mutation DeactivateStudent(
+  $studentId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  student_update(
+    key: { studentId: $studentId }
+    data: {
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Reactivar un estudiante (undo soft delete)
+mutation ReactivateStudent(
+  $studentId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  student_update(
+    key: { studentId: $studentId }
+    data: {
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# ===================================================================
+# INSCRIPCIÓN DE ESTUDIANTES EN CURSOS (Course Students)
+# ===================================================================
+
+# Inscribir un estudiante en un curso
+mutation EnrollStudentInCourse(
+  $courseStudentId: UUID!
+  $courseId: UUID!
+  $studentId: UUID!
+  $enrolledOn: Date!
+  $createdBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseStudent_insert(
+    data: {
+      courseStudentId: $courseStudentId
+      courseId: $courseId
+      studentId: $studentId
+      enrolledOn: $enrolledOn
+      createdBy: $createdBy
+    }
+  )
+}
+
+# Actualizar inscripción de estudiante
+mutation UpdateCourseStudent(
+  $courseStudentId: UUID!
+  $enrolledOn: Date
+  $updatedBy: UUID!
+  $updatedAt: Timestamp!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseStudent_update(
+    key: { courseStudentId: $courseStudentId }
+    data: {
+      enrolledOn: $enrolledOn
+      updatedBy: $updatedBy
+      updatedAt: $updatedAt
+    }
+  )
+}
+
+# Desmatricular estudiante de un curso (soft delete)
+mutation UnenrollStudentFromCourse(
+  $courseStudentId: UUID!
+  $deletedAt: Timestamp!
+  $deletedBy: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseStudent_update(
+    key: { courseStudentId: $courseStudentId }
+    data: {
+      deletedAt: $deletedAt
+      deletedBy: $deletedBy
+    }
+  )
+}
+
+# Re-matricular estudiante en un curso (undo soft delete)
+mutation ReenrollStudentInCourse(
+  $courseStudentId: UUID!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseStudent_update(
+    key: { courseStudentId: $courseStudentId }
+    data: {
+      deletedAt: null
+      deletedBy: null
+    }
+  )
+}
+
+# ===================================================================
+# EVALUACIONES DE ESTUDIANTES (Student Course Evaluations)
+# ===================================================================
+
+# Crear/Asignar una evaluación a un estudiante (crear la "copia" de la evaluación)
+mutation CreateStudentEvaluation(
+  $studentCourseEvaluationId: UUID!
+  $courseEvaluationId: UUID!
+  $courseStudentId: UUID!
+) @auth(level: USER) {
+  studentCourseEvaluation_insert(
+    data: {
+      studentCourseEvaluationId: $studentCourseEvaluationId
+      courseEvaluationId: $courseEvaluationId
+      courseStudentId: $courseStudentId
+      totalScore: 0
+      state: "CREATED"
+    }
+  )
+}
+
+# Cambiar estado de evaluación de estudiante
+# Estados: CREATED -> ASSIGNED -> IN_PROGRESS -> COMPLETED -> GRADED
+mutation UpdateStudentEvaluationState(
+  $studentCourseEvaluationId: UUID!
+  $state: String!
+) @auth(level: USER) {
+  studentCourseEvaluation_update(
+    key: { studentCourseEvaluationId: $studentCourseEvaluationId }
+    data: {
+      state: $state
+    }
+  )
+}
+
+# Iniciar evaluación del estudiante (marcar fecha de inicio)
+mutation StartStudentEvaluation(
+  $studentCourseEvaluationId: UUID!
+  $takenOn: Timestamp!
+  $attemptNo: Int!
+) @auth(level: USER) {
+  studentCourseEvaluation_update(
+    key: { studentCourseEvaluationId: $studentCourseEvaluationId }
+    data: {
+      takenOn: $takenOn
+      attemptNo: $attemptNo
+      state: "IN_PROGRESS"
+    }
+  )
+}
+
+# Finalizar evaluación del estudiante
+mutation CompleteStudentEvaluation(
+  $studentCourseEvaluationId: UUID!
+) @auth(level: USER) {
+  studentCourseEvaluation_update(
+    key: { studentCourseEvaluationId: $studentCourseEvaluationId }
+    data: {
+      state: "COMPLETED"
+    }
+  )
+}
+
+# Calificar evaluación del estudiante (registrar puntaje y nota)
+mutation GradeStudentEvaluation(
+  $studentCourseEvaluationId: UUID!
+  $totalScore: Float!
+  $grade: Float!
+) @auth(level: USER) {
+  studentCourseEvaluation_update(
+    key: { studentCourseEvaluationId: $studentCourseEvaluationId }
+    data: {
+      totalScore: $totalScore
+      grade: $grade
+      state: "GRADED"
+    }
+  )
+}
+
+# Actualizar puntaje total de evaluación del estudiante
+mutation UpdateStudentEvaluationScore(
+  $studentCourseEvaluationId: UUID!
+  $totalScore: Float!
+) @auth(level: USER) {
+  studentCourseEvaluation_update(
+    key: { studentCourseEvaluationId: $studentCourseEvaluationId }
+    data: {
+      totalScore: $totalScore
+    }
+  )
+}
+
+# ===================================================================
+# PREGUNTAS DE EVALUACIÓN DEL ESTUDIANTE (Student Evaluation Questions)
+# ===================================================================
+
+# Asignar una pregunta específica a la evaluación del estudiante
+mutation AddQuestionToStudentEvaluation(
+  $studentEvaluationQuestionId: UUID!
+  $studentEvaluationId: UUID!
+  $evaluationQuestionId: UUID!
+  $position: Int!
+) @auth(level: USER) {
+  studentEvaluationQuestion_insert(
+    data: {
+      studentEvaluationQuestionId: $studentEvaluationQuestionId
+      studentEvaluationId: $studentEvaluationId
+      evaluationQuestionId: $evaluationQuestionId
+      position: $position
+    }
+  )
+}
+
+# Registrar resultado de una pregunta del estudiante (después de calificar)
+mutation GradeStudentQuestion(
+  $studentEvaluationQuestionId: UUID!
+  $scoreObtained: Float!
+  $isCorrect: Boolean!
+) @auth(level: USER) {
+  studentEvaluationQuestion_update(
+    key: { studentEvaluationQuestionId: $studentEvaluationQuestionId }
+    data: {
+      scoreObtained: $scoreObtained
+      isCorrect: $isCorrect
+    }
+  )
+}
+
+# Actualizar posición de pregunta en evaluación del estudiante
+mutation UpdateStudentQuestionPosition(
+  $studentEvaluationQuestionId: UUID!
+  $position: Int!
+) @auth(level: USER) {
+  studentEvaluationQuestion_update(
+    key: { studentEvaluationQuestionId: $studentEvaluationQuestionId }
+    data: {
+      position: $position
+    }
+  )
+}
+
+# Eliminar pregunta de evaluación del estudiante
+mutation RemoveQuestionFromStudentEvaluation(
+  $studentEvaluationQuestionId: UUID!
+) @auth(level: USER) {
+  studentEvaluationQuestion_delete(
+    key: { studentEvaluationQuestionId: $studentEvaluationQuestionId }
+  )
+}
+
+# ===================================================================
+# RESPUESTAS DEL ESTUDIANTE (Student Answer Options)
+# ===================================================================
+
+# Registrar una respuesta del estudiante (selección de opción)
+mutation RegisterStudentAnswer(
+  $studentAnswerOptionId: UUID!
+  $studentEvaluationQuestionId: UUID!
+  $questionOptionId: UUID!
+) @auth(level: USER) {
+  studentAnswerOption_insert(
+    data: {
+      studentAnswerOptionId: $studentAnswerOptionId
+      studentEvaluationQuestionId: $studentEvaluationQuestionId
+      questionOptionId: $questionOptionId
+    }
+  )
+}
+
+# Eliminar una respuesta del estudiante (des-seleccionar opción)
+mutation RemoveStudentAnswer(
+  $studentAnswerOptionId: UUID!
+) @auth(level: USER) {
+  studentAnswerOption_delete(
+    key: { studentAnswerOptionId: $studentAnswerOptionId }
+  )
+}
+
+# Eliminar todas las respuestas de una pregunta (para re-responder)
+# Nota: Esta operación debe hacerse desde la aplicación iterando sobre las respuestas
+# ya que Data Connect no soporta delete masivo con where
+
+# ===================================================================
+# OPERACIONES EN LOTE - Helpers para la aplicación
+# ===================================================================
+
+# Nota: Las siguientes operaciones en lote deben manejarse desde la aplicación
+# llamando múltiples mutaciones en secuencia:
+#
+# 1. AssignEvaluationToAllStudentsInCourse:
+#    - Obtener todos los CourseStudent del curso
+#    - Para cada uno, crear StudentCourseEvaluation
+#    - Para cada StudentCourseEvaluation, crear StudentEvaluationQuestion por cada pregunta
+#
+# 2. CopyEvaluationQuestionsToStudent:
+#    - Obtener todas las EvaluationQuestion de la evaluación
+#    - Para cada una, crear StudentEvaluationQuestion
+#
+# 3. GradeAllStudentAnswers:
+#    - Obtener todas las StudentEvaluationQuestion
+#    - Para cada una, comparar respuestas con opciones correctas
+#    - Actualizar scoreObtained e isCorrect
+#    - Calcular totalScore y grade
+
+# ===================================================================
 # FIN DE ARCHIVO
 # ===================================================================

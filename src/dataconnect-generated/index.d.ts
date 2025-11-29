@@ -10,6 +10,59 @@ export type DateString = string;
 
 
 
+export interface AddQuestionToEvaluationData {
+  evaluationQuestion_insert: EvaluationQuestion_Key;
+}
+
+export interface AddQuestionToEvaluationVariables {
+  evaluationQuestionId: UUIDString;
+  evaluationId: UUIDString;
+  questionId: UUIDString;
+  points: number;
+  position: number;
+}
+
+export interface AddQuestionToStudentEvaluationData {
+  studentEvaluationQuestion_insert: StudentEvaluationQuestion_Key;
+}
+
+export interface AddQuestionToStudentEvaluationVariables {
+  studentEvaluationQuestionId: UUIDString;
+  studentEvaluationId: UUIDString;
+  evaluationQuestionId: UUIDString;
+  position: number;
+}
+
+export interface AssignEvaluationToCourseData {
+  courseEvaluation_insert: CourseEvaluation_Key;
+}
+
+export interface AssignEvaluationToCourseVariables {
+  courseEvaluationId: UUIDString;
+  courseId: UUIDString;
+  evaluationId: UUIDString;
+  createdBy: UUIDString;
+  firebaseId: string;
+}
+
+export interface CompleteStudentEvaluationData {
+  studentCourseEvaluation_update?: StudentCourseEvaluation_Key | null;
+}
+
+export interface CompleteStudentEvaluationVariables {
+  studentCourseEvaluationId: UUIDString;
+}
+
+export interface CourseEvaluation_Key {
+  courseEvaluationId: UUIDString;
+  __typename?: 'CourseEvaluation_Key';
+}
+
+export interface CourseStudent_Key {
+  courseStudentId: UUIDString;
+  __typename?: 'CourseStudent_Key';
+}
+
 export interface Course_Key {
   courseId: UUIDString;
   __typename?: 'Course_Key';
@@ -52,6 +105,21 @@ export interface CreateEducationalLevelVariables {
   name: string;
   description?: string | null;
   createdBy: UUIDString;
+}
+
+export interface CreateEvaluationData {
+  evaluation_insert: Evaluation_Key;
+}
+
+export interface CreateEvaluationVariables {
+  evaluationId: UUIDString;
+  title: string;
+  scheduledDate: DateString;
+  durationMinutes: number;
+  gradeScale: string;
+  subjectId: UUIDString;
+  userId: UUIDString;
+  firebaseId: string;
 }
 
 export interface CreateLevelCategoryData {
@@ -127,6 +195,29 @@ export interface CreateQuestionVersionVariables {
   allowPartialScore: boolean;
   version: number;
   originalQuestionId: UUIDString;
+  firebaseId: string;
+}
+
+export interface CreateStudentData {
+  student_insert: Student_Key;
+}
+
+export interface CreateStudentEvaluationData {
+  studentCourseEvaluation_insert: StudentCourseEvaluation_Key;
+}
+
+export interface CreateStudentEvaluationVariables {
+  studentCourseEvaluationId: UUIDString;
+  courseEvaluationId: UUIDString;
+  courseStudentId: UUIDString;
+}
+
+export interface CreateStudentVariables {
+  studentId: UUIDString;
+  firstName: string;
+  lastName: string;
+  identifier: string;
+  createdBy: UUIDString;
   firebaseId: string;
 }
 
@@ -224,6 +315,17 @@ export interface DeactivateEducationalLevelVariables {
   firebaseId: string;
 }
 
+export interface DeactivateEvaluationData {
+  evaluation_update?: Evaluation_Key | null;
+}
+
+export interface DeactivateEvaluationVariables {
+  evaluationId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+  firebaseId: string;
+}
+
 export interface DeactivateLevelCategoryData {
   levelCategory_update?: LevelCategory_Key | null;
 }
@@ -252,6 +354,17 @@ export interface DeactivateQuestionVariables {
   deletedAt: TimestampString;
   deletedBy: UUIDString;
   userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface DeactivateStudentData {
+  student_update?: Student_Key | null;
+}
+
+export interface DeactivateStudentVariables {
+  studentId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
   firebaseId: string;
 }
 
@@ -317,6 +430,114 @@ export interface EducationalLevel_Key {
   __typename?: 'EducationalLevel_Key';
 }
 
+export interface EnrollStudentInCourseData {
+  courseStudent_insert: CourseStudent_Key;
+}
+
+export interface EnrollStudentInCourseVariables {
+  courseStudentId: UUIDString;
+  courseId: UUIDString;
+  studentId: UUIDString;
+  enrolledOn: DateString;
+  createdBy: UUIDString;
+  firebaseId: string;
+}
+
+export interface EvaluationQuestion_Key {
+  evaluationQuestionId: UUIDString;
+  __typename?: 'EvaluationQuestion_Key';
+}
+
+export interface Evaluation_Key {
+  evaluationId: UUIDString;
+  __typename?: 'Evaluation_Key';
+}
+
+export interface GetAllCoursesByUserData {
+  courses: ({
+    courseId: UUIDString;
+    name: string;
+    code: string;
+    section?: string | null;
+    institutionName: string;
+    levelId: UUIDString;
+    userId: UUIDString;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Course_Key)[];
+}
+
+export interface GetAllCoursesByUserVariables {
+  userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetAllEvaluationsByUserData {
+  evaluations: ({
+    evaluationId: UUIDString;
+    title: string;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    gradeScale: string;
+    state: string;
+    pdfPath?: string | null;
+    subjectId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Evaluation_Key)[];
+}
+
+export interface GetAllEvaluationsByUserVariables {
+  userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetAllStudentsByUserData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Student_Key)[];
+}
+
+export interface GetAllStudentsByUserVariables {
+  userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetCourseByCodeData {
+  courses: ({
+    courseId: UUIDString;
+    name: string;
+    code: string;
+    section?: string | null;
+    institutionName: string;
+    levelId: UUIDString;
+    userId: UUIDString;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Course_Key)[];
+}
+
+export interface GetCourseByCodeVariables {
+  userId: UUIDString;
+  code: string;
+  firebaseId: string;
+}
+
 export interface GetCourseData {
   courses: ({
     courseId: UUIDString;
@@ -336,9 +557,101 @@ export interface GetCourseData {
   } & Course_Key)[];
 }
 
+export interface GetCourseEvaluationByIdData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseEvaluation_Key)[];
+}
+
+export interface GetCourseEvaluationByIdVariables {
+  courseEvaluationId: UUIDString;
+}
+
+export interface GetCourseEvaluationsByUserData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseEvaluation_Key)[];
+}
+
+export interface GetCourseEvaluationsByUserVariables {
+  userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetCourseStudentsDetailData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    courseId: UUIDString;
+    studentId: UUIDString;
+    enrolledOn: DateString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & CourseStudent_Key)[];
+}
+
+export interface GetCourseStudentsDetailVariables {
+  courseId: UUIDString;
+}
+
 export interface GetCourseVariables {
   courseId: UUIDString;
   userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetCoursesByEducationalLevelData {
+  courses: ({
+    courseId: UUIDString;
+    name: string;
+    code: string;
+    section?: string | null;
+    institutionName: string;
+    levelId: UUIDString;
+    userId: UUIDString;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Course_Key)[];
+}
+
+export interface GetCoursesByEducationalLevelVariables {
+  userId: UUIDString;
+  levelId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetCoursesByInstitutionData {
+  courses: ({
+    courseId: UUIDString;
+    name: string;
+    code: string;
+    section?: string | null;
+    institutionName: string;
+    levelId: UUIDString;
+    userId: UUIDString;
+    active: boolean;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Course_Key)[];
+}
+
+export interface GetCoursesByInstitutionVariables {
+  userId: UUIDString;
+  institutionName: string;
   firebaseId: string;
 }
 
@@ -379,6 +692,20 @@ export interface GetCoursesByUserData {
 export interface GetCoursesByUserVariables {
   userId: UUIDString;
   firebaseId: string;
+}
+
+export interface GetCoursesForEvaluationData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseEvaluation_Key)[];
+}
+
+export interface GetCoursesForEvaluationVariables {
+  evaluationId: UUIDString;
 }
 
 export interface GetDashboardQuestionsData {
@@ -472,6 +799,180 @@ export interface GetEducationalLevelData {
 
 export interface GetEducationalLevelVariables {
   levelId: UUIDString;
+}
+
+export interface GetEvaluationByIdData {
+  evaluations: ({
+    evaluationId: UUIDString;
+    title: string;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    gradeScale: string;
+    state: string;
+    pdfPath?: string | null;
+    subjectId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Evaluation_Key)[];
+    evaluationQuestions: ({
+      evaluationQuestionId: UUIDString;
+      evaluationId: UUIDString;
+      questionId: UUIDString;
+      points: number;
+      position: number;
+    } & EvaluationQuestion_Key)[];
+}
+
+export interface GetEvaluationByIdVariables {
+  userId: UUIDString;
+  evaluationId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetEvaluationFullDetailData {
+  evaluations: ({
+    evaluationId: UUIDString;
+    title: string;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    gradeScale: string;
+    state: string;
+    pdfPath?: string | null;
+    subjectId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Evaluation_Key)[];
+    evaluationQuestions: ({
+      evaluationQuestionId: UUIDString;
+      evaluationId: UUIDString;
+      questionId: UUIDString;
+      points: number;
+      position: number;
+    } & EvaluationQuestion_Key)[];
+}
+
+export interface GetEvaluationFullDetailVariables {
+  userId: UUIDString;
+  evaluationId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetEvaluationQuestionsData {
+  evaluationQuestions: ({
+    evaluationQuestionId: UUIDString;
+    evaluationId: UUIDString;
+    questionId: UUIDString;
+    points: number;
+    position: number;
+  } & EvaluationQuestion_Key)[];
+}
+
+export interface GetEvaluationQuestionsVariables {
+  evaluationId: UUIDString;
+}
+
+export interface GetEvaluationsByCourseData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseEvaluation_Key)[];
+}
+
+export interface GetEvaluationsByCourseVariables {
+  userId: UUIDString;
+  courseId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetEvaluationsByDateRangeData {
+  evaluations: ({
+    evaluationId: UUIDString;
+    title: string;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    gradeScale: string;
+    state: string;
+    pdfPath?: string | null;
+    subjectId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Evaluation_Key)[];
+}
+
+export interface GetEvaluationsByDateRangeVariables {
+  userId: UUIDString;
+  startDate: DateString;
+  endDate: DateString;
+  firebaseId: string;
+}
+
+export interface GetEvaluationsByStateData {
+  evaluations: ({
+    evaluationId: UUIDString;
+    title: string;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    gradeScale: string;
+    state: string;
+    pdfPath?: string | null;
+    subjectId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Evaluation_Key)[];
+}
+
+export interface GetEvaluationsByStateVariables {
+  userId: UUIDString;
+  state: string;
+  firebaseId: string;
+}
+
+export interface GetEvaluationsBySubjectData {
+  evaluations: ({
+    evaluationId: UUIDString;
+    title: string;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    gradeScale: string;
+    state: string;
+    pdfPath?: string | null;
+    subjectId: UUIDString;
+    userId: UUIDString;
+    createdAt: TimestampString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Evaluation_Key)[];
+}
+
+export interface GetEvaluationsBySubjectVariables {
+  userId: UUIDString;
+  subjectId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetEvaluationsForCourseData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseEvaluation_Key)[];
+}
+
+export interface GetEvaluationsForCourseVariables {
+  courseId: UUIDString;
 }
 
 export interface GetLevelCategoryData {
@@ -591,6 +1092,262 @@ export interface GetQuestionTypeVariables {
 export interface GetQuestionVariables {
   questionId: UUIDString;
   userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetStudentAnswerOptionsData {
+  studentAnswerOptions: ({
+    studentAnswerOptionId: UUIDString;
+    studentEvaluationQuestionId: UUIDString;
+    questionOptionId: UUIDString;
+  } & StudentAnswerOption_Key)[];
+}
+
+export interface GetStudentAnswerOptionsVariables {
+  studentEvaluationQuestionId: UUIDString;
+}
+
+export interface GetStudentByIdData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Student_Key)[];
+}
+
+export interface GetStudentByIdVariables {
+  userId: UUIDString;
+  studentId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetStudentByIdentifierData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Student_Key)[];
+}
+
+export interface GetStudentByIdentifierVariables {
+  userId: UUIDString;
+  identifier: string;
+  firebaseId: string;
+}
+
+export interface GetStudentEvaluationByIdData {
+  studentCourseEvaluations: ({
+    studentCourseEvaluationId: UUIDString;
+    courseEvaluationId: UUIDString;
+    courseStudentId: UUIDString;
+    totalScore: number;
+    grade?: number | null;
+    takenOn?: TimestampString | null;
+    attemptNo?: number | null;
+    state: string;
+  } & StudentCourseEvaluation_Key)[];
+    studentEvaluationQuestions: ({
+      studentEvaluationQuestionId: UUIDString;
+      studentEvaluationId: UUIDString;
+      evaluationQuestionId: UUIDString;
+      position: number;
+      scoreObtained?: number | null;
+      isCorrect?: boolean | null;
+    } & StudentEvaluationQuestion_Key)[];
+}
+
+export interface GetStudentEvaluationByIdVariables {
+  studentEvaluationId: UUIDString;
+}
+
+export interface GetStudentEvaluationFullDetailData {
+  studentCourseEvaluations: ({
+    studentCourseEvaluationId: UUIDString;
+    courseEvaluationId: UUIDString;
+    courseStudentId: UUIDString;
+    totalScore: number;
+    grade?: number | null;
+    takenOn?: TimestampString | null;
+    attemptNo?: number | null;
+    state: string;
+  } & StudentCourseEvaluation_Key)[];
+    studentEvaluationQuestions: ({
+      studentEvaluationQuestionId: UUIDString;
+      studentEvaluationId: UUIDString;
+      evaluationQuestionId: UUIDString;
+      position: number;
+      scoreObtained?: number | null;
+      isCorrect?: boolean | null;
+    } & StudentEvaluationQuestion_Key)[];
+}
+
+export interface GetStudentEvaluationFullDetailVariables {
+  studentEvaluationId: UUIDString;
+}
+
+export interface GetStudentEvaluationQuestionsData {
+  studentEvaluationQuestions: ({
+    studentEvaluationQuestionId: UUIDString;
+    studentEvaluationId: UUIDString;
+    evaluationQuestionId: UUIDString;
+    position: number;
+    scoreObtained?: number | null;
+    isCorrect?: boolean | null;
+  } & StudentEvaluationQuestion_Key)[];
+}
+
+export interface GetStudentEvaluationQuestionsVariables {
+  studentEvaluationId: UUIDString;
+}
+
+export interface GetStudentEvaluationsByCourseEvaluationData {
+  studentCourseEvaluations: ({
+    studentCourseEvaluationId: UUIDString;
+    courseEvaluationId: UUIDString;
+    courseStudentId: UUIDString;
+    totalScore: number;
+    grade?: number | null;
+    takenOn?: TimestampString | null;
+    attemptNo?: number | null;
+    state: string;
+  } & StudentCourseEvaluation_Key)[];
+}
+
+export interface GetStudentEvaluationsByCourseEvaluationVariables {
+  courseEvaluationId: UUIDString;
+}
+
+export interface GetStudentEvaluationsByCourseStudentData {
+  studentCourseEvaluations: ({
+    studentCourseEvaluationId: UUIDString;
+    courseEvaluationId: UUIDString;
+    courseStudentId: UUIDString;
+    totalScore: number;
+    grade?: number | null;
+    takenOn?: TimestampString | null;
+    attemptNo?: number | null;
+    state: string;
+  } & StudentCourseEvaluation_Key)[];
+}
+
+export interface GetStudentEvaluationsByCourseStudentVariables {
+  courseStudentId: UUIDString;
+}
+
+export interface GetStudentEvaluationsByFirstNameData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+  } & Student_Key)[];
+}
+
+export interface GetStudentEvaluationsByFirstNameVariables {
+  firstName: string;
+}
+
+export interface GetStudentEvaluationsByIdentifierData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+  } & Student_Key)[];
+}
+
+export interface GetStudentEvaluationsByIdentifierVariables {
+  identifier: string;
+}
+
+export interface GetStudentEvaluationsByLastNameData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+  } & Student_Key)[];
+}
+
+export interface GetStudentEvaluationsByLastNameVariables {
+  lastName: string;
+}
+
+export interface GetStudentEvaluationsByStudentIdData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    courseId: UUIDString;
+    studentId: UUIDString;
+    enrolledOn: DateString;
+  } & CourseStudent_Key)[];
+}
+
+export interface GetStudentEvaluationsByStudentIdVariables {
+  studentId: UUIDString;
+}
+
+export interface GetStudentsByCourseData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    courseId: UUIDString;
+    studentId: UUIDString;
+    enrolledOn: DateString;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseStudent_Key)[];
+}
+
+export interface GetStudentsByCourseVariables {
+  userId: UUIDString;
+  courseId: UUIDString;
+  firebaseId: string;
+}
+
+export interface GetStudentsByFirstNameData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Student_Key)[];
+}
+
+export interface GetStudentsByFirstNameVariables {
+  userId: UUIDString;
+  firstName: string;
+  firebaseId: string;
+}
+
+export interface GetStudentsByLastNameData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+    updatedAt?: TimestampString | null;
+    updatedBy?: UUIDString | null;
+  } & Student_Key)[];
+}
+
+export interface GetStudentsByLastNameVariables {
+  userId: UUIDString;
+  lastName: string;
   firebaseId: string;
 }
 
@@ -726,6 +1483,26 @@ export interface GetUserByIdData {
 
 export interface GetUserByIdVariables {
   userId: UUIDString;
+}
+
+export interface GradeStudentEvaluationData {
+  studentCourseEvaluation_update?: StudentCourseEvaluation_Key | null;
+}
+
+export interface GradeStudentEvaluationVariables {
+  studentCourseEvaluationId: UUIDString;
+  totalScore: number;
+  grade: number;
+}
+
+export interface GradeStudentQuestionData {
+  studentEvaluationQuestion_update?: StudentEvaluationQuestion_Key | null;
+}
+
+export interface GradeStudentQuestionVariables {
+  studentEvaluationQuestionId: UUIDString;
+  scoreObtained: number;
+  isCorrect: boolean;
 }
 
 export interface LevelCategory_Key {
@@ -985,6 +1762,15 @@ export interface ReactivateEducationalLevelVariables {
   firebaseId: string;
 }
 
+export interface ReactivateEvaluationData {
+  evaluation_update?: Evaluation_Key | null;
+}
+
+export interface ReactivateEvaluationVariables {
+  evaluationId: UUIDString;
+  firebaseId: string;
+}
+
 export interface ReactivateLevelCategoryData {
   levelCategory_update?: LevelCategory_Key | null;
 }
@@ -1009,6 +1795,15 @@ export interface ReactivateQuestionTypeVariables {
 export interface ReactivateQuestionVariables {
   questionId: UUIDString;
   userId: UUIDString;
+  firebaseId: string;
+}
+
+export interface ReactivateStudentData {
+  student_update?: Student_Key | null;
+}
+
+export interface ReactivateStudentVariables {
+  studentId: UUIDString;
   firebaseId: string;
 }
 
@@ -1048,6 +1843,88 @@ export interface ReactivateUnitVariables {
   firebaseId: string;
 }
 
+export interface ReenrollStudentInCourseData {
+  courseStudent_update?: CourseStudent_Key | null;
+}
+
+export interface ReenrollStudentInCourseVariables {
+  courseStudentId: UUIDString;
+  firebaseId: string;
+}
+
+export interface RegisterStudentAnswerData {
+  studentAnswerOption_insert: StudentAnswerOption_Key;
+}
+
+export interface RegisterStudentAnswerVariables {
+  studentAnswerOptionId: UUIDString;
+  studentEvaluationQuestionId: UUIDString;
+  questionOptionId: UUIDString;
+}
+
+export interface RemoveEvaluationFromCourseData {
+  courseEvaluation_delete?: CourseEvaluation_Key | null;
+}
+
+export interface RemoveEvaluationFromCourseVariables {
+  courseEvaluationId: UUIDString;
+  firebaseId: string;
+}
+
+export interface RemoveQuestionFromEvaluationData {
+  evaluationQuestion_delete?: EvaluationQuestion_Key | null;
+}
+
+export interface RemoveQuestionFromEvaluationVariables {
+  evaluationQuestionId: UUIDString;
+}
+
+export interface RemoveQuestionFromStudentEvaluationData {
+  studentEvaluationQuestion_delete?: StudentEvaluationQuestion_Key | null;
+}
+
+export interface RemoveQuestionFromStudentEvaluationVariables {
+  studentEvaluationQuestionId: UUIDString;
+}
+
+export interface RemoveStudentAnswerData {
+  studentAnswerOption_delete?: StudentAnswerOption_Key | null;
+}
+
+export interface RemoveStudentAnswerVariables {
+  studentAnswerOptionId: UUIDString;
+}
+
+export interface StartStudentEvaluationData {
+  studentCourseEvaluation_update?: StudentCourseEvaluation_Key | null;
+}
+
+export interface StartStudentEvaluationVariables {
+  studentCourseEvaluationId: UUIDString;
+  takenOn: TimestampString;
+  attemptNo: number;
+}
+
+export interface StudentAnswerOption_Key {
+  studentAnswerOptionId: UUIDString;
+  __typename?: 'StudentAnswerOption_Key';
+}
+
+export interface StudentCourseEvaluation_Key {
+  studentCourseEvaluationId: UUIDString;
+  __typename?: 'StudentCourseEvaluation_Key';
+}
+
+export interface StudentEvaluationQuestion_Key {
+  studentEvaluationQuestionId: UUIDString;
+  __typename?: 'StudentEvaluationQuestion_Key';
+}
+
+export interface Student_Key {
+  studentId: UUIDString;
+  __typename?: 'Student_Key';
+}
+
 export interface Subject_Key {
   subjectId: UUIDString;
   __typename?: 'Subject_Key';
@@ -1063,6 +1940,17 @@ export interface Topic_Key {
   __typename?: 'Topic_Key';
 }
 
+export interface UnenrollStudentFromCourseData {
+  courseStudent_update?: CourseStudent_Key | null;
+}
+
+export interface UnenrollStudentFromCourseVariables {
+  courseStudentId: UUIDString;
+  deletedAt: TimestampString;
+  deletedBy: UUIDString;
+  firebaseId: string;
+}
+
 export interface Unit_Key {
   unitId: UUIDString;
   __typename?: 'Unit_Key';
@@ -1070,6 +1958,18 @@ export interface Unit_Key {
 
 export interface UpdateCourseData {
   course_update?: Course_Key | null;
+}
+
+export interface UpdateCourseStudentData {
+  courseStudent_update?: CourseStudent_Key | null;
+}
+
+export interface UpdateCourseStudentVariables {
+  courseStudentId: UUIDString;
+  enrolledOn?: DateString | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
 }
 
 export interface UpdateCourseVariables {
@@ -1095,6 +1995,45 @@ export interface UpdateEducationalLevelVariables {
   name?: string | null;
   description?: string | null;
   categoryId?: UUIDString | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
+}
+
+export interface UpdateEvaluationData {
+  evaluation_update?: Evaluation_Key | null;
+}
+
+export interface UpdateEvaluationQuestionData {
+  evaluationQuestion_update?: EvaluationQuestion_Key | null;
+}
+
+export interface UpdateEvaluationQuestionVariables {
+  evaluationQuestionId: UUIDString;
+  points?: number | null;
+  position?: number | null;
+}
+
+export interface UpdateEvaluationStateData {
+  evaluation_update?: Evaluation_Key | null;
+}
+
+export interface UpdateEvaluationStateVariables {
+  evaluationId: UUIDString;
+  state: string;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
+}
+
+export interface UpdateEvaluationVariables {
+  evaluationId: UUIDString;
+  title?: string | null;
+  scheduledDate?: DateString | null;
+  durationMinutes?: number | null;
+  gradeScale?: string | null;
+  subjectId?: UUIDString | null;
+  pdfPath?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -1152,6 +2091,47 @@ export interface UpdateQuestionVariables {
   questionTypeId?: UUIDString | null;
   isPublic?: boolean | null;
   allowPartialScore?: boolean | null;
+  updatedBy: UUIDString;
+  updatedAt: TimestampString;
+  firebaseId: string;
+}
+
+export interface UpdateStudentData {
+  student_update?: Student_Key | null;
+}
+
+export interface UpdateStudentEvaluationScoreData {
+  studentCourseEvaluation_update?: StudentCourseEvaluation_Key | null;
+}
+
+export interface UpdateStudentEvaluationScoreVariables {
+  studentCourseEvaluationId: UUIDString;
+  totalScore: number;
+}
+
+export interface UpdateStudentEvaluationStateData {
+  studentCourseEvaluation_update?: StudentCourseEvaluation_Key | null;
+}
+
+export interface UpdateStudentEvaluationStateVariables {
+  studentCourseEvaluationId: UUIDString;
+  state: string;
+}
+
+export interface UpdateStudentQuestionPositionData {
+  studentEvaluationQuestion_update?: StudentEvaluationQuestion_Key | null;
+}
+
+export interface UpdateStudentQuestionPositionVariables {
+  studentEvaluationQuestionId: UUIDString;
+  position: number;
+}
+
+export interface UpdateStudentVariables {
+  studentId: UUIDString;
+  firstName?: string | null;
+  lastName?: string | null;
+  identifier?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -1233,414 +2213,6 @@ export interface User_Key {
   userId: UUIDString;
   __typename?: 'User_Key';
 }
-
-interface GetUserByEmailRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
-  operationName: string;
-}
-export const getUserByEmailRef: GetUserByEmailRef;
-
-export function getUserByEmail(vars: GetUserByEmailVariables): QueryPromise<GetUserByEmailData, GetUserByEmailVariables>;
-export function getUserByEmail(dc: DataConnect, vars: GetUserByEmailVariables): QueryPromise<GetUserByEmailData, GetUserByEmailVariables>;
-
-interface GetUserByIdRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetUserByIdVariables): QueryRef<GetUserByIdData, GetUserByIdVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetUserByIdVariables): QueryRef<GetUserByIdData, GetUserByIdVariables>;
-  operationName: string;
-}
-export const getUserByIdRef: GetUserByIdRef;
-
-export function getUserById(vars: GetUserByIdVariables): QueryPromise<GetUserByIdData, GetUserByIdVariables>;
-export function getUserById(dc: DataConnect, vars: GetUserByIdVariables): QueryPromise<GetUserByIdData, GetUserByIdVariables>;
-
-interface ListSubjectsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListSubjectsData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListSubjectsData, undefined>;
-  operationName: string;
-}
-export const listSubjectsRef: ListSubjectsRef;
-
-export function listSubjects(): QueryPromise<ListSubjectsData, undefined>;
-export function listSubjects(dc: DataConnect): QueryPromise<ListSubjectsData, undefined>;
-
-interface GetSubjectRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetSubjectVariables): QueryRef<GetSubjectData, GetSubjectVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetSubjectVariables): QueryRef<GetSubjectData, GetSubjectVariables>;
-  operationName: string;
-}
-export const getSubjectRef: GetSubjectRef;
-
-export function getSubject(vars: GetSubjectVariables): QueryPromise<GetSubjectData, GetSubjectVariables>;
-export function getSubject(dc: DataConnect, vars: GetSubjectVariables): QueryPromise<GetSubjectData, GetSubjectVariables>;
-
-interface ListUnitsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListUnitsData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListUnitsData, undefined>;
-  operationName: string;
-}
-export const listUnitsRef: ListUnitsRef;
-
-export function listUnits(): QueryPromise<ListUnitsData, undefined>;
-export function listUnits(dc: DataConnect): QueryPromise<ListUnitsData, undefined>;
-
-interface GetUnitRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetUnitVariables): QueryRef<GetUnitData, GetUnitVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetUnitVariables): QueryRef<GetUnitData, GetUnitVariables>;
-  operationName: string;
-}
-export const getUnitRef: GetUnitRef;
-
-export function getUnit(vars: GetUnitVariables): QueryPromise<GetUnitData, GetUnitVariables>;
-export function getUnit(dc: DataConnect, vars: GetUnitVariables): QueryPromise<GetUnitData, GetUnitVariables>;
-
-interface ListTopicsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListTopicsData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListTopicsData, undefined>;
-  operationName: string;
-}
-export const listTopicsRef: ListTopicsRef;
-
-export function listTopics(): QueryPromise<ListTopicsData, undefined>;
-export function listTopics(dc: DataConnect): QueryPromise<ListTopicsData, undefined>;
-
-interface GetTopicRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetTopicVariables): QueryRef<GetTopicData, GetTopicVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetTopicVariables): QueryRef<GetTopicData, GetTopicVariables>;
-  operationName: string;
-}
-export const getTopicRef: GetTopicRef;
-
-export function getTopic(vars: GetTopicVariables): QueryPromise<GetTopicData, GetTopicVariables>;
-export function getTopic(dc: DataConnect, vars: GetTopicVariables): QueryPromise<GetTopicData, GetTopicVariables>;
-
-interface ListLevelCategoriesRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListLevelCategoriesData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListLevelCategoriesData, undefined>;
-  operationName: string;
-}
-export const listLevelCategoriesRef: ListLevelCategoriesRef;
-
-export function listLevelCategories(): QueryPromise<ListLevelCategoriesData, undefined>;
-export function listLevelCategories(dc: DataConnect): QueryPromise<ListLevelCategoriesData, undefined>;
-
-interface GetLevelCategoryRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
-  operationName: string;
-}
-export const getLevelCategoryRef: GetLevelCategoryRef;
-
-export function getLevelCategory(vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
-export function getLevelCategory(dc: DataConnect, vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
-
-interface ListEducationalLevelsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListEducationalLevelsData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListEducationalLevelsData, undefined>;
-  operationName: string;
-}
-export const listEducationalLevelsRef: ListEducationalLevelsRef;
-
-export function listEducationalLevels(): QueryPromise<ListEducationalLevelsData, undefined>;
-export function listEducationalLevels(dc: DataConnect): QueryPromise<ListEducationalLevelsData, undefined>;
-
-interface GetEducationalLevelRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
-  operationName: string;
-}
-export const getEducationalLevelRef: GetEducationalLevelRef;
-
-export function getEducationalLevel(vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
-export function getEducationalLevel(dc: DataConnect, vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
-
-interface GetLevelsByCategoryRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
-  operationName: string;
-}
-export const getLevelsByCategoryRef: GetLevelsByCategoryRef;
-
-export function getLevelsByCategory(vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
-export function getLevelsByCategory(dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
-
-interface ListCoursesRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: ListCoursesVariables): QueryRef<ListCoursesData, ListCoursesVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: ListCoursesVariables): QueryRef<ListCoursesData, ListCoursesVariables>;
-  operationName: string;
-}
-export const listCoursesRef: ListCoursesRef;
-
-export function listCourses(vars: ListCoursesVariables): QueryPromise<ListCoursesData, ListCoursesVariables>;
-export function listCourses(dc: DataConnect, vars: ListCoursesVariables): QueryPromise<ListCoursesData, ListCoursesVariables>;
-
-interface GetCourseRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetCourseVariables): QueryRef<GetCourseData, GetCourseVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetCourseVariables): QueryRef<GetCourseData, GetCourseVariables>;
-  operationName: string;
-}
-export const getCourseRef: GetCourseRef;
-
-export function getCourse(vars: GetCourseVariables): QueryPromise<GetCourseData, GetCourseVariables>;
-export function getCourse(dc: DataConnect, vars: GetCourseVariables): QueryPromise<GetCourseData, GetCourseVariables>;
-
-interface GetCoursesByUserRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetCoursesByUserVariables): QueryRef<GetCoursesByUserData, GetCoursesByUserVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetCoursesByUserVariables): QueryRef<GetCoursesByUserData, GetCoursesByUserVariables>;
-  operationName: string;
-}
-export const getCoursesByUserRef: GetCoursesByUserRef;
-
-export function getCoursesByUser(vars: GetCoursesByUserVariables): QueryPromise<GetCoursesByUserData, GetCoursesByUserVariables>;
-export function getCoursesByUser(dc: DataConnect, vars: GetCoursesByUserVariables): QueryPromise<GetCoursesByUserData, GetCoursesByUserVariables>;
-
-interface GetCoursesByLevelRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetCoursesByLevelVariables): QueryRef<GetCoursesByLevelData, GetCoursesByLevelVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetCoursesByLevelVariables): QueryRef<GetCoursesByLevelData, GetCoursesByLevelVariables>;
-  operationName: string;
-}
-export const getCoursesByLevelRef: GetCoursesByLevelRef;
-
-export function getCoursesByLevel(vars: GetCoursesByLevelVariables): QueryPromise<GetCoursesByLevelData, GetCoursesByLevelVariables>;
-export function getCoursesByLevel(dc: DataConnect, vars: GetCoursesByLevelVariables): QueryPromise<GetCoursesByLevelData, GetCoursesByLevelVariables>;
-
-interface ListDifficultiesRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListDifficultiesData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListDifficultiesData, undefined>;
-  operationName: string;
-}
-export const listDifficultiesRef: ListDifficultiesRef;
-
-export function listDifficulties(): QueryPromise<ListDifficultiesData, undefined>;
-export function listDifficulties(dc: DataConnect): QueryPromise<ListDifficultiesData, undefined>;
-
-interface GetDifficultyRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetDifficultyVariables): QueryRef<GetDifficultyData, GetDifficultyVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetDifficultyVariables): QueryRef<GetDifficultyData, GetDifficultyVariables>;
-  operationName: string;
-}
-export const getDifficultyRef: GetDifficultyRef;
-
-export function getDifficulty(vars: GetDifficultyVariables): QueryPromise<GetDifficultyData, GetDifficultyVariables>;
-export function getDifficulty(dc: DataConnect, vars: GetDifficultyVariables): QueryPromise<GetDifficultyData, GetDifficultyVariables>;
-
-interface ListQuestionTypesRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListQuestionTypesData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListQuestionTypesData, undefined>;
-  operationName: string;
-}
-export const listQuestionTypesRef: ListQuestionTypesRef;
-
-export function listQuestionTypes(): QueryPromise<ListQuestionTypesData, undefined>;
-export function listQuestionTypes(dc: DataConnect): QueryPromise<ListQuestionTypesData, undefined>;
-
-interface GetQuestionTypeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetQuestionTypeVariables): QueryRef<GetQuestionTypeData, GetQuestionTypeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetQuestionTypeVariables): QueryRef<GetQuestionTypeData, GetQuestionTypeVariables>;
-  operationName: string;
-}
-export const getQuestionTypeRef: GetQuestionTypeRef;
-
-export function getQuestionType(vars: GetQuestionTypeVariables): QueryPromise<GetQuestionTypeData, GetQuestionTypeVariables>;
-export function getQuestionType(dc: DataConnect, vars: GetQuestionTypeVariables): QueryPromise<GetQuestionTypeData, GetQuestionTypeVariables>;
-
-interface GetQuestionTypeByCodeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetQuestionTypeByCodeVariables): QueryRef<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryRef<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
-  operationName: string;
-}
-export const getQuestionTypeByCodeRef: GetQuestionTypeByCodeRef;
-
-export function getQuestionTypeByCode(vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
-export function getQuestionTypeByCode(dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
-
-interface ListTaxonomiesRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListTaxonomiesData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListTaxonomiesData, undefined>;
-  operationName: string;
-}
-export const listTaxonomiesRef: ListTaxonomiesRef;
-
-export function listTaxonomies(): QueryPromise<ListTaxonomiesData, undefined>;
-export function listTaxonomies(dc: DataConnect): QueryPromise<ListTaxonomiesData, undefined>;
-
-interface GetTaxonomyRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
-  operationName: string;
-}
-export const getTaxonomyRef: GetTaxonomyRef;
-
-export function getTaxonomy(vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
-export function getTaxonomy(dc: DataConnect, vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
-
-interface GetTaxonomyByCodeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
-  operationName: string;
-}
-export const getTaxonomyByCodeRef: GetTaxonomyByCodeRef;
-
-export function getTaxonomyByCode(vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
-export function getTaxonomyByCode(dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
-
-interface ListTaxonomiesByLevelRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListTaxonomiesByLevelData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListTaxonomiesByLevelData, undefined>;
-  operationName: string;
-}
-export const listTaxonomiesByLevelRef: ListTaxonomiesByLevelRef;
-
-export function listTaxonomiesByLevel(): QueryPromise<ListTaxonomiesByLevelData, undefined>;
-export function listTaxonomiesByLevel(dc: DataConnect): QueryPromise<ListTaxonomiesByLevelData, undefined>;
-
-interface ListQuestionsByUserRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: ListQuestionsByUserVariables): QueryRef<ListQuestionsByUserData, ListQuestionsByUserVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: ListQuestionsByUserVariables): QueryRef<ListQuestionsByUserData, ListQuestionsByUserVariables>;
-  operationName: string;
-}
-export const listQuestionsByUserRef: ListQuestionsByUserRef;
-
-export function listQuestionsByUser(vars: ListQuestionsByUserVariables): QueryPromise<ListQuestionsByUserData, ListQuestionsByUserVariables>;
-export function listQuestionsByUser(dc: DataConnect, vars: ListQuestionsByUserVariables): QueryPromise<ListQuestionsByUserData, ListQuestionsByUserVariables>;
-
-interface GetDashboardQuestionsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetDashboardQuestionsVariables): QueryRef<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetDashboardQuestionsVariables): QueryRef<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
-  operationName: string;
-}
-export const getDashboardQuestionsRef: GetDashboardQuestionsRef;
-
-export function getDashboardQuestions(vars: GetDashboardQuestionsVariables): QueryPromise<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
-export function getDashboardQuestions(dc: DataConnect, vars: GetDashboardQuestionsVariables): QueryPromise<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
-
-interface GetDashboardSystemDataRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<GetDashboardSystemDataData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<GetDashboardSystemDataData, undefined>;
-  operationName: string;
-}
-export const getDashboardSystemDataRef: GetDashboardSystemDataRef;
-
-export function getDashboardSystemData(): QueryPromise<GetDashboardSystemDataData, undefined>;
-export function getDashboardSystemData(dc: DataConnect): QueryPromise<GetDashboardSystemDataData, undefined>;
-
-interface GetQuestionRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetQuestionVariables): QueryRef<GetQuestionData, GetQuestionVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetQuestionVariables): QueryRef<GetQuestionData, GetQuestionVariables>;
-  operationName: string;
-}
-export const getQuestionRef: GetQuestionRef;
-
-export function getQuestion(vars: GetQuestionVariables): QueryPromise<GetQuestionData, GetQuestionVariables>;
-export function getQuestion(dc: DataConnect, vars: GetQuestionVariables): QueryPromise<GetQuestionData, GetQuestionVariables>;
-
-interface ListPublicQuestionsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListPublicQuestionsData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListPublicQuestionsData, undefined>;
-  operationName: string;
-}
-export const listPublicQuestionsRef: ListPublicQuestionsRef;
-
-export function listPublicQuestions(): QueryPromise<ListPublicQuestionsData, undefined>;
-export function listPublicQuestions(dc: DataConnect): QueryPromise<ListPublicQuestionsData, undefined>;
-
-interface ListPublicQuestionsByDifficultyRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: ListPublicQuestionsByDifficultyVariables): QueryRef<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: ListPublicQuestionsByDifficultyVariables): QueryRef<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
-  operationName: string;
-}
-export const listPublicQuestionsByDifficultyRef: ListPublicQuestionsByDifficultyRef;
-
-export function listPublicQuestionsByDifficulty(vars: ListPublicQuestionsByDifficultyVariables): QueryPromise<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
-export function listPublicQuestionsByDifficulty(dc: DataConnect, vars: ListPublicQuestionsByDifficultyVariables): QueryPromise<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
-
-interface ListPublicQuestionsByTypeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: ListPublicQuestionsByTypeVariables): QueryRef<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: ListPublicQuestionsByTypeVariables): QueryRef<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
-  operationName: string;
-}
-export const listPublicQuestionsByTypeRef: ListPublicQuestionsByTypeRef;
-
-export function listPublicQuestionsByType(vars: ListPublicQuestionsByTypeVariables): QueryPromise<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
-export function listPublicQuestionsByType(dc: DataConnect, vars: ListPublicQuestionsByTypeVariables): QueryPromise<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
-
-interface GetQuestionOptionsRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetQuestionOptionsVariables): QueryRef<GetQuestionOptionsData, GetQuestionOptionsVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetQuestionOptionsVariables): QueryRef<GetQuestionOptionsData, GetQuestionOptionsVariables>;
-  operationName: string;
-}
-export const getQuestionOptionsRef: GetQuestionOptionsRef;
-
-export function getQuestionOptions(vars: GetQuestionOptionsVariables): QueryPromise<GetQuestionOptionsData, GetQuestionOptionsVariables>;
-export function getQuestionOptions(dc: DataConnect, vars: GetQuestionOptionsVariables): QueryPromise<GetQuestionOptionsData, GetQuestionOptionsVariables>;
 
 interface CreateUserRef {
   /* Allow users to create refs without passing in DataConnect */
@@ -2181,4 +2753,1168 @@ export const reactivateTaxonomyRef: ReactivateTaxonomyRef;
 
 export function reactivateTaxonomy(vars: ReactivateTaxonomyVariables): MutationPromise<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
 export function reactivateTaxonomy(dc: DataConnect, vars: ReactivateTaxonomyVariables): MutationPromise<ReactivateTaxonomyData, ReactivateTaxonomyVariables>;
+
+interface CreateEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateEvaluationVariables): MutationRef<CreateEvaluationData, CreateEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateEvaluationVariables): MutationRef<CreateEvaluationData, CreateEvaluationVariables>;
+  operationName: string;
+}
+export const createEvaluationRef: CreateEvaluationRef;
+
+export function createEvaluation(vars: CreateEvaluationVariables): MutationPromise<CreateEvaluationData, CreateEvaluationVariables>;
+export function createEvaluation(dc: DataConnect, vars: CreateEvaluationVariables): MutationPromise<CreateEvaluationData, CreateEvaluationVariables>;
+
+interface UpdateEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateEvaluationVariables): MutationRef<UpdateEvaluationData, UpdateEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateEvaluationVariables): MutationRef<UpdateEvaluationData, UpdateEvaluationVariables>;
+  operationName: string;
+}
+export const updateEvaluationRef: UpdateEvaluationRef;
+
+export function updateEvaluation(vars: UpdateEvaluationVariables): MutationPromise<UpdateEvaluationData, UpdateEvaluationVariables>;
+export function updateEvaluation(dc: DataConnect, vars: UpdateEvaluationVariables): MutationPromise<UpdateEvaluationData, UpdateEvaluationVariables>;
+
+interface UpdateEvaluationStateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateEvaluationStateVariables): MutationRef<UpdateEvaluationStateData, UpdateEvaluationStateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateEvaluationStateVariables): MutationRef<UpdateEvaluationStateData, UpdateEvaluationStateVariables>;
+  operationName: string;
+}
+export const updateEvaluationStateRef: UpdateEvaluationStateRef;
+
+export function updateEvaluationState(vars: UpdateEvaluationStateVariables): MutationPromise<UpdateEvaluationStateData, UpdateEvaluationStateVariables>;
+export function updateEvaluationState(dc: DataConnect, vars: UpdateEvaluationStateVariables): MutationPromise<UpdateEvaluationStateData, UpdateEvaluationStateVariables>;
+
+interface DeactivateEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateEvaluationVariables): MutationRef<DeactivateEvaluationData, DeactivateEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeactivateEvaluationVariables): MutationRef<DeactivateEvaluationData, DeactivateEvaluationVariables>;
+  operationName: string;
+}
+export const deactivateEvaluationRef: DeactivateEvaluationRef;
+
+export function deactivateEvaluation(vars: DeactivateEvaluationVariables): MutationPromise<DeactivateEvaluationData, DeactivateEvaluationVariables>;
+export function deactivateEvaluation(dc: DataConnect, vars: DeactivateEvaluationVariables): MutationPromise<DeactivateEvaluationData, DeactivateEvaluationVariables>;
+
+interface ReactivateEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateEvaluationVariables): MutationRef<ReactivateEvaluationData, ReactivateEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReactivateEvaluationVariables): MutationRef<ReactivateEvaluationData, ReactivateEvaluationVariables>;
+  operationName: string;
+}
+export const reactivateEvaluationRef: ReactivateEvaluationRef;
+
+export function reactivateEvaluation(vars: ReactivateEvaluationVariables): MutationPromise<ReactivateEvaluationData, ReactivateEvaluationVariables>;
+export function reactivateEvaluation(dc: DataConnect, vars: ReactivateEvaluationVariables): MutationPromise<ReactivateEvaluationData, ReactivateEvaluationVariables>;
+
+interface AddQuestionToEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AddQuestionToEvaluationVariables): MutationRef<AddQuestionToEvaluationData, AddQuestionToEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: AddQuestionToEvaluationVariables): MutationRef<AddQuestionToEvaluationData, AddQuestionToEvaluationVariables>;
+  operationName: string;
+}
+export const addQuestionToEvaluationRef: AddQuestionToEvaluationRef;
+
+export function addQuestionToEvaluation(vars: AddQuestionToEvaluationVariables): MutationPromise<AddQuestionToEvaluationData, AddQuestionToEvaluationVariables>;
+export function addQuestionToEvaluation(dc: DataConnect, vars: AddQuestionToEvaluationVariables): MutationPromise<AddQuestionToEvaluationData, AddQuestionToEvaluationVariables>;
+
+interface UpdateEvaluationQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateEvaluationQuestionVariables): MutationRef<UpdateEvaluationQuestionData, UpdateEvaluationQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateEvaluationQuestionVariables): MutationRef<UpdateEvaluationQuestionData, UpdateEvaluationQuestionVariables>;
+  operationName: string;
+}
+export const updateEvaluationQuestionRef: UpdateEvaluationQuestionRef;
+
+export function updateEvaluationQuestion(vars: UpdateEvaluationQuestionVariables): MutationPromise<UpdateEvaluationQuestionData, UpdateEvaluationQuestionVariables>;
+export function updateEvaluationQuestion(dc: DataConnect, vars: UpdateEvaluationQuestionVariables): MutationPromise<UpdateEvaluationQuestionData, UpdateEvaluationQuestionVariables>;
+
+interface RemoveQuestionFromEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RemoveQuestionFromEvaluationVariables): MutationRef<RemoveQuestionFromEvaluationData, RemoveQuestionFromEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RemoveQuestionFromEvaluationVariables): MutationRef<RemoveQuestionFromEvaluationData, RemoveQuestionFromEvaluationVariables>;
+  operationName: string;
+}
+export const removeQuestionFromEvaluationRef: RemoveQuestionFromEvaluationRef;
+
+export function removeQuestionFromEvaluation(vars: RemoveQuestionFromEvaluationVariables): MutationPromise<RemoveQuestionFromEvaluationData, RemoveQuestionFromEvaluationVariables>;
+export function removeQuestionFromEvaluation(dc: DataConnect, vars: RemoveQuestionFromEvaluationVariables): MutationPromise<RemoveQuestionFromEvaluationData, RemoveQuestionFromEvaluationVariables>;
+
+interface AssignEvaluationToCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AssignEvaluationToCourseVariables): MutationRef<AssignEvaluationToCourseData, AssignEvaluationToCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: AssignEvaluationToCourseVariables): MutationRef<AssignEvaluationToCourseData, AssignEvaluationToCourseVariables>;
+  operationName: string;
+}
+export const assignEvaluationToCourseRef: AssignEvaluationToCourseRef;
+
+export function assignEvaluationToCourse(vars: AssignEvaluationToCourseVariables): MutationPromise<AssignEvaluationToCourseData, AssignEvaluationToCourseVariables>;
+export function assignEvaluationToCourse(dc: DataConnect, vars: AssignEvaluationToCourseVariables): MutationPromise<AssignEvaluationToCourseData, AssignEvaluationToCourseVariables>;
+
+interface RemoveEvaluationFromCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RemoveEvaluationFromCourseVariables): MutationRef<RemoveEvaluationFromCourseData, RemoveEvaluationFromCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RemoveEvaluationFromCourseVariables): MutationRef<RemoveEvaluationFromCourseData, RemoveEvaluationFromCourseVariables>;
+  operationName: string;
+}
+export const removeEvaluationFromCourseRef: RemoveEvaluationFromCourseRef;
+
+export function removeEvaluationFromCourse(vars: RemoveEvaluationFromCourseVariables): MutationPromise<RemoveEvaluationFromCourseData, RemoveEvaluationFromCourseVariables>;
+export function removeEvaluationFromCourse(dc: DataConnect, vars: RemoveEvaluationFromCourseVariables): MutationPromise<RemoveEvaluationFromCourseData, RemoveEvaluationFromCourseVariables>;
+
+interface CreateStudentRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateStudentVariables): MutationRef<CreateStudentData, CreateStudentVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateStudentVariables): MutationRef<CreateStudentData, CreateStudentVariables>;
+  operationName: string;
+}
+export const createStudentRef: CreateStudentRef;
+
+export function createStudent(vars: CreateStudentVariables): MutationPromise<CreateStudentData, CreateStudentVariables>;
+export function createStudent(dc: DataConnect, vars: CreateStudentVariables): MutationPromise<CreateStudentData, CreateStudentVariables>;
+
+interface UpdateStudentRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateStudentVariables): MutationRef<UpdateStudentData, UpdateStudentVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateStudentVariables): MutationRef<UpdateStudentData, UpdateStudentVariables>;
+  operationName: string;
+}
+export const updateStudentRef: UpdateStudentRef;
+
+export function updateStudent(vars: UpdateStudentVariables): MutationPromise<UpdateStudentData, UpdateStudentVariables>;
+export function updateStudent(dc: DataConnect, vars: UpdateStudentVariables): MutationPromise<UpdateStudentData, UpdateStudentVariables>;
+
+interface DeactivateStudentRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeactivateStudentVariables): MutationRef<DeactivateStudentData, DeactivateStudentVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeactivateStudentVariables): MutationRef<DeactivateStudentData, DeactivateStudentVariables>;
+  operationName: string;
+}
+export const deactivateStudentRef: DeactivateStudentRef;
+
+export function deactivateStudent(vars: DeactivateStudentVariables): MutationPromise<DeactivateStudentData, DeactivateStudentVariables>;
+export function deactivateStudent(dc: DataConnect, vars: DeactivateStudentVariables): MutationPromise<DeactivateStudentData, DeactivateStudentVariables>;
+
+interface ReactivateStudentRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReactivateStudentVariables): MutationRef<ReactivateStudentData, ReactivateStudentVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReactivateStudentVariables): MutationRef<ReactivateStudentData, ReactivateStudentVariables>;
+  operationName: string;
+}
+export const reactivateStudentRef: ReactivateStudentRef;
+
+export function reactivateStudent(vars: ReactivateStudentVariables): MutationPromise<ReactivateStudentData, ReactivateStudentVariables>;
+export function reactivateStudent(dc: DataConnect, vars: ReactivateStudentVariables): MutationPromise<ReactivateStudentData, ReactivateStudentVariables>;
+
+interface EnrollStudentInCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: EnrollStudentInCourseVariables): MutationRef<EnrollStudentInCourseData, EnrollStudentInCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: EnrollStudentInCourseVariables): MutationRef<EnrollStudentInCourseData, EnrollStudentInCourseVariables>;
+  operationName: string;
+}
+export const enrollStudentInCourseRef: EnrollStudentInCourseRef;
+
+export function enrollStudentInCourse(vars: EnrollStudentInCourseVariables): MutationPromise<EnrollStudentInCourseData, EnrollStudentInCourseVariables>;
+export function enrollStudentInCourse(dc: DataConnect, vars: EnrollStudentInCourseVariables): MutationPromise<EnrollStudentInCourseData, EnrollStudentInCourseVariables>;
+
+interface UpdateCourseStudentRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateCourseStudentVariables): MutationRef<UpdateCourseStudentData, UpdateCourseStudentVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateCourseStudentVariables): MutationRef<UpdateCourseStudentData, UpdateCourseStudentVariables>;
+  operationName: string;
+}
+export const updateCourseStudentRef: UpdateCourseStudentRef;
+
+export function updateCourseStudent(vars: UpdateCourseStudentVariables): MutationPromise<UpdateCourseStudentData, UpdateCourseStudentVariables>;
+export function updateCourseStudent(dc: DataConnect, vars: UpdateCourseStudentVariables): MutationPromise<UpdateCourseStudentData, UpdateCourseStudentVariables>;
+
+interface UnenrollStudentFromCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UnenrollStudentFromCourseVariables): MutationRef<UnenrollStudentFromCourseData, UnenrollStudentFromCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UnenrollStudentFromCourseVariables): MutationRef<UnenrollStudentFromCourseData, UnenrollStudentFromCourseVariables>;
+  operationName: string;
+}
+export const unenrollStudentFromCourseRef: UnenrollStudentFromCourseRef;
+
+export function unenrollStudentFromCourse(vars: UnenrollStudentFromCourseVariables): MutationPromise<UnenrollStudentFromCourseData, UnenrollStudentFromCourseVariables>;
+export function unenrollStudentFromCourse(dc: DataConnect, vars: UnenrollStudentFromCourseVariables): MutationPromise<UnenrollStudentFromCourseData, UnenrollStudentFromCourseVariables>;
+
+interface ReenrollStudentInCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ReenrollStudentInCourseVariables): MutationRef<ReenrollStudentInCourseData, ReenrollStudentInCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ReenrollStudentInCourseVariables): MutationRef<ReenrollStudentInCourseData, ReenrollStudentInCourseVariables>;
+  operationName: string;
+}
+export const reenrollStudentInCourseRef: ReenrollStudentInCourseRef;
+
+export function reenrollStudentInCourse(vars: ReenrollStudentInCourseVariables): MutationPromise<ReenrollStudentInCourseData, ReenrollStudentInCourseVariables>;
+export function reenrollStudentInCourse(dc: DataConnect, vars: ReenrollStudentInCourseVariables): MutationPromise<ReenrollStudentInCourseData, ReenrollStudentInCourseVariables>;
+
+interface CreateStudentEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateStudentEvaluationVariables): MutationRef<CreateStudentEvaluationData, CreateStudentEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateStudentEvaluationVariables): MutationRef<CreateStudentEvaluationData, CreateStudentEvaluationVariables>;
+  operationName: string;
+}
+export const createStudentEvaluationRef: CreateStudentEvaluationRef;
+
+export function createStudentEvaluation(vars: CreateStudentEvaluationVariables): MutationPromise<CreateStudentEvaluationData, CreateStudentEvaluationVariables>;
+export function createStudentEvaluation(dc: DataConnect, vars: CreateStudentEvaluationVariables): MutationPromise<CreateStudentEvaluationData, CreateStudentEvaluationVariables>;
+
+interface UpdateStudentEvaluationStateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateStudentEvaluationStateVariables): MutationRef<UpdateStudentEvaluationStateData, UpdateStudentEvaluationStateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateStudentEvaluationStateVariables): MutationRef<UpdateStudentEvaluationStateData, UpdateStudentEvaluationStateVariables>;
+  operationName: string;
+}
+export const updateStudentEvaluationStateRef: UpdateStudentEvaluationStateRef;
+
+export function updateStudentEvaluationState(vars: UpdateStudentEvaluationStateVariables): MutationPromise<UpdateStudentEvaluationStateData, UpdateStudentEvaluationStateVariables>;
+export function updateStudentEvaluationState(dc: DataConnect, vars: UpdateStudentEvaluationStateVariables): MutationPromise<UpdateStudentEvaluationStateData, UpdateStudentEvaluationStateVariables>;
+
+interface StartStudentEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: StartStudentEvaluationVariables): MutationRef<StartStudentEvaluationData, StartStudentEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: StartStudentEvaluationVariables): MutationRef<StartStudentEvaluationData, StartStudentEvaluationVariables>;
+  operationName: string;
+}
+export const startStudentEvaluationRef: StartStudentEvaluationRef;
+
+export function startStudentEvaluation(vars: StartStudentEvaluationVariables): MutationPromise<StartStudentEvaluationData, StartStudentEvaluationVariables>;
+export function startStudentEvaluation(dc: DataConnect, vars: StartStudentEvaluationVariables): MutationPromise<StartStudentEvaluationData, StartStudentEvaluationVariables>;
+
+interface CompleteStudentEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CompleteStudentEvaluationVariables): MutationRef<CompleteStudentEvaluationData, CompleteStudentEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CompleteStudentEvaluationVariables): MutationRef<CompleteStudentEvaluationData, CompleteStudentEvaluationVariables>;
+  operationName: string;
+}
+export const completeStudentEvaluationRef: CompleteStudentEvaluationRef;
+
+export function completeStudentEvaluation(vars: CompleteStudentEvaluationVariables): MutationPromise<CompleteStudentEvaluationData, CompleteStudentEvaluationVariables>;
+export function completeStudentEvaluation(dc: DataConnect, vars: CompleteStudentEvaluationVariables): MutationPromise<CompleteStudentEvaluationData, CompleteStudentEvaluationVariables>;
+
+interface GradeStudentEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GradeStudentEvaluationVariables): MutationRef<GradeStudentEvaluationData, GradeStudentEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GradeStudentEvaluationVariables): MutationRef<GradeStudentEvaluationData, GradeStudentEvaluationVariables>;
+  operationName: string;
+}
+export const gradeStudentEvaluationRef: GradeStudentEvaluationRef;
+
+export function gradeStudentEvaluation(vars: GradeStudentEvaluationVariables): MutationPromise<GradeStudentEvaluationData, GradeStudentEvaluationVariables>;
+export function gradeStudentEvaluation(dc: DataConnect, vars: GradeStudentEvaluationVariables): MutationPromise<GradeStudentEvaluationData, GradeStudentEvaluationVariables>;
+
+interface UpdateStudentEvaluationScoreRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateStudentEvaluationScoreVariables): MutationRef<UpdateStudentEvaluationScoreData, UpdateStudentEvaluationScoreVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateStudentEvaluationScoreVariables): MutationRef<UpdateStudentEvaluationScoreData, UpdateStudentEvaluationScoreVariables>;
+  operationName: string;
+}
+export const updateStudentEvaluationScoreRef: UpdateStudentEvaluationScoreRef;
+
+export function updateStudentEvaluationScore(vars: UpdateStudentEvaluationScoreVariables): MutationPromise<UpdateStudentEvaluationScoreData, UpdateStudentEvaluationScoreVariables>;
+export function updateStudentEvaluationScore(dc: DataConnect, vars: UpdateStudentEvaluationScoreVariables): MutationPromise<UpdateStudentEvaluationScoreData, UpdateStudentEvaluationScoreVariables>;
+
+interface AddQuestionToStudentEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AddQuestionToStudentEvaluationVariables): MutationRef<AddQuestionToStudentEvaluationData, AddQuestionToStudentEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: AddQuestionToStudentEvaluationVariables): MutationRef<AddQuestionToStudentEvaluationData, AddQuestionToStudentEvaluationVariables>;
+  operationName: string;
+}
+export const addQuestionToStudentEvaluationRef: AddQuestionToStudentEvaluationRef;
+
+export function addQuestionToStudentEvaluation(vars: AddQuestionToStudentEvaluationVariables): MutationPromise<AddQuestionToStudentEvaluationData, AddQuestionToStudentEvaluationVariables>;
+export function addQuestionToStudentEvaluation(dc: DataConnect, vars: AddQuestionToStudentEvaluationVariables): MutationPromise<AddQuestionToStudentEvaluationData, AddQuestionToStudentEvaluationVariables>;
+
+interface GradeStudentQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GradeStudentQuestionVariables): MutationRef<GradeStudentQuestionData, GradeStudentQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GradeStudentQuestionVariables): MutationRef<GradeStudentQuestionData, GradeStudentQuestionVariables>;
+  operationName: string;
+}
+export const gradeStudentQuestionRef: GradeStudentQuestionRef;
+
+export function gradeStudentQuestion(vars: GradeStudentQuestionVariables): MutationPromise<GradeStudentQuestionData, GradeStudentQuestionVariables>;
+export function gradeStudentQuestion(dc: DataConnect, vars: GradeStudentQuestionVariables): MutationPromise<GradeStudentQuestionData, GradeStudentQuestionVariables>;
+
+interface UpdateStudentQuestionPositionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateStudentQuestionPositionVariables): MutationRef<UpdateStudentQuestionPositionData, UpdateStudentQuestionPositionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateStudentQuestionPositionVariables): MutationRef<UpdateStudentQuestionPositionData, UpdateStudentQuestionPositionVariables>;
+  operationName: string;
+}
+export const updateStudentQuestionPositionRef: UpdateStudentQuestionPositionRef;
+
+export function updateStudentQuestionPosition(vars: UpdateStudentQuestionPositionVariables): MutationPromise<UpdateStudentQuestionPositionData, UpdateStudentQuestionPositionVariables>;
+export function updateStudentQuestionPosition(dc: DataConnect, vars: UpdateStudentQuestionPositionVariables): MutationPromise<UpdateStudentQuestionPositionData, UpdateStudentQuestionPositionVariables>;
+
+interface RemoveQuestionFromStudentEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RemoveQuestionFromStudentEvaluationVariables): MutationRef<RemoveQuestionFromStudentEvaluationData, RemoveQuestionFromStudentEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RemoveQuestionFromStudentEvaluationVariables): MutationRef<RemoveQuestionFromStudentEvaluationData, RemoveQuestionFromStudentEvaluationVariables>;
+  operationName: string;
+}
+export const removeQuestionFromStudentEvaluationRef: RemoveQuestionFromStudentEvaluationRef;
+
+export function removeQuestionFromStudentEvaluation(vars: RemoveQuestionFromStudentEvaluationVariables): MutationPromise<RemoveQuestionFromStudentEvaluationData, RemoveQuestionFromStudentEvaluationVariables>;
+export function removeQuestionFromStudentEvaluation(dc: DataConnect, vars: RemoveQuestionFromStudentEvaluationVariables): MutationPromise<RemoveQuestionFromStudentEvaluationData, RemoveQuestionFromStudentEvaluationVariables>;
+
+interface RegisterStudentAnswerRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RegisterStudentAnswerVariables): MutationRef<RegisterStudentAnswerData, RegisterStudentAnswerVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RegisterStudentAnswerVariables): MutationRef<RegisterStudentAnswerData, RegisterStudentAnswerVariables>;
+  operationName: string;
+}
+export const registerStudentAnswerRef: RegisterStudentAnswerRef;
+
+export function registerStudentAnswer(vars: RegisterStudentAnswerVariables): MutationPromise<RegisterStudentAnswerData, RegisterStudentAnswerVariables>;
+export function registerStudentAnswer(dc: DataConnect, vars: RegisterStudentAnswerVariables): MutationPromise<RegisterStudentAnswerData, RegisterStudentAnswerVariables>;
+
+interface RemoveStudentAnswerRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RemoveStudentAnswerVariables): MutationRef<RemoveStudentAnswerData, RemoveStudentAnswerVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RemoveStudentAnswerVariables): MutationRef<RemoveStudentAnswerData, RemoveStudentAnswerVariables>;
+  operationName: string;
+}
+export const removeStudentAnswerRef: RemoveStudentAnswerRef;
+
+export function removeStudentAnswer(vars: RemoveStudentAnswerVariables): MutationPromise<RemoveStudentAnswerData, RemoveStudentAnswerVariables>;
+export function removeStudentAnswer(dc: DataConnect, vars: RemoveStudentAnswerVariables): MutationPromise<RemoveStudentAnswerData, RemoveStudentAnswerVariables>;
+
+interface GetUserByEmailRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetUserByEmailVariables): QueryRef<GetUserByEmailData, GetUserByEmailVariables>;
+  operationName: string;
+}
+export const getUserByEmailRef: GetUserByEmailRef;
+
+export function getUserByEmail(vars: GetUserByEmailVariables): QueryPromise<GetUserByEmailData, GetUserByEmailVariables>;
+export function getUserByEmail(dc: DataConnect, vars: GetUserByEmailVariables): QueryPromise<GetUserByEmailData, GetUserByEmailVariables>;
+
+interface GetUserByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserByIdVariables): QueryRef<GetUserByIdData, GetUserByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetUserByIdVariables): QueryRef<GetUserByIdData, GetUserByIdVariables>;
+  operationName: string;
+}
+export const getUserByIdRef: GetUserByIdRef;
+
+export function getUserById(vars: GetUserByIdVariables): QueryPromise<GetUserByIdData, GetUserByIdVariables>;
+export function getUserById(dc: DataConnect, vars: GetUserByIdVariables): QueryPromise<GetUserByIdData, GetUserByIdVariables>;
+
+interface ListSubjectsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListSubjectsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListSubjectsData, undefined>;
+  operationName: string;
+}
+export const listSubjectsRef: ListSubjectsRef;
+
+export function listSubjects(): QueryPromise<ListSubjectsData, undefined>;
+export function listSubjects(dc: DataConnect): QueryPromise<ListSubjectsData, undefined>;
+
+interface GetSubjectRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetSubjectVariables): QueryRef<GetSubjectData, GetSubjectVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetSubjectVariables): QueryRef<GetSubjectData, GetSubjectVariables>;
+  operationName: string;
+}
+export const getSubjectRef: GetSubjectRef;
+
+export function getSubject(vars: GetSubjectVariables): QueryPromise<GetSubjectData, GetSubjectVariables>;
+export function getSubject(dc: DataConnect, vars: GetSubjectVariables): QueryPromise<GetSubjectData, GetSubjectVariables>;
+
+interface ListUnitsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListUnitsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListUnitsData, undefined>;
+  operationName: string;
+}
+export const listUnitsRef: ListUnitsRef;
+
+export function listUnits(): QueryPromise<ListUnitsData, undefined>;
+export function listUnits(dc: DataConnect): QueryPromise<ListUnitsData, undefined>;
+
+interface GetUnitRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUnitVariables): QueryRef<GetUnitData, GetUnitVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetUnitVariables): QueryRef<GetUnitData, GetUnitVariables>;
+  operationName: string;
+}
+export const getUnitRef: GetUnitRef;
+
+export function getUnit(vars: GetUnitVariables): QueryPromise<GetUnitData, GetUnitVariables>;
+export function getUnit(dc: DataConnect, vars: GetUnitVariables): QueryPromise<GetUnitData, GetUnitVariables>;
+
+interface ListTopicsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTopicsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListTopicsData, undefined>;
+  operationName: string;
+}
+export const listTopicsRef: ListTopicsRef;
+
+export function listTopics(): QueryPromise<ListTopicsData, undefined>;
+export function listTopics(dc: DataConnect): QueryPromise<ListTopicsData, undefined>;
+
+interface GetTopicRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTopicVariables): QueryRef<GetTopicData, GetTopicVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetTopicVariables): QueryRef<GetTopicData, GetTopicVariables>;
+  operationName: string;
+}
+export const getTopicRef: GetTopicRef;
+
+export function getTopic(vars: GetTopicVariables): QueryPromise<GetTopicData, GetTopicVariables>;
+export function getTopic(dc: DataConnect, vars: GetTopicVariables): QueryPromise<GetTopicData, GetTopicVariables>;
+
+interface ListLevelCategoriesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListLevelCategoriesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListLevelCategoriesData, undefined>;
+  operationName: string;
+}
+export const listLevelCategoriesRef: ListLevelCategoriesRef;
+
+export function listLevelCategories(): QueryPromise<ListLevelCategoriesData, undefined>;
+export function listLevelCategories(dc: DataConnect): QueryPromise<ListLevelCategoriesData, undefined>;
+
+interface GetLevelCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetLevelCategoryVariables): QueryRef<GetLevelCategoryData, GetLevelCategoryVariables>;
+  operationName: string;
+}
+export const getLevelCategoryRef: GetLevelCategoryRef;
+
+export function getLevelCategory(vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
+export function getLevelCategory(dc: DataConnect, vars: GetLevelCategoryVariables): QueryPromise<GetLevelCategoryData, GetLevelCategoryVariables>;
+
+interface ListEducationalLevelsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListEducationalLevelsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListEducationalLevelsData, undefined>;
+  operationName: string;
+}
+export const listEducationalLevelsRef: ListEducationalLevelsRef;
+
+export function listEducationalLevels(): QueryPromise<ListEducationalLevelsData, undefined>;
+export function listEducationalLevels(dc: DataConnect): QueryPromise<ListEducationalLevelsData, undefined>;
+
+interface GetEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEducationalLevelVariables): QueryRef<GetEducationalLevelData, GetEducationalLevelVariables>;
+  operationName: string;
+}
+export const getEducationalLevelRef: GetEducationalLevelRef;
+
+export function getEducationalLevel(vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
+export function getEducationalLevel(dc: DataConnect, vars: GetEducationalLevelVariables): QueryPromise<GetEducationalLevelData, GetEducationalLevelVariables>;
+
+interface GetLevelsByCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryRef<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+  operationName: string;
+}
+export const getLevelsByCategoryRef: GetLevelsByCategoryRef;
+
+export function getLevelsByCategory(vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+export function getLevelsByCategory(dc: DataConnect, vars: GetLevelsByCategoryVariables): QueryPromise<GetLevelsByCategoryData, GetLevelsByCategoryVariables>;
+
+interface ListCoursesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListCoursesVariables): QueryRef<ListCoursesData, ListCoursesVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListCoursesVariables): QueryRef<ListCoursesData, ListCoursesVariables>;
+  operationName: string;
+}
+export const listCoursesRef: ListCoursesRef;
+
+export function listCourses(vars: ListCoursesVariables): QueryPromise<ListCoursesData, ListCoursesVariables>;
+export function listCourses(dc: DataConnect, vars: ListCoursesVariables): QueryPromise<ListCoursesData, ListCoursesVariables>;
+
+interface GetCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseVariables): QueryRef<GetCourseData, GetCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseVariables): QueryRef<GetCourseData, GetCourseVariables>;
+  operationName: string;
+}
+export const getCourseRef: GetCourseRef;
+
+export function getCourse(vars: GetCourseVariables): QueryPromise<GetCourseData, GetCourseVariables>;
+export function getCourse(dc: DataConnect, vars: GetCourseVariables): QueryPromise<GetCourseData, GetCourseVariables>;
+
+interface GetCoursesByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCoursesByUserVariables): QueryRef<GetCoursesByUserData, GetCoursesByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCoursesByUserVariables): QueryRef<GetCoursesByUserData, GetCoursesByUserVariables>;
+  operationName: string;
+}
+export const getCoursesByUserRef: GetCoursesByUserRef;
+
+export function getCoursesByUser(vars: GetCoursesByUserVariables): QueryPromise<GetCoursesByUserData, GetCoursesByUserVariables>;
+export function getCoursesByUser(dc: DataConnect, vars: GetCoursesByUserVariables): QueryPromise<GetCoursesByUserData, GetCoursesByUserVariables>;
+
+interface GetCoursesByLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCoursesByLevelVariables): QueryRef<GetCoursesByLevelData, GetCoursesByLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCoursesByLevelVariables): QueryRef<GetCoursesByLevelData, GetCoursesByLevelVariables>;
+  operationName: string;
+}
+export const getCoursesByLevelRef: GetCoursesByLevelRef;
+
+export function getCoursesByLevel(vars: GetCoursesByLevelVariables): QueryPromise<GetCoursesByLevelData, GetCoursesByLevelVariables>;
+export function getCoursesByLevel(dc: DataConnect, vars: GetCoursesByLevelVariables): QueryPromise<GetCoursesByLevelData, GetCoursesByLevelVariables>;
+
+interface ListDifficultiesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListDifficultiesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListDifficultiesData, undefined>;
+  operationName: string;
+}
+export const listDifficultiesRef: ListDifficultiesRef;
+
+export function listDifficulties(): QueryPromise<ListDifficultiesData, undefined>;
+export function listDifficulties(dc: DataConnect): QueryPromise<ListDifficultiesData, undefined>;
+
+interface GetDifficultyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetDifficultyVariables): QueryRef<GetDifficultyData, GetDifficultyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetDifficultyVariables): QueryRef<GetDifficultyData, GetDifficultyVariables>;
+  operationName: string;
+}
+export const getDifficultyRef: GetDifficultyRef;
+
+export function getDifficulty(vars: GetDifficultyVariables): QueryPromise<GetDifficultyData, GetDifficultyVariables>;
+export function getDifficulty(dc: DataConnect, vars: GetDifficultyVariables): QueryPromise<GetDifficultyData, GetDifficultyVariables>;
+
+interface ListQuestionTypesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuestionTypesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListQuestionTypesData, undefined>;
+  operationName: string;
+}
+export const listQuestionTypesRef: ListQuestionTypesRef;
+
+export function listQuestionTypes(): QueryPromise<ListQuestionTypesData, undefined>;
+export function listQuestionTypes(dc: DataConnect): QueryPromise<ListQuestionTypesData, undefined>;
+
+interface GetQuestionTypeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionTypeVariables): QueryRef<GetQuestionTypeData, GetQuestionTypeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionTypeVariables): QueryRef<GetQuestionTypeData, GetQuestionTypeVariables>;
+  operationName: string;
+}
+export const getQuestionTypeRef: GetQuestionTypeRef;
+
+export function getQuestionType(vars: GetQuestionTypeVariables): QueryPromise<GetQuestionTypeData, GetQuestionTypeVariables>;
+export function getQuestionType(dc: DataConnect, vars: GetQuestionTypeVariables): QueryPromise<GetQuestionTypeData, GetQuestionTypeVariables>;
+
+interface GetQuestionTypeByCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionTypeByCodeVariables): QueryRef<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryRef<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+  operationName: string;
+}
+export const getQuestionTypeByCodeRef: GetQuestionTypeByCodeRef;
+
+export function getQuestionTypeByCode(vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+export function getQuestionTypeByCode(dc: DataConnect, vars: GetQuestionTypeByCodeVariables): QueryPromise<GetQuestionTypeByCodeData, GetQuestionTypeByCodeVariables>;
+
+interface ListTaxonomiesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTaxonomiesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListTaxonomiesData, undefined>;
+  operationName: string;
+}
+export const listTaxonomiesRef: ListTaxonomiesRef;
+
+export function listTaxonomies(): QueryPromise<ListTaxonomiesData, undefined>;
+export function listTaxonomies(dc: DataConnect): QueryPromise<ListTaxonomiesData, undefined>;
+
+interface GetTaxonomyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetTaxonomyVariables): QueryRef<GetTaxonomyData, GetTaxonomyVariables>;
+  operationName: string;
+}
+export const getTaxonomyRef: GetTaxonomyRef;
+
+export function getTaxonomy(vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
+export function getTaxonomy(dc: DataConnect, vars: GetTaxonomyVariables): QueryPromise<GetTaxonomyData, GetTaxonomyVariables>;
+
+interface GetTaxonomyByCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryRef<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+  operationName: string;
+}
+export const getTaxonomyByCodeRef: GetTaxonomyByCodeRef;
+
+export function getTaxonomyByCode(vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+export function getTaxonomyByCode(dc: DataConnect, vars: GetTaxonomyByCodeVariables): QueryPromise<GetTaxonomyByCodeData, GetTaxonomyByCodeVariables>;
+
+interface ListTaxonomiesByLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListTaxonomiesByLevelData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListTaxonomiesByLevelData, undefined>;
+  operationName: string;
+}
+export const listTaxonomiesByLevelRef: ListTaxonomiesByLevelRef;
+
+export function listTaxonomiesByLevel(): QueryPromise<ListTaxonomiesByLevelData, undefined>;
+export function listTaxonomiesByLevel(dc: DataConnect): QueryPromise<ListTaxonomiesByLevelData, undefined>;
+
+interface ListQuestionsByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListQuestionsByUserVariables): QueryRef<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListQuestionsByUserVariables): QueryRef<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+  operationName: string;
+}
+export const listQuestionsByUserRef: ListQuestionsByUserRef;
+
+export function listQuestionsByUser(vars: ListQuestionsByUserVariables): QueryPromise<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+export function listQuestionsByUser(dc: DataConnect, vars: ListQuestionsByUserVariables): QueryPromise<ListQuestionsByUserData, ListQuestionsByUserVariables>;
+
+interface GetDashboardQuestionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetDashboardQuestionsVariables): QueryRef<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetDashboardQuestionsVariables): QueryRef<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
+  operationName: string;
+}
+export const getDashboardQuestionsRef: GetDashboardQuestionsRef;
+
+export function getDashboardQuestions(vars: GetDashboardQuestionsVariables): QueryPromise<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
+export function getDashboardQuestions(dc: DataConnect, vars: GetDashboardQuestionsVariables): QueryPromise<GetDashboardQuestionsData, GetDashboardQuestionsVariables>;
+
+interface GetDashboardSystemDataRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetDashboardSystemDataData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetDashboardSystemDataData, undefined>;
+  operationName: string;
+}
+export const getDashboardSystemDataRef: GetDashboardSystemDataRef;
+
+export function getDashboardSystemData(): QueryPromise<GetDashboardSystemDataData, undefined>;
+export function getDashboardSystemData(dc: DataConnect): QueryPromise<GetDashboardSystemDataData, undefined>;
+
+interface GetQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionVariables): QueryRef<GetQuestionData, GetQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionVariables): QueryRef<GetQuestionData, GetQuestionVariables>;
+  operationName: string;
+}
+export const getQuestionRef: GetQuestionRef;
+
+export function getQuestion(vars: GetQuestionVariables): QueryPromise<GetQuestionData, GetQuestionVariables>;
+export function getQuestion(dc: DataConnect, vars: GetQuestionVariables): QueryPromise<GetQuestionData, GetQuestionVariables>;
+
+interface ListPublicQuestionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListPublicQuestionsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListPublicQuestionsData, undefined>;
+  operationName: string;
+}
+export const listPublicQuestionsRef: ListPublicQuestionsRef;
+
+export function listPublicQuestions(): QueryPromise<ListPublicQuestionsData, undefined>;
+export function listPublicQuestions(dc: DataConnect): QueryPromise<ListPublicQuestionsData, undefined>;
+
+interface ListPublicQuestionsByDifficultyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListPublicQuestionsByDifficultyVariables): QueryRef<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListPublicQuestionsByDifficultyVariables): QueryRef<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+  operationName: string;
+}
+export const listPublicQuestionsByDifficultyRef: ListPublicQuestionsByDifficultyRef;
+
+export function listPublicQuestionsByDifficulty(vars: ListPublicQuestionsByDifficultyVariables): QueryPromise<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+export function listPublicQuestionsByDifficulty(dc: DataConnect, vars: ListPublicQuestionsByDifficultyVariables): QueryPromise<ListPublicQuestionsByDifficultyData, ListPublicQuestionsByDifficultyVariables>;
+
+interface ListPublicQuestionsByTypeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListPublicQuestionsByTypeVariables): QueryRef<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListPublicQuestionsByTypeVariables): QueryRef<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+  operationName: string;
+}
+export const listPublicQuestionsByTypeRef: ListPublicQuestionsByTypeRef;
+
+export function listPublicQuestionsByType(vars: ListPublicQuestionsByTypeVariables): QueryPromise<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+export function listPublicQuestionsByType(dc: DataConnect, vars: ListPublicQuestionsByTypeVariables): QueryPromise<ListPublicQuestionsByTypeData, ListPublicQuestionsByTypeVariables>;
+
+interface GetQuestionOptionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionOptionsVariables): QueryRef<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionOptionsVariables): QueryRef<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+  operationName: string;
+}
+export const getQuestionOptionsRef: GetQuestionOptionsRef;
+
+export function getQuestionOptions(vars: GetQuestionOptionsVariables): QueryPromise<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+export function getQuestionOptions(dc: DataConnect, vars: GetQuestionOptionsVariables): QueryPromise<GetQuestionOptionsData, GetQuestionOptionsVariables>;
+
+interface GetAllCoursesByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetAllCoursesByUserVariables): QueryRef<GetAllCoursesByUserData, GetAllCoursesByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetAllCoursesByUserVariables): QueryRef<GetAllCoursesByUserData, GetAllCoursesByUserVariables>;
+  operationName: string;
+}
+export const getAllCoursesByUserRef: GetAllCoursesByUserRef;
+
+export function getAllCoursesByUser(vars: GetAllCoursesByUserVariables): QueryPromise<GetAllCoursesByUserData, GetAllCoursesByUserVariables>;
+export function getAllCoursesByUser(dc: DataConnect, vars: GetAllCoursesByUserVariables): QueryPromise<GetAllCoursesByUserData, GetAllCoursesByUserVariables>;
+
+interface GetCourseByCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseByCodeVariables): QueryRef<GetCourseByCodeData, GetCourseByCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseByCodeVariables): QueryRef<GetCourseByCodeData, GetCourseByCodeVariables>;
+  operationName: string;
+}
+export const getCourseByCodeRef: GetCourseByCodeRef;
+
+export function getCourseByCode(vars: GetCourseByCodeVariables): QueryPromise<GetCourseByCodeData, GetCourseByCodeVariables>;
+export function getCourseByCode(dc: DataConnect, vars: GetCourseByCodeVariables): QueryPromise<GetCourseByCodeData, GetCourseByCodeVariables>;
+
+interface GetCoursesByInstitutionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCoursesByInstitutionVariables): QueryRef<GetCoursesByInstitutionData, GetCoursesByInstitutionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCoursesByInstitutionVariables): QueryRef<GetCoursesByInstitutionData, GetCoursesByInstitutionVariables>;
+  operationName: string;
+}
+export const getCoursesByInstitutionRef: GetCoursesByInstitutionRef;
+
+export function getCoursesByInstitution(vars: GetCoursesByInstitutionVariables): QueryPromise<GetCoursesByInstitutionData, GetCoursesByInstitutionVariables>;
+export function getCoursesByInstitution(dc: DataConnect, vars: GetCoursesByInstitutionVariables): QueryPromise<GetCoursesByInstitutionData, GetCoursesByInstitutionVariables>;
+
+interface GetCoursesByEducationalLevelRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCoursesByEducationalLevelVariables): QueryRef<GetCoursesByEducationalLevelData, GetCoursesByEducationalLevelVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCoursesByEducationalLevelVariables): QueryRef<GetCoursesByEducationalLevelData, GetCoursesByEducationalLevelVariables>;
+  operationName: string;
+}
+export const getCoursesByEducationalLevelRef: GetCoursesByEducationalLevelRef;
+
+export function getCoursesByEducationalLevel(vars: GetCoursesByEducationalLevelVariables): QueryPromise<GetCoursesByEducationalLevelData, GetCoursesByEducationalLevelVariables>;
+export function getCoursesByEducationalLevel(dc: DataConnect, vars: GetCoursesByEducationalLevelVariables): QueryPromise<GetCoursesByEducationalLevelData, GetCoursesByEducationalLevelVariables>;
+
+interface GetEvaluationByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationByIdVariables): QueryRef<GetEvaluationByIdData, GetEvaluationByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationByIdVariables): QueryRef<GetEvaluationByIdData, GetEvaluationByIdVariables>;
+  operationName: string;
+}
+export const getEvaluationByIdRef: GetEvaluationByIdRef;
+
+export function getEvaluationById(vars: GetEvaluationByIdVariables): QueryPromise<GetEvaluationByIdData, GetEvaluationByIdVariables>;
+export function getEvaluationById(dc: DataConnect, vars: GetEvaluationByIdVariables): QueryPromise<GetEvaluationByIdData, GetEvaluationByIdVariables>;
+
+interface GetAllEvaluationsByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetAllEvaluationsByUserVariables): QueryRef<GetAllEvaluationsByUserData, GetAllEvaluationsByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetAllEvaluationsByUserVariables): QueryRef<GetAllEvaluationsByUserData, GetAllEvaluationsByUserVariables>;
+  operationName: string;
+}
+export const getAllEvaluationsByUserRef: GetAllEvaluationsByUserRef;
+
+export function getAllEvaluationsByUser(vars: GetAllEvaluationsByUserVariables): QueryPromise<GetAllEvaluationsByUserData, GetAllEvaluationsByUserVariables>;
+export function getAllEvaluationsByUser(dc: DataConnect, vars: GetAllEvaluationsByUserVariables): QueryPromise<GetAllEvaluationsByUserData, GetAllEvaluationsByUserVariables>;
+
+interface GetEvaluationsByDateRangeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationsByDateRangeVariables): QueryRef<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationsByDateRangeVariables): QueryRef<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
+  operationName: string;
+}
+export const getEvaluationsByDateRangeRef: GetEvaluationsByDateRangeRef;
+
+export function getEvaluationsByDateRange(vars: GetEvaluationsByDateRangeVariables): QueryPromise<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
+export function getEvaluationsByDateRange(dc: DataConnect, vars: GetEvaluationsByDateRangeVariables): QueryPromise<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
+
+interface GetEvaluationsByStateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationsByStateVariables): QueryRef<GetEvaluationsByStateData, GetEvaluationsByStateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationsByStateVariables): QueryRef<GetEvaluationsByStateData, GetEvaluationsByStateVariables>;
+  operationName: string;
+}
+export const getEvaluationsByStateRef: GetEvaluationsByStateRef;
+
+export function getEvaluationsByState(vars: GetEvaluationsByStateVariables): QueryPromise<GetEvaluationsByStateData, GetEvaluationsByStateVariables>;
+export function getEvaluationsByState(dc: DataConnect, vars: GetEvaluationsByStateVariables): QueryPromise<GetEvaluationsByStateData, GetEvaluationsByStateVariables>;
+
+interface GetEvaluationsBySubjectRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationsBySubjectVariables): QueryRef<GetEvaluationsBySubjectData, GetEvaluationsBySubjectVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationsBySubjectVariables): QueryRef<GetEvaluationsBySubjectData, GetEvaluationsBySubjectVariables>;
+  operationName: string;
+}
+export const getEvaluationsBySubjectRef: GetEvaluationsBySubjectRef;
+
+export function getEvaluationsBySubject(vars: GetEvaluationsBySubjectVariables): QueryPromise<GetEvaluationsBySubjectData, GetEvaluationsBySubjectVariables>;
+export function getEvaluationsBySubject(dc: DataConnect, vars: GetEvaluationsBySubjectVariables): QueryPromise<GetEvaluationsBySubjectData, GetEvaluationsBySubjectVariables>;
+
+interface GetEvaluationsByCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationsByCourseVariables): QueryRef<GetEvaluationsByCourseData, GetEvaluationsByCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationsByCourseVariables): QueryRef<GetEvaluationsByCourseData, GetEvaluationsByCourseVariables>;
+  operationName: string;
+}
+export const getEvaluationsByCourseRef: GetEvaluationsByCourseRef;
+
+export function getEvaluationsByCourse(vars: GetEvaluationsByCourseVariables): QueryPromise<GetEvaluationsByCourseData, GetEvaluationsByCourseVariables>;
+export function getEvaluationsByCourse(dc: DataConnect, vars: GetEvaluationsByCourseVariables): QueryPromise<GetEvaluationsByCourseData, GetEvaluationsByCourseVariables>;
+
+interface GetEvaluationFullDetailRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationFullDetailVariables): QueryRef<GetEvaluationFullDetailData, GetEvaluationFullDetailVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationFullDetailVariables): QueryRef<GetEvaluationFullDetailData, GetEvaluationFullDetailVariables>;
+  operationName: string;
+}
+export const getEvaluationFullDetailRef: GetEvaluationFullDetailRef;
+
+export function getEvaluationFullDetail(vars: GetEvaluationFullDetailVariables): QueryPromise<GetEvaluationFullDetailData, GetEvaluationFullDetailVariables>;
+export function getEvaluationFullDetail(dc: DataConnect, vars: GetEvaluationFullDetailVariables): QueryPromise<GetEvaluationFullDetailData, GetEvaluationFullDetailVariables>;
+
+interface GetEvaluationQuestionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationQuestionsVariables): QueryRef<GetEvaluationQuestionsData, GetEvaluationQuestionsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationQuestionsVariables): QueryRef<GetEvaluationQuestionsData, GetEvaluationQuestionsVariables>;
+  operationName: string;
+}
+export const getEvaluationQuestionsRef: GetEvaluationQuestionsRef;
+
+export function getEvaluationQuestions(vars: GetEvaluationQuestionsVariables): QueryPromise<GetEvaluationQuestionsData, GetEvaluationQuestionsVariables>;
+export function getEvaluationQuestions(dc: DataConnect, vars: GetEvaluationQuestionsVariables): QueryPromise<GetEvaluationQuestionsData, GetEvaluationQuestionsVariables>;
+
+interface GetAllStudentsByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetAllStudentsByUserVariables): QueryRef<GetAllStudentsByUserData, GetAllStudentsByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetAllStudentsByUserVariables): QueryRef<GetAllStudentsByUserData, GetAllStudentsByUserVariables>;
+  operationName: string;
+}
+export const getAllStudentsByUserRef: GetAllStudentsByUserRef;
+
+export function getAllStudentsByUser(vars: GetAllStudentsByUserVariables): QueryPromise<GetAllStudentsByUserData, GetAllStudentsByUserVariables>;
+export function getAllStudentsByUser(dc: DataConnect, vars: GetAllStudentsByUserVariables): QueryPromise<GetAllStudentsByUserData, GetAllStudentsByUserVariables>;
+
+interface GetStudentByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentByIdVariables): QueryRef<GetStudentByIdData, GetStudentByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentByIdVariables): QueryRef<GetStudentByIdData, GetStudentByIdVariables>;
+  operationName: string;
+}
+export const getStudentByIdRef: GetStudentByIdRef;
+
+export function getStudentById(vars: GetStudentByIdVariables): QueryPromise<GetStudentByIdData, GetStudentByIdVariables>;
+export function getStudentById(dc: DataConnect, vars: GetStudentByIdVariables): QueryPromise<GetStudentByIdData, GetStudentByIdVariables>;
+
+interface GetStudentByIdentifierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentByIdentifierVariables): QueryRef<GetStudentByIdentifierData, GetStudentByIdentifierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentByIdentifierVariables): QueryRef<GetStudentByIdentifierData, GetStudentByIdentifierVariables>;
+  operationName: string;
+}
+export const getStudentByIdentifierRef: GetStudentByIdentifierRef;
+
+export function getStudentByIdentifier(vars: GetStudentByIdentifierVariables): QueryPromise<GetStudentByIdentifierData, GetStudentByIdentifierVariables>;
+export function getStudentByIdentifier(dc: DataConnect, vars: GetStudentByIdentifierVariables): QueryPromise<GetStudentByIdentifierData, GetStudentByIdentifierVariables>;
+
+interface GetStudentsByFirstNameRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentsByFirstNameVariables): QueryRef<GetStudentsByFirstNameData, GetStudentsByFirstNameVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentsByFirstNameVariables): QueryRef<GetStudentsByFirstNameData, GetStudentsByFirstNameVariables>;
+  operationName: string;
+}
+export const getStudentsByFirstNameRef: GetStudentsByFirstNameRef;
+
+export function getStudentsByFirstName(vars: GetStudentsByFirstNameVariables): QueryPromise<GetStudentsByFirstNameData, GetStudentsByFirstNameVariables>;
+export function getStudentsByFirstName(dc: DataConnect, vars: GetStudentsByFirstNameVariables): QueryPromise<GetStudentsByFirstNameData, GetStudentsByFirstNameVariables>;
+
+interface GetStudentsByLastNameRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentsByLastNameVariables): QueryRef<GetStudentsByLastNameData, GetStudentsByLastNameVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentsByLastNameVariables): QueryRef<GetStudentsByLastNameData, GetStudentsByLastNameVariables>;
+  operationName: string;
+}
+export const getStudentsByLastNameRef: GetStudentsByLastNameRef;
+
+export function getStudentsByLastName(vars: GetStudentsByLastNameVariables): QueryPromise<GetStudentsByLastNameData, GetStudentsByLastNameVariables>;
+export function getStudentsByLastName(dc: DataConnect, vars: GetStudentsByLastNameVariables): QueryPromise<GetStudentsByLastNameData, GetStudentsByLastNameVariables>;
+
+interface GetStudentsByCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentsByCourseVariables): QueryRef<GetStudentsByCourseData, GetStudentsByCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentsByCourseVariables): QueryRef<GetStudentsByCourseData, GetStudentsByCourseVariables>;
+  operationName: string;
+}
+export const getStudentsByCourseRef: GetStudentsByCourseRef;
+
+export function getStudentsByCourse(vars: GetStudentsByCourseVariables): QueryPromise<GetStudentsByCourseData, GetStudentsByCourseVariables>;
+export function getStudentsByCourse(dc: DataConnect, vars: GetStudentsByCourseVariables): QueryPromise<GetStudentsByCourseData, GetStudentsByCourseVariables>;
+
+interface GetCourseStudentsDetailRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseStudentsDetailVariables): QueryRef<GetCourseStudentsDetailData, GetCourseStudentsDetailVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseStudentsDetailVariables): QueryRef<GetCourseStudentsDetailData, GetCourseStudentsDetailVariables>;
+  operationName: string;
+}
+export const getCourseStudentsDetailRef: GetCourseStudentsDetailRef;
+
+export function getCourseStudentsDetail(vars: GetCourseStudentsDetailVariables): QueryPromise<GetCourseStudentsDetailData, GetCourseStudentsDetailVariables>;
+export function getCourseStudentsDetail(dc: DataConnect, vars: GetCourseStudentsDetailVariables): QueryPromise<GetCourseStudentsDetailData, GetCourseStudentsDetailVariables>;
+
+interface GetStudentEvaluationByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationByIdVariables): QueryRef<GetStudentEvaluationByIdData, GetStudentEvaluationByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationByIdVariables): QueryRef<GetStudentEvaluationByIdData, GetStudentEvaluationByIdVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationByIdRef: GetStudentEvaluationByIdRef;
+
+export function getStudentEvaluationById(vars: GetStudentEvaluationByIdVariables): QueryPromise<GetStudentEvaluationByIdData, GetStudentEvaluationByIdVariables>;
+export function getStudentEvaluationById(dc: DataConnect, vars: GetStudentEvaluationByIdVariables): QueryPromise<GetStudentEvaluationByIdData, GetStudentEvaluationByIdVariables>;
+
+interface GetStudentEvaluationsByStudentIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationsByStudentIdVariables): QueryRef<GetStudentEvaluationsByStudentIdData, GetStudentEvaluationsByStudentIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationsByStudentIdVariables): QueryRef<GetStudentEvaluationsByStudentIdData, GetStudentEvaluationsByStudentIdVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationsByStudentIdRef: GetStudentEvaluationsByStudentIdRef;
+
+export function getStudentEvaluationsByStudentId(vars: GetStudentEvaluationsByStudentIdVariables): QueryPromise<GetStudentEvaluationsByStudentIdData, GetStudentEvaluationsByStudentIdVariables>;
+export function getStudentEvaluationsByStudentId(dc: DataConnect, vars: GetStudentEvaluationsByStudentIdVariables): QueryPromise<GetStudentEvaluationsByStudentIdData, GetStudentEvaluationsByStudentIdVariables>;
+
+interface GetStudentEvaluationsByIdentifierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationsByIdentifierVariables): QueryRef<GetStudentEvaluationsByIdentifierData, GetStudentEvaluationsByIdentifierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationsByIdentifierVariables): QueryRef<GetStudentEvaluationsByIdentifierData, GetStudentEvaluationsByIdentifierVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationsByIdentifierRef: GetStudentEvaluationsByIdentifierRef;
+
+export function getStudentEvaluationsByIdentifier(vars: GetStudentEvaluationsByIdentifierVariables): QueryPromise<GetStudentEvaluationsByIdentifierData, GetStudentEvaluationsByIdentifierVariables>;
+export function getStudentEvaluationsByIdentifier(dc: DataConnect, vars: GetStudentEvaluationsByIdentifierVariables): QueryPromise<GetStudentEvaluationsByIdentifierData, GetStudentEvaluationsByIdentifierVariables>;
+
+interface GetStudentEvaluationsByFirstNameRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationsByFirstNameVariables): QueryRef<GetStudentEvaluationsByFirstNameData, GetStudentEvaluationsByFirstNameVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationsByFirstNameVariables): QueryRef<GetStudentEvaluationsByFirstNameData, GetStudentEvaluationsByFirstNameVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationsByFirstNameRef: GetStudentEvaluationsByFirstNameRef;
+
+export function getStudentEvaluationsByFirstName(vars: GetStudentEvaluationsByFirstNameVariables): QueryPromise<GetStudentEvaluationsByFirstNameData, GetStudentEvaluationsByFirstNameVariables>;
+export function getStudentEvaluationsByFirstName(dc: DataConnect, vars: GetStudentEvaluationsByFirstNameVariables): QueryPromise<GetStudentEvaluationsByFirstNameData, GetStudentEvaluationsByFirstNameVariables>;
+
+interface GetStudentEvaluationsByLastNameRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationsByLastNameVariables): QueryRef<GetStudentEvaluationsByLastNameData, GetStudentEvaluationsByLastNameVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationsByLastNameVariables): QueryRef<GetStudentEvaluationsByLastNameData, GetStudentEvaluationsByLastNameVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationsByLastNameRef: GetStudentEvaluationsByLastNameRef;
+
+export function getStudentEvaluationsByLastName(vars: GetStudentEvaluationsByLastNameVariables): QueryPromise<GetStudentEvaluationsByLastNameData, GetStudentEvaluationsByLastNameVariables>;
+export function getStudentEvaluationsByLastName(dc: DataConnect, vars: GetStudentEvaluationsByLastNameVariables): QueryPromise<GetStudentEvaluationsByLastNameData, GetStudentEvaluationsByLastNameVariables>;
+
+interface GetStudentEvaluationQuestionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationQuestionsVariables): QueryRef<GetStudentEvaluationQuestionsData, GetStudentEvaluationQuestionsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationQuestionsVariables): QueryRef<GetStudentEvaluationQuestionsData, GetStudentEvaluationQuestionsVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationQuestionsRef: GetStudentEvaluationQuestionsRef;
+
+export function getStudentEvaluationQuestions(vars: GetStudentEvaluationQuestionsVariables): QueryPromise<GetStudentEvaluationQuestionsData, GetStudentEvaluationQuestionsVariables>;
+export function getStudentEvaluationQuestions(dc: DataConnect, vars: GetStudentEvaluationQuestionsVariables): QueryPromise<GetStudentEvaluationQuestionsData, GetStudentEvaluationQuestionsVariables>;
+
+interface GetStudentAnswerOptionsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentAnswerOptionsVariables): QueryRef<GetStudentAnswerOptionsData, GetStudentAnswerOptionsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentAnswerOptionsVariables): QueryRef<GetStudentAnswerOptionsData, GetStudentAnswerOptionsVariables>;
+  operationName: string;
+}
+export const getStudentAnswerOptionsRef: GetStudentAnswerOptionsRef;
+
+export function getStudentAnswerOptions(vars: GetStudentAnswerOptionsVariables): QueryPromise<GetStudentAnswerOptionsData, GetStudentAnswerOptionsVariables>;
+export function getStudentAnswerOptions(dc: DataConnect, vars: GetStudentAnswerOptionsVariables): QueryPromise<GetStudentAnswerOptionsData, GetStudentAnswerOptionsVariables>;
+
+interface GetStudentEvaluationsByCourseEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationsByCourseEvaluationVariables): QueryRef<GetStudentEvaluationsByCourseEvaluationData, GetStudentEvaluationsByCourseEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationsByCourseEvaluationVariables): QueryRef<GetStudentEvaluationsByCourseEvaluationData, GetStudentEvaluationsByCourseEvaluationVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationsByCourseEvaluationRef: GetStudentEvaluationsByCourseEvaluationRef;
+
+export function getStudentEvaluationsByCourseEvaluation(vars: GetStudentEvaluationsByCourseEvaluationVariables): QueryPromise<GetStudentEvaluationsByCourseEvaluationData, GetStudentEvaluationsByCourseEvaluationVariables>;
+export function getStudentEvaluationsByCourseEvaluation(dc: DataConnect, vars: GetStudentEvaluationsByCourseEvaluationVariables): QueryPromise<GetStudentEvaluationsByCourseEvaluationData, GetStudentEvaluationsByCourseEvaluationVariables>;
+
+interface GetStudentEvaluationsByCourseStudentRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationsByCourseStudentVariables): QueryRef<GetStudentEvaluationsByCourseStudentData, GetStudentEvaluationsByCourseStudentVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationsByCourseStudentVariables): QueryRef<GetStudentEvaluationsByCourseStudentData, GetStudentEvaluationsByCourseStudentVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationsByCourseStudentRef: GetStudentEvaluationsByCourseStudentRef;
+
+export function getStudentEvaluationsByCourseStudent(vars: GetStudentEvaluationsByCourseStudentVariables): QueryPromise<GetStudentEvaluationsByCourseStudentData, GetStudentEvaluationsByCourseStudentVariables>;
+export function getStudentEvaluationsByCourseStudent(dc: DataConnect, vars: GetStudentEvaluationsByCourseStudentVariables): QueryPromise<GetStudentEvaluationsByCourseStudentData, GetStudentEvaluationsByCourseStudentVariables>;
+
+interface GetStudentEvaluationFullDetailRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetStudentEvaluationFullDetailVariables): QueryRef<GetStudentEvaluationFullDetailData, GetStudentEvaluationFullDetailVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetStudentEvaluationFullDetailVariables): QueryRef<GetStudentEvaluationFullDetailData, GetStudentEvaluationFullDetailVariables>;
+  operationName: string;
+}
+export const getStudentEvaluationFullDetailRef: GetStudentEvaluationFullDetailRef;
+
+export function getStudentEvaluationFullDetail(vars: GetStudentEvaluationFullDetailVariables): QueryPromise<GetStudentEvaluationFullDetailData, GetStudentEvaluationFullDetailVariables>;
+export function getStudentEvaluationFullDetail(dc: DataConnect, vars: GetStudentEvaluationFullDetailVariables): QueryPromise<GetStudentEvaluationFullDetailData, GetStudentEvaluationFullDetailVariables>;
+
+interface GetCourseEvaluationsByUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseEvaluationsByUserVariables): QueryRef<GetCourseEvaluationsByUserData, GetCourseEvaluationsByUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseEvaluationsByUserVariables): QueryRef<GetCourseEvaluationsByUserData, GetCourseEvaluationsByUserVariables>;
+  operationName: string;
+}
+export const getCourseEvaluationsByUserRef: GetCourseEvaluationsByUserRef;
+
+export function getCourseEvaluationsByUser(vars: GetCourseEvaluationsByUserVariables): QueryPromise<GetCourseEvaluationsByUserData, GetCourseEvaluationsByUserVariables>;
+export function getCourseEvaluationsByUser(dc: DataConnect, vars: GetCourseEvaluationsByUserVariables): QueryPromise<GetCourseEvaluationsByUserData, GetCourseEvaluationsByUserVariables>;
+
+interface GetCourseEvaluationByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseEvaluationByIdVariables): QueryRef<GetCourseEvaluationByIdData, GetCourseEvaluationByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseEvaluationByIdVariables): QueryRef<GetCourseEvaluationByIdData, GetCourseEvaluationByIdVariables>;
+  operationName: string;
+}
+export const getCourseEvaluationByIdRef: GetCourseEvaluationByIdRef;
+
+export function getCourseEvaluationById(vars: GetCourseEvaluationByIdVariables): QueryPromise<GetCourseEvaluationByIdData, GetCourseEvaluationByIdVariables>;
+export function getCourseEvaluationById(dc: DataConnect, vars: GetCourseEvaluationByIdVariables): QueryPromise<GetCourseEvaluationByIdData, GetCourseEvaluationByIdVariables>;
+
+interface GetEvaluationsForCourseRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetEvaluationsForCourseVariables): QueryRef<GetEvaluationsForCourseData, GetEvaluationsForCourseVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetEvaluationsForCourseVariables): QueryRef<GetEvaluationsForCourseData, GetEvaluationsForCourseVariables>;
+  operationName: string;
+}
+export const getEvaluationsForCourseRef: GetEvaluationsForCourseRef;
+
+export function getEvaluationsForCourse(vars: GetEvaluationsForCourseVariables): QueryPromise<GetEvaluationsForCourseData, GetEvaluationsForCourseVariables>;
+export function getEvaluationsForCourse(dc: DataConnect, vars: GetEvaluationsForCourseVariables): QueryPromise<GetEvaluationsForCourseData, GetEvaluationsForCourseVariables>;
+
+interface GetCoursesForEvaluationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCoursesForEvaluationVariables): QueryRef<GetCoursesForEvaluationData, GetCoursesForEvaluationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCoursesForEvaluationVariables): QueryRef<GetCoursesForEvaluationData, GetCoursesForEvaluationVariables>;
+  operationName: string;
+}
+export const getCoursesForEvaluationRef: GetCoursesForEvaluationRef;
+
+export function getCoursesForEvaluation(vars: GetCoursesForEvaluationVariables): QueryPromise<GetCoursesForEvaluationData, GetCoursesForEvaluationVariables>;
+export function getCoursesForEvaluation(dc: DataConnect, vars: GetCoursesForEvaluationVariables): QueryPromise<GetCoursesForEvaluationData, GetCoursesForEvaluationVariables>;
 
