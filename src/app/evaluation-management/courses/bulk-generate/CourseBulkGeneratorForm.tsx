@@ -14,7 +14,6 @@ import CoursePreviewModal from './CoursePreviewModal';
 import { useCourseDataLoader } from '@/hooks/useCourseDataLoader';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
 import { CourseGenerationOptions, CourseToCreate } from '@/lib/courseDataLoader';
-import { LevelCategory } from '@/types/level';
 
 // Tipos de identificadores de paralelo
 type SectionIdentifierType = 'none' | 'letters' | 'numbers' | 'custom';
@@ -36,8 +35,8 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
   const [sectionQuantity, setSectionQuantity] = useState<number>(1);
   const [customSections, setCustomSections] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
-  const [allLevels, setAllLevels] = useState<Array<{ id: string; name: string; categoryId: string }>>([]);
-  const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [allLevels, setAllLevels] = useState<Array<{ id: string; name: string; code: string; categoryId: string }>>([]);
+  const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string; code: string }>>([]);
 
   // UI state
   const [error, setError] = useState<string>('');
@@ -60,6 +59,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           categories.map((c) => ({
             id: c.id,
             name: c.name,
+            code: c.code || '',
           }))
         );
         
@@ -69,6 +69,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           levels.map((l) => ({
             id: l.id,
             name: l.name,
+            code: l.code || '',
             categoryId: l.categoryId || '',
           }))
         );
@@ -80,6 +81,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           categories.map((c) => ({
             id: c.id,
             name: c.name,
+            code: c.code || '',
           }))
         );
         
@@ -88,6 +90,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
           levels.map((l) => ({
             id: l.id,
             name: l.name,
+            code: l.code || '',
             categoryId: l.categoryId || '',
           }))
         );
@@ -105,6 +108,7 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
         levels.map((l) => ({
           id: l.id,
           name: l.name,
+          code: l.code || '',
           categoryId: l.categoryId || '',
         }))
       );
@@ -174,25 +178,28 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       sections = customSections;
     }
 
-    // Construir mapping de levelId -> levelName y levelId -> categoryId
+    // Construir mappings de levelId -> levelName/levelCode y levelId -> categoryId
     const levelNames: Record<string, string> = {};
+    const levelCodes: Record<string, string> = {};
     const levelCategories: Record<string, string> = {};
     const categoryNames: Record<string, string> = {};
+    const categoryCodes: Record<string, string> = {};
 
     selectedLevels.forEach((levelId) => {
       const level = allLevels.find((l) => l.id === levelId);
       if (level) {
         levelNames[levelId] = level.name;
+        levelCodes[levelId] = level.code;
         if (level.categoryId) {
           levelCategories[levelId] = level.categoryId;
         }
       }
     });
 
-    // Cargar nombres de categorías desde la tienda
-    const categories = levelStore.getAllCategories();
-    categories.forEach((cat: LevelCategory) => {
-      categoryNames[cat.id] = cat.name || '';
+    // Cargar nombres y códigos de categorías
+    allCategories.forEach((cat) => {
+      categoryNames[cat.id] = cat.name;
+      categoryCodes[cat.id] = cat.code;
     });
 
     const options: CourseGenerationOptions = {
@@ -200,8 +207,10 @@ export const CourseBulkGeneratorForm: React.FC<CourseBulkGeneratorFormProps> = (
       sections,
       levelIds: selectedLevels,
       levelNames,
+      levelCodes,
       levelCategories,
       categoryNames,
+      categoryCodes,
     };
 
     // Generar cursos en memoria para mostrar preview

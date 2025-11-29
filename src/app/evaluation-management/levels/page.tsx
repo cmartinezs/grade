@@ -10,6 +10,7 @@ import { Badge } from 'react-bootstrap';
 import ChileConfigPreloaderModal from '../components/ChileConfigPreloaderModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { levelStore } from '@/lib/levelStore';
+import { courseStore } from '@/lib/courseStore';
 import { EducationalLevel } from '@/types/level';
 
 const PAGE_SIZE = 10;
@@ -25,20 +26,46 @@ export default function LevelsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showChileLoader, setShowChileLoader] = useState(false);
 
+  // Helper function to add courseCount to levels
+  const addCourseCountToLevels = (levelsList: EducationalLevel[]): EducationalLevel[] => {
+    // Get all courses and count by levelId
+    const courses = courseStore.getCourses(true, false); // include inactive, exclude deleted
+    const courseCountByLevel: Record<string, number> = {};
+    
+    courses.forEach((course) => {
+      if (course.levelId) {
+        courseCountByLevel[course.levelId] = (courseCountByLevel[course.levelId] || 0) + 1;
+      }
+    });
+
+    // Add courseCount to each level
+    return levelsList.map((level) => ({
+      ...level,
+      courseCount: courseCountByLevel[level.id] || 0,
+    }));
+  };
+
   // Load levels when page or search changes
   useEffect(() => {
     const loadLevelsData = async () => {
       setIsLoading(true);
       try {
-        // First load from Data-Connect if not already loaded
+        // Load both levels and courses from Data-Connect
         await levelStore.loadLevels();
+        if (user?.id && user?.firebaseUid) {
+          await courseStore.loadCourses(user.id, user.firebaseUid);
+        }
         
         // Then get paginated results from cache
         const result = levelStore.getPaginatedLevels(currentPage, PAGE_SIZE, {
           includeInactive: true,
           searchText,
         });
-        setLevels(result.levels);
+        
+        // Add courseCount to levels
+        const levelsWithCourseCount = addCourseCountToLevels(result.levels);
+        
+        setLevels(levelsWithCourseCount);
         setTotalLevels(result.total);
         setTotalPages(result.totalPages);
       } catch (error) {
@@ -49,7 +76,7 @@ export default function LevelsPage() {
     };
 
     loadLevelsData();
-  }, [currentPage, searchText]);
+  }, [currentPage, searchText, user?.id, user?.firebaseUid]);
 
   // Reset to page 1 when search changes
   useEffect(() => {
@@ -73,7 +100,8 @@ export default function LevelsPage() {
         includeInactive: true,
         searchText,
       });
-      setLevels(result.levels);
+      const levelsWithCourseCount = addCourseCountToLevels(result.levels);
+      setLevels(levelsWithCourseCount);
       setTotalLevels(result.total);
       setTotalPages(result.totalPages);
     } catch (error) {
@@ -90,7 +118,8 @@ export default function LevelsPage() {
           includeInactive: true,
           searchText,
         });
-        setLevels(result.levels);
+        const levelsWithCourseCount = addCourseCountToLevels(result.levels);
+        setLevels(levelsWithCourseCount);
         setTotalLevels(result.total);
         setTotalPages(result.totalPages);
       } catch (error) {
@@ -115,7 +144,8 @@ export default function LevelsPage() {
         includeInactive: true,
         searchText: '',
       });
-      setLevels(result.levels);
+      const levelsWithCourseCount = addCourseCountToLevels(result.levels);
+      setLevels(levelsWithCourseCount);
       setTotalLevels(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(1);
@@ -127,7 +157,8 @@ export default function LevelsPage() {
         includeInactive: true,
         searchText: '',
       });
-      setLevels(result.levels);
+      const levelsWithCourseCount = addCourseCountToLevels(result.levels);
+      setLevels(levelsWithCourseCount);
       setTotalLevels(result.total);
       setTotalPages(result.totalPages);
       setCurrentPage(1);

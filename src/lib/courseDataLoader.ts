@@ -42,17 +42,21 @@ function getInitials(text: string): string {
 
 /**
  * Genera el código de curso según el formato:
- * INSTIT-CATEG-NIVEL-LETRA (siempre en mayúsculas)
- * Usa los primeros 8 caracteres del UUID del nivel para garantizar unicidad
- * ej: CSM-EGB-a1b2c3d4-A (Colegio San Miguel - Educación General Básica - nivel UUID - A)
+ * INSTIT-CATEG-NIVEL-SECCION (siempre en mayúsculas)
+ * Usa los campos code literales de categoría y nivel
+ * ej: CSM-EGB-1B-A (Colegio San Miguel - EGB - 1B - A)
  */
 function generateCourseCode(
   institutionInitials: string,
   categoryCode: string,
-  levelUuidPrefix: string,
-  letter: string
+  levelCode: string,
+  section: string
 ): string {
-  return `${institutionInitials}-${categoryCode}-${levelUuidPrefix}-${letter}`.toUpperCase();
+  // Si no hay sección, no agregar guión final
+  if (!section) {
+    return `${institutionInitials}-${categoryCode}-${levelCode}`.toUpperCase();
+  }
+  return `${institutionInitials}-${categoryCode}-${levelCode}-${section}`.toUpperCase();
 }
 
 export interface CourseGenerationOptions {
@@ -102,16 +106,18 @@ export function generateCoursesInMemory(options: CourseGenerationOptions): Cours
     for (const levelId of options.levelIds) {
       const levelName = options.levelNames[levelId] || 'Unknown';
       const categoryId = options.levelCategories?.[levelId];
+      
+      // Usar código literal de categoría, o iniciales del nombre como fallback
       const categoryName = categoryId && options.categoryNames ? options.categoryNames[categoryId] : 'General';
       const categoryCode = (categoryId && options.categoryCodes?.[categoryId]) || getInitials(categoryName);
       
-      // Use first 8 characters of levelId UUID for uniqueness guarantee
-      const levelUuidPrefix = levelId.substring(0, 8);
+      // Usar código literal del nivel, o iniciales del nombre como fallback
+      const levelCode = options.levelCodes?.[levelId] || getInitials(levelName);
 
       // Si no hay secciones, crear un solo curso por nivel
       if (options.sections.length === 0) {
         const courseName = levelName;
-        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, '');
+        const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, '');
 
         coursesToCreate.push({
           name: courseName,
@@ -124,7 +130,7 @@ export function generateCoursesInMemory(options: CourseGenerationOptions): Cours
         // Crear un curso por cada sección
         for (const section of options.sections) {
           const courseName = `${levelName} ${section}`;
-          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelUuidPrefix, section);
+          const courseCode = generateCourseCode(institutionInitials, categoryCode, levelCode, section);
 
           coursesToCreate.push({
             name: courseName,
