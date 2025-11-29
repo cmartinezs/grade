@@ -173,15 +173,16 @@ export const getSubjectById = (subjectId: string): Subject | undefined => {
 /**
  * Crear nueva asignatura
  */
-export const createSubject = async (name: string, code: string, levelId: string, createdBy: string): Promise<void> => {
+export const createSubject = async (name: string, code: string, levelId: string, createdBy: string, description?: string): Promise<void> => {
   try {
-    const subjectId = await createNewSubject(name, code, levelId, createdBy);
+    const subjectId = await createNewSubject(name, code, levelId, createdBy, description);
     
     // Agregar el nuevo elemento al caché local para reflejar cambios inmediatamente
     const newSubject: Subject = {
       subject_id: subjectId,
       name,
       code,
+      description: description || undefined,
       level_fk: levelId,
       active: true,
       created_at: new Date().toISOString(),
@@ -210,7 +211,7 @@ export const createSubject = async (name: string, code: string, levelId: string,
  */
 export const updateSubject = async (
   subjectId: string,
-  updates: { name?: string; code?: string },
+  updates: { name?: string; code?: string; description?: string },
   updatedBy: string,
   firebaseId: string
 ): Promise<void> => {

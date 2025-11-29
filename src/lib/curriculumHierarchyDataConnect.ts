@@ -61,12 +61,13 @@ export const createNewSubject = async (
   name: string,
   code: string,
   levelId: string,
-  createdBy: string
+  createdBy: string,
+  description?: string
 ): Promise<string> => {
   try {
     // Generate UUID for subjectId
     const subjectId = generateUUID();
-    await dcCreateSubject({ subjectId, name, code, levelId, createdBy });
+    await dcCreateSubject({ subjectId, name, code, levelId, createdBy, description });
     return subjectId;
   } catch (error) {
     console.error('Error creating subject:', error);
@@ -76,7 +77,7 @@ export const createNewSubject = async (
 
 export const updateSubjectInfo = async (
   subjectId: string,
-  updates: { name?: string; code?: string; levelId?: string },
+  updates: { name?: string; code?: string; description?: string; levelId?: string },
   updatedBy: string,
   firebaseId: string
 ): Promise<void> => {
@@ -86,6 +87,7 @@ export const updateSubjectInfo = async (
       subjectId,
       name: updates.name,
       code: updates.code,
+      description: updates.description,
       updatedBy,
       updatedAt,
       firebaseId,

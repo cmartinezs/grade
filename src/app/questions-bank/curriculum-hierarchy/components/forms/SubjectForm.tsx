@@ -7,12 +7,14 @@ import { LevelCategory, EducationalLevel } from '@/types/level';
 interface SubjectFormProps {
   name: string;
   code: string;
+  description: string;
   category_fk: string;
   level_fk: string;
   categories: LevelCategory[];
   filteredLevels: EducationalLevel[];
   onNameChange: (value: string) => void;
   onCodeChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
   onLevelChange: (value: string) => void;
   getError: (field: string) => string | undefined;
@@ -21,12 +23,14 @@ interface SubjectFormProps {
 export default function SubjectForm({
   name,
   code,
+  description,
   category_fk,
   level_fk,
   categories,
   filteredLevels,
   onNameChange,
   onCodeChange,
+  onDescriptionChange,
   onCategoryChange,
   onLevelChange,
   getError,
@@ -93,6 +97,20 @@ export default function SubjectForm({
         />
         <Form.Control.Feedback type="invalid">{getError('code')}</Form.Control.Feedback>
         <Form.Text>El código debe ser único globalmente (ej: MAT-101, ESP-202)</Form.Text>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Descripción</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          placeholder="Descripción opcional de la asignatura..."
+          value={description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
+          isInvalid={!!getError('description')}
+        />
+        <Form.Control.Feedback type="invalid">{getError('description')}</Form.Control.Feedback>
+        <Form.Text>Agrega una descripción para ayudar a identificar la asignatura</Form.Text>
       </Form.Group>
     </>
   );

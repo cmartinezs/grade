@@ -71,7 +71,7 @@ export default function EditCurriculumHierarchyModal({
             code: subject.code,
             subject_fk: '',
             unit_fk: '',
-            description: '',
+            description: subject.description || '',
           });
         }
       } else if (elementType === 'unit') {
@@ -182,7 +182,7 @@ export default function EditCurriculumHierarchyModal({
       }
 
       if (elementType === 'subject') {
-        await updateSubject(elementId, { name: formData.name, code: formData.code }, userId, firebaseId);
+        await updateSubject(elementId, { name: formData.name, code: formData.code, description: formData.description }, userId, firebaseId);
       } else if (elementType === 'unit') {
         await updateUnit(
           elementId,
@@ -329,6 +329,20 @@ export default function EditCurriculumHierarchyModal({
                     />
                     <Form.Control.Feedback type="invalid">{getErrorForField('code')}</Form.Control.Feedback>
                     <Form.Text>El código debe ser único globalmente.</Form.Text>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Descripción</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="Descripción opcional de la asignatura..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      isInvalid={!!getErrorForField('description')}
+                    />
+                    <Form.Control.Feedback type="invalid">{getErrorForField('description')}</Form.Control.Feedback>
+                    <Form.Text>Agrega una descripción para ayudar a identificar la asignatura</Form.Text>
                   </Form.Group>
                 </>
               )}

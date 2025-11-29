@@ -157,7 +157,7 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
 
   const handleSaveItem = async (userId: string): Promise<void> => {
     if (CurriculumHierarchyType === 'subject') {
-      await createSubject(formData.name.trim(), formData.code.trim(), formData.level_fk, userId);
+      await createSubject(formData.name.trim(), formData.code.trim(), formData.level_fk, userId, formData.description.trim());
     } else if (CurriculumHierarchyType === 'unit') {
       await createUnit(formData.name.trim(), formData.code.trim(), formData.subject_fk, userId, formData.description.trim());
     } else {
@@ -310,12 +310,14 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
             <SubjectForm
               name={formData.name}
               code={formData.code}
+              description={formData.description}
               category_fk={formData.category_fk}
               level_fk={formData.level_fk}
               categories={categories}
               filteredLevels={filteredLevels}
               onNameChange={(name) => setFormData({ ...formData, name })}
               onCodeChange={(code) => setFormData({ ...formData, code })}
+              onDescriptionChange={(description) => setFormData({ ...formData, description })}
               onCategoryChange={(value) => {
                 setFormData({ ...formData, category_fk: value, level_fk: '' });
                 setFilteredLevels([]);
