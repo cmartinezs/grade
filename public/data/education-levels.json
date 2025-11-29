@@ -1,7 +1,7 @@
 [
   {
     "id": "level-scm-001",
-    "code": "LEVEL_SCM",
+    "code": "SCM",
     "name": "Sala Cuna Menor",
     "description": "Sala Cuna: 85 días a 1 año de edad",
     "categoryId": "cat-parvularia-sala-cuna-001",
@@ -15,7 +15,7 @@
   },
   {
     "id": "level-scmay-002",
-    "code": "LEVEL_SCMAY",
+    "code": "SCMAY",
     "name": "Sala Cuna Mayor",
     "description": "Sala Cuna: 1 a 2 años de edad",
     "categoryId": "cat-parvularia-sala-cuna-001",
@@ -29,7 +29,7 @@
   },
   {
     "id": "level-nmm-003",
-    "code": "LEVEL_NMM",
+    "code": "NMM",
     "name": "Nivel Medio Menor",
     "description": "Nivel Medio: 2 a 3 años de edad",
     "categoryId": "cat-parvularia-nivel-medio-002",
@@ -43,7 +43,7 @@
   },
   {
     "id": "level-nmay-004",
-    "code": "LEVEL_NMAY",
+    "code": "NMAY",
     "name": "Nivel Medio Mayor",
     "description": "Nivel Medio: 3 a 4 años de edad",
     "categoryId": "cat-parvularia-nivel-medio-002",
@@ -57,7 +57,7 @@
   },
   {
     "id": "level-nt1-005",
-    "code": "LEVEL_NT1",
+    "code": "NT1",
     "name": "Pre-Kinder",
     "description": "Primer Nivel de Transición: 4 años cumplidos al 31 de marzo del año escolar correspondiente",
     "categoryId": "cat-parvularia-transicion-003",
@@ -71,7 +71,7 @@
   },
   {
     "id": "level-nt2-006",
-    "code": "LEVEL_NT2",
+    "code": "NT2",
     "name": "Kinder",
     "description": "Segundo Nivel de Transición: 5 años cumplidos al 31 de marzo del año escolar correspondiente",
     "categoryId": "cat-parvularia-transicion-003",
@@ -85,7 +85,7 @@
   },
   {
     "id": "level-1b-007",
-    "code": "LEVEL_1B",
+    "code": "1B",
     "name": "1° Básico",
     "description": "1° año de Educación Básica en Primer Ciclo",
     "categoryId": "cat-basica-primer-ciclo-004",
@@ -99,7 +99,7 @@
   },
   {
     "id": "level-2b-008",
-    "code": "LEVEL_2B",
+    "code": "2B",
     "name": "2° Básico",
     "description": "2° año de Educación Básica en Primer Ciclo",
     "categoryId": "cat-basica-primer-ciclo-004",
@@ -113,7 +113,7 @@
   },
   {
     "id": "level-3b-009",
-    "code": "LEVEL_3B",
+    "code": "3B",
     "name": "3° Básico",
     "description": "3° año de Educación Básica en Primer Ciclo",
     "categoryId": "cat-basica-primer-ciclo-004",
@@ -127,7 +127,7 @@
   },
   {
     "id": "level-4b-010",
-    "code": "LEVEL_4B",
+    "code": "4B",
     "name": "4° Básico",
     "description": "4° año de Educación Básica en Primer Ciclo",
     "categoryId": "cat-basica-primer-ciclo-004",
@@ -141,7 +141,7 @@
   },
   {
     "id": "level-5b-011",
-    "code": "LEVEL_5B",
+    "code": "5B",
     "name": "5° Básico",
     "description": "5° año de Educación Básica en Segundo Ciclo",
     "categoryId": "cat-basica-segundo-ciclo-005",
@@ -155,7 +155,7 @@
   },
   {
     "id": "level-6b-012",
-    "code": "LEVEL_6B",
+    "code": "6B",
     "name": "6° Básico",
     "description": "6° año de Educación Básica en Segundo Ciclo",
     "categoryId": "cat-basica-segundo-ciclo-005",
@@ -169,7 +169,7 @@
   },
   {
     "id": "level-7b-013",
-    "code": "LEVEL_7B",
+    "code": "7B",
     "name": "7° Básico",
     "description": "7° año de Educación Básica en Segundo Ciclo",
     "categoryId": "cat-basica-segundo-ciclo-005",
@@ -183,7 +183,7 @@
   },
   {
     "id": "level-8b-014",
-    "code": "LEVEL_8B",
+    "code": "8B",
     "name": "8° Básico",
     "description": "8° año de Educación Básica en Segundo Ciclo",
     "categoryId": "cat-basica-segundo-ciclo-005",
@@ -197,7 +197,7 @@
   },
   {
     "id": "level-1m-fg-015",
-    "code": "LEVEL_1M_FG",
+    "code": "1M-FG",
     "name": "1° Medio",
     "description": "1° año de Educación Media en Formación General",
     "categoryId": "cat-media-formacion-general-006",
@@ -211,7 +211,7 @@
   },
   {
     "id": "level-2m-fg-016",
-    "code": "LEVEL_2M_FG",
+    "code": "2M-FG",
     "name": "2° Medio",
     "description": "2° año de Educación Media en Formación General",
     "categoryId": "cat-media-formacion-general-006",
@@ -225,7 +225,7 @@
   },
   {
     "id": "level-3m-fg-017",
-    "code": "LEVEL_3M_FG",
+    "code": "3M-FG",
     "name": "3° Medio",
     "description": "3° año de Educación Media en Formación General",
     "categoryId": "cat-media-formacion-general-006",
@@ -239,7 +239,7 @@
   },
   {
     "id": "level-4m-fg-018",
-    "code": "LEVEL_4M_FG",
+    "code": "4M-FG",
     "name": "4° Medio",
     "description": "4° año de Educación Media en Formación General",
     "categoryId": "cat-media-formacion-general-006",
@@ -253,7 +253,7 @@
   },
   {
     "id": "level-3m-ch-019",
-    "code": "LEVEL_3M_CH",
+    "code": "3M-CH",
     "name": "3° Medio",
     "description": "3° año de Educación Media en Formación Científico Humanista",
     "categoryId": "cat-media-cientifico-humanista-007",
@@ -267,7 +267,7 @@
   },
   {
     "id": "level-4m-ch-020",
-    "code": "LEVEL_4M_CH",
+    "code": "4M-CH",
     "name": "4° Medio",
     "description": "4° año de Educación Media en Formación Científico Humanista",
     "categoryId": "cat-media-cientifico-humanista-007",
@@ -281,7 +281,7 @@
   },
   {
     "id": "level-3m-tp-021",
-    "code": "LEVEL_3M_TP",
+    "code": "3M-TP",
     "name": "3° Medio",
     "description": "3° año de Educación Media en Formación Técnico Profesional",
     "categoryId": "cat-media-tecnico-profesional-008",
@@ -295,7 +295,7 @@
   },
   {
     "id": "level-4m-tp-022",
-    "code": "LEVEL_4M_TP",
+    "code": "4M-TP",
     "name": "4° Medio",
     "description": "4° año de Educación Media en Formación Técnico Profesional",
     "categoryId": "cat-media-tecnico-profesional-008",
@@ -309,7 +309,7 @@
   },
   {
     "id": "level-3m-art-023",
-    "code": "LEVEL_3M_ART",
+    "code": "3M-ART",
     "name": "3° Medio",
     "description": "3° año de Educación Media en Formación Artística",
     "categoryId": "cat-media-artistica-009",
@@ -323,7 +323,7 @@
   },
   {
     "id": "level-4m-art-024",
-    "code": "LEVEL_4M_ART",
+    "code": "4M-ART",
     "name": "4° Medio",
     "description": "4° año de Educación Media en Formación Artística",
     "categoryId": "cat-media-artistica-009",
@@ -337,7 +337,7 @@
   },
   {
     "id": "level-cft-025",
-    "code": "LEVEL_CFT",
+    "code": "CFT",
     "name": "Centro de Formación Técnica",
     "description": "Educación Superior en Centro de Formación Técnica",
     "categoryId": "cat-superior-010",
@@ -351,7 +351,7 @@
   },
   {
     "id": "level-ip-026",
-    "code": "LEVEL_IP",
+    "code": "IP",
     "name": "Instituto Profesional",
     "description": "Educación Superior en Instituto Profesional",
     "categoryId": "cat-superior-010",
@@ -365,7 +365,7 @@
   },
   {
     "id": "level-univ-027",
-    "code": "LEVEL_UNIV",
+    "code": "UNIV",
     "name": "Universidad",
     "description": "Educación Superior en Universidad",
     "categoryId": "cat-superior-010",

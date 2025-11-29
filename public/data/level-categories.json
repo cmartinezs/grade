@@ -1,7 +1,7 @@
 [
   {
     "id": "cat-parvularia-sala-cuna-001",
-    "code": "CAT_PARV_SC",
+    "code": "PAR-SC",
     "name": "Educación Parvularia - Sala Cuna",
     "description": "Sala Cuna en la Educación Parvularia: 0 a 2 años de edad",
     "categoryId": null,
@@ -15,7 +15,7 @@
   },
   {
     "id": "cat-parvularia-nivel-medio-002",
-    "code": "CAT_PARV_NM",
+    "code": "PAR-NM",
     "name": "Educación Parvularia - Nivel Medio",
     "description": "Nivel Medio en la Educación Parvularia: 2 a 4 años de edad",
     "categoryId": null,
@@ -29,7 +29,7 @@
   },
   {
     "id": "cat-parvularia-transicion-003",
-    "code": "CAT_PARV_T",
+    "code": "PAR-TRA",
     "name": "Educación Parvularia - Nivel de Transición",
     "description": "Nivel de Transición en la Educación Parvularia: 4 a 6 años de edad",
     "categoryId": null,
@@ -43,7 +43,7 @@
   },
   {
     "id": "cat-basica-primer-ciclo-004",
-    "code": "CAT_BASICA_PC",
+    "code": "BAS-PC",
     "name": "Educación Básica - Primer Ciclo",
     "description": "Primer Ciclo en la Educación Básica: 1° año a 4° año",
     "categoryId": null,
@@ -57,7 +57,7 @@
   },
   {
     "id": "cat-basica-segundo-ciclo-005",
-    "code": "CAT_BASICA_SC",
+    "code": "BAS-SC",
     "name": "Educación Básica - Segundo Ciclo",
     "description": "Segundo Ciclo en la Educación Básica: 5° año a 8° año",
     "categoryId": null,
@@ -71,7 +71,7 @@
   },
   {
     "id": "cat-media-formacion-general-006",
-    "code": "CAT_MEDIA_FG",
+    "code": "MED-FG",
     "name": "Educación Media - Formación General",
     "description": "Formación General para la Educación Media: 1° año a 4° año",
     "categoryId": null,
@@ -85,7 +85,7 @@
   },
   {
     "id": "cat-media-cientifico-humanista-007",
-    "code": "CAT_MEDIA_CH",
+    "code": "MED-CH",
     "name": "Educación Media - Científico Humanista",
     "description": "Formación Diferenciada Científico Humanista para la Educación Media: 3° año a 4° año",
     "categoryId": null,
@@ -99,7 +99,7 @@
   },
   {
     "id": "cat-media-tecnico-profesional-008",
-    "code": "CAT_MEDIA_TP",
+    "code": "MED-TP",
     "name": "Educación Media - Técnico Profesional",
     "description": "Formación Diferenciada Técnico Profesional para la Educación Media: 3° año a 4° año",
     "categoryId": null,
@@ -113,7 +113,7 @@
   },
   {
     "id": "cat-media-artistica-009",
-    "code": "CAT_MEDIA_ART",
+    "code": "MED-ART",
     "name": "Educación Media - Artística",
     "description": "Formación Diferenciada Artística para la Educación Media: 3° año a 4° año",
     "categoryId": null,
@@ -127,7 +127,7 @@
   },
   {
     "id": "cat-superior-010",
-    "code": "CAT_SUPERIOR",
+    "code": "EDU-SUP",
     "name": "Educación Superior",
     "description": "Educación Superior",
     "categoryId": null,
