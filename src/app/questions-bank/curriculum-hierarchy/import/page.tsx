@@ -27,6 +27,64 @@ export default function ImportCurriculumPage() {
   const [parsedData, setParsedData] = useState<{subjects: number; units: number; topics: number} | null>(null);
   const [importProgress, setImportProgress] = useState(0);
   const [importStatus, setImportStatus] = useState<string>('');
+  const [encodingWarning, setEncodingWarning] = useState<string | null>(null);
+
+  /**
+   * Lee un archivo de texto intentando diferentes codificaciones
+   * Prioriza UTF-8, luego intenta Windows-1252/Latin-1 si detecta problemas
+   */
+  const readFileWithEncoding = async (file: File): Promise<string> => {
+    // Primero intentamos leer como UTF-8
+    let text = await file.text();
+    
+    // Remover BOM si existe (común en archivos de Excel)
+    if (text.charCodeAt(0) === 0xFEFF) {
+      text = text.substring(1);
+    }
+    
+    // Detectar si hay caracteres corruptos típicos de UTF-8 mal interpretado
+    // Estos patrones ocurren cuando UTF-8 se lee como Latin-1
+    const corruptPatterns = [
+      /Ã¡/g,  // á
+      /Ã©/g,  // é
+      /Ã­/g,  // í
+      /Ã³/g,  // ó
+      /Ãº/g,  // ú
+      /Ã±/g,  // ñ
+      /Ã/g,   // otros caracteres
+    ];
+    
+    const hasCorruptChars = corruptPatterns.some(pattern => pattern.test(text));
+    
+    if (hasCorruptChars) {
+      console.warn('Detectados caracteres potencialmente corruptos, intentando re-codificación...');
+      setEncodingWarning('Se detectó un problema de codificación. Se intentó corregir automáticamente.');
+      // El archivo probablemente fue guardado en Latin-1 pero con caracteres UTF-8
+      // Intentamos leer como Latin-1 (Windows-1252)
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const decoder = new TextDecoder('windows-1252');
+        text = decoder.decode(arrayBuffer);
+        
+        // Remover BOM si existe
+        if (text.charCodeAt(0) === 0xFEFF) {
+          text = text.substring(1);
+        }
+      } catch {
+        console.warn('No se pudo re-codificar, usando texto original');
+      }
+    } else {
+      setEncodingWarning(null);
+    }
+    
+    // Detectar caracteres de reemplazo (�) que indican problemas de codificación
+    if (text.includes('\uFFFD')) {
+      console.warn('Se detectaron caracteres de reemplazo (�), el archivo puede tener problemas de codificación');
+      setEncodingWarning('⚠️ Se detectaron caracteres con problemas de codificación. Verifica que el archivo esté guardado como UTF-8.');
+    }
+    
+    return text;
+  };
 
   // Configurar contenido de ayuda
   useEffect(() => {
@@ -99,7 +157,7 @@ export default function ImportCurriculumPage() {
       setUploadProgress(10);
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const text = await file.text();
+      const text = await readFileWithEncoding(file);
       const lines = text.split('\n').filter(line => line.trim());
       
       setUploadProgress(20);
@@ -316,8 +374,8 @@ export default function ImportCurriculumPage() {
     setImportStatus('Iniciando importación...');
     
     try {
-      // Leer archivo nuevamente
-      const text = await selectedFile.text();
+      // Leer archivo con manejo de codificación
+      const text = await readFileWithEncoding(selectedFile);
       const lines = text.split('\n').filter(line => line.trim());
       const dataLines = lines.slice(1); // Saltar header
       
@@ -770,6 +828,18 @@ export default function ImportCurriculumPage() {
                       <li><strong>{parsedData.units}</strong> unidad(es)</li>
                       <li><strong>{parsedData.topics}</strong> tema(s)</li>
                     </ul>
+                  </Alert>
+                )}
+
+                {/* Encoding Warning */}
+                {encodingWarning && (
+                  <Alert variant="warning" className="mb-4">
+                    <h6 className="mb-2">⚠️ Advertencia de codificación</h6>
+                    <p className="mb-2">{encodingWarning}</p>
+                    <small className="text-muted">
+                      <strong>Recomendación:</strong> Guarda el archivo CSV como &quot;UTF-8 con BOM&quot; desde tu editor.
+                      En LibreOffice: Guardar como → CSV → Editar configuración de filtros → Juego de caracteres: Unicode (UTF-8).
+                    </small>
                   </Alert>
                 )}
 
