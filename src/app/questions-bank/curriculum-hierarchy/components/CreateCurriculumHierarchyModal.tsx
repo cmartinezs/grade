@@ -8,13 +8,14 @@ import {
   createTopic,
   loadSubjectsAsync,
   loadUnitsAsync,
+  loadTopicsAsync,
 } from '@/lib/curriculumHierarchyStore';
 import { levelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
 import SubjectForm from './forms/SubjectForm';
 import UnitForm from './forms/UnitForm';
 import TopicForm from './forms/TopicForm';
-import { CurriculumHierarchyType, ValidationError, Subject, Unit } from '@/types/curriculumHierarchy';
+import { CurriculumHierarchyType, ValidationError, Subject, Unit, Topic } from '@/types/curriculumHierarchy';
 import { LevelCategory, EducationalLevel } from '@/types/level';
 
 interface CreateCurriculumHierarchyModalProps {
@@ -39,9 +40,13 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([]);
   const [categories, setCategories] = useState<LevelCategory[]>([]);
   const [levels, setLevels] = useState<EducationalLevel[]>([]);
   const [filteredLevels, setFilteredLevels] = useState<EducationalLevel[]>([]);
+  const [isAutoCodeEnabled, setIsAutoCodeEnabled] = useState(true);
+  const [isUnitAutoCodeEnabled, setIsUnitAutoCodeEnabled] = useState(true);
+  const [isTopicAutoCodeEnabled, setIsTopicAutoCodeEnabled] = useState(true);
 
   // Load subjects, units, categories and levels when modal opens
   useEffect(() => {
@@ -54,10 +59,14 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
           
           const loadedUnits = await loadUnitsAsync();
           setUnits(loadedUnits);
+          
+          const loadedTopics = await loadTopicsAsync();
+          setTopics(loadedTopics);
         } catch (error) {
-          console.error('Error loading subjects/units:', error);
+          console.error('Error loading subjects/units/topics:', error);
           setSubjects([]);
           setUnits([]);
+          setTopics([]);
         }
       })();
       
@@ -96,6 +105,9 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
     setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '', category_fk: '', level_fk: '' });
     setErrors([]);
     setSuccessMessage(null);
+    setIsAutoCodeEnabled(true);
+    setIsUnitAutoCodeEnabled(true);
+    setIsTopicAutoCodeEnabled(true);
   };
 
   // Reset when modal visibility changes
@@ -315,6 +327,9 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
               level_fk={formData.level_fk}
               categories={categories}
               filteredLevels={filteredLevels}
+              existingCodes={subjects.map(s => s.code)}
+              isAutoCodeEnabled={isAutoCodeEnabled}
+              onAutoCodeToggle={setIsAutoCodeEnabled}
               onNameChange={(name) => setFormData({ ...formData, name })}
               onCodeChange={(code) => setFormData({ ...formData, code })}
               onDescriptionChange={(description) => setFormData({ ...formData, description })}
@@ -335,6 +350,9 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
               description={formData.description}
               subject_fk={formData.subject_fk}
               subjects={subjects}
+              existingCodes={units.map(u => u.code)}
+              isAutoCodeEnabled={isUnitAutoCodeEnabled}
+              onAutoCodeToggle={setIsUnitAutoCodeEnabled}
               onNameChange={(name) => setFormData({ ...formData, name })}
               onCodeChange={(code) => setFormData({ ...formData, code })}
               onDescriptionChange={(description) => setFormData({ ...formData, description })}
@@ -348,12 +366,17 @@ export default function CreateCurriculumHierarchyModal({ show, onHide, onSuccess
             <TopicForm
               name={formData.name}
               code={formData.code}
+              description={formData.description}
               subject_fk={formData.subject_fk}
               unit_fk={formData.unit_fk}
               subjects={subjects}
               filteredUnits={filteredUnits}
+              existingCodes={topics.map(t => t.code)}
+              isAutoCodeEnabled={isTopicAutoCodeEnabled}
+              onAutoCodeToggle={setIsTopicAutoCodeEnabled}
               onNameChange={(name) => setFormData({ ...formData, name })}
               onCodeChange={(code) => setFormData({ ...formData, code })}
+              onDescriptionChange={(description) => setFormData({ ...formData, description })}
               onSubjectChange={(value) => setFormData({ ...formData, subject_fk: value, unit_fk: '' })}
               onUnitChange={(value) => setFormData({ ...formData, unit_fk: value })}
               getError={getErrorForField}

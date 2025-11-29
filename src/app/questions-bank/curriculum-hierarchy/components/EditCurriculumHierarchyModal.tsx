@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Alert, InputGroup } from 'react-bootstrap';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import {
   updateSubject,
@@ -9,14 +9,174 @@ import {
   updateTopic,
   getAllSubjects,
   getAllUnits,
+  getAllTopics,
   getSubjectById,
   getUnitById,
   getTopicById,
 } from '@/lib/curriculumHierarchyStore';
 import { educationalLevelStore, levelStore } from '@/lib/levelStore';
 import { useAuth } from '@/contexts/AuthContext';
-import { CurriculumHierarchyType, ValidationError, Subject, Unit } from '@/types/curriculumHierarchy';
+import { CurriculumHierarchyType, ValidationError, Subject, Unit, Topic } from '@/types/curriculumHierarchy';
 import { EducationalLevel } from '@/types/level';
+
+// Conectores a omitir en la generación del código
+const CONNECTORS = ['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'o', 'u', 'a', 'en', 'con', 'para', 'por'];
+
+/**
+ * Normaliza un texto removiendo acentos y caracteres especiales
+ */
+const normalizeText = (text: string): string => {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remueve acentos
+    .replace(/[^a-zA-Z0-9\s-]/g, ''); // Solo letras, números, espacios y guiones
+};
+
+/**
+ * Genera el prefijo del código basado en el nombre de la asignatura
+ */
+const generateCodePrefix = (name: string): string => {
+  if (!name || name.trim() === '') return '';
+  
+  const normalized = normalizeText(name.trim());
+  const words = normalized.split(/\s+/).filter(word => word.length > 0);
+  
+  const significantWords = words.filter(
+    word => !CONNECTORS.includes(word.toLowerCase())
+  );
+  
+  const wordsToUse = significantWords.length > 0 ? significantWords : words;
+  const codeParts = wordsToUse.map(word => word.substring(0, 3).toUpperCase());
+  
+  return codeParts.join('-');
+};
+
+/**
+ * Genera un código único con sufijo numérico auto-incremental
+ * - Comienza en 100
+ * - Si ya existe un código con el mismo prefijo, incrementa
+ * - Ejemplo: MAT-100, MAT-101, MAT-102...
+ * - currentCode: código actual de la asignatura (para excluirlo del conteo)
+ */
+const generateSubjectCode = (name: string, existingCodes: string[], currentCode?: string): string => {
+  const prefix = generateCodePrefix(name);
+  if (!prefix) return '';
+  
+  // Filtrar el código actual para no contarlo
+  const codesToCheck = currentCode 
+    ? existingCodes.filter(code => code.toUpperCase() !== currentCode.toUpperCase())
+    : existingCodes;
+  
+  // Encontrar todos los códigos que comienzan con el mismo prefijo
+  const matchingCodes = codesToCheck.filter(code => 
+    code.toUpperCase().startsWith(prefix + '-')
+  );
+  
+  // Extraer los números de los códigos existentes
+  const existingNumbers = matchingCodes
+    .map(code => {
+      const match = code.match(new RegExp(`^${prefix}-(\\d+)$`, 'i'));
+      return match ? parseInt(match[1], 10) : null;
+    })
+    .filter((num): num is number => num !== null);
+  
+  // Calcular el siguiente número (empezando en 100)
+  const nextNumber = existingNumbers.length > 0 
+    ? Math.max(...existingNumbers) + 1 
+    : 100;
+  
+  return `${prefix}-${nextNumber}`;
+};
+
+/**
+ * Genera un código único para la unidad con sufijo numérico auto-incremental
+ * Formato: [PREFIJO_ASIGNATURA]-[PREFIJO_UNIDAD]-[NUMERO]
+ */
+const generateUnitCode = (
+  unitName: string, 
+  subjectCode: string,
+  existingCodes: string[],
+  currentCode?: string
+): string => {
+  const unitPrefix = generateCodePrefix(unitName);
+  if (!unitPrefix) return '';
+  
+  // Extraer el prefijo de la asignatura (sin el número)
+  const subjectPrefixMatch = subjectCode.match(/^(.+)-\d+$/);
+  const subjectPrefix = subjectPrefixMatch ? subjectPrefixMatch[1] : subjectCode;
+  
+  // Crear el prefijo completo: ASIGNATURA-UNIDAD
+  const fullPrefix = subjectPrefix ? `${subjectPrefix}-${unitPrefix}` : unitPrefix;
+  
+  // Filtrar el código actual para no contarlo
+  const codesToCheck = currentCode 
+    ? existingCodes.filter(code => code.toUpperCase() !== currentCode.toUpperCase())
+    : existingCodes;
+  
+  // Buscar códigos existentes con el mismo prefijo
+  const matchingCodes = codesToCheck.filter(code => 
+    code.toUpperCase().startsWith(fullPrefix.toUpperCase() + '-')
+  );
+  
+  // Extraer los números
+  const existingNumbers = matchingCodes
+    .map(code => {
+      const match = code.match(new RegExp(`^${fullPrefix}-(\\d+)$`, 'i'));
+      return match ? parseInt(match[1], 10) : null;
+    })
+    .filter((num): num is number => num !== null);
+  
+  const nextNumber = existingNumbers.length > 0 
+    ? Math.max(...existingNumbers) + 1 
+    : 100;
+  
+  return `${fullPrefix}-${nextNumber}`;
+};
+
+/**
+ * Genera un código único para el tema con sufijo numérico auto-incremental
+ * Formato: [PREFIJO_UNIDAD]-[PREFIJO_TEMA]-[NUMERO]
+ */
+const generateTopicCode = (
+  topicName: string, 
+  unitCode: string,
+  existingCodes: string[],
+  currentCode?: string
+): string => {
+  const topicPrefix = generateCodePrefix(topicName);
+  if (!topicPrefix) return '';
+  
+  // Extraer el prefijo de la unidad (sin el número)
+  const unitPrefixMatch = unitCode.match(/^(.+)-\d+$/);
+  const unitPrefix = unitPrefixMatch ? unitPrefixMatch[1] : unitCode;
+  
+  // Crear el prefijo completo: UNIDAD-TEMA
+  const fullPrefix = unitPrefix ? `${unitPrefix}-${topicPrefix}` : topicPrefix;
+  
+  // Filtrar el código actual para no contarlo
+  const codesToCheck = currentCode 
+    ? existingCodes.filter(code => code.toUpperCase() !== currentCode.toUpperCase())
+    : existingCodes;
+  
+  // Buscar códigos existentes con el mismo prefijo
+  const matchingCodes = codesToCheck.filter(code => 
+    code.toUpperCase().startsWith(fullPrefix.toUpperCase() + '-')
+  );
+  
+  // Extraer los números
+  const existingNumbers = matchingCodes
+    .map(code => {
+      const match = code.match(new RegExp(`^${fullPrefix}-(\\d+)$`, 'i'));
+      return match ? parseInt(match[1], 10) : null;
+    })
+    .filter((num): num is number => num !== null);
+  
+  const nextNumber = existingNumbers.length > 0 
+    ? Math.max(...existingNumbers) + 1 
+    : 100;
+  
+  return `${fullPrefix}-${nextNumber}`;
+};
 
 interface EditCurriculumHierarchyModalProps {
   show: boolean;
@@ -45,9 +205,15 @@ export default function EditCurriculumHierarchyModal({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([]);
   const [levels, setLevels] = useState<EducationalLevel[]>([]);
   const [currentSubject, setCurrentSubject] = useState<Subject | null>(null);
+  const [currentUnit, setCurrentUnit] = useState<Unit | null>(null);
+  const [currentTopic, setCurrentTopic] = useState<Topic | null>(null);
   const [loading, setLoading] = useState(false);
+  const [autoCode, setAutoCode] = useState(false); // Por defecto deshabilitado en edición
+  const [autoCodeUnit, setAutoCodeUnit] = useState(false); // Para unidades
+  const [autoCodeTopic, setAutoCodeTopic] = useState(false); // Para temas
 
   // Load data when modal opens
   useEffect(() => {
@@ -59,6 +225,7 @@ export default function EditCurriculumHierarchyModal({
       // Load subjects, units and levels
       setSubjects(getAllSubjects());
       setUnits(getAllUnits());
+      setTopics(getAllTopics());
       setLevels(educationalLevelStore.getAllLevels());
 
       // Load element data based on type
@@ -73,30 +240,35 @@ export default function EditCurriculumHierarchyModal({
             unit_fk: '',
             description: subject.description || '',
           });
+          setAutoCode(false); // Por defecto deshabilitado en edición
         }
       } else if (elementType === 'unit') {
         const unit = getUnitById(elementId);
         if (unit) {
+          setCurrentUnit(unit);
           setFormData({
             name: unit.name,
-            code: '',
+            code: unit.code,
             subject_fk: unit.subject_fk,
             unit_fk: '',
             description: unit.description || '',
           });
+          setAutoCodeUnit(false); // Por defecto deshabilitado en edición
         }
       } else if (elementType === 'topic') {
         const topic = getTopicById(elementId);
         if (topic) {
+          setCurrentTopic(topic);
           // Get the unit to find the subject
           const unit = getUnitById(topic.unit_fk);
           setFormData({
             name: topic.name,
-            code: '',
+            code: topic.code,
             subject_fk: unit ? unit.subject_fk : '',
             unit_fk: topic.unit_fk,
-            description: '',
+            description: topic.description || '',
           });
+          setAutoCodeTopic(false); // Por defecto deshabilitado en edición
         }
       }
 
@@ -104,10 +276,90 @@ export default function EditCurriculumHierarchyModal({
     }
   }, [show, elementId, elementType]);
 
+  // Autogenerar código cuando cambia el nombre y está habilitado
+  useEffect(() => {
+    if (autoCode && elementType === 'subject') {
+      const existingCodes = subjects.map(s => s.code);
+      const currentCode = currentSubject?.code;
+      const generatedCode = generateSubjectCode(formData.name, existingCodes, currentCode);
+      setFormData(prev => ({ ...prev, code: generatedCode }));
+    }
+  }, [formData.name, autoCode, elementType, subjects, currentSubject]);
+
+  // Autogenerar código de unidad cuando cambia el nombre o la asignatura
+  useEffect(() => {
+    if (autoCodeUnit && elementType === 'unit' && formData.subject_fk) {
+      const selectedSubject = subjects.find(s => s.subject_id === formData.subject_fk);
+      const subjectCode = selectedSubject?.code || '';
+      const existingCodes = units.map(u => u.code);
+      const currentCode = currentUnit?.code;
+      const generatedCode = generateUnitCode(formData.name, subjectCode, existingCodes, currentCode);
+      setFormData(prev => ({ ...prev, code: generatedCode }));
+    }
+  }, [formData.name, formData.subject_fk, autoCodeUnit, elementType, subjects, units, currentUnit]);
+
+  // Autogenerar código de tema cuando cambia el nombre o la unidad
+  useEffect(() => {
+    if (autoCodeTopic && elementType === 'topic' && formData.unit_fk) {
+      const selectedUnit = units.find(u => u.unit_id === formData.unit_fk);
+      const unitCode = selectedUnit?.code || '';
+      const existingCodes = topics.map(t => t.code);
+      const currentCode = currentTopic?.code;
+      const generatedCode = generateTopicCode(formData.name, unitCode, existingCodes, currentCode);
+      setFormData(prev => ({ ...prev, code: generatedCode }));
+    }
+  }, [formData.name, formData.unit_fk, autoCodeTopic, elementType, units, topics, currentTopic]);
+
+  const handleAutoCodeToggle = () => {
+    const newValue = !autoCode;
+    setAutoCode(newValue);
+    
+    // Si se vuelve a habilitar, regenerar el código
+    if (newValue) {
+      const existingCodes = subjects.map(s => s.code);
+      const currentCode = currentSubject?.code;
+      const generatedCode = generateSubjectCode(formData.name, existingCodes, currentCode);
+      setFormData(prev => ({ ...prev, code: generatedCode }));
+    }
+  };
+
+  const handleAutoCodeUnitToggle = () => {
+    const newValue = !autoCodeUnit;
+    setAutoCodeUnit(newValue);
+    
+    // Si se vuelve a habilitar, regenerar el código
+    if (newValue && formData.subject_fk) {
+      const selectedSubject = subjects.find(s => s.subject_id === formData.subject_fk);
+      const subjectCode = selectedSubject?.code || '';
+      const existingCodes = units.map(u => u.code);
+      const currentCode = currentUnit?.code;
+      const generatedCode = generateUnitCode(formData.name, subjectCode, existingCodes, currentCode);
+      setFormData(prev => ({ ...prev, code: generatedCode }));
+    }
+  };
+
+  const handleAutoCodeTopicToggle = () => {
+    const newValue = !autoCodeTopic;
+    setAutoCodeTopic(newValue);
+    
+    // Si se vuelve a habilitar, regenerar el código
+    if (newValue && formData.unit_fk) {
+      const selectedUnit = units.find(u => u.unit_id === formData.unit_fk);
+      const unitCode = selectedUnit?.code || '';
+      const existingCodes = topics.map(t => t.code);
+      const currentCode = currentTopic?.code;
+      const generatedCode = generateTopicCode(formData.name, unitCode, existingCodes, currentCode);
+      setFormData(prev => ({ ...prev, code: generatedCode }));
+    }
+  };
+
   const handleHide = () => {
     setFormData({ name: '', code: '', subject_fk: '', unit_fk: '', description: '' });
     setErrors([]);
     setSuccessMessage(null);
+    setAutoCode(false);
+    setAutoCodeUnit(false);
+    setAutoCodeTopic(false);
     onHide();
   };
 
@@ -145,6 +397,9 @@ export default function EditCurriculumHierarchyModal({
       if (!formData.name || formData.name.trim() === '') {
         newErrors.push({ field: 'name', message: 'El nombre de la unidad es obligatorio' });
       }
+      if (!formData.code || formData.code.trim() === '') {
+        newErrors.push({ field: 'code', message: 'El código de la unidad es obligatorio' });
+      }
     } else if (elementType === 'topic') {
       if (!formData.subject_fk || formData.subject_fk === '') {
         newErrors.push({ field: 'subject_fk', message: 'Debes seleccionar una asignatura' });
@@ -154,6 +409,9 @@ export default function EditCurriculumHierarchyModal({
       }
       if (!formData.name || formData.name.trim() === '') {
         newErrors.push({ field: 'name', message: 'El nombre del tema es obligatorio' });
+      }
+      if (!formData.code || formData.code.trim() === '') {
+        newErrors.push({ field: 'code', message: 'El código del tema es obligatorio' });
       }
     }
 
@@ -320,15 +578,41 @@ export default function EditCurriculumHierarchyModal({
 
                   <Form.Group className="mb-3">
                     <Form.Label>Código Único <span style={{ color: 'red' }}>*</span></Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Ej: MAT-101"
-                      value={formData.code}
-                      onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                      isInvalid={!!getErrorForField('code')}
-                    />
-                    <Form.Control.Feedback type="invalid">{getErrorForField('code')}</Form.Control.Feedback>
-                    <Form.Text>El código debe ser único globalmente.</Form.Text>
+                    <InputGroup>
+                      <Form.Control
+                        type="text"
+                        placeholder={autoCode ? "Se genera automáticamente" : "Ej: MAT-101"}
+                        value={formData.code}
+                        onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                        isInvalid={!!getErrorForField('code')}
+                        readOnly={autoCode}
+                        className={autoCode ? 'bg-light' : ''}
+                      />
+                      <InputGroup.Text 
+                        style={{ cursor: 'pointer' }}
+                        onClick={handleAutoCodeToggle}
+                        title={autoCode ? 'Habilitar edición manual' : 'Volver a autogenerar'}
+                      >
+                        <Form.Check
+                          type="switch"
+                          id="auto-code-switch-edit"
+                          checked={autoCode}
+                          onChange={handleAutoCodeToggle}
+                          label=""
+                          style={{ marginBottom: 0 }}
+                        />
+                        <small className="ms-1">{autoCode ? '🔒 Auto' : '✏️ Manual'}</small>
+                      </InputGroup.Text>
+                    </InputGroup>
+                    <Form.Control.Feedback type="invalid" style={{ display: getErrorForField('code') ? 'block' : 'none' }}>
+                      {getErrorForField('code')}
+                    </Form.Control.Feedback>
+                    <Form.Text>
+                      {autoCode 
+                        ? 'El código se genera automáticamente basado en el nombre. Desactiva el switch para editar manualmente.'
+                        : 'Edita el código manualmente o activa el switch para autogenerar.'
+                      }
+                    </Form.Text>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
@@ -378,7 +662,45 @@ export default function EditCurriculumHierarchyModal({
                       isInvalid={!!getErrorForField('name')}
                     />
                     <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>
-                    <Form.Text>El nombre debe ser único dentro de la asignatura seleccionada.</Form.Text>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Código Único <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type="text"
+                        placeholder={autoCodeUnit ? "Se genera automáticamente" : "Ej: MAT-ALG-100"}
+                        value={formData.code}
+                        onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                        isInvalid={!!getErrorForField('code')}
+                        readOnly={autoCodeUnit}
+                        className={autoCodeUnit ? 'bg-light' : ''}
+                      />
+                      <InputGroup.Text 
+                        style={{ cursor: 'pointer' }}
+                        onClick={handleAutoCodeUnitToggle}
+                        title={autoCodeUnit ? 'Habilitar edición manual' : 'Volver a autogenerar'}
+                      >
+                        <Form.Check
+                          type="switch"
+                          id="auto-code-switch-unit-edit"
+                          checked={autoCodeUnit}
+                          onChange={handleAutoCodeUnitToggle}
+                          label=""
+                          style={{ marginBottom: 0 }}
+                        />
+                        <small className="ms-1">{autoCodeUnit ? '🔒 Auto' : '✏️ Manual'}</small>
+                      </InputGroup.Text>
+                    </InputGroup>
+                    <Form.Control.Feedback type="invalid" style={{ display: getErrorForField('code') ? 'block' : 'none' }}>
+                      {getErrorForField('code')}
+                    </Form.Control.Feedback>
+                    <Form.Text>
+                      {autoCodeUnit 
+                        ? 'El código se genera automáticamente basado en la asignatura y el nombre. Desactiva el switch para editar manualmente.'
+                        : 'Edita el código manualmente o activa el switch para autogenerar.'
+                      }
+                    </Form.Text>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
@@ -433,7 +755,7 @@ export default function EditCurriculumHierarchyModal({
                         .filter((unit) => unit.subject_fk === formData.subject_fk)
                         .map((unit) => (
                           <option key={unit.unit_id} value={unit.unit_id}>
-                            {unit.name}
+                            {unit.name} ({unit.code})
                           </option>
                         ))}
                     </Form.Select>
@@ -453,7 +775,56 @@ export default function EditCurriculumHierarchyModal({
                       isInvalid={!!getErrorForField('name')}
                     />
                     <Form.Control.Feedback type="invalid">{getErrorForField('name')}</Form.Control.Feedback>
-                    <Form.Text>El nombre debe ser único dentro de la unidad seleccionada.</Form.Text>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>4. Código Único <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type="text"
+                        placeholder={autoCodeTopic ? "Se genera automáticamente" : "Ej: MAT-ALG-ECU-100"}
+                        value={formData.code}
+                        onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                        isInvalid={!!getErrorForField('code')}
+                        readOnly={autoCodeTopic}
+                        className={autoCodeTopic ? 'bg-light' : ''}
+                      />
+                      <InputGroup.Text 
+                        style={{ cursor: 'pointer' }}
+                        onClick={handleAutoCodeTopicToggle}
+                        title={autoCodeTopic ? 'Habilitar edición manual' : 'Volver a autogenerar'}
+                      >
+                        <Form.Check
+                          type="switch"
+                          id="auto-code-switch-topic-edit"
+                          checked={autoCodeTopic}
+                          onChange={handleAutoCodeTopicToggle}
+                          label=""
+                          style={{ marginBottom: 0 }}
+                        />
+                        <small className="ms-1">{autoCodeTopic ? '🔒 Auto' : '✏️ Manual'}</small>
+                      </InputGroup.Text>
+                    </InputGroup>
+                    <Form.Control.Feedback type="invalid" style={{ display: getErrorForField('code') ? 'block' : 'none' }}>
+                      {getErrorForField('code')}
+                    </Form.Control.Feedback>
+                    <Form.Text>
+                      {autoCodeTopic 
+                        ? 'El código se genera automáticamente basado en la unidad y el nombre. Desactiva el switch para editar manualmente.'
+                        : 'Edita el código manualmente o activa el switch para autogenerar.'
+                      }
+                    </Form.Text>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>5. Descripción (Opcional)</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="Descripción del tema..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    />
                   </Form.Group>
                 </>
               )}
