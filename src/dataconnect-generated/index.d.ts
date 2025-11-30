@@ -736,7 +736,6 @@ export interface GetDashboardSystemDataData {
   } & Taxonomy_Key)[];
     difficulties: ({
       difficultyId: UUIDString;
-      code: string;
       level: string;
       weight: number;
     } & Difficulty_Key)[];
@@ -771,7 +770,6 @@ export interface GetDashboardSystemDataData {
 export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
-    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -1535,7 +1533,6 @@ export interface ListCoursesVariables {
 export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
-    code: string;
     level: string;
     weight: number;
     description?: string | null;

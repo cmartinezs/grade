@@ -1788,7 +1788,6 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
-    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -1870,7 +1869,6 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
-    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -2753,7 +2751,6 @@ export interface GetDashboardSystemDataData {
   } & Taxonomy_Key)[];
     difficulties: ({
       difficultyId: UUIDString;
-      code: string;
       level: string;
       weight: number;
     } & Difficulty_Key)[];

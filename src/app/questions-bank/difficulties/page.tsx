@@ -11,6 +11,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import type { Difficulty } from '@/lib/masterDataConnect';
 import { useDifficulties } from '@/hooks/useDifficulties';
 import { loadDifficultiesData } from '@/lib/difficultiesDataLoader';
+import { getDifficultyColorRgb, formatWeightAsPercent, isValidWeight } from '@/lib/difficultyUtils';
 
 const PAGE_SIZE = 10;
 
@@ -28,7 +29,7 @@ export default function DifficultiesPage() {
   const [formData, setFormData] = useState({
     code: '',
     level: '',
-    weight: 1,
+    weight: 0.5,
     description: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -56,12 +57,12 @@ export default function DifficultiesPage() {
       setFormData({
         code: difficulty.code || '',
         level: difficulty.level,
-        weight: difficulty.weight || 1,
+        weight: difficulty.weight || 0.5,
         description: difficulty.description || '',
       });
     } else {
       setEditingId(null);
-      setFormData({ code: '', level: '', weight: 1, description: '' });
+      setFormData({ code: '', level: '', weight: 0.5, description: '' });
     }
     setLocalError(null);
     setShowModal(true);
@@ -123,11 +124,21 @@ export default function DifficultiesPage() {
     {
       key: 'weight',
       label: 'Peso',
-      render: (value) => (
-        <span className="badge bg-info" style={{ fontSize: '1rem' }}>
-          {String(value)}
-        </span>
-      ),
+      render: (value) => {
+        const weight = Number(value);
+        return (
+          <span 
+            className="badge" 
+            style={{ 
+              fontSize: '1rem',
+              backgroundColor: getDifficultyColorRgb(weight),
+              color: weight > 0.6 ? 'white' : 'black'
+            }}
+          >
+            {formatWeightAsPercent(weight)}
+          </span>
+        );
+      },
       width: '100px',
       sortable: true,
     },
@@ -254,24 +265,33 @@ export default function DifficultiesPage() {
 
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Peso <span style={{ color: 'red' }}>*</span>
+                  Peso (0-1) <span style={{ color: 'red' }}>*</span>
                 </Form.Label>
                 <Form.Control
                   type="number"
-                  min="1"
+                  min="0"
+                  max="1"
+                  step="0.05"
                   value={formData.weight}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
                     setFormData({
                       ...formData,
-                      weight: parseInt(e.target.value) || 1,
-                    })
-                  }
+                      weight: isNaN(val) ? 0.5 : Math.max(0, Math.min(1, val)),
+                    });
+                  }}
                   required
                   disabled={submitting}
+                  isInvalid={!isValidWeight(formData.weight)}
                 />
                 <Form.Text className="text-muted">
-                  Número que ordena los niveles (1 = más fácil, mayor = más difícil)
+                  0 = Más fácil (verde), 0.5 = Medio (amarillo), 1 = Más difícil (rojo)
                 </Form.Text>
+                {!isValidWeight(formData.weight) && (
+                  <Form.Control.Feedback type="invalid">
+                    El peso debe estar entre 0 y 1
+                  </Form.Control.Feedback>
+                )}
               </Form.Group>
 
               <Form.Group>

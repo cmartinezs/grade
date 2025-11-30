@@ -189,7 +189,7 @@ type Difficulty @table(name: "difficulties", key: "difficultyId") {
   level: String!
   
   # Peso o ponderador opcional
-  weight: Int!
+  weight: Float!
 
   # Descripción del tipo de pregunta
   description: String

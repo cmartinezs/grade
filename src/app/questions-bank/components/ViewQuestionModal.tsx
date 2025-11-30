@@ -9,6 +9,7 @@ import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useDifficulties } from '@/hooks/useDifficulties';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { getUserByEmail, getUserById } from '@/dataconnect-generated';
+import { getDifficultyColorRgb, getDifficultyEmoji } from '@/lib/difficultyUtils';
 
 interface ViewQuestionModalProps {
   show: boolean;
@@ -34,6 +35,7 @@ export default function ViewQuestionModal({
   const [showHistory, setShowHistory] = useState(false);
   const [authorEmail, setAuthorEmail] = useState<string>('');
   const [difficultyName, setDifficultyName] = useState<string>('');
+  const [difficultyWeight, setDifficultyWeight] = useState<number | undefined>(undefined);
   const [taxonomyPath, setTaxonomyPath] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +105,7 @@ export default function ViewQuestionModal({
         // Obtener nombre de dificultad
         const difficulty = difficulties.find(d => d.difficultyId === questionData.difficulty_fk);
         setDifficultyName(difficulty?.level || 'N/A');
+        setDifficultyWeight(difficulty?.weight);
 
         // Obtener ruta de taxonomía (asignatura → unidad → tema)
         const topic = topics.find(t => t.topic_id === questionData.topic_fk);
@@ -189,19 +192,12 @@ export default function ViewQuestionModal({
     return option.is_correct ? '✅' : '❌';
   };
 
-  const getDifficultyBadgeVariant = (difficultyCode: string) => {
-    // Usar códigos del sistema: EASY, MEDIUM, HARD
-    const upper = difficultyCode.toUpperCase();
-    if (upper === 'EASY') return 'success';
-    if (upper === 'MEDIUM') return 'warning';
-    if (upper === 'HARD') return 'danger';
-    // Fallback para nombres en español
-    const lower = difficultyCode.toLowerCase();
-    if (lower.includes('fácil') || lower.includes('facil')) return 'success';
-    if (lower.includes('medio') || lower.includes('intermedio')) return 'warning';
-    if (lower.includes('difícil') || lower.includes('dificil')) return 'danger';
-    return 'secondary';
-  };
+  const getDifficultyBadgeStyle = (weight: number | undefined) => ({
+    backgroundColor: getDifficultyColorRgb(weight),
+    color: (weight ?? 0) > 0.6 ? 'white' : 'black',
+    fontSize: '0.9rem',
+    padding: '0.4em 0.8em'
+  });
 
   const getTypeBadgeVariant = (type: string) => {
     switch (type) {
@@ -269,11 +265,10 @@ export default function ViewQuestionModal({
               <div className="col-md-6">
                 <strong>Dificultad:</strong>
                 <Badge 
-                  bg={getDifficultyBadgeVariant(difficultyName)} 
                   className="ms-2"
-                  style={{ fontSize: '0.9rem', padding: '0.4em 0.8em' }}
+                  style={getDifficultyBadgeStyle(difficultyWeight)}
                 >
-                  {difficultyName}
+                  {getDifficultyEmoji(difficultyWeight)} {difficultyName}
                 </Badge>
               </div>
             </div>

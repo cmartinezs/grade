@@ -6,6 +6,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { questionStore } from '@/lib/questionStore';
 import { QuestionWithDetails } from '@/types/question';
 import { useDifficulties } from '@/hooks/useDifficulties';
+import { getDifficultyColorRgb } from '@/lib/difficultyUtils';
 
 export default function StatisticsPage() {
   const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
@@ -31,6 +32,12 @@ export default function StatisticsPage() {
   const getDifficultyCode = (difficultyId: string): string => {
     const diff = difficulties.find(d => d.difficultyId === difficultyId);
     return diff?.code || 'UNKNOWN';
+  };
+
+  // Helper para obtener el weight de una dificultad por código
+  const getDifficultyWeightByCode = (code: string): number | undefined => {
+    const diff = difficulties.find(d => d.code === code);
+    return diff?.weight;
   };
 
   const stats = {
@@ -157,15 +164,30 @@ export default function StatisticsPage() {
                 <div className="mb-2">
                   <div className="d-flex justify-content-between mb-2">
                     <span>🟢 Fácil</span>
-                    <span className="badge bg-success">{stats.byDifficulty.EASY}</span>
+                    <span 
+                      className="badge" 
+                      style={{ backgroundColor: getDifficultyColorRgb(getDifficultyWeightByCode('EASY')) }}
+                    >
+                      {stats.byDifficulty.EASY}
+                    </span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
                     <span>🟡 Medio</span>
-                    <span className="badge bg-warning">{stats.byDifficulty.MEDIUM}</span>
+                    <span 
+                      className="badge" 
+                      style={{ backgroundColor: getDifficultyColorRgb(getDifficultyWeightByCode('MEDIUM')) }}
+                    >
+                      {stats.byDifficulty.MEDIUM}
+                    </span>
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>🔴 Difícil</span>
-                    <span className="badge bg-danger">{stats.byDifficulty.HARD}</span>
+                    <span 
+                      className="badge" 
+                      style={{ backgroundColor: getDifficultyColorRgb(getDifficultyWeightByCode('HARD')), color: 'white' }}
+                    >
+                      {stats.byDifficulty.HARD}
+                    </span>
                   </div>
                 </div>
               </Card.Body>

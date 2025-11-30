@@ -301,7 +301,6 @@ query GetCoursesByLevel($userId: UUID!, $levelId: UUID!, $firebaseId: String!) @
 query ListDifficulties @auth(level: USER) {
   difficulties {
     difficultyId
-    code
     level
     weight
     description
@@ -313,7 +312,6 @@ query ListDifficulties @auth(level: USER) {
 query GetDifficulty($difficultyId: UUID!) @auth(level: USER) {
   difficulty(key: { difficultyId: $difficultyId }) {
     difficultyId
-    code
     level
     weight
     description
@@ -478,7 +476,6 @@ query GetDashboardSystemData @auth(level: USER) {
   # Dificultades disponibles
   difficulties(where: { active: { eq: true } }) {
     difficultyId
-    code
     level
     weight
   }

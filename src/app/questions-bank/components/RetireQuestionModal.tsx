@@ -6,6 +6,7 @@ import { QuestionWithDetails } from '@/types/question';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useDifficulties } from '@/hooks/useDifficulties';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
+import { getDifficultyColorRgb, getDifficultyEmoji } from '@/lib/difficultyUtils';
 
 interface RetireQuestionModalProps {
   show: boolean;
@@ -71,19 +72,12 @@ export default function RetireQuestionModal({
     ? `${subject.name} → ${unit.name} → ${topic.name}`
     : 'N/A';
 
-  const getDifficultyBadgeVariant = (difficultyCode: string) => {
-    // Usar códigos del sistema: EASY, MEDIUM, HARD
-    const upper = difficultyCode.toUpperCase();
-    if (upper === 'EASY') return 'success';
-    if (upper === 'MEDIUM') return 'warning';
-    if (upper === 'HARD') return 'danger';
-    // Fallback para nombres en español
-    const lower = difficultyCode.toLowerCase();
-    if (lower.includes('fácil') || lower.includes('facil')) return 'success';
-    if (lower.includes('medio') || lower.includes('intermedio')) return 'warning';
-    if (lower.includes('difícil') || lower.includes('dificil')) return 'danger';
-    return 'secondary';
-  };
+  const getDifficultyBadgeStyle = (weight: number | undefined) => ({
+    backgroundColor: getDifficultyColorRgb(weight),
+    color: (weight ?? 0) > 0.6 ? 'white' : 'black',
+    fontSize: '0.9rem',
+    padding: '0.4em 0.8em'
+  });
 
   const getTypeBadgeVariant = (type: string) => {
     switch (type) {
@@ -160,11 +154,10 @@ export default function RetireQuestionModal({
                   <div className="col-md-6">
                     <strong>Dificultad:</strong>
                     <Badge 
-                      bg={getDifficultyBadgeVariant(difficultyName)} 
                       className="ms-2"
-                      style={{ fontSize: '0.9rem', padding: '0.4em 0.8em' }}
+                      style={getDifficultyBadgeStyle(difficulty?.weight)}
                     >
-                      {difficultyName}
+                      {getDifficultyEmoji(difficulty?.weight)} {difficultyName}
                     </Badge>
                   </div>
                 </div>

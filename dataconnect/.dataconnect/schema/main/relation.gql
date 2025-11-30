@@ -436,7 +436,7 @@ extend type Difficulty {
     Set to true to sum the distinct values.
     """
     distinct: Boolean = false
-  ): Int @fdc_generated(from: "Difficulty.weight", purpose: QUERY_SUM)
+  ): Float @fdc_generated(from: "Difficulty.weight", purpose: QUERY_SUM)
   """
   ✨ Average the `weight` field in the `Difficulty` table.
   """
@@ -449,11 +449,11 @@ extend type Difficulty {
   """
   ✨ Minimum of the `weight` field in the `Difficulty` table.
   """
-  weight_min: Int @fdc_generated(from: "Difficulty.weight", purpose: QUERY_MIN)
+  weight_min: Float @fdc_generated(from: "Difficulty.weight", purpose: QUERY_MIN)
   """
   ✨ Maximum of the `weight` field in the `Difficulty` table.
   """
-  weight_max: Int @fdc_generated(from: "Difficulty.weight", purpose: QUERY_MAX)
+  weight_max: Float @fdc_generated(from: "Difficulty.weight", purpose: QUERY_MAX)
   """
   A generated field that is used for caching results in SDKs.
   """

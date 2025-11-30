@@ -1336,17 +1336,17 @@ input Difficulty_Data {
   """
   level_expr: String_Expr
   """
-  ✨ Generated from Field `Difficulty`.`weight` of type `Int!`
+  ✨ Generated from Field `Difficulty`.`weight` of type `Float!`
   """
-  weight: Int
+  weight: Float
   """
-  ✨ `_expr` server value variant of `weight` (✨ Generated from Field `Difficulty`.`weight` of type `Int!`)
+  ✨ `_expr` server value variant of `weight` (✨ Generated from Field `Difficulty`.`weight` of type `Float!`)
   """
-  weight_expr: Int_Expr
+  weight_expr: Float_Expr
   """
-  ✨ `_update` server value variant of `weight` (✨ Generated from Field `Difficulty`.`weight` of type `Int!`)
+  ✨ `_update` server value variant of `weight` (✨ Generated from Field `Difficulty`.`weight` of type `Float!`)
   """
-  weight_update: [Int_Update!]
+  weight_update: [Float_Update!]
 }
 """
 ✨ Generated filter input type for table 'Difficulty'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -1385,9 +1385,9 @@ input Difficulty_Filter {
   """
   level: String_Filter
   """
-  ✨ Generated from Field `Difficulty`.`weight` of type `Int!`
+  ✨ Generated from Field `Difficulty`.`weight` of type `Float!`
   """
-  weight: Int_Filter
+  weight: Float_Filter
 }
 """
 ✨ Generated first-row input type for table 'Difficulty'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -1451,21 +1451,21 @@ input Difficulty_Having {
   """
   weight_count: Int_Filter
   """
-  ✨ Generated from Field `Difficulty`.`weight_sum` of type `Int`
+  ✨ Generated from Field `Difficulty`.`weight_sum` of type `Float`
   """
-  weight_sum: Int_Filter
+  weight_sum: Float_Filter
   """
   ✨ Generated from Field `Difficulty`.`weight_avg` of type `Float`
   """
   weight_avg: Float_Filter
   """
-  ✨ Generated from Field `Difficulty`.`weight_min` of type `Int`
+  ✨ Generated from Field `Difficulty`.`weight_min` of type `Float`
   """
-  weight_min: Int_Filter
+  weight_min: Float_Filter
   """
-  ✨ Generated from Field `Difficulty`.`weight_max` of type `Int`
+  ✨ Generated from Field `Difficulty`.`weight_max` of type `Float`
   """
-  weight_max: Int_Filter
+  weight_max: Float_Filter
 }
 """
 ✨ Generated key input type for table 'Difficulty'. It represents the primary key fields used to uniquely identify a row in the table.
@@ -1518,7 +1518,7 @@ input Difficulty_Order {
   """
   level: OrderDirection
   """
-  ✨ Generated from Field `Difficulty`.`weight` of type `Int!`
+  ✨ Generated from Field `Difficulty`.`weight` of type `Float!`
   """
   weight: OrderDirection
   """
@@ -1550,7 +1550,7 @@ input Difficulty_Order {
   """
   weight_count: OrderDirection
   """
-  ✨ Generated from Field `Difficulty`.`weight_sum` of type `Int`
+  ✨ Generated from Field `Difficulty`.`weight_sum` of type `Float`
   """
   weight_sum: OrderDirection
   """
@@ -1558,11 +1558,11 @@ input Difficulty_Order {
   """
   weight_avg: OrderDirection
   """
-  ✨ Generated from Field `Difficulty`.`weight_min` of type `Int`
+  ✨ Generated from Field `Difficulty`.`weight_min` of type `Float`
   """
   weight_min: OrderDirection
   """
-  ✨ Generated from Field `Difficulty`.`weight_max` of type `Int`
+  ✨ Generated from Field `Difficulty`.`weight_max` of type `Float`
   """
   weight_max: OrderDirection
 }

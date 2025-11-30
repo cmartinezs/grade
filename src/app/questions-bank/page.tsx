@@ -20,6 +20,7 @@ import { useQuestions } from '@/hooks/useQuestions';
 import { useDifficulties } from '@/hooks/useDifficulties';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useAuth } from '@/contexts/AuthContext';
+import { getDifficultyColorRgb, getDifficultyEmoji } from '@/lib/difficultyUtils';
 
 export default function QuestionsBankPage() {
   const router = useRouter();
@@ -193,14 +194,11 @@ export default function QuestionsBankPage() {
     }
   };
 
-  const getDifficultyColor = (difficultyCode: string | undefined) => {
-    const colors: Record<string, string> = {
-      EASY: 'success',
-      MEDIUM: 'warning',
-      HARD: 'danger',
-    };
-    return difficultyCode ? colors[difficultyCode] || 'secondary' : 'secondary';
-  };
+  // Color dinámico basado en weight - ahora usa la utilidad centralizada
+  const getDifficultyBgStyle = (weight: number | undefined) => ({
+    backgroundColor: getDifficultyColorRgb(weight),
+    color: (weight ?? 0) > 0.6 ? 'white' : 'black'
+  });
 
   return (
     <ProtectedRoute>
@@ -475,12 +473,14 @@ export default function QuestionsBankPage() {
                           {/* Badges de dificultad y asignatura */}
                           <div className="d-flex flex-wrap gap-2 mb-3">
                             <Badge 
-                              bg={getDifficultyColor(difficultyInfo?.code)}
                               className="d-flex align-items-center gap-1 px-2 py-1"
-                              style={{ fontSize: '0.75rem', fontWeight: 500 }}
+                              style={{ 
+                                fontSize: '0.75rem', 
+                                fontWeight: 500,
+                                ...getDifficultyBgStyle(difficultyInfo?.weight)
+                              }}
                             >
-                              {difficultyInfo?.code === 'EASY' ? '🟢' : 
-                               difficultyInfo?.code === 'MEDIUM' ? '🟡' : '🔴'}
+                              {getDifficultyEmoji(difficultyInfo?.weight)}
                               {difficultyInfo?.level || 'Desconocido'}
                             </Badge>
                             {question.subject_name && (

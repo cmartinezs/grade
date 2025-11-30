@@ -2192,7 +2192,6 @@ The `data` property is an object of type `ListDifficultiesData`, which is define
 export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
-    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -2296,7 +2295,6 @@ The `data` property is an object of type `GetDifficultyData`, which is defined i
 export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
-    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -3436,7 +3434,6 @@ export interface GetDashboardSystemDataData {
   } & Taxonomy_Key)[];
     difficulties: ({
       difficultyId: UUIDString;
-      code: string;
       level: string;
       weight: number;
     } & Difficulty_Key)[];
