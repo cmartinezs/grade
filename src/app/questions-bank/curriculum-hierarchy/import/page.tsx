@@ -138,8 +138,21 @@ export default function ImportCurriculumPage() {
   };
 
   const validateAndSetFile = async (file: File) => {
+    // Validar tipo de archivo
     if (file.type !== 'text/csv' && file.type !== 'application/vnd.ms-excel') {
       setUploadMessage({ type: 'error', text: 'Por favor selecciona un archivo CSV válido' });
+      return;
+    }
+    
+    // Validar tamaño del archivo (máximo 2MB)
+    const maxSizeMB = 2;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      setUploadMessage({ 
+        type: 'error', 
+        text: `El archivo es demasiado grande (${fileSizeMB} MB). El tamaño máximo permitido es ${maxSizeMB} MB.` 
+      });
       return;
     }
     
@@ -213,6 +226,64 @@ export default function ImportCurriculumPage() {
       let unitsCount = 0;
       let topicsCount = 0;
       
+      // Mapas para detectar códigos duplicados dentro del archivo POR TIPO
+      // Un código puede repetirse entre tipos diferentes, pero no dentro del mismo tipo
+      const subjectCodesInFile = new Map<string, number>(); // código -> número de fila
+      const unitCodesInFile = new Map<string, number>();
+      const topicCodesInFile = new Map<string, number>();
+      
+      const duplicateCodes: Array<{code: string, tipo: string, rows: number[]}> = [];
+      
+      // Primera pasada: recolectar todos los códigos por tipo y detectar duplicados internos
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        
+        if (values.length >= 3) {
+          const tipo = values[0]?.toLowerCase();
+          const codigo = values[2];
+          
+          if (codigo && ['asignatura', 'unidad', 'tema'].includes(tipo)) {
+            const normalizedCode = codigo.toUpperCase();
+            let targetMap: Map<string, number>;
+            let tipoLabel: string;
+            
+            if (tipo === 'asignatura') {
+              targetMap = subjectCodesInFile;
+              tipoLabel = 'asignatura';
+            } else if (tipo === 'unidad') {
+              targetMap = unitCodesInFile;
+              tipoLabel = 'unidad';
+            } else {
+              targetMap = topicCodesInFile;
+              tipoLabel = 'tema';
+            }
+            
+            if (targetMap.has(normalizedCode)) {
+              // Encontrado duplicado del mismo tipo
+              const existingEntry = duplicateCodes.find(d => d.code === normalizedCode && d.tipo === tipoLabel);
+              if (existingEntry) {
+                existingEntry.rows.push(i + 1);
+              } else {
+                duplicateCodes.push({
+                  code: normalizedCode,
+                  tipo: tipoLabel,
+                  rows: [targetMap.get(normalizedCode)!, i + 1]
+                });
+              }
+            } else {
+              targetMap.set(normalizedCode, i + 1);
+            }
+          }
+        }
+      }
+      
+      // Agregar errores por códigos duplicados dentro del archivo (por tipo)
+      duplicateCodes.forEach(dup => {
+        errors.push(`Código "${dup.code}" duplicado para ${dup.tipo}s en el archivo (filas: ${dup.rows.join(', ')}). Cada código de ${dup.tipo} debe ser único.`);
+      });
+      
+      // Segunda pasada: validar estructura de cada fila
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i];
         const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
@@ -285,6 +356,73 @@ export default function ImportCurriculumPage() {
       
       setUploadProgress(85);
       await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Validar códigos contra elementos existentes en el sistema (solo si no hay errores previos de duplicados)
+      const hasCodesInFile = subjectCodesInFile.size > 0 || unitCodesInFile.size > 0 || topicCodesInFile.size > 0;
+      if (duplicateCodes.length === 0 && hasCodesInFile) {
+        setUploadProgress(88);
+        setImportStatus('Verificando códigos existentes...');
+        
+        try {
+          // Cargar elementos existentes
+          const existingSubjectsData = await fetchAllSubjects();
+          const existingUnitsData = await fetchAllUnits();
+          
+          // Crear sets de códigos existentes (normalizados a mayúsculas)
+          const existingSubjectCodes = new Set<string>();
+          const existingUnitCodes = new Set<string>();
+          const existingTopicCodes = new Set<string>();
+          
+          existingSubjectsData.subjects.forEach(subject => {
+            if (subject.active && subject.code) {
+              existingSubjectCodes.add(subject.code.toUpperCase());
+            }
+          });
+          
+          existingUnitsData.units.forEach(unit => {
+            if (unit.active && unit.code) {
+              existingUnitCodes.add(unit.code.toUpperCase());
+            }
+          });
+          
+          // Para los temas, necesitamos cargarlos también
+          // Usamos los topics del hook useCurriculumHierarchy que ya está disponible
+          topics.forEach(topic => {
+            if (topic.active && topic.code) {
+              existingTopicCodes.add(topic.code.toUpperCase());
+            }
+          });
+          
+          // Verificar cada código del archivo contra los existentes
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i];
+            const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+            
+            if (values.length >= 3) {
+              const [tipo, , codigo] = values;
+              if (codigo && tipo) {
+                const normalizedCode = codigo.toUpperCase();
+                const tipoLower = tipo.toLowerCase();
+                
+                // Verificar según el tipo
+                if (tipoLower === 'asignatura' && existingSubjectCodes.has(normalizedCode)) {
+                  errors.push(`Fila ${i + 1}: El código "${codigo}" ya existe en el sistema como asignatura. Usa un código diferente o elimina esta fila si no deseas duplicar.`);
+                } else if (tipoLower === 'unidad' && existingUnitCodes.has(normalizedCode)) {
+                  errors.push(`Fila ${i + 1}: El código "${codigo}" ya existe en el sistema como unidad. Usa un código diferente o elimina esta fila si no deseas duplicar.`);
+                } else if (tipoLower === 'tema' && existingTopicCodes.has(normalizedCode)) {
+                  errors.push(`Fila ${i + 1}: El código "${codigo}" ya existe en el sistema como tema. Usa un código diferente o elimina esta fila si no deseas duplicar.`);
+                }
+              }
+            }
+          }
+        } catch (fetchError) {
+          console.warn('No se pudieron cargar elementos existentes para validar duplicados:', fetchError);
+          // Continuar sin esta validación si falla la carga
+        }
+      }
+      
+      setUploadProgress(92);
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       if (errors.length > 0) {
         setValidationErrors(errors);
@@ -472,8 +610,11 @@ export default function ImportCurriculumPage() {
               user.id
             );
             
+            // Actualizar todos los mapas necesarios
             subjectIdMap.set(nombre, subjectId);
             subjectByCodeMap.set(codigo, subjectId);
+            subjectIdToName.set(subjectId, nombre); // ← IMPORTANTE: Agregar al mapa inverso
+            
             created++;
             setImportProgress(5 + (created / total) * 30);
           } catch (error) {
@@ -680,8 +821,8 @@ export default function ImportCurriculumPage() {
                         </tr>
                         <tr>
                           <td><code>codigo</code></td>
-                          <td>Código único</td>
-                          <td><Badge bg="warning">Obligatorio</Badge> Debe ser único (ej: MAT, LEN, MAT-NUM)</td>
+                          <td>Código único por tipo</td>
+                          <td><Badge bg="warning">Obligatorio</Badge> Único por tipo (ej: MAT, LEN, MAT-NUM)</td>
                         </tr>
                         <tr>
                           <td><code>nivel_educativo</code></td>
@@ -706,10 +847,19 @@ export default function ImportCurriculumPage() {
                       </tbody>
                     </Table>
 
+                    <h6 className="mt-3">⚠️ Validaciones:</h6>
+                    <ul className="mb-3">
+                      <li><strong>Tamaño máximo:</strong> 2 MB</li>
+                      <li><strong>Formato:</strong> CSV con separador punto y coma (;)</li>
+                      <li><strong>Codificación:</strong> UTF-8 (recomendado con BOM)</li>
+                      <li><strong>Códigos únicos por tipo:</strong> No puede haber dos asignaturas con el mismo código, ni dos unidades con el mismo código, ni dos temas con el mismo código. Sin embargo, una asignatura y una unidad <em>sí pueden</em> tener el mismo código.</li>
+                      <li><strong>Códigos existentes:</strong> Se valida contra los elementos ya existentes en el sistema</li>
+                    </ul>
+
                     <h6 className="mt-3">💡 Consejos:</h6>
                     <ul className="mb-3">
                       <li>Define primero las <strong>asignaturas</strong>, luego las <strong>unidades</strong> y finalmente los <strong>temas</strong></li>
-                      <li>El campo <code>codigo</code> es <strong>obligatorio para todos</strong> y debe ser único en el sistema</li>
+                      <li>El campo <code>codigo</code> es <strong>obligatorio para todos</strong> y debe ser único dentro de su tipo</li>
                       <li><strong>Recomendado:</strong> Usa códigos en lugar de nombres en <code>nivel_educativo</code>, <code>asignatura_padre</code> y <code>unidad_padre</code> (más preciso)</li>
                       <li>Las descripciones son opcionales pero recomendadas</li>
                     </ul>

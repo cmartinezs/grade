@@ -60,7 +60,7 @@ export function CurriculumImportHelp() {
           <tr>
             <td><code>codigo</code></td>
             <td><Badge bg="danger">Sí</Badge></td>
-            <td>Solo asignaturas</td>
+            <td>Todos (único por tipo)</td>
           </tr>
           <tr>
             <td><code>nivel_educativo</code></td>
@@ -88,8 +88,8 @@ export function CurriculumImportHelp() {
       <h6 className="mb-3">💡 Consejos Importantes</h6>
       <ul className="mb-4">
         <li>El orden importa: primero <strong>asignaturas</strong>, luego <strong>unidades</strong>, finalmente <strong>temas</strong></li>
-        <li>Los códigos de asignatura deben ser <strong>únicos</strong></li>
-        <li>Usa <strong>nombres exactos</strong> en las referencias (asignatura_padre, unidad_padre)</li>
+        <li>Los códigos deben ser <strong>únicos dentro de su tipo</strong> (dos asignaturas no pueden tener el mismo código, pero una asignatura y una unidad sí pueden)</li>
+        <li>Usa <strong>código o nombre exacto</strong> en las referencias (asignatura_padre, unidad_padre)</li>
         <li>El nivel educativo debe existir en el sistema</li>
         <li>Puedes incluir múltiples asignaturas en el mismo archivo</li>
       </ul>
@@ -117,11 +117,14 @@ tema;Triángulos;;;Matemática;Geometría;Propiedades`}
       </ul>
 
       <Alert variant="warning">
-        <h6 className="mb-2">⚠️ Antes de Importar</h6>
+        <h6 className="mb-2">⚠️ Validaciones del Archivo</h6>
         <ul className="mb-0">
+          <li><strong>Tamaño máximo:</strong> 2 MB</li>
+          <li><strong>Formato:</strong> CSV con separador punto y coma (;)</li>
+          <li><strong>Codificación:</strong> UTF-8 (recomendado con BOM)</li>
+          <li>Los <strong>códigos</strong> deben ser únicos dentro de cada tipo (asignaturas, unidades, temas)</li>
           <li>El sistema validará que todos los <strong>niveles educativos</strong> existan</li>
           <li>Verificará que las <strong>referencias</strong> (asignatura_padre, unidad_padre) sean correctas</li>
-          <li>Los códigos de asignatura no deben <strong>duplicarse</strong></li>
           <li>Si hay errores, se mostrará un reporte detallado</li>
         </ul>
       </Alert>
