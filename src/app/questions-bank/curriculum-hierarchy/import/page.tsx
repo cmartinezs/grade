@@ -421,6 +421,15 @@ export default function ImportCurriculumPage() {
           const existingSubjectsData = await fetchAllSubjects();
           const existingUnitsData = await fetchAllUnits();
           
+          // Cargar niveles educativos para validar
+          const educationalLevels = await fetchEducationalLevelsFromDataConnect();
+          const levelByCodeMap = new Map<string, string>();
+          const levelByNameMap = new Map<string, string>();
+          educationalLevels.forEach((level: { code: string; name: string; levelId: string }) => {
+            levelByCodeMap.set(level.code.toUpperCase(), level.levelId);
+            levelByNameMap.set(level.name.toUpperCase(), level.levelId);
+          });
+          
           // Crear sets de códigos existentes (normalizados a mayúsculas)
           const existingSubjectCodes = new Set<string>();
           const existingUnitCodes = new Set<string>();
@@ -447,15 +456,27 @@ export default function ImportCurriculumPage() {
           });
           
           // Verificar cada código del archivo contra los existentes (detectar duplicados)
+          // y validar que los niveles educativos existan
           for (let i = 1; i < lines.length; i++) {
             const line = lines[i];
             const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
             
-            if (values.length >= 3) {
-              const [tipo, , codigo] = values;
+            if (values.length >= 4) {
+              const [tipo, , codigo, nivelEducativo] = values;
+              const tipoLower = tipo?.toLowerCase();
+              
+              // Validar nivel educativo para asignaturas
+              if (tipoLower === 'asignatura' && nivelEducativo) {
+                const normalizedLevel = nivelEducativo.toUpperCase();
+                const levelExists = levelByCodeMap.has(normalizedLevel) || levelByNameMap.has(normalizedLevel);
+                if (!levelExists) {
+                  errors.push(`Fila ${i + 1}: El nivel educativo "${nivelEducativo}" no existe en el sistema. Revisa los niveles disponibles en el módulo de configuración.`);
+                }
+              }
+              
+              // Validar códigos duplicados
               if (codigo && tipo) {
                 const normalizedCode = codigo.toUpperCase();
-                const tipoLower = tipo.toLowerCase();
                 
                 // Verificar según el tipo
                 if (tipoLower === 'asignatura' && existingSubjectCodes.has(normalizedCode)) {
@@ -676,8 +697,7 @@ export default function ImportCurriculumPage() {
             }
             
             if (!levelId) {
-              const availableCodes = Array.from(levelByCodeMap.keys()).join(', ');
-              throw new Error(`Nivel educativo "${nivelEducativo}" no encontrado. Códigos disponibles: ${availableCodes}`);
+              throw new Error(`Nivel educativo "${nivelEducativo}" no encontrado. Revisa los niveles disponibles en el sistema.`);
             }
             
             const subjectId = await createNewSubject(
