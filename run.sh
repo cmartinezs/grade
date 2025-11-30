@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 
 echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║                                                            ║${NC}"
-echo -e "${BLUE}║        Grade Web App - Development Environment            ║${NC}"
+echo -e "${BLUE}║        Grade Web App - Development Environment             ║${NC}"
 echo -e "${BLUE}║                                                            ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
