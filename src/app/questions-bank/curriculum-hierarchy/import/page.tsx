@@ -9,6 +9,29 @@ import { useAuth } from '@/contexts/AuthContext';
 import { createNewSubject, createNewUnit, createNewTopic, fetchAllSubjects, fetchAllUnits } from '@/lib/curriculumHierarchyDataConnect';
 import { fetchEducationalLevelsFromDataConnect } from '@/lib/levelDataConnect';
 import { CurriculumImportHelp } from './CurriculumImportHelp';
+import {
+  parseCSVRowToObject,
+  validateHeaders,
+  validateRowByType,
+  collectCodesAndFindDuplicates,
+  generateDuplicateErrors,
+  collectReferencesToValidate,
+  validateReferences,
+  validateAgainstExistingCodes,
+  validateLevelExists,
+  countEntitiesByType,
+  buildSubjectMaps,
+  buildUnitMaps,
+  buildLevelMaps,
+  buildExistingCodesSet,
+  findSubjectId,
+  findUnitId,
+  findLevelByCodeOrName,
+  normalizeCode,
+  getEntityType,
+  PROGRESS,
+  type EntityMaps,
+} from './csvUtils';
 
 export default function ImportCurriculumPage() {
   const { setHelpContent } = useHelpContent();
@@ -169,14 +192,7 @@ export default function ImportCurriculumPage() {
       setUploadProgress(1);
       const text = await readFileWithEncoding(file);
       const lines = text.split('\n').filter(line => line.trim());
-      
-      // Calcular total de pasos para el progreso proporcional
-      // Total de registros de datos (sin header)
       const totalDataLines = lines.length - 1;
-      // Fases: 5% preparación, 90% validación de registros, 5% verificación BD
-      const PREP_PERCENT = 5;
-      const VALIDATION_PERCENT = 90;
-      const DB_CHECK_PERCENT = 5;
       
       setUploadProgress(2);
       
@@ -187,30 +203,11 @@ export default function ImportCurriculumPage() {
         return;
       }
       
-      // Validar encabezados
+      // Validar encabezados usando utilidad
       setUploadProgress(3);
       setValidationMessage('Validando encabezados...');
       
-      const headers = lines[0].split(';').map(h => h.trim().replace(/"/g, ''));
-      const expectedHeaders = ['tipo', 'nombre', 'codigo', 'nivel_educativo', 'asignatura_padre', 'unidad_padre', 'descripcion'];
-      const errors: string[] = [];
-      
-      // Verificar que los headers sean exactamente los esperados
-      if (headers.length !== expectedHeaders.length) {
-        errors.push(`Se esperan ${expectedHeaders.length} columnas, pero se encontraron ${headers.length}`);
-      }
-      
-      expectedHeaders.forEach((expected, idx) => {
-        if (headers[idx] !== expected) {
-          errors.push(`Columna ${idx + 1}: se esperaba "${expected}" pero se encontró "${headers[idx] || '(vacío)'}"}`);
-        }
-      });
-      
-      // Verificar columnas extra
-      if (headers.length > expectedHeaders.length) {
-        const extraHeaders = headers.slice(expectedHeaders.length);
-        errors.push(`Columnas extra no permitidas: ${extraHeaders.join(', ')}`);
-      }
+      const errors: string[] = validateHeaders(lines[0]);
       
       if (errors.length > 0) {
         setUploadProgress(100);
@@ -222,302 +219,89 @@ export default function ImportCurriculumPage() {
         return;
       }
       
-      // Validar filas de datos - preparación completa (5%)
-      setUploadProgress(PREP_PERCENT);
+      // Validar filas de datos - preparación completa
+      setUploadProgress(PROGRESS.PREP_PERCENT);
       setValidationMessage(`Validando registros (0 de ${totalDataLines})...`);
       
-      let subjectsCount = 0;
-      let unitsCount = 0;
-      let topicsCount = 0;
+      // Recolectar códigos y detectar duplicados internos usando utilidad
+      const { subjectCodes, unitCodes, duplicates } = collectCodesAndFindDuplicates(lines);
+      errors.push(...generateDuplicateErrors(duplicates));
       
-      // Mapas para detectar códigos duplicados dentro del archivo POR TIPO
-      // Un código puede repetirse entre tipos diferentes, pero no dentro del mismo tipo
-      const subjectCodesInFile = new Map<string, number>(); // código -> número de fila
-      const unitCodesInFile = new Map<string, number>();
-      const topicCodesInFile = new Map<string, number>();
+      // Recolectar referencias para validar integridad referencial usando utilidad
+      const referencesToValidate = collectReferencesToValidate(lines);
       
-      const duplicateCodes: Array<{code: string, tipo: string, rows: number[]}> = [];
-      
-      // Primera pasada: recolectar todos los códigos por tipo y detectar duplicados internos
+      // Validar estructura de cada fila usando utilidades
       for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
-        const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        const row = parseCSVRowToObject(lines[i]);
+        errors.push(...validateRowByType(row, i + 1));
         
-        if (values.length >= 3) {
-          const tipo = values[0]?.toLowerCase();
-          const codigo = values[2];
-          
-          if (codigo && ['asignatura', 'unidad', 'tema'].includes(tipo)) {
-            const normalizedCode = codigo.toUpperCase();
-            let targetMap: Map<string, number>;
-            let tipoLabel: string;
-            
-            if (tipo === 'asignatura') {
-              targetMap = subjectCodesInFile;
-              tipoLabel = 'asignatura';
-            } else if (tipo === 'unidad') {
-              targetMap = unitCodesInFile;
-              tipoLabel = 'unidad';
-            } else {
-              targetMap = topicCodesInFile;
-              tipoLabel = 'tema';
-            }
-            
-            if (targetMap.has(normalizedCode)) {
-              // Encontrado duplicado del mismo tipo
-              const existingEntry = duplicateCodes.find(d => d.code === normalizedCode && d.tipo === tipoLabel);
-              if (existingEntry) {
-                existingEntry.rows.push(i + 1);
-              } else {
-                duplicateCodes.push({
-                  code: normalizedCode,
-                  tipo: tipoLabel,
-                  rows: [targetMap.get(normalizedCode)!, i + 1]
-                });
-              }
-            } else {
-              targetMap.set(normalizedCode, i + 1);
-            }
-          }
-        }
-      }
-      
-      // Agregar errores por códigos duplicados dentro del archivo (por tipo)
-      duplicateCodes.forEach(dup => {
-        errors.push(`Código "${dup.code}" duplicado para ${dup.tipo}s en el archivo (filas: ${dup.rows.join(', ')}). Cada código de ${dup.tipo} debe ser único.`);
-      });
-      
-      // Validar integridad referencial: que asignatura_padre y unidad_padre existan en el archivo
-      // Recolectar referencias para validar
-      const referencesToValidate: Array<{row: number, tipo: string, field: string, code: string}> = [];
-      
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
-        const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        
-        if (values.length >= 6) {
-          const tipo = values[0]?.toLowerCase();
-          const asignaturaPadre = values[4];
-          const unidadPadre = values[5];
-          
-          if (tipo === 'unidad' && asignaturaPadre) {
-            referencesToValidate.push({
-              row: i + 1,
-              tipo: 'unidad',
-              field: 'asignatura_padre',
-              code: asignaturaPadre.toUpperCase()
-            });
-          }
-          
-          if (tipo === 'tema') {
-            if (asignaturaPadre) {
-              referencesToValidate.push({
-                row: i + 1,
-                tipo: 'tema',
-                field: 'asignatura_padre',
-                code: asignaturaPadre.toUpperCase()
-              });
-            }
-            if (unidadPadre) {
-              referencesToValidate.push({
-                row: i + 1,
-                tipo: 'tema',
-                field: 'unidad_padre',
-                code: unidadPadre.toUpperCase()
-              });
-            }
-          }
-        }
-      }
-      
-      // Segunda pasada: validar estructura de cada fila
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
-        const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        
-        if (values.length !== expectedHeaders.length) {
-          errors.push(`Fila ${i + 1}: número incorrecto de columnas (${values.length} en lugar de ${expectedHeaders.length})`);
-          continue;
-        }
-        
-        const [tipo, nombre, codigo, nivelEducativo, asignaturaPadre, unidadPadre] = values;
-        
-        // Validar tipo
-        if (!['asignatura', 'unidad', 'tema'].includes(tipo.toLowerCase())) {
-          errors.push(`Fila ${i + 1}: tipo "${tipo}" no válido. Debe ser: asignatura, unidad o tema`);
-          continue;
-        }
-        
-        // Validar nombre (obligatorio para todos)
-        if (!nombre) {
-          errors.push(`Fila ${i + 1}: el campo "nombre" es obligatorio`);
-        }
-        
-        // Validar código (obligatorio para todos)
-        if (!codigo) {
-          errors.push(`Fila ${i + 1}: el campo "codigo" es obligatorio`);
-        }
-        
-        // Validaciones específicas por tipo
-        const tipoLower = tipo.toLowerCase();
-        
-        if (tipoLower === 'asignatura') {
-          subjectsCount++;
-          if (!nivelEducativo) {
-            errors.push(`Fila ${i + 1}: el campo "nivel_educativo" es obligatorio para asignaturas`);
-          }
-          if (asignaturaPadre || unidadPadre) {
-            errors.push(`Fila ${i + 1}: las asignaturas no deben tener "asignatura_padre" ni "unidad_padre"`);
-          }
-        } else if (tipoLower === 'unidad') {
-          unitsCount++;
-          if (!asignaturaPadre) {
-            errors.push(`Fila ${i + 1}: el campo "asignatura_padre" es obligatorio para unidades`);
-          }
-          if (nivelEducativo) {
-            errors.push(`Fila ${i + 1}: las unidades no deben tener "nivel_educativo"`);
-          }
-          if (unidadPadre) {
-            errors.push(`Fila ${i + 1}: las unidades no deben tener "unidad_padre"`);
-          }
-        } else if (tipoLower === 'tema') {
-          topicsCount++;
-          if (!asignaturaPadre) {
-            errors.push(`Fila ${i + 1}: el campo "asignatura_padre" es obligatorio para temas`);
-          }
-          if (!unidadPadre) {
-            errors.push(`Fila ${i + 1}: el campo "unidad_padre" es obligatorio para temas`);
-          }
-          if (nivelEducativo) {
-            errors.push(`Fila ${i + 1}: los temas no deben tener "nivel_educativo"`);
-          }
-        }
-        
-        // Actualizar progreso proporcional al registro actual
-        // Progreso = 5% (prep) + (registro_actual / total_registros) * 90%
-        const currentRecord = i; // i=1 es el primer registro de datos
-        const progress = PREP_PERCENT + Math.round((currentRecord / totalDataLines) * VALIDATION_PERCENT);
+        // Actualizar progreso proporcional
+        const currentRecord = i;
+        const progress = PROGRESS.PREP_PERCENT + Math.round((currentRecord / totalDataLines) * PROGRESS.VALIDATION_PERCENT);
         setUploadProgress(progress);
         
-        // Actualizar mensaje y agregar delay cada ciertos registros para visualización
         if (i % 5 === 0 || i === totalDataLines) {
           setValidationMessage(`Validando registros (${currentRecord} de ${totalDataLines})...`);
-          await new Promise(resolve => setTimeout(resolve, 1)); // Mínimo delay para actualizar UI
+          await new Promise(resolve => setTimeout(resolve, 1));
         }
       }
       
       // Validación de registros completa (95%)
-      setUploadProgress(PREP_PERCENT + VALIDATION_PERCENT);
+      setUploadProgress(PROGRESS.PREP_PERCENT + PROGRESS.VALIDATION_PERCENT);
       setValidationMessage('Verificando códigos existentes...');
       
-      // Validar códigos contra elementos existentes en el sistema (solo si no hay errores previos de duplicados)
-      const hasCodesInFile = subjectCodesInFile.size > 0 || unitCodesInFile.size > 0 || topicCodesInFile.size > 0;
-      if (duplicateCodes.length === 0 && hasCodesInFile) {
+      // Validar contra elementos existentes en el sistema
+      const hasCodesInFile = subjectCodes.size > 0 || unitCodes.size > 0;
+      if (duplicates.length === 0 && hasCodesInFile) {
         setUploadProgress(96);
         setImportStatus('Verificando códigos existentes...');
         
         try {
-          // Cargar elementos existentes
+          // Cargar elementos existentes y construir mapas usando utilidades
           const existingSubjectsData = await fetchAllSubjects();
           const existingUnitsData = await fetchAllUnits();
-          
-          // Cargar niveles educativos para validar
           const educationalLevels = await fetchEducationalLevelsFromDataConnect();
-          const levelByCodeMap = new Map<string, string>();
-          const levelByNameMap = new Map<string, string>();
-          educationalLevels.forEach((level: { code: string; name: string; levelId: string }) => {
-            levelByCodeMap.set(level.code.toUpperCase(), level.levelId);
-            levelByNameMap.set(level.name.toUpperCase(), level.levelId);
-          });
           
-          // Crear sets de códigos existentes (normalizados a mayúsculas)
-          const existingSubjectCodes = new Set<string>();
-          const existingUnitCodes = new Set<string>();
-          const existingTopicCodes = new Set<string>();
+          const { levelByCodeMap, levelByNameMap } = buildLevelMaps(educationalLevels);
           
-          existingSubjectsData.subjects.forEach(subject => {
-            if (subject.active && subject.code) {
-              existingSubjectCodes.add(subject.code.toUpperCase());
-            }
-          });
+          // Crear sets de códigos existentes
+          const existingCodes = {
+            subjects: buildExistingCodesSet(existingSubjectsData.subjects),
+            units: buildExistingCodesSet(existingUnitsData.units),
+            topics: buildExistingCodesSet(topics)
+          };
           
-          existingUnitsData.units.forEach(unit => {
-            if (unit.active && unit.code) {
-              existingUnitCodes.add(unit.code.toUpperCase());
-            }
-          });
-          
-          // Para los temas, necesitamos cargarlos también
-          // Usamos los topics del hook useCurriculumHierarchy que ya está disponible
-          topics.forEach(topic => {
-            if (topic.active && topic.code) {
-              existingTopicCodes.add(topic.code.toUpperCase());
-            }
-          });
-          
-          // Verificar cada código del archivo contra los existentes (detectar duplicados)
-          // y validar que los niveles educativos existan
+          // Verificar cada fila contra códigos existentes y niveles
           for (let i = 1; i < lines.length; i++) {
-            const line = lines[i];
-            const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+            const row = parseCSVRowToObject(lines[i]);
             
-            if (values.length >= 4) {
-              const [tipo, , codigo, nivelEducativo] = values;
-              const tipoLower = tipo?.toLowerCase();
-              
-              // Validar nivel educativo para asignaturas
-              if (tipoLower === 'asignatura' && nivelEducativo) {
-                const normalizedLevel = nivelEducativo.toUpperCase();
-                const levelExists = levelByCodeMap.has(normalizedLevel) || levelByNameMap.has(normalizedLevel);
-                if (!levelExists) {
-                  errors.push(`Fila ${i + 1}: El nivel educativo "${nivelEducativo}" no existe en el sistema. Revisa los niveles disponibles en el módulo de configuración.`);
-                }
-              }
-              
-              // Validar códigos duplicados
-              if (codigo && tipo) {
-                const normalizedCode = codigo.toUpperCase();
-                
-                // Verificar según el tipo
-                if (tipoLower === 'asignatura' && existingSubjectCodes.has(normalizedCode)) {
-                  errors.push(`Fila ${i + 1}: El código "${codigo}" ya existe en el sistema como asignatura. Usa un código diferente o elimina esta fila si no deseas duplicar.`);
-                } else if (tipoLower === 'unidad' && existingUnitCodes.has(normalizedCode)) {
-                  errors.push(`Fila ${i + 1}: El código "${codigo}" ya existe en el sistema como unidad. Usa un código diferente o elimina esta fila si no deseas duplicar.`);
-                } else if (tipoLower === 'tema' && existingTopicCodes.has(normalizedCode)) {
-                  errors.push(`Fila ${i + 1}: El código "${codigo}" ya existe en el sistema como tema. Usa un código diferente o elimina esta fila si no deseas duplicar.`);
-                }
-              }
-            }
+            // Validar nivel educativo
+            const levelError = validateLevelExists(row, i + 1, levelByCodeMap, levelByNameMap);
+            if (levelError) errors.push(levelError);
+            
+            // Validar códigos duplicados contra BD
+            const codeError = validateAgainstExistingCodes(row, i + 1, existingCodes);
+            if (codeError) errors.push(codeError);
           }
           
-          // Validar integridad referencial: referencias padre deben existir en archivo O en DataConnect
-          for (const ref of referencesToValidate) {
-            if (ref.field === 'asignatura_padre') {
-              // Buscar primero en el archivo, luego en DataConnect
-              const existsInFile = subjectCodesInFile.has(ref.code);
-              const existsInDB = existingSubjectCodes.has(ref.code);
-              if (!existsInFile && !existsInDB) {
-                errors.push(`Fila ${ref.row}: el ${ref.tipo} referencia a asignatura_padre "${ref.code}" que no existe ni en el archivo ni en el sistema.`);
-              }
-            } else if (ref.field === 'unidad_padre') {
-              // Buscar primero en el archivo, luego en DataConnect
-              const existsInFile = unitCodesInFile.has(ref.code);
-              const existsInDB = existingUnitCodes.has(ref.code);
-              if (!existsInFile && !existsInDB) {
-                errors.push(`Fila ${ref.row}: el tema referencia a unidad_padre "${ref.code}" que no existe ni en el archivo ni en el sistema.`);
-              }
-            }
-          }
+          // Validar integridad referencial usando utilidad
+          errors.push(...validateReferences(
+            referencesToValidate,
+            subjectCodes,
+            unitCodes,
+            existingCodes.subjects,
+            existingCodes.units
+          ));
         } catch (fetchError) {
           console.warn('No se pudieron cargar elementos existentes para validar duplicados:', fetchError);
-          // Continuar sin esta validación si falla la carga
         }
       }
       
       // Completar el progreso al 100% ANTES de cambiar el estado
       setUploadProgress(100);
-      setValidationMessage('Completado');
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 400)); // Esperar a que la barra llegue al 100%
+      setValidationMessage('Validación completada');
+      await new Promise(resolve => setTimeout(resolve, 500)); // Mostrar mensaje de completado
       setValidationMessage('');
       
       if (errors.length > 0) {
@@ -528,11 +312,12 @@ export default function ImportCurriculumPage() {
           text: `Se encontraron ${errors.length} error(es) de validación. Revisa los detalles abajo.` 
         });
       } else {
-        setParsedData({ subjects: subjectsCount, units: unitsCount, topics: topicsCount });
+        const counts = countEntitiesByType(lines);
+        setParsedData({ subjects: counts.subjects, units: counts.units, topics: counts.topics });
         setValidationStatus('valid');
         setUploadMessage({ 
           type: 'success', 
-          text: `✅ Archivo válido: ${subjectsCount} asignatura(s), ${unitsCount} unidad(es), ${topicsCount} tema(s)` 
+          text: `✅ Archivo válido: ${counts.subjects} asignatura(s), ${counts.units} unidad(es), ${counts.topics} tema(s)` 
         });
       }
       
@@ -613,47 +398,20 @@ export default function ImportCurriculumPage() {
       const lines = text.split('\n').filter(line => line.trim());
       const dataLines = lines.slice(1); // Saltar header
       
-      // Mapas para almacenar IDs (por nombre)
-      const subjectIdMap = new Map<string, string>();
-      const unitIdMap = new Map<string, string>(); // key: "asignatura|unidad"
-      
       // Cargar elementos existentes primero
       setImportStatus('Cargando elementos existentes...');
       setImportProgress(2);
       
-      // Cargar asignaturas existentes
+      // Cargar y construir mapas de asignaturas existentes
       const existingSubjectsData = await fetchAllSubjects();
-      const subjectByCodeMap = new Map<string, string>();
-      existingSubjectsData.subjects.forEach(subject => {
-        if (subject.active) {
-          subjectIdMap.set(subject.name, subject.subjectId);
-          // Normalizar código a mayúsculas para búsqueda case-insensitive
-          subjectByCodeMap.set(subject.code.toUpperCase(), subject.subjectId);
-        }
-      });
+      const subjectMaps = buildSubjectMaps(existingSubjectsData.subjects);
+      const { subjectIdMap, subjectByCodeMap, subjectIdToName } = subjectMaps;
       console.log(`Asignaturas existentes cargadas: ${subjectIdMap.size}`);
       
-      // Crear un mapa inverso: subjectId -> subjectName
-      const subjectIdToName = new Map<string, string>();
-      existingSubjectsData.subjects.forEach(subject => {
-        if (subject.active) {
-          subjectIdToName.set(subject.subjectId, subject.name);
-        }
-      });
-      
-      // Cargar unidades existentes
+      // Cargar y construir mapas de unidades existentes
       const existingUnitsData = await fetchAllUnits();
-      const unitByCodeMap = new Map<string, string>();
-      existingUnitsData.units.forEach(unit => {
-        if (unit.active) {
-          const subjectName = subjectIdToName.get(unit.subjectId);
-          if (subjectName) {
-            unitIdMap.set(`${subjectName}|${unit.name}`, unit.unitId);
-            // Normalizar código a mayúsculas para búsqueda case-insensitive
-            unitByCodeMap.set(unit.code.toUpperCase(), unit.unitId);
-          }
-        }
-      });
+      const unitMaps = buildUnitMaps(existingUnitsData.units, subjectIdToName);
+      const { unitIdMap, unitByCodeMap } = unitMaps;
       console.log(`Unidades existentes cargadas: ${unitIdMap.size}`);
       
       // Cargar niveles educativos existentes
@@ -661,15 +419,15 @@ export default function ImportCurriculumPage() {
       setImportProgress(5);
       
       const educationalLevels = await fetchEducationalLevelsFromDataConnect();
+      const levelMaps = buildLevelMaps(educationalLevels);
       console.log('Niveles educativos cargados:', educationalLevels);
       
-      // Crear mapas de niveles por código y nombre (case-insensitive)
-      const levelByCodeMap = new Map<string, string>();
-      const levelByNameMap = new Map<string, string>();
-      educationalLevels.forEach((level: { code: string; name: string; levelId: string }) => {
-        levelByCodeMap.set(level.code.toLowerCase(), level.levelId);
-        levelByNameMap.set(level.name.toLowerCase(), level.levelId);
-      });
+      // Crear objeto de mapas combinados para las funciones de búsqueda
+      const entityMaps: EntityMaps = {
+        ...subjectMaps,
+        ...unitMaps,
+        ...levelMaps
+      };
       
       let created = 0;
       const total = dataLines.length;
@@ -677,47 +435,42 @@ export default function ImportCurriculumPage() {
       // Fase 1: Crear asignaturas (solo las que no existen)
       setImportStatus('Procesando asignaturas...');
       for (let i = 0; i < dataLines.length; i++) {
-        const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        const [tipo, nombre, codigo, nivelEducativo] = values;
+        const row = parseCSVRowToObject(dataLines[i]);
         
-        if (tipo.toLowerCase() === 'asignatura') {
+        if (getEntityType(row.tipo) === 'asignatura') {
           try {
             // Verificar si ya existe
-            if (subjectIdMap.has(nombre)) {
-              console.log(`Asignatura "${nombre}" ya existe, usando ID existente`);
+            if (subjectIdMap.has(row.nombre)) {
+              console.log(`Asignatura "${row.nombre}" ya existe, usando ID existente`);
               created++;
               setImportProgress(5 + (created / total) * 30);
               continue;
             }
             
             // Buscar nivel educativo por código o nombre
-            let levelId = levelByCodeMap.get(nivelEducativo.toLowerCase());
-            if (!levelId) {
-              levelId = levelByNameMap.get(nivelEducativo.toLowerCase());
-            }
+            const levelId = findLevelByCodeOrName(row.nivelEducativo, entityMaps.levelByCodeMap, entityMaps.levelByNameMap);
             
             if (!levelId) {
-              throw new Error(`Nivel educativo "${nivelEducativo}" no encontrado. Revisa los niveles disponibles en el sistema.`);
+              throw new Error(`Nivel educativo "${row.nivelEducativo}" no encontrado. Revisa los niveles disponibles en el sistema.`);
             }
             
             const subjectId = await createNewSubject(
-              nombre,
-              codigo,
+              row.nombre,
+              row.codigo,
               levelId,
               user.id
             );
             
             // Actualizar todos los mapas necesarios
-            subjectIdMap.set(nombre, subjectId);
-            // Normalizar código a mayúsculas para búsqueda case-insensitive
-            subjectByCodeMap.set(codigo.toUpperCase(), subjectId);
-            subjectIdToName.set(subjectId, nombre); // ← IMPORTANTE: Agregar al mapa inverso
+            subjectIdMap.set(row.nombre, subjectId);
+            subjectByCodeMap.set(normalizeCode(row.codigo), subjectId);
+            subjectIdToName.set(subjectId, row.nombre);
             
             created++;
             setImportProgress(5 + (created / total) * 30);
           } catch (error) {
-            console.error(`Error creando asignatura "${nombre}":`, error);
-            throw new Error(`Error creando asignatura "${nombre}": ${error}`);
+            console.error(`Error creando asignatura "${row.nombre}":`, error);
+            throw new Error(`Error creando asignatura "${row.nombre}": ${error}`);
           }
         }
       }
@@ -725,19 +478,12 @@ export default function ImportCurriculumPage() {
       // Fase 2: Crear unidades (solo las que no existen)
       setImportStatus('Procesando unidades...');
       for (let i = 0; i < dataLines.length; i++) {
-        const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        const [tipo, nombre, codigo, , asignaturaPadre, , descripcion] = values;
+        const row = parseCSVRowToObject(dataLines[i]);
         
-        if (tipo.toLowerCase() === 'unidad') {
+        if (getEntityType(row.tipo) === 'unidad') {
           try {
-            // Buscar asignatura por código (normalizado a mayúsculas) o nombre
-            let subjectId = subjectByCodeMap.get(asignaturaPadre.toUpperCase());
-            if (!subjectId) {
-              subjectId = subjectIdMap.get(asignaturaPadre);
-            }
-            if (!subjectId) {
-              throw new Error(`Asignatura "${asignaturaPadre}" no encontrada`);
-            }
+            // Buscar asignatura por código o nombre
+            const subjectId = findSubjectId(row.asignaturaPadre, entityMaps);
             
             // Obtener el nombre real de la asignatura para la clave
             const subjectName = subjectIdToName.get(subjectId);
@@ -745,32 +491,31 @@ export default function ImportCurriculumPage() {
               throw new Error(`No se pudo obtener el nombre de la asignatura con ID "${subjectId}"`);
             }
             
-            const unitKey = `${subjectName}|${nombre}`;
+            const unitKey = `${subjectName}|${row.nombre}`;
             
             // Verificar si ya existe
             if (unitIdMap.has(unitKey)) {
-              console.log(`Unidad "${nombre}" en asignatura "${asignaturaPadre}" ya existe, usando ID existente`);
+              console.log(`Unidad "${row.nombre}" en asignatura "${row.asignaturaPadre}" ya existe, usando ID existente`);
               created++;
               setImportProgress(35 + (created / total) * 30);
               continue;
             }
             
             const unitId = await createNewUnit(
-              nombre,
-              codigo,
+              row.nombre,
+              row.codigo,
               subjectId,
               user.id,
-              descripcion || undefined
+              row.descripcion || undefined
             );
             
             unitIdMap.set(unitKey, unitId);
-            // Normalizar código a mayúsculas para búsqueda case-insensitive
-            unitByCodeMap.set(codigo.toUpperCase(), unitId);
+            unitByCodeMap.set(normalizeCode(row.codigo), unitId);
             created++;
             setImportProgress(35 + (created / total) * 30);
           } catch (error) {
-            console.error(`Error creando unidad "${nombre}":`, error);
-            throw new Error(`Error creando unidad "${nombre}": ${error}`);
+            console.error(`Error creando unidad "${row.nombre}":`, error);
+            throw new Error(`Error creando unidad "${row.nombre}": ${error}`);
           }
         }
       }
@@ -778,31 +523,25 @@ export default function ImportCurriculumPage() {
       // Fase 3: Crear temas
       setImportStatus('Creando temas...');
       for (let i = 0; i < dataLines.length; i++) {
-        const values = dataLines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
-        const [tipo, nombre, codigo, , asignaturaPadre, unidadPadre] = values;
+        const row = parseCSVRowToObject(dataLines[i]);
         
-        if (tipo.toLowerCase() === 'tema') {
+        if (getEntityType(row.tipo) === 'tema') {
           try {
-            // Buscar asignatura por código (normalizado a mayúsculas) o nombre para construir la clave
-            let subjectIdForKey = subjectByCodeMap.get(asignaturaPadre.toUpperCase());
-            if (!subjectIdForKey) {
-              subjectIdForKey = subjectIdMap.get(asignaturaPadre);
+            // Buscar asignatura por código o nombre para obtener el nombre
+            let subjectIdForKey: string | undefined;
+            try {
+              subjectIdForKey = findSubjectId(row.asignaturaPadre, entityMaps);
+            } catch {
+              // Si no se encuentra, usar el valor como nombre directamente
             }
-            const subjectNameForKey = subjectIdForKey ? subjectIdToName.get(subjectIdForKey) : asignaturaPadre;
+            const subjectNameForKey = subjectIdForKey ? subjectIdToName.get(subjectIdForKey) : row.asignaturaPadre;
             
-            // Buscar unidad por código (normalizado a mayúsculas) o nombre
-            let unitId = unitByCodeMap.get(unidadPadre.toUpperCase());
-            if (!unitId) {
-              unitId = unitIdMap.get(`${subjectNameForKey}|${unidadPadre}`);
-            }
-            
-            if (!unitId) {
-              throw new Error(`Unidad "${unidadPadre}" en asignatura "${asignaturaPadre}" no encontrada`);
-            }
+            // Buscar unidad por código o nombre
+            const unitId = findUnitId(row.unidadPadre, subjectNameForKey || '', entityMaps);
             
             await createNewTopic(
-              nombre,
-              codigo,
+              row.nombre,
+              row.codigo,
               unitId,
               user.id
             );
@@ -810,17 +549,20 @@ export default function ImportCurriculumPage() {
             created++;
             setImportProgress(65 + (created / total) * 30);
           } catch (error) {
-            console.error(`Error creando tema "${nombre}":`, error);
-            throw new Error(`Error creando tema "${nombre}": ${error}`);
+            console.error(`Error creando tema "${row.nombre}":`, error);
+            throw new Error(`Error creando tema "${row.nombre}": ${error}`);
           }
         }
       }
       
       setImportProgress(95);
       setImportStatus('Finalizando...');
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       setImportProgress(100);
-      setImportStatus('Completado');
+      await new Promise(resolve => setTimeout(resolve, 400)); // Esperar a que la barra llegue al 100%
+      setImportStatus('¡Completado!');
+      await new Promise(resolve => setTimeout(resolve, 500)); // Mostrar mensaje de completado
       
       setUploadMessage({ 
         type: 'success', 
