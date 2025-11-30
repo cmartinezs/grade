@@ -42,7 +42,7 @@ query GetUserById($userId: UUID!) @auth(level: USER) {
 
 # Listar todas las asignaturas
 query ListSubjects @auth(level: USER) {
-  subjects {
+  subjects(limit: 10000) {
     subjectId
     name
     code
@@ -77,7 +77,7 @@ query GetSubject($subjectId: UUID!) @auth(level: USER) {
 
 # Listar todas las unidades
 query ListUnits @auth(level: USER) {
-  units {
+  units(limit: 10000) {
     unitId
     code
     name
@@ -112,7 +112,7 @@ query GetUnit($unitId: UUID!) @auth(level: USER) {
 
 # Listar todos los temas
 query ListTopics @auth(level: USER) {
-  topics {
+  topics(limit: 10000) {
     topicId
     code
     name

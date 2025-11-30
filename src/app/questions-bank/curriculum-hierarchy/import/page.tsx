@@ -27,6 +27,7 @@ export default function ImportCurriculumPage() {
   const [parsedData, setParsedData] = useState<{subjects: number; units: number; topics: number} | null>(null);
   const [importProgress, setImportProgress] = useState(0);
   const [importStatus, setImportStatus] = useState<string>('');
+  const [validationMessage, setValidationMessage] = useState<string>('');
   const [encodingWarning, setEncodingWarning] = useState<string | null>(null);
 
   /**
@@ -161,20 +162,23 @@ export default function ImportCurriculumPage() {
     setValidationErrors([]);
     setValidationStatus('validating');
     setUploadProgress(0);
-    
-    // Pequeño delay para que se vea el estado inicial
-    await new Promise(resolve => setTimeout(resolve, 100));
+    setValidationMessage('Leyendo archivo...');
     
     try {
-      // Simular lectura del archivo
-      setUploadProgress(10);
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
+      // Leer archivo
+      setUploadProgress(1);
       const text = await readFileWithEncoding(file);
       const lines = text.split('\n').filter(line => line.trim());
       
-      setUploadProgress(20);
-      await new Promise(resolve => setTimeout(resolve, 150));
+      // Calcular total de pasos para el progreso proporcional
+      // Total de registros de datos (sin header)
+      const totalDataLines = lines.length - 1;
+      // Fases: 5% preparación, 90% validación de registros, 5% verificación BD
+      const PREP_PERCENT = 5;
+      const VALIDATION_PERCENT = 90;
+      const DB_CHECK_PERCENT = 5;
+      
+      setUploadProgress(2);
       
       if (lines.length === 0) {
         setValidationErrors(['El archivo está vacío']);
@@ -184,8 +188,8 @@ export default function ImportCurriculumPage() {
       }
       
       // Validar encabezados
-      setUploadProgress(30);
-      await new Promise(resolve => setTimeout(resolve, 150));
+      setUploadProgress(3);
+      setValidationMessage('Validando encabezados...');
       
       const headers = lines[0].split(';').map(h => h.trim().replace(/"/g, ''));
       const expectedHeaders = ['tipo', 'nombre', 'codigo', 'nivel_educativo', 'asignatura_padre', 'unidad_padre', 'descripcion'];
@@ -208,19 +212,19 @@ export default function ImportCurriculumPage() {
         errors.push(`Columnas extra no permitidas: ${extraHeaders.join(', ')}`);
       }
       
-      setUploadProgress(40);
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
       if (errors.length > 0) {
+        setUploadProgress(100);
+        setValidationMessage('');
+        await new Promise(resolve => setTimeout(resolve, 300));
         setValidationErrors(errors);
         setValidationStatus('invalid');
         setUploadMessage({ type: 'error', text: `Se encontraron ${errors.length} error(es) en el formato del archivo` });
         return;
       }
       
-      // Validar filas de datos
-      setUploadProgress(50);
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Validar filas de datos - preparación completa (5%)
+      setUploadProgress(PREP_PERCENT);
+      setValidationMessage(`Validando registros (0 de ${totalDataLines})...`);
       
       let subjectsCount = 0;
       let unitsCount = 0;
@@ -282,6 +286,49 @@ export default function ImportCurriculumPage() {
       duplicateCodes.forEach(dup => {
         errors.push(`Código "${dup.code}" duplicado para ${dup.tipo}s en el archivo (filas: ${dup.rows.join(', ')}). Cada código de ${dup.tipo} debe ser único.`);
       });
+      
+      // Validar integridad referencial: que asignatura_padre y unidad_padre existan en el archivo
+      // Recolectar referencias para validar
+      const referencesToValidate: Array<{row: number, tipo: string, field: string, code: string}> = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        
+        if (values.length >= 6) {
+          const tipo = values[0]?.toLowerCase();
+          const asignaturaPadre = values[4];
+          const unidadPadre = values[5];
+          
+          if (tipo === 'unidad' && asignaturaPadre) {
+            referencesToValidate.push({
+              row: i + 1,
+              tipo: 'unidad',
+              field: 'asignatura_padre',
+              code: asignaturaPadre.toUpperCase()
+            });
+          }
+          
+          if (tipo === 'tema') {
+            if (asignaturaPadre) {
+              referencesToValidate.push({
+                row: i + 1,
+                tipo: 'tema',
+                field: 'asignatura_padre',
+                code: asignaturaPadre.toUpperCase()
+              });
+            }
+            if (unidadPadre) {
+              referencesToValidate.push({
+                row: i + 1,
+                tipo: 'tema',
+                field: 'unidad_padre',
+                code: unidadPadre.toUpperCase()
+              });
+            }
+          }
+        }
+      }
       
       // Segunda pasada: validar estructura de cada fila
       for (let i = 1; i < lines.length; i++) {
@@ -346,21 +393,27 @@ export default function ImportCurriculumPage() {
           }
         }
         
-        // Actualizar progreso periódicamente
-        if (i % 5 === 0) {
-          const progress = 50 + Math.floor((i / (lines.length - 1)) * 30);
-          setUploadProgress(progress);
-          await new Promise(resolve => setTimeout(resolve, 50));
+        // Actualizar progreso proporcional al registro actual
+        // Progreso = 5% (prep) + (registro_actual / total_registros) * 90%
+        const currentRecord = i; // i=1 es el primer registro de datos
+        const progress = PREP_PERCENT + Math.round((currentRecord / totalDataLines) * VALIDATION_PERCENT);
+        setUploadProgress(progress);
+        
+        // Actualizar mensaje y agregar delay cada ciertos registros para visualización
+        if (i % 5 === 0 || i === totalDataLines) {
+          setValidationMessage(`Validando registros (${currentRecord} de ${totalDataLines})...`);
+          await new Promise(resolve => setTimeout(resolve, 1)); // Mínimo delay para actualizar UI
         }
       }
       
-      setUploadProgress(85);
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Validación de registros completa (95%)
+      setUploadProgress(PREP_PERCENT + VALIDATION_PERCENT);
+      setValidationMessage('Verificando códigos existentes...');
       
       // Validar códigos contra elementos existentes en el sistema (solo si no hay errores previos de duplicados)
       const hasCodesInFile = subjectCodesInFile.size > 0 || unitCodesInFile.size > 0 || topicCodesInFile.size > 0;
       if (duplicateCodes.length === 0 && hasCodesInFile) {
-        setUploadProgress(88);
+        setUploadProgress(96);
         setImportStatus('Verificando códigos existentes...');
         
         try {
@@ -393,7 +446,7 @@ export default function ImportCurriculumPage() {
             }
           });
           
-          // Verificar cada código del archivo contra los existentes
+          // Verificar cada código del archivo contra los existentes (detectar duplicados)
           for (let i = 1; i < lines.length; i++) {
             const line = lines[i];
             const values = line.split(';').map(v => v.trim().replace(/^"|"$/g, ''));
@@ -415,14 +468,36 @@ export default function ImportCurriculumPage() {
               }
             }
           }
+          
+          // Validar integridad referencial: referencias padre deben existir en archivo O en DataConnect
+          for (const ref of referencesToValidate) {
+            if (ref.field === 'asignatura_padre') {
+              // Buscar primero en el archivo, luego en DataConnect
+              const existsInFile = subjectCodesInFile.has(ref.code);
+              const existsInDB = existingSubjectCodes.has(ref.code);
+              if (!existsInFile && !existsInDB) {
+                errors.push(`Fila ${ref.row}: el ${ref.tipo} referencia a asignatura_padre "${ref.code}" que no existe ni en el archivo ni en el sistema.`);
+              }
+            } else if (ref.field === 'unidad_padre') {
+              // Buscar primero en el archivo, luego en DataConnect
+              const existsInFile = unitCodesInFile.has(ref.code);
+              const existsInDB = existingUnitCodes.has(ref.code);
+              if (!existsInFile && !existsInDB) {
+                errors.push(`Fila ${ref.row}: el tema referencia a unidad_padre "${ref.code}" que no existe ni en el archivo ni en el sistema.`);
+              }
+            }
+          }
         } catch (fetchError) {
           console.warn('No se pudieron cargar elementos existentes para validar duplicados:', fetchError);
           // Continuar sin esta validación si falla la carga
         }
       }
       
-      setUploadProgress(92);
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Completar el progreso al 100% ANTES de cambiar el estado
+      setUploadProgress(100);
+      setValidationMessage('Completado');
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setValidationMessage('');
       
       if (errors.length > 0) {
         setValidationErrors(errors);
@@ -440,15 +515,13 @@ export default function ImportCurriculumPage() {
         });
       }
       
-      setUploadProgress(100);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
     } catch (error) {
       console.error('Error validating file:', error);
       setValidationErrors(['Error al leer el archivo. Verifica que sea un CSV válido con codificación UTF-8']);
       setValidationStatus('invalid');
       setUploadMessage({ type: 'error', text: 'Error al procesar el archivo' });
       setUploadProgress(0);
+      setValidationMessage('');
     }
   };
 
@@ -457,6 +530,8 @@ export default function ImportCurriculumPage() {
     if (file) {
       validateAndSetFile(file);
     }
+    // Resetear el valor del input para permitir re-seleccionar el mismo archivo
+    e.target.value = '';
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -531,7 +606,8 @@ export default function ImportCurriculumPage() {
       existingSubjectsData.subjects.forEach(subject => {
         if (subject.active) {
           subjectIdMap.set(subject.name, subject.subjectId);
-          subjectByCodeMap.set(subject.code, subject.subjectId);
+          // Normalizar código a mayúsculas para búsqueda case-insensitive
+          subjectByCodeMap.set(subject.code.toUpperCase(), subject.subjectId);
         }
       });
       console.log(`Asignaturas existentes cargadas: ${subjectIdMap.size}`);
@@ -552,7 +628,8 @@ export default function ImportCurriculumPage() {
           const subjectName = subjectIdToName.get(unit.subjectId);
           if (subjectName) {
             unitIdMap.set(`${subjectName}|${unit.name}`, unit.unitId);
-            unitByCodeMap.set(unit.code, unit.unitId);
+            // Normalizar código a mayúsculas para búsqueda case-insensitive
+            unitByCodeMap.set(unit.code.toUpperCase(), unit.unitId);
           }
         }
       });
@@ -612,7 +689,8 @@ export default function ImportCurriculumPage() {
             
             // Actualizar todos los mapas necesarios
             subjectIdMap.set(nombre, subjectId);
-            subjectByCodeMap.set(codigo, subjectId);
+            // Normalizar código a mayúsculas para búsqueda case-insensitive
+            subjectByCodeMap.set(codigo.toUpperCase(), subjectId);
             subjectIdToName.set(subjectId, nombre); // ← IMPORTANTE: Agregar al mapa inverso
             
             created++;
@@ -632,8 +710,8 @@ export default function ImportCurriculumPage() {
         
         if (tipo.toLowerCase() === 'unidad') {
           try {
-            // Buscar asignatura por código o nombre
-            let subjectId = subjectByCodeMap.get(asignaturaPadre);
+            // Buscar asignatura por código (normalizado a mayúsculas) o nombre
+            let subjectId = subjectByCodeMap.get(asignaturaPadre.toUpperCase());
             if (!subjectId) {
               subjectId = subjectIdMap.get(asignaturaPadre);
             }
@@ -666,7 +744,8 @@ export default function ImportCurriculumPage() {
             );
             
             unitIdMap.set(unitKey, unitId);
-            unitByCodeMap.set(codigo, unitId);
+            // Normalizar código a mayúsculas para búsqueda case-insensitive
+            unitByCodeMap.set(codigo.toUpperCase(), unitId);
             created++;
             setImportProgress(35 + (created / total) * 30);
           } catch (error) {
@@ -684,15 +763,15 @@ export default function ImportCurriculumPage() {
         
         if (tipo.toLowerCase() === 'tema') {
           try {
-            // Buscar asignatura por código o nombre para construir la clave
-            let subjectIdForKey = subjectByCodeMap.get(asignaturaPadre);
+            // Buscar asignatura por código (normalizado a mayúsculas) o nombre para construir la clave
+            let subjectIdForKey = subjectByCodeMap.get(asignaturaPadre.toUpperCase());
             if (!subjectIdForKey) {
               subjectIdForKey = subjectIdMap.get(asignaturaPadre);
             }
             const subjectNameForKey = subjectIdForKey ? subjectIdToName.get(subjectIdForKey) : asignaturaPadre;
             
-            // Buscar unidad por código o nombre
-            let unitId = unitByCodeMap.get(unidadPadre);
+            // Buscar unidad por código (normalizado a mayúsculas) o nombre
+            let unitId = unitByCodeMap.get(unidadPadre.toUpperCase());
             if (!unitId) {
               unitId = unitIdMap.get(`${subjectNameForKey}|${unidadPadre}`);
             }
@@ -959,6 +1038,9 @@ export default function ImportCurriculumPage() {
                 {validationStatus === 'validating' && (
                   <div className="mb-4">
                     <h6 className="mb-2">📊 Validando archivo...</h6>
+                    {validationMessage && (
+                      <p className="text-muted small mb-2">{validationMessage}</p>
+                    )}
                     <ProgressBar 
                       now={uploadProgress} 
                       label={`${uploadProgress}%`}

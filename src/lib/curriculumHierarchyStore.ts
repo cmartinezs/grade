@@ -657,6 +657,9 @@ export const getAllTopics = (): Topic[] => {
     cache.loading.topics = true;
     fetchAllTopics()
       .then((data: any) => {
+        // DEBUG: Log raw data from DataConnect
+        console.log('[curriculumHierarchyStore] Raw topics from DataConnect:', data.topics?.length, 'topics');
+        
         // data es { topics: [...], ... }, necesitamos extraer y transformar el array
         // Data Connect devuelve topicId/unitId, pero nuestro tipo espera topic_id/unit_fk
         // CRITICAL: ListTopics query returns: topicId, name, unitId, active, createdAt
@@ -675,6 +678,10 @@ export const getAllTopics = (): Topic[] => {
           deleted_at: null,
           deleted_by: null,
         }));
+        
+        // DEBUG: Log transformed topics
+        console.log('[curriculumHierarchyStore] Transformed topics:', topics.length, 'topics');
+        
         cache.topics = topics;
         cache.lastFetch.topics = Date.now();
       })
