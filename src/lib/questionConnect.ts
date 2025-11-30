@@ -50,14 +50,6 @@ export function mapDifficultyLevelToId(level: string, difficulties: Difficulty[]
   return diff?.difficultyId || null;
 }
 
-/**
- * Mapear UUID de dificultad a difficultyId (mantiene el UUID para compatibilidad)
- */
-export function mapDifficultyIdToLevel(difficultyId: string, difficulties: Difficulty[]): string {
-  // Retorna el UUID mismo porque el sistema actual usa UUIDs en difficulty_fk
-  return difficultyId;
-}
-
 export interface QuestionWithOptions {
   questionId: string;
   text: string;

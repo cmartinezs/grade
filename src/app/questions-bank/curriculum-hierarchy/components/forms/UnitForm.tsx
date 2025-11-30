@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import AutocompleteSelect from "@/components/shared/AutocompleteSelect";
-import { Subject, Unit } from "@/types/curriculumHierarchy";
+import { Subject } from "@/types/curriculumHierarchy";
 
 // Conectores a omitir en la generación del código
 const CONNECTORS = ['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'o', 'u', 'a', 'en', 'con', 'para', 'por'];

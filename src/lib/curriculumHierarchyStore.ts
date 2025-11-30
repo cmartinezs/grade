@@ -9,7 +9,6 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { generateUUID } from './uuid';
 import {
   fetchAllSubjects,
   createNewSubject,

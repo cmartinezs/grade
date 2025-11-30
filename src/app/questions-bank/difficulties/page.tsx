@@ -26,6 +26,7 @@ export default function DifficultiesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
+    code: '',
     level: '',
     weight: 1,
     description: '',
@@ -53,13 +54,14 @@ export default function DifficultiesPage() {
     if (difficulty) {
       setEditingId(difficulty.difficultyId);
       setFormData({
+        code: difficulty.code || '',
         level: difficulty.level,
         weight: difficulty.weight || 1,
         description: difficulty.description || '',
       });
     } else {
       setEditingId(null);
-      setFormData({ level: '', weight: 1, description: '' });
+      setFormData({ code: '', level: '', weight: 1, description: '' });
     }
     setLocalError(null);
     setShowModal(true);
@@ -70,7 +72,7 @@ export default function DifficultiesPage() {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingId(null);
-    setFormData({ level: '', weight: 1, description: '' });
+    setFormData({ code: '', level: '', weight: 1, description: '' });
     setLocalError(null);
     setSubmitting(false);
   };
@@ -88,6 +90,7 @@ export default function DifficultiesPage() {
       }
 
       await create(
+        formData.code,
         formData.level,
         formData.weight,
         formData.description
@@ -101,6 +104,15 @@ export default function DifficultiesPage() {
   };
 
   const columns: ColumnConfig<Difficulty>[] = [
+    {
+      key: 'code',
+      label: 'Código',
+      render: (value) => (
+        <code className="bg-light px-2 py-1 rounded">{String(value)}</code>
+      ),
+      width: '120px',
+      sortable: true,
+    },
     {
       key: 'level',
       label: 'Nivel',
@@ -204,6 +216,25 @@ export default function DifficultiesPage() {
 
               <Form.Group className="mb-3">
                 <Form.Label>
+                  Código <span style={{ color: 'red' }}>*</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="ej: EASY, MEDIUM, HARD"
+                  value={formData.code}
+                  onChange={(e) =>
+                    setFormData({ ...formData, code: e.target.value.toUpperCase() })
+                  }
+                  required
+                  disabled={submitting}
+                />
+                <Form.Text className="text-muted">
+                  Código único del nivel (EASY, MEDIUM, HARD)
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>
                   Nivel <span style={{ color: 'red' }}>*</span>
                 </Form.Label>
                 <Form.Control
@@ -217,7 +248,7 @@ export default function DifficultiesPage() {
                   disabled={submitting}
                 />
                 <Form.Text className="text-muted">
-                  Nombre del nivel de dificultad
+                  Nombre del nivel de dificultad para mostrar
                 </Form.Text>
               </Form.Group>
 

@@ -13,7 +13,6 @@ import {
 import { questionStore } from '@/lib/questionStore';
 import { fetchQuestionById, mapQuestionTypeIdToCode } from '@/lib/questionConnect';
 import { getUserByEmail } from '@/dataconnect-generated';
-import { getAllTopics, getAllUnits } from '@/lib/curriculumHierarchyStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuestionTypes } from '@/hooks/useQuestionTypes';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
@@ -48,7 +47,7 @@ export default function EditQuestionModal({
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedTaxonomy, setSelectedTaxonomy] = useState('');
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>('medio');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>('');
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([]);
 
   // UI state
@@ -203,7 +202,7 @@ export default function EditQuestionModal({
     setSelectedUnit('');
     setSelectedTopic('');
     setSelectedTaxonomy('');
-    setDifficulty('medio');
+    setDifficulty('');
     setOptions([]);
     setValidationErrors([]);
     setIsSubmitting(false);

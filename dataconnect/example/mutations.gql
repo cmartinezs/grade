@@ -795,6 +795,7 @@ mutation ReactivateQuestionType(
 # Crear una dificultad
 mutation CreateDifficulty(
   $difficultyId: UUID!
+  $code: String!
   $level: String!
   $weight: Int!
   $description: String
@@ -802,6 +803,7 @@ mutation CreateDifficulty(
   difficulty_insert(
     data: {
       difficultyId: $difficultyId
+      code: $code
       level: $level
       weight: $weight
       description: $description

@@ -6,7 +6,10 @@
 // Enum types matching database - códigos del JSON question-types.json
 export type QuestionType = 'TF' | 'SS' | 'MC2' | 'MC3' | 'MC4' | 'MC5';
 
-export type DifficultyLevel = 'bajo' | 'medio' | 'alto';
+// DifficultyLevel ahora usa códigos del JSON: EASY, MEDIUM, HARD
+// O puede ser un UUID cuando se referencia la tabla Difficulty
+export type DifficultyCode = 'EASY' | 'MEDIUM' | 'HARD';
+export type DifficultyLevel = string; // UUID or code
 
 // Main entities
 export interface Question {
@@ -89,7 +92,8 @@ export interface DuplicateDetectionResult {
 
 // Difficulty catalog
 export interface Difficulty {
-  difficulty_id: DifficultyLevel;
+  difficulty_id: string; // UUID
+  code: DifficultyCode; // EASY, MEDIUM, HARD
   name: string;
   description?: string;
   active: boolean;

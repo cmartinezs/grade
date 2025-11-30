@@ -58,10 +58,10 @@ export function useDifficultiesLoader() {
           console.warn('Could not fetch existing difficulties, will create all:', error);
         }
 
-        const existingLevels = new Set(existingDifficulties.map((d) => d.level));
+        const existingCodes = new Set(existingDifficulties.map((d) => d.code));
 
         // 3. Filter out duplicates
-        const newDifficulties = difficultiesFromJSON.filter((d) => !existingLevels.has(d.level));
+        const newDifficulties = difficultiesFromJSON.filter((d: { code: string }) => !existingCodes.has(d.code));
         console.log(
           `[useDifficultiesLoader] Will create ${newDifficulties.length} new difficulties`
         );

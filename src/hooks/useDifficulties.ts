@@ -18,7 +18,7 @@ interface UseDifficultiesResult {
   loading: boolean;
   error: string | null;
   creating: boolean;
-  create: (level: string, weight: number, description?: string) => Promise<Difficulty>;
+  create: (code: string, level: string, weight: number, description?: string) => Promise<Difficulty>;
   refetch: () => Promise<void>;
 }
 
@@ -56,11 +56,11 @@ export const useDifficulties = (): UseDifficultiesResult => {
 
   // Crear nueva dificultad
   const create = useCallback(
-    async (level: string, weight: number, description?: string): Promise<Difficulty> => {
+    async (code: string, level: string, weight: number, description?: string): Promise<Difficulty> => {
       try {
         setCreating(true);
         setError(null);
-        const newDifficulty = await createNewDifficulty(level, weight, description);
+        const newDifficulty = await createNewDifficulty(code, level, weight, description);
         setDifficulties((prev) => [...prev, newDifficulty]);
         return newDifficulty;
       } catch (err) {

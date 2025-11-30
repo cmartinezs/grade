@@ -1312,6 +1312,14 @@ input Difficulty_Data {
   """
   active_expr: Boolean_Expr
   """
+  ✨ Generated from Field `Difficulty`.`code` of type `String!`
+  """
+  code: String
+  """
+  ✨ `_expr` server value variant of `code` (✨ Generated from Field `Difficulty`.`code` of type `String!`)
+  """
+  code_expr: String_Expr
+  """
   ✨ Generated from Field `Difficulty`.`description` of type `String`
   """
   description: String
@@ -1364,6 +1372,10 @@ input Difficulty_Filter {
   ✨ Generated from Field `Difficulty`.`active` of type `Boolean!`
   """
   active: Boolean_Filter
+  """
+  ✨ Generated from Field `Difficulty`.`code` of type `String!`
+  """
+  code: String_Filter
   """
   ✨ Generated from Field `Difficulty`.`description` of type `String`
   """
@@ -1418,6 +1430,10 @@ input Difficulty_Having {
   ✨ Generated from Field `Difficulty`.`active_count` of type `Int!`
   """
   active_count: Int_Filter
+  """
+  ✨ Generated from Field `Difficulty`.`code_count` of type `Int!`
+  """
+  code_count: Int_Filter
   """
   ✨ Generated from Field `Difficulty`.`description_count` of type `Int!`
   """
@@ -1490,6 +1506,10 @@ input Difficulty_Order {
   """
   active: OrderDirection
   """
+  ✨ Generated from Field `Difficulty`.`code` of type `String!`
+  """
+  code: OrderDirection
+  """
   ✨ Generated from Field `Difficulty`.`description` of type `String`
   """
   description: OrderDirection
@@ -1509,6 +1529,10 @@ input Difficulty_Order {
   ✨ Generated from Field `Difficulty`.`active_count` of type `Int!`
   """
   active_count: OrderDirection
+  """
+  ✨ Generated from Field `Difficulty`.`code_count` of type `Int!`
+  """
+  code_count: OrderDirection
   """
   ✨ Generated from Field `Difficulty`.`description_count` of type `Int!`
   """

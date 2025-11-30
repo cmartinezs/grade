@@ -181,6 +181,9 @@ type QuestionType @table(name: "question_types", key: "questionTypeId") {
 type Difficulty @table(name: "difficulties", key: "difficultyId") {
   # Identificador único del nivel de dificultad
   difficultyId: UUID! @col(name: "difficulty_id")
+
+  # Código del nivel de dificultad (EASY, MEDIUM, HARD)
+  code: String! @unique
   
   # Nivel de dificultad (Easy/Medium/Hard)
   level: String!

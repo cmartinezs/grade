@@ -52,7 +52,7 @@ export default function CloneQuestionModal({
   const [selectedUnit, setSelectedUnit] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedTaxonomy, setSelectedTaxonomy] = useState('');
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>('medio');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>('');
   const [options, setOptions] = useState<CreateQuestionOptionInput[]>([]);
 
   // UI state
@@ -147,7 +147,7 @@ export default function CloneQuestionModal({
         return prevOptions;
       });
     }
-  }, [questionType, originalQuestion]);
+  }, [questionType, originalQuestion, questionTypes]);
 
   const resetForm = () => {
     setOriginalQuestion(null);
@@ -157,7 +157,7 @@ export default function CloneQuestionModal({
     setSelectedUnit('');
     setSelectedTopic('');
     setSelectedTaxonomy('');
-    setDifficulty('medio');
+    setDifficulty('');
     setOptions([
       { text: '', is_correct: false, position: 1 },
       { text: '', is_correct: false, position: 2 },

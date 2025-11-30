@@ -71,11 +71,17 @@ export default function RetireQuestionModal({
     ? `${subject.name} → ${unit.name} → ${topic.name}`
     : 'N/A';
 
-  const getDifficultyBadgeVariant = (difficulty: string) => {
-    const lower = difficulty.toLowerCase();
-    if (lower.includes('fácil') || lower.includes('facil') || lower === 'bajo') return 'success';
+  const getDifficultyBadgeVariant = (difficultyCode: string) => {
+    // Usar códigos del sistema: EASY, MEDIUM, HARD
+    const upper = difficultyCode.toUpperCase();
+    if (upper === 'EASY') return 'success';
+    if (upper === 'MEDIUM') return 'warning';
+    if (upper === 'HARD') return 'danger';
+    // Fallback para nombres en español
+    const lower = difficultyCode.toLowerCase();
+    if (lower.includes('fácil') || lower.includes('facil')) return 'success';
     if (lower.includes('medio') || lower.includes('intermedio')) return 'warning';
-    if (lower.includes('difícil') || lower.includes('dificil') || lower === 'alto') return 'danger';
+    if (lower.includes('difícil') || lower.includes('dificil')) return 'danger';
     return 'secondary';
   };
 

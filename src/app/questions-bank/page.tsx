@@ -87,6 +87,7 @@ export default function QuestionsBankPage() {
     setShowEditModal(true);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCloneQuestion = (questionId: string) => {
     setSelectedQuestionId(questionId);
     setShowCloneModal(true);
@@ -107,7 +108,7 @@ export default function QuestionsBankPage() {
     setShowRetireModal(true);
   };
 
-  const handleConfirmRetire = async (reason?: string): Promise<void> => {
+  const handleConfirmRetire = async (_reason?: string): Promise<void> => {
     if (!selectedQuestionId || !user?.firebaseUid || !user?.email) {
       setError('Usuario no autenticado');
       return;
@@ -153,7 +154,7 @@ export default function QuestionsBankPage() {
     setShowReactivateModal(true);
   };
 
-  const handleConfirmReactivate = async (reason?: string): Promise<void> => {
+  const handleConfirmReactivate = async (_reason?: string): Promise<void> => {
     if (!selectedQuestionId || !user?.firebaseUid || !user?.email) {
       setError('Usuario no autenticado');
       return;
@@ -192,13 +193,13 @@ export default function QuestionsBankPage() {
     }
   };
 
-  const getDifficultyColor = (difficulty: DifficultyLevel) => {
-    const colors: Record<DifficultyLevel, string> = {
-      bajo: 'success',
-      medio: 'warning',
-      alto: 'danger',
+  const getDifficultyColor = (difficultyCode: string | undefined) => {
+    const colors: Record<string, string> = {
+      EASY: 'success',
+      MEDIUM: 'warning',
+      HARD: 'danger',
     };
-    return colors[difficulty];
+    return difficultyCode ? colors[difficultyCode] || 'secondary' : 'secondary';
   };
 
   return (
@@ -474,13 +475,13 @@ export default function QuestionsBankPage() {
                           {/* Badges de dificultad y asignatura */}
                           <div className="d-flex flex-wrap gap-2 mb-3">
                             <Badge 
-                              bg={getDifficultyColor(question.difficulty_fk)}
+                              bg={getDifficultyColor(difficultyInfo?.code)}
                               className="d-flex align-items-center gap-1 px-2 py-1"
                               style={{ fontSize: '0.75rem', fontWeight: 500 }}
                             >
-                              {question.difficulty_fk === 'bajo' ? '🟢' : 
-                               question.difficulty_fk === 'medio' ? '🟡' : '🔴'}
-                              {difficultyInfo?.level || question.difficulty_fk}
+                              {difficultyInfo?.code === 'EASY' ? '🟢' : 
+                               difficultyInfo?.code === 'MEDIUM' ? '🟡' : '🔴'}
+                              {difficultyInfo?.level || 'Desconocido'}
                             </Badge>
                             {question.subject_name && (
                               <Badge 

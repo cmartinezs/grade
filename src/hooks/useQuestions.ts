@@ -124,7 +124,7 @@ export const useQuestions = (filters?: UseQuestionsFilters): UseQuestionsResult 
     };
 
     loadQuestions();
-  }, [user?.firebaseUid, user?.email, questionTypes.length, hasLoaded]);
+  }, [user?.firebaseUid, user?.email, questionTypes, hasLoaded]);
 
   // Aplicar filtros localmente
   const questions = allQuestions.filter(q => {

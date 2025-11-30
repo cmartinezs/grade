@@ -46,6 +46,7 @@ export interface QuestionType {
 
 export interface Difficulty {
   difficultyId: string;
+  code: string;
   level: string;
   weight: number;
   description?: string;
@@ -167,6 +168,7 @@ export async function createNewQuestionType(
  * Crear una nueva dificultad
  */
 export async function createNewDifficulty(
+  code: string,
   level: string,
   weight: number,
   description?: string
@@ -174,6 +176,7 @@ export async function createNewDifficulty(
   try {
     const variables: CreateDifficultyVariables = {
       difficultyId: generateUUID(),
+      code,
       level,
       weight,
       description: description || null,
@@ -187,6 +190,7 @@ export async function createNewDifficulty(
     
     return {
       difficultyId: result.data.difficulty_insert.difficultyId,
+      code,
       level,
       weight,
       description,
@@ -256,6 +260,7 @@ export async function createMultipleQuestionTypes(
  */
 export async function createMultipleDifficulties(
   difficultiesData: Array<{
+    code: string;
     level: string;
     weight: number;
     description?: string;
@@ -270,6 +275,7 @@ export async function createMultipleDifficulties(
     const diffData = difficultiesData[i];
     try {
       const newDiff = await createNewDifficulty(
+        diffData.code,
         diffData.level,
         diffData.weight,
         diffData.description
@@ -281,11 +287,11 @@ export async function createMultipleDifficulties(
         onProgress({
           currentIndex: i + 1,
           total: difficultiesData.length,
-          itemName: diffData.level,
+          itemName: `${diffData.code} (${diffData.level})`,
         });
       }
     } catch (error) {
-      const errorMsg = `Error creating difficulty "${diffData.level}": ${
+      const errorMsg = `Error creating difficulty "${diffData.code}": ${
         error instanceof Error ? error.message : String(error)
       }`;
       console.error(errorMsg);

@@ -36,6 +36,7 @@ export async function loadDifficultiesData(onProgress?: ProgressCallback): Promi
 
     // 1. Cargar dificultades desde JSON
     let difficultiesFromJSON: Array<{
+      code: string;
       level: string;
       weight: number;
       description?: string;
@@ -66,10 +67,10 @@ export async function loadDifficultiesData(onProgress?: ProgressCallback): Promi
       console.warn('[DifficultiesDataLoader] Could not fetch existing difficulties:', error);
     }
 
-    const existingLevels = new Set(existingDifficulties.map((d) => d.level));
+    const existingCodes = new Set(existingDifficulties.map((d) => d.code));
 
     // 3. Filtrar duplicados
-    const newDifficulties = difficultiesFromJSON.filter((d) => !existingLevels.has(d.level));
+    const newDifficulties = difficultiesFromJSON.filter((d) => !existingCodes.has(d.code));
     console.log(`[DifficultiesDataLoader] Will create ${newDifficulties.length} new difficulties`);
 
     if (newDifficulties.length === 0) {
@@ -92,10 +93,10 @@ export async function loadDifficultiesData(onProgress?: ProgressCallback): Promi
           });
         }
 
-        await createNewDifficulty(diffData.level, diffData.weight, diffData.description);
+        await createNewDifficulty(diffData.code, diffData.level, diffData.weight, diffData.description);
 
         result.difficultiesCreated++;
-        console.log(`[DifficultiesDataLoader] Created difficulty: ${diffData.level}`);
+        console.log(`[DifficultiesDataLoader] Created difficulty: ${diffData.code} (${diffData.level})`);
       } catch (error) {
         const errorMsg = `Failed to create difficulty "${diffData.level}": ${
           error instanceof Error ? error.message : String(error)

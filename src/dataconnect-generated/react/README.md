@@ -1788,6 +1788,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
+    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -1869,6 +1870,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
+    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -2751,6 +2753,7 @@ export interface GetDashboardSystemDataData {
   } & Taxonomy_Key)[];
     difficulties: ({
       difficultyId: UUIDString;
+      code: string;
       level: string;
       weight: number;
     } & Difficulty_Key)[];
@@ -10345,6 +10348,7 @@ The `CreateDifficulty` Mutation requires an argument of type `CreateDifficultyVa
 ```javascript
 export interface CreateDifficultyVariables {
   difficultyId: UUIDString;
+  code: string;
   level: string;
   weight: number;
   description?: string | null;
@@ -10398,13 +10402,14 @@ export default function CreateDifficultyComponent() {
   // The `useCreateDifficulty` Mutation requires an argument of type `CreateDifficultyVariables`:
   const createDifficultyVars: CreateDifficultyVariables = {
     difficultyId: ..., 
+    code: ..., 
     level: ..., 
     weight: ..., 
     description: ..., // optional
   };
   mutation.mutate(createDifficultyVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ difficultyId: ..., level: ..., weight: ..., description: ..., });
+  mutation.mutate({ difficultyId: ..., code: ..., level: ..., weight: ..., description: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

@@ -384,6 +384,15 @@ extend type Difficulty {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Difficulty.active", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Difficulty` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Difficulty.code", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Difficulty` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   description_count(

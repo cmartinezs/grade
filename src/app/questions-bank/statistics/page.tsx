@@ -5,10 +5,12 @@ import { Card, Row, Col, Button } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { questionStore } from '@/lib/questionStore';
 import { QuestionWithDetails } from '@/types/question';
+import { useDifficulties } from '@/hooks/useDifficulties';
 
 export default function StatisticsPage() {
   const [questions, setQuestions] = useState<QuestionWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { difficulties } = useDifficulties();
 
   useEffect(() => {
     loadQuestions();
@@ -25,6 +27,12 @@ export default function StatisticsPage() {
     }
   };
 
+  // Helper para obtener el código de dificultad desde el UUID
+  const getDifficultyCode = (difficultyId: string): string => {
+    const diff = difficulties.find(d => d.difficultyId === difficultyId);
+    return diff?.code || 'UNKNOWN';
+  };
+
   const stats = {
     total: questions.length,
     active: questions.filter(q => !q.deleted_at && q.active).length,
@@ -39,9 +47,9 @@ export default function StatisticsPage() {
       'MC5': questions.filter(q => q.type === 'MC5').length,
     },
     byDifficulty: {
-      'bajo': questions.filter(q => q.difficulty_fk === 'bajo').length,
-      'medio': questions.filter(q => q.difficulty_fk === 'medio').length,
-      'alto': questions.filter(q => q.difficulty_fk === 'alto').length,
+      'EASY': questions.filter(q => getDifficultyCode(q.difficulty_fk) === 'EASY').length,
+      'MEDIUM': questions.filter(q => getDifficultyCode(q.difficulty_fk) === 'MEDIUM').length,
+      'HARD': questions.filter(q => getDifficultyCode(q.difficulty_fk) === 'HARD').length,
     },
   };
 
@@ -148,16 +156,16 @@ export default function StatisticsPage() {
               <Card.Body>
                 <div className="mb-2">
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Bajo</span>
-                    <span className="badge bg-success">{stats.byDifficulty.bajo}</span>
+                    <span>🟢 Fácil</span>
+                    <span className="badge bg-success">{stats.byDifficulty.EASY}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Medio</span>
-                    <span className="badge bg-warning">{stats.byDifficulty.medio}</span>
+                    <span>🟡 Medio</span>
+                    <span className="badge bg-warning">{stats.byDifficulty.MEDIUM}</span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span>Alto</span>
-                    <span className="badge bg-danger">{stats.byDifficulty.alto}</span>
+                    <span>🔴 Difícil</span>
+                    <span className="badge bg-danger">{stats.byDifficulty.HARD}</span>
                   </div>
                 </div>
               </Card.Body>

@@ -2192,6 +2192,7 @@ The `data` property is an object of type `ListDifficultiesData`, which is define
 export interface ListDifficultiesData {
   difficulties: ({
     difficultyId: UUIDString;
+    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -2295,6 +2296,7 @@ The `data` property is an object of type `GetDifficultyData`, which is defined i
 export interface GetDifficultyData {
   difficulty?: {
     difficultyId: UUIDString;
+    code: string;
     level: string;
     weight: number;
     description?: string | null;
@@ -3434,6 +3436,7 @@ export interface GetDashboardSystemDataData {
   } & Taxonomy_Key)[];
     difficulties: ({
       difficultyId: UUIDString;
+      code: string;
       level: string;
       weight: number;
     } & Difficulty_Key)[];
@@ -12862,6 +12865,7 @@ The `CreateDifficulty` mutation requires an argument of type `CreateDifficultyVa
 ```typescript
 export interface CreateDifficultyVariables {
   difficultyId: UUIDString;
+  code: string;
   level: string;
   weight: number;
   description?: string | null;
@@ -12885,6 +12889,7 @@ import { connectorConfig, createDifficulty, CreateDifficultyVariables } from '@d
 // The `CreateDifficulty` mutation requires an argument of type `CreateDifficultyVariables`:
 const createDifficultyVars: CreateDifficultyVariables = {
   difficultyId: ..., 
+  code: ..., 
   level: ..., 
   weight: ..., 
   description: ..., // optional
@@ -12894,7 +12899,7 @@ const createDifficultyVars: CreateDifficultyVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createDifficulty(createDifficultyVars);
 // Variables can be defined inline as well.
-const { data } = await createDifficulty({ difficultyId: ..., level: ..., weight: ..., description: ..., });
+const { data } = await createDifficulty({ difficultyId: ..., code: ..., level: ..., weight: ..., description: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -12918,6 +12923,7 @@ import { connectorConfig, createDifficultyRef, CreateDifficultyVariables } from 
 // The `CreateDifficulty` mutation requires an argument of type `CreateDifficultyVariables`:
 const createDifficultyVars: CreateDifficultyVariables = {
   difficultyId: ..., 
+  code: ..., 
   level: ..., 
   weight: ..., 
   description: ..., // optional
@@ -12926,7 +12932,7 @@ const createDifficultyVars: CreateDifficultyVariables = {
 // Call the `createDifficultyRef()` function to get a reference to the mutation.
 const ref = createDifficultyRef(createDifficultyVars);
 // Variables can be defined inline as well.
-const ref = createDifficultyRef({ difficultyId: ..., level: ..., weight: ..., description: ..., });
+const ref = createDifficultyRef({ difficultyId: ..., code: ..., level: ..., weight: ..., description: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
