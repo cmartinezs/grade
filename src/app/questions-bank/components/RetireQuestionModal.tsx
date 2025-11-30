@@ -81,14 +81,12 @@ export default function RetireQuestionModal({
 
   const getTypeBadgeVariant = (type: string) => {
     switch (type) {
-      case 'TF': return 'success';
-      case 'SS': return 'primary';
-      case 'SM': return 'danger';
-      case 'D': return 'dark';
-      case 'verdadero_falso': return 'success';
-      case 'seleccion_unica': return 'primary';
-      case 'seleccion_multiple': return 'danger';
-      case 'desarrollo': return 'dark';
+      case 'TF': return 'secondary';  // Verdadero/Falso - Gris
+      case 'SS': return 'primary';    // Selección Simple - Azul
+      case 'MC2':                     // Selección Múltiple 2
+      case 'MC3':                     // Selección Múltiple 3
+      case 'MC4':                     // Selección Múltiple 4
+      case 'MC5': return 'info';      // Selección Múltiple 5 - Violeta/Info
       default: return 'secondary';
     }
   };

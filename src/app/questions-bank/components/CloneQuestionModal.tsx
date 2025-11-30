@@ -46,7 +46,7 @@ export default function CloneQuestionModal({
   const [originalQuestion, setOriginalQuestion] = useState<QuestionWithDetails | null>(null);
 
   // Form state
-  const [questionType, setQuestionType] = useState<QuestionType>('seleccion_unica');
+  const [questionType, setQuestionType] = useState<QuestionType>('SS');
   const [enunciado, setEnunciado] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
@@ -76,7 +76,7 @@ export default function CloneQuestionModal({
         setDifficulty(question.difficulty_fk);
 
         // Populate options
-        if (question.type !== 'desarrollo' && question.options) {
+        if (question.options) {
           setOptions(question.options.map(opt => ({
             text: opt.text,
             is_correct: opt.is_correct,
@@ -151,7 +151,7 @@ export default function CloneQuestionModal({
 
   const resetForm = () => {
     setOriginalQuestion(null);
-    setQuestionType('seleccion_unica');
+    setQuestionType('SS');
     setEnunciado('');
     setSelectedSubject('');
     setSelectedUnit('');
@@ -222,7 +222,7 @@ export default function CloneQuestionModal({
         enunciado: enunciado.trim(),
         topic_fk: selectedTopic,
         difficulty_fk: difficulty,
-        options: questionType === 'desarrollo' ? [] : options,
+        options: options,
       };
 
       // Clone the question with modifications

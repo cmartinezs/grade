@@ -192,22 +192,6 @@ export default function QuestionsBankPage() {
     }
   };
 
-  const getTypeColor = (type: QuestionType) => {
-    const colors: Record<QuestionType, string> = {
-      // Nuevos códigos
-      TF: 'secondary',
-      SS: 'primary',
-      SM: 'info',
-      D: 'warning',
-      // Códigos legacy
-      verdadero_falso: 'secondary',
-      seleccion_unica: 'primary',
-      seleccion_multiple: 'info',
-      desarrollo: 'warning',
-    };
-    return colors[type] || 'secondary';
-  };
-
   const getDifficultyColor = (difficulty: DifficultyLevel) => {
     const colors: Record<DifficultyLevel, string> = {
       bajo: 'success',
@@ -220,12 +204,36 @@ export default function QuestionsBankPage() {
   return (
     <ProtectedRoute>
       <div className="p-4">
-        <div className="mb-4">
-          <h2 className="mb-3">Banco de Preguntas</h2>
-          <p className="text-muted">
-            Gestiona todas tus preguntas desde aquí
-            <Badge bg="secondary" className="ms-2">{questions.length} preguntas</Badge>
-          </p>
+        {/* Header mejorado */}
+        <div 
+          className="mb-4 p-4 rounded-3" 
+          style={{ 
+            background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+          }}
+        >
+          <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <h2 className="mb-1 d-flex align-items-center gap-2 text-white">
+                <span style={{ fontSize: '1.5rem' }}>📚</span>
+                Banco de Preguntas
+              </h2>
+              <p className="mb-0" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                Gestiona y organiza todas tus preguntas desde aquí
+              </p>
+            </div>
+            <div className="d-flex align-items-center gap-2">
+              <Badge 
+                bg="light" 
+                text="dark"
+                className="px-3 py-2 d-flex align-items-center gap-1"
+                style={{ fontSize: '0.9rem', borderRadius: '20px' }}
+              >
+                <span className="fw-bold">{questions.length}</span>
+                <span className="fw-normal">preguntas</span>
+              </Badge>
+            </div>
+          </div>
         </div>
 
         {/* Success Message */}
@@ -245,18 +253,27 @@ export default function QuestionsBankPage() {
         <Row>
           {/* Sidebar de Filtros - Izquierda */}
           <Col lg={3} className="mb-4">
-            <Card className="sticky-top">
-              <Card.Header className="bg-primary text-white">
-                <h5 className="mb-0">🔍 Filtros</h5>
+            <Card className="sticky-top border-0 shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden', top: '1rem' }}>
+              <Card.Header 
+                className="text-white py-3"
+                style={{ 
+                  background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                  borderBottom: 'none'
+                }}
+              >
+                <h5 className="mb-0 d-flex align-items-center gap-2">
+                  <span>🔍</span> Filtros
+                </h5>
               </Card.Header>
-              <Card.Body>
+              <Card.Body className="p-3">
                 <Form.Group className="mb-3">
-                  <Form.Label>Buscar</Form.Label>
+                  <Form.Label className="fw-medium small text-muted mb-1">Buscar</Form.Label>
                   <Form.Control
-                    placeholder="Buscar..."
+                    placeholder="Buscar en preguntas..."
                     type="text"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
+                    style={{ borderRadius: '8px' }}
                   />
                 </Form.Group>
 
@@ -265,14 +282,14 @@ export default function QuestionsBankPage() {
                   value={filterType}
                   onChange={(value) => setFilterType(value as QuestionType | '')}
                   options={[
-                    { id: '', name: 'Todos' },
+                    { id: '', name: 'Todos los tipos' },
                     ...questionTypes.map(qt => ({
                       id: qt.code,
                       name: qt.name,
                       description: qt.description
                     }))
                   ]}
-                  placeholder="Tipo..."
+                  placeholder="Seleccionar tipo..."
                 />
 
                 <div className="mb-3">
@@ -281,14 +298,14 @@ export default function QuestionsBankPage() {
                     value={filterDifficulty}
                     onChange={(value) => setFilterDifficulty(value as DifficultyLevel | '')}
                     options={[
-                      { id: '', name: 'Todas' },
+                      { id: '', name: 'Todas las dificultades' },
                       ...difficulties.map(d => ({
                         id: d.difficultyId,
                         name: d.level,
                         description: d.description
                       }))
                     ]}
-                    placeholder="Dificultad..."
+                    placeholder="Seleccionar dificultad..."
                   />
                 </div>
 
@@ -297,45 +314,56 @@ export default function QuestionsBankPage() {
                   value={filterSubject}
                   onChange={(value) => setFilterSubject(String(value))}
                   options={[
-                    { id: '', name: 'Todas' },
+                    { id: '', name: 'Todas las asignaturas' },
                     ...subjects.map(s => ({
                       id: s.subject_id,
                       name: s.name,
                       description: s.code
                     }))
                   ]}
-                  placeholder="Asignatura..."
+                  placeholder="Seleccionar asignatura..."
                 />
 
-                <Form.Check
-                  type="checkbox"
-                  id="show-inactive"
-                  label="Mostrar inactivas"
-                  checked={showInactive}
-                  onChange={(e) => setShowInactive(e.target.checked)}
-                  className="mt-3"
-                />
-
-                <Button
-                  variant="outline-secondary"
-                  className="w-100 mt-3"
-                  onClick={() => {
-                    setSearchText('');
-                    setFilterType('');
-                    setFilterDifficulty('');
-                    setFilterSubject('');
-                  }}
+                <div 
+                  className="mt-3 p-2 rounded d-flex align-items-center"
+                  style={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
                 >
-                  🔄 Limpiar Filtros
-                </Button>
+                  <Form.Check
+                    type="switch"
+                    id="show-inactive"
+                    label="Mostrar inactivas"
+                    checked={showInactive}
+                    onChange={(e) => setShowInactive(e.target.checked)}
+                    className="m-0"
+                  />
+                </div>
 
-                <Button
-                  variant="success"
-                  className="w-100 mt-2"
-                  onClick={() => router.push('/questions-bank/create')}
-                >
-                  ➕ Nueva Pregunta
-                </Button>
+                <hr className="my-3" style={{ opacity: 0.1 }} />
+
+                <div className="d-grid gap-2">
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => {
+                      setSearchText('');
+                      setFilterType('');
+                      setFilterDifficulty('');
+                      setFilterSubject('');
+                    }}
+                    style={{ borderRadius: '8px' }}
+                    className="d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <span>🔄</span> Limpiar Filtros
+                  </Button>
+
+                  <Button
+                    variant="success"
+                    onClick={() => router.push('/questions-bank/create')}
+                    style={{ borderRadius: '8px' }}
+                    className="d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <span>➕</span> Nueva Pregunta
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
@@ -343,16 +371,20 @@ export default function QuestionsBankPage() {
           {/* Grid de Preguntas - Derecha */}
           <Col lg={9}>
             {questions.length === 0 ? (
-              <Card>
+              <Card className="border-0 shadow-sm">
                 <Card.Body className="text-center py-5">
-                  <h4 className="text-muted">No se encontraron preguntas</h4>
-                  <p className="text-muted">
+                  <div className="mb-4">
+                    <span style={{ fontSize: '4rem', opacity: 0.5 }}>📝</span>
+                  </div>
+                  <h4 className="text-muted mb-3">No se encontraron preguntas</h4>
+                  <p className="text-muted mb-4">
                     {searchText || filterType || filterDifficulty || filterSubject
                       ? 'Intenta ajustar los filtros de búsqueda'
                       : 'Comienza creando tu primera pregunta'}
                   </p>
                   <Button
-                    variant="outline-success"
+                    variant="success"
+                    size="lg"
                     onClick={() => router.push('/questions-bank/create')}
                   >
                     ➕ Crear Primera Pregunta
@@ -360,142 +392,238 @@ export default function QuestionsBankPage() {
                 </Card.Body>
               </Card>
             ) : (
-              <Row>
-                {questions.map((question) => (
-                  <Col key={question.question_id} lg={4} md={6} xs={12} className="mb-3">
-                    <Card 
-                      className={`h-100 ${!question.active ? 'card-inactive' : ''}`}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleViewQuestion(question.question_id)}
-                    >
-                      <Card.Body className="d-flex flex-column">
-                        {/* Badges superiores */}
-                        <div className="d-flex flex-wrap gap-1 mb-2">
-                          <Badge bg={getTypeColor(question.type)} style={{ fontSize: '0.7rem' }}>
-                            {questionTypes.find(qt => qt.code === question.type)?.name || question.type}
-                          </Badge>
-                          <Badge bg={getDifficultyColor(question.difficulty_fk)} style={{ fontSize: '0.7rem' }}>
-                            {difficulties.find(d => d.difficultyId === question.difficulty_fk)?.level}
-                          </Badge>
-                          {(() => {
-                            const versionCount = questionStore.getQuestionVersionHistory(question.question_id).length;
-                            if (versionCount > 1) {
-                              return (
-                                <Badge bg="info" style={{ fontSize: '0.7rem' }}>
-                                  v{question.version}
-                                </Badge>
-                              );
-                            }
-                          })()}
-                          {!question.active && (
-                            <Badge bg="warning" style={{ fontSize: '0.7rem' }}>
-                              ⚠️ Inactiva
-                            </Badge>
-                          )}
-                        </div>
-                        
-                        {/* Enunciado */}
-                        <Card.Text 
-                          className="mb-2 flex-grow-1" 
+              <Row className="g-3">
+                {questions.map((question) => {
+                  const questionTypeInfo = questionTypes.find(qt => qt.code === question.type);
+                  const difficultyInfo = difficulties.find(d => d.difficultyId === question.difficulty_fk);
+                  const versionCount = questionStore.getQuestionVersionHistory(question.question_id).length;
+                  
+                  return (
+                    <Col key={question.question_id} xl={4} lg={6} md={6} xs={12}>
+                      <Card 
+                        className={`h-100 question-card border-0 shadow-sm ${!question.active ? 'card-inactive opacity-75' : ''}`}
+                        style={{ 
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease-in-out',
+                          borderRadius: '12px',
+                          overflow: 'hidden'
+                        }}
+                        onClick={() => handleViewQuestion(question.question_id)}
+                        onMouseEnter={(e) => {
+                          if (question.active) {
+                            e.currentTarget.style.transform = 'translateY(-4px)';
+                            e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '';
+                        }}
+                      >
+                        {/* Header con tipo y dificultad */}
+                        <div 
+                          className="px-3 py-2 d-flex justify-content-between align-items-center"
                           style={{ 
-                            fontSize: '0.9rem',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 3,
-                            WebkitBoxOrient: 'vertical'
+                            background: question.type === 'TF'
+                              ? 'linear-gradient(135deg, #475569 0%, #64748b 100%)' // Gris - V/F
+                              : question.type === 'SS'
+                              ? 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' // Azul - Selección Simple
+                              : question.type.startsWith('MC')
+                              ? 'linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%)' // Violeta - Selección Múltiple
+                              : 'linear-gradient(135deg, #1e293b 0%, #334155 100%)', // Default gris oscuro
+                            borderBottom: '1px solid rgba(0,0,0,0.05)'
                           }}
                         >
-                          {question.enunciado}
-                        </Card.Text>
-                        
-                        {/* Info inferior */}
-                        <div className="small text-muted d-flex justify-content-between align-items-center mt-auto">
-                          <span>
-                            📝 {question.options.length}
-                          </span>
-                          <span style={{ fontSize: '0.7rem' }}>
-                            {new Date(question.updated_at).toLocaleDateString()}
-                          </span>
+                          <div className="d-flex align-items-center gap-2">
+                            <span 
+                              className="bg-white rounded-circle d-flex align-items-center justify-content-center"
+                              style={{ width: '28px', height: '28px', fontSize: '0.85rem' }}
+                            >
+                              {question.type === 'TF' ? '✓✗' : 
+                               question.type === 'SS' ? '○' :
+                               question.type.startsWith('MC') ? '☑' : '?'}
+                            </span>
+                            <span className="text-white fw-medium" style={{ fontSize: '0.85rem' }}>
+                              {questionTypeInfo?.name || question.type}
+                            </span>
+                          </div>
+                          <div className="d-flex align-items-center gap-2">
+                            {versionCount > 1 && (
+                              <Badge 
+                                bg="light" 
+                                text="dark"
+                                className="opacity-90"
+                                style={{ fontSize: '0.7rem' }}
+                              >
+                                v{question.version}
+                              </Badge>
+                            )}
+                            {!question.active && (
+                              <Badge 
+                                bg="warning" 
+                                text="dark"
+                                style={{ fontSize: '0.7rem' }}
+                              >
+                                Inactiva
+                              </Badge>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Botones de acción */}
-                        <div className="d-flex gap-1 mt-2" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            variant="outline-primary"
-                            size="sm"
-                            className="flex-grow-1"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleViewQuestion(question.question_id);
-                            }}
-                            style={{ fontSize: '0.75rem' }}
-                          >
-                            👁️
-                          </Button>
-                          <Dropdown as={ButtonGroup} size="sm">
-                            <Dropdown.Toggle 
-                              variant="outline-secondary" 
-                              size="sm"
-                              style={{ fontSize: '0.75rem' }}
+                        <Card.Body className="d-flex flex-column p-3">
+                          {/* Badges de dificultad y asignatura */}
+                          <div className="d-flex flex-wrap gap-2 mb-3">
+                            <Badge 
+                              bg={getDifficultyColor(question.difficulty_fk)}
+                              className="d-flex align-items-center gap-1 px-2 py-1"
+                              style={{ fontSize: '0.75rem', fontWeight: 500 }}
                             >
-                              ⋮
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                              <Dropdown.Item onClick={(e) => {
+                              {question.difficulty_fk === 'bajo' ? '🟢' : 
+                               question.difficulty_fk === 'medio' ? '🟡' : '🔴'}
+                              {difficultyInfo?.level || question.difficulty_fk}
+                            </Badge>
+                            {question.subject_name && (
+                              <Badge 
+                                bg="light" 
+                                text="dark"
+                                className="d-flex align-items-center gap-1 px-2 py-1 border"
+                                style={{ fontSize: '0.75rem', fontWeight: 500 }}
+                              >
+                                📚 {question.subject_name}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {/* Enunciado */}
+                          <div 
+                            className="flex-grow-1 mb-3" 
+                            style={{ 
+                              fontSize: '0.95rem',
+                              lineHeight: '1.5',
+                              color: '#333',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: 'vertical'
+                            }}
+                          >
+                            {question.enunciado}
+                          </div>
+                          
+                          {/* Separador sutil */}
+                          <hr className="my-2" style={{ opacity: 0.1 }} />
+
+                          {/* Info inferior mejorada */}
+                          <div className="d-flex justify-content-between align-items-center text-muted mb-2" style={{ fontSize: '0.8rem' }}>
+                            <div className="d-flex align-items-center gap-3">
+                              <span className="d-flex align-items-center gap-1" title="Opciones de respuesta">
+                                <span style={{ opacity: 0.7 }}>📝</span>
+                                <strong>{question.options.length}</strong>
+                                <span className="d-none d-sm-inline">opciones</span>
+                              </span>
+                            </div>
+                            <span 
+                              className="d-flex align-items-center gap-1"
+                              title={`Actualizada: ${new Date(question.updated_at).toLocaleString()}`}
+                            >
+                              <span style={{ opacity: 0.7 }}>🕐</span>
+                              {new Date(question.updated_at).toLocaleDateString('es-CL', { 
+                                day: '2-digit', 
+                                month: 'short' 
+                              })}
+                            </span>
+                          </div>
+
+                          {/* Botones de acción mejorados */}
+                          <div className="d-flex gap-2 mt-auto pt-2" onClick={(e) => e.stopPropagation()}>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              className="flex-grow-1 d-flex align-items-center justify-content-center gap-1"
+                              onClick={(e) => {
                                 e.stopPropagation();
-                                handleCreateVersion(question.question_id);
-                              }}>
-                                🔄 Crear Nueva Versión
-                              </Dropdown.Item>
-                              <Dropdown.Item 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEditQuestion(question.question_id);
-                                }}
-                                disabled
-                                className="text-muted"
+                                handleViewQuestion(question.question_id);
+                              }}
+                              style={{ borderRadius: '8px' }}
+                            >
+                              <span>👁️</span>
+                              <span className="d-none d-lg-inline">Ver</span>
+                            </Button>
+                            <Dropdown as={ButtonGroup} size="sm">
+                              <Dropdown.Toggle 
+                                variant="outline-secondary" 
+                                size="sm"
+                                className="d-flex align-items-center justify-content-center"
+                                style={{ borderRadius: '8px', minWidth: '40px' }}
                               >
-                                ✏️ Editar (proximamente)
-                              </Dropdown.Item>
-                              <Dropdown.Item 
-                                disabled
-                                className="text-muted"
-                              >
-                                📋 Clonar Pregunta (proximamente)
-                              </Dropdown.Item>
-                              <Dropdown.Item onClick={(e) => e.stopPropagation()}>
-                                📊 Ver Estadísticas
-                              </Dropdown.Item>
-                              <Dropdown.Divider />
-                              {question.active ? (
+                                <span style={{ fontSize: '1.1rem' }}>⋯</span>
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu align="end" style={{ borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+                                <Dropdown.Header className="text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: '0.5px' }}>
+                                  Acciones
+                                </Dropdown.Header>
                                 <Dropdown.Item 
-                                  className="text-warning"
+                                  className="d-flex align-items-center gap-2"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleRetireQuestion(question.question_id);
+                                    handleCreateVersion(question.question_id);
                                   }}
                                 >
-                                  ⚠️ Retirar Pregunta
+                                  <span>🔄</span> Crear Nueva Versión
                                 </Dropdown.Item>
-                              ) : (
                                 <Dropdown.Item 
-                                  className="text-success"
+                                  className="d-flex align-items-center gap-2 text-muted"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleReactivateQuestion(question.question_id);
+                                    handleEditQuestion(question.question_id);
                                   }}
+                                  disabled
                                 >
-                                  ✅ Reactivar Pregunta
+                                  <span>✏️</span> Editar <small>(pronto)</small>
                                 </Dropdown.Item>
-                              )}
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
+                                <Dropdown.Item 
+                                  className="d-flex align-items-center gap-2 text-muted"
+                                  disabled
+                                >
+                                  <span>📋</span> Clonar <small>(pronto)</small>
+                                </Dropdown.Item>
+                                <Dropdown.Item 
+                                  className="d-flex align-items-center gap-2"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <span>📊</span> Ver Estadísticas
+                                </Dropdown.Item>
+                                <Dropdown.Divider />
+                                {question.active ? (
+                                  <Dropdown.Item 
+                                    className="d-flex align-items-center gap-2 text-warning"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleRetireQuestion(question.question_id);
+                                    }}
+                                  >
+                                    <span>⚠️</span> Retirar Pregunta
+                                  </Dropdown.Item>
+                                ) : (
+                                  <Dropdown.Item 
+                                    className="d-flex align-items-center gap-2 text-success"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleReactivateQuestion(question.question_id);
+                                    }}
+                                  >
+                                    <span>✅</span> Reactivar Pregunta
+                                  </Dropdown.Item>
+                                )}
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </div>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
               </Row>
             )}
           </Col>

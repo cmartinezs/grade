@@ -31,10 +31,12 @@ export default function StatisticsPage() {
     retired: questions.filter(q => !q.active).length,
     deleted: questions.filter(q => q.deleted_at).length,
     byType: {
-      'verdadero_falso': questions.filter(q => q.type === 'verdadero_falso').length,
-      'seleccion_unica': questions.filter(q => q.type === 'seleccion_unica').length,
-      'seleccion_multiple': questions.filter(q => q.type === 'seleccion_multiple').length,
-      'desarrollo': questions.filter(q => q.type === 'desarrollo').length,
+      'TF': questions.filter(q => q.type === 'TF').length,
+      'SS': questions.filter(q => q.type === 'SS').length,
+      'MC2': questions.filter(q => q.type === 'MC2').length,
+      'MC3': questions.filter(q => q.type === 'MC3').length,
+      'MC4': questions.filter(q => q.type === 'MC4').length,
+      'MC5': questions.filter(q => q.type === 'MC5').length,
     },
     byDifficulty: {
       'bajo': questions.filter(q => q.difficulty_fk === 'bajo').length,
@@ -110,20 +112,28 @@ export default function StatisticsPage() {
               <Card.Body>
                 <div className="mb-2">
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Verdadero/Falso</span>
-                    <span className="badge bg-primary">{stats.byType.verdadero_falso}</span>
+                    <span>Verdadero/Falso (TF)</span>
+                    <span className="badge bg-secondary">{stats.byType.TF}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Selección Única</span>
-                    <span className="badge bg-success">{stats.byType.seleccion_unica}</span>
+                    <span>Selección Simple (SS)</span>
+                    <span className="badge bg-primary">{stats.byType.SS}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Selección Múltiple</span>
-                    <span className="badge bg-info">{stats.byType.seleccion_multiple}</span>
+                    <span>Selección Múltiple (2 correctas)</span>
+                    <span className="badge bg-info">{stats.byType.MC2}</span>
+                  </div>
+                  <div className="d-flex justify-content-between mb-2">
+                    <span>Selección Múltiple (3 correctas)</span>
+                    <span className="badge bg-info">{stats.byType.MC3}</span>
+                  </div>
+                  <div className="d-flex justify-content-between mb-2">
+                    <span>Selección Múltiple (4 correctas)</span>
+                    <span className="badge bg-info">{stats.byType.MC4}</span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span>Desarrollo</span>
-                    <span className="badge bg-secondary">{stats.byType.desarrollo}</span>
+                    <span>Selección Múltiple (5 correctas)</span>
+                    <span className="badge bg-info">{stats.byType.MC5}</span>
                   </div>
                 </div>
               </Card.Body>

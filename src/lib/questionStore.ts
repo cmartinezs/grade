@@ -229,24 +229,22 @@ class QuestionStore {
     this.saveQuestions(questions);
 
     // Create options
-    if (input.type !== 'desarrollo') {
-      for (const optInput of input.options) {
-        const newOption: QuestionOption = {
-          question_option_id: this.generateId('option'),
-          question_fk: newQuestion.question_id,
-          text: optInput.text.trim(),
-          is_correct: optInput.is_correct,
-          position: optInput.position,
-          partial_score: optInput.partial_score || null,
-          created_at: now,
-          created_by: currentUser,
-          updated_at: now,
-          updated_by: currentUser,
-        };
-        options.push(newOption);
-      }
-      this.saveOptions(options);
+    for (const optInput of input.options) {
+      const newOption: QuestionOption = {
+        question_option_id: this.generateId('option'),
+        question_fk: newQuestion.question_id,
+        text: optInput.text.trim(),
+        is_correct: optInput.is_correct,
+        position: optInput.position,
+        partial_score: optInput.partial_score || null,
+        created_at: now,
+        created_by: currentUser,
+        updated_at: now,
+        updated_by: currentUser,
+      };
+      options.push(newOption);
     }
+    this.saveOptions(options);
 
     // RN-7: Simulate indexing (in real system, would trigger background job)
     // For localStorage implementation, indexing is immediate via search
@@ -639,31 +637,29 @@ class QuestionStore {
     this.saveQuestions(questions);
 
     // Clone or create new options
-    if (newQuestion.type !== 'desarrollo') {
-      const newOptions = (modifications?.options || originalOptions.map(opt => ({
-        text: opt.text,
-        is_correct: opt.is_correct,
-        position: opt.position,
-        partial_score: opt.partial_score,
-      }))).map(optInput => {
-        const newOption: QuestionOption = {
-          question_option_id: this.generateId('option'),
-          question_fk: newQuestion.question_id,
-          text: optInput.text.trim(),
-          is_correct: optInput.is_correct,
-          position: optInput.position,
-          partial_score: optInput.partial_score || null,
-          created_at: now,
-          created_by: currentUser,
-          updated_at: now,
-          updated_by: currentUser,
-        };
-        return newOption;
-      });
+    const newOptions = (modifications?.options || originalOptions.map(opt => ({
+      text: opt.text,
+      is_correct: opt.is_correct,
+      position: opt.position,
+      partial_score: opt.partial_score,
+    }))).map(optInput => {
+      const newOption: QuestionOption = {
+        question_option_id: this.generateId('option'),
+        question_fk: newQuestion.question_id,
+        text: optInput.text.trim(),
+        is_correct: optInput.is_correct,
+        position: optInput.position,
+        partial_score: optInput.partial_score || null,
+        created_at: now,
+        created_by: currentUser,
+        updated_at: now,
+        updated_by: currentUser,
+      };
+      return newOption;
+    });
 
-      options.push(...newOptions);
-      this.saveOptions(options);
-    }
+    options.push(...newOptions);
+    this.saveOptions(options);
 
     // RN-3: Original version remains active (no modification to old version)
     // RN-6: Evaluations maintain their reference to specific versions (handled by evaluation system)
@@ -782,31 +778,29 @@ class QuestionStore {
     this.saveQuestions(questions);
 
     // Clone options with new IDs
-    if (clonedQuestion.type !== 'desarrollo') {
-      const newOptions = (modifications?.options || sourceOptions.map(opt => ({
-        text: opt.text,
-        is_correct: opt.is_correct,
-        position: opt.position,
-        partial_score: opt.partial_score,
-      }))).map(optInput => {
-        const newOption: QuestionOption = {
-          question_option_id: this.generateId('option'),
-          question_fk: clonedQuestion.question_id,
-          text: optInput.text.trim(),
-          is_correct: optInput.is_correct,
-          position: optInput.position,
-          partial_score: optInput.partial_score || null,
-          created_at: now,
-          created_by: currentUser,
-          updated_at: now,
-          updated_by: currentUser,
-        };
-        return newOption;
-      });
+    const newOptions = (modifications?.options || sourceOptions.map(opt => ({
+      text: opt.text,
+      is_correct: opt.is_correct,
+      position: opt.position,
+      partial_score: opt.partial_score,
+    }))).map(optInput => {
+      const newOption: QuestionOption = {
+        question_option_id: this.generateId('option'),
+        question_fk: clonedQuestion.question_id,
+        text: optInput.text.trim(),
+        is_correct: optInput.is_correct,
+        position: optInput.position,
+        partial_score: optInput.partial_score || null,
+        created_at: now,
+        created_by: currentUser,
+        updated_at: now,
+        updated_by: currentUser,
+      };
+      return newOption;
+    });
 
-      options.push(...newOptions);
-      this.saveOptions(options);
-    }
+    options.push(...newOptions);
+    this.saveOptions(options);
 
     // RN-6: No formal link between original and clone (could be logged in audit)
     // For audit purposes, we could log this action but it's not required by the system

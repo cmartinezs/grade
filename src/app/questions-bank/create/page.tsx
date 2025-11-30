@@ -294,7 +294,7 @@ export default function CreateQuestionPage() {
         enunciado: enunciado.trim(),
         topic_fk: selectedTopic,
         difficulty_fk: difficulty,
-        options: questionType === 'desarrollo' ? [] : options,
+        options: options,
         learning_outcome_fk: selectedTaxonomy || null,
       };
 
@@ -478,13 +478,6 @@ export default function CreateQuestionPage() {
                     disabled={isSubmitting || submitSuccess}
                     showDifficultyAsRadio={false}
                   />
-
-                  {questionType === 'desarrollo' && (
-                    <Alert variant="info" className="mt-3">
-                      <strong>Nota:</strong> Las preguntas de desarrollo no requieren alternativas predefinidas.
-                      Se pueden agregar criterios de corrección y rúbricas en una versión futura.
-                    </Alert>
-                  )}
 
                   <div className="d-flex gap-2 justify-content-end mt-4">
                     <Button

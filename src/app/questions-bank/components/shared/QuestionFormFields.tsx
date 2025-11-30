@@ -153,7 +153,7 @@ export default function QuestionFormFields({
     }
 
     if (rules.minOptions === 0) {
-      // Clear all options if question type doesn't require options (like 'desarrollo')
+      // Clear all options if question type doesn't require options
       if (options.length > 0) {
         for (let i = options.length - 1; i >= 0; i--) {
           onRemoveOption(i);

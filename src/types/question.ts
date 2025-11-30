@@ -3,8 +3,8 @@
  * Types for questions bank management
  */
 
-// Enum types matching database
-export type QuestionType = 'TF' | 'SS' | 'SM' | 'D' | 'verdadero_falso' | 'seleccion_unica' | 'seleccion_multiple' | 'desarrollo';
+// Enum types matching database - códigos del JSON question-types.json
+export type QuestionType = 'TF' | 'SS' | 'MC2' | 'MC3' | 'MC4' | 'MC5';
 
 export type DifficultyLevel = 'bajo' | 'medio' | 'alto';
 

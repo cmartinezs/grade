@@ -42,7 +42,7 @@ export default function EditQuestionModal({
   const [originalQuestion, setOriginalQuestion] = useState<QuestionWithDetails | null>(null);
 
   // Form state
-  const [questionType, setQuestionType] = useState<QuestionType>('seleccion_unica');
+  const [questionType, setQuestionType] = useState<QuestionType>('SS');
   const [enunciado, setEnunciado] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
@@ -134,7 +134,7 @@ export default function EditQuestionModal({
           }
 
           // Populate options
-          if (question.type !== 'desarrollo' && question.type !== 'D' && question.options && question.options.length > 0) {
+          if (question.options && question.options.length > 0) {
             const mappedOptions = question.options.map(opt => ({
               text: opt.text || '',
               is_correct: opt.is_correct || false,
@@ -197,7 +197,7 @@ export default function EditQuestionModal({
   const resetForm = () => {
     setOriginalQuestion(null);
     setIsLoadingQuestion(false);
-    setQuestionType('seleccion_unica');
+    setQuestionType('SS');
     setEnunciado('');
     setSelectedSubject('');
     setSelectedUnit('');

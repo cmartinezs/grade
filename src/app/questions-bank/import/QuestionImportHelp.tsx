@@ -121,7 +121,7 @@ export function QuestionImportHelp() {
         <li>El sistema buscará coincidencias automáticamente</li>
         <li>Las opciones 3, 4 y 5 son <strong>opcionales</strong></li>
         <li>Para Verdadero/Falso solo usa opciones 1 y 2</li>
-        <li>Para Desarrollo no completes opciones</li>
+        <li>Para Selección Múltiple (MC2-MC5) marca las respuestas correctas según el tipo</li>
         <li>Los valores son <strong>case-insensitive</strong> (mayús/minús no importa)</li>
       </ul>
 

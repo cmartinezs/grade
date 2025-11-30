@@ -292,7 +292,7 @@ export default function ImportQuestionPage() {
                       <li>Si usas nombres, el sistema buscará coincidencias automáticamente</li>
                       <li>Las columnas de opciones 3, 4 y 5 son opcionales</li>
                       <li>Para Verdadero/Falso solo completa opciones 1 y 2</li>
-                      <li>Para Desarrollo no es necesario completar opciones</li>
+                      <li>Para Selección Múltiple (MC2-MC5) marca las respuestas correctas según el tipo</li>
                     </ul>
                   </Alert>
                 )}

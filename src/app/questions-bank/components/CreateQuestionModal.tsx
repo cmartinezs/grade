@@ -209,7 +209,7 @@ export default function CreateQuestionModal({
         enunciado: enunciado.trim(),
         topic_fk: selectedTopic,
         difficulty_fk: difficulty,
-        options: questionType === 'desarrollo' ? [] : options,
+        options: options,
         learning_outcome_fk: selectedTaxonomy || null,
       };
 
@@ -401,14 +401,6 @@ export default function CreateQuestionModal({
               disabled={isSubmitting}
               showDifficultyAsRadio={false}
             />
-
-            {/* Development question note - ESPECÍFICO DE CREATE */}
-            {questionType === 'desarrollo' && (
-              <Alert variant="info">
-                <strong>Nota:</strong> Las preguntas de desarrollo no requieren alternativas predefinidas.
-                Se pueden agregar criterios de corrección y rúbricas en una versión futura.
-              </Alert>
-            )}
           </Form>
         )}
       </Modal.Body>
