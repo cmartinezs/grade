@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Modal,
   Button,
@@ -71,11 +71,36 @@ export default function CoursePreviewModal({
   });
   const [generationError, setGenerationError] = useState<string>('');
   const [failedCourses, setFailedCourses] = useState<Map<string, string>>(new Map()); // Map<courseCode, errorMessage>
+  const [createdCourses, setCreatedCourses] = useState<Set<number>>(new Set()); // Set de índices de cursos creados exitosamente
 
-  // Calcular paginación
-  const totalPages = Math.ceil(courses.length / PAGE_SIZE);
+  // Resetear estado cuando cambian los cursos (nueva generación)
+  useEffect(() => {
+    if (show) {
+      setCreatedCourses(new Set());
+      setFailedCourses(new Map());
+      setSelectedCourses(new Set());
+      setSelectAll(false);
+      setCurrentPage(1);
+      setProgress({
+        currentStep: '',
+        currentIndex: 0,
+        total: 0,
+        itemName: '',
+        percentage: 0,
+      });
+      setGenerationError('');
+    }
+  }, [courses.length, show]); // Resetear cuando cambia la cantidad de cursos o se abre el modal
+
+  // Filtrar cursos: mostrar solo los que NO han sido creados exitosamente
+  const pendingCourses = useMemo(() => {
+    return courses.filter((_, idx) => !createdCourses.has(idx));
+  }, [courses, createdCourses]);
+
+  // Calcular paginación sobre los cursos pendientes
+  const totalPages = Math.ceil(pendingCourses.length / PAGE_SIZE);
   const start = (currentPage - 1) * PAGE_SIZE;
-  const paginatedCourses = courses.slice(start, start + PAGE_SIZE);
+  const paginatedCourses = pendingCourses.slice(start, start + PAGE_SIZE);
 
   // Columnas para la tabla
   const columns: ColumnConfig<CourseToCreate>[] = [
@@ -109,7 +134,7 @@ export default function CoursePreviewModal({
           newSelected.add(String(itemIdx));
         }
         setSelectedCourses(newSelected);
-        setSelectAll(newSelected.size === courses.length);
+        setSelectAll(newSelected.size === pendingCourses.length);
       },
       variant: (item: CourseToCreate) => {
         const itemIdx = courses.indexOf(item);
@@ -138,15 +163,15 @@ export default function CoursePreviewModal({
       },
       hidden: (item: CourseToCreate) => !failedCourses.has(item.code),
     },
-  ], [selectedCourses, failedCourses, courses]); // Re-calcular cuando cambien las dependencias
+  ], [selectedCourses, failedCourses, courses, pendingCourses.length]); // Re-calcular cuando cambien las dependencias
 
   // Manejar "Seleccionar todos"
   const handleSelectAll = (checked: boolean) => {
     setSelectAll(checked);
     if (checked) {
-      setSelectedCourses(
-        new Set(courses.map((_, idx) => String(idx)))
-      );
+      // Seleccionar solo los cursos pendientes (no creados)
+      const pendingIndices = pendingCourses.map((course) => String(courses.indexOf(course)));
+      setSelectedCourses(new Set(pendingIndices));
     } else {
       setSelectedCourses(new Set());
     }
@@ -161,10 +186,10 @@ export default function CoursePreviewModal({
 
     if (coursesToSave.length === 0) return;
 
-    // Determinar si se están generando TODOS los cursos o solo ALGUNOS
-    const totalCourses = courses.length;
+    // Determinar si se están generando TODOS los cursos PENDIENTES
+    const totalPendingCourses = pendingCourses.length;
     const selectedCount = coursesToSave.length;
-    const isGeneratingAll = selectedCount === totalCourses;
+    const isGeneratingAll = selectedCount === totalPendingCourses;
 
     setIsGenerating(true);
     setGenerationError('');
@@ -191,8 +216,19 @@ export default function CoursePreviewModal({
       }
 
       if (result.success) {
-        if (isGeneratingAll) {
-          // TODOS los cursos generados → Llamar onSuccess → Cerrar modal
+        // Marcar cursos creados exitosamente
+        const newCreatedCourses = new Set(createdCourses);
+        selectedIndices.forEach(idx => {
+          const course = courses[idx];
+          // Solo marcar como creado si no está en la lista de fallidos
+          if (!result.failedCourses?.find(fc => fc.courseCode === course.code)) {
+            newCreatedCourses.add(idx);
+          }
+        });
+        setCreatedCourses(newCreatedCourses);
+        
+        if (isGeneratingAll && newCreatedCourses.size === courses.length) {
+          // TODOS los cursos pendientes generados → Llamar onSuccess → Cerrar modal
           onSuccess?.(result.coursesCreated);
           setTimeout(() => {
             onConfirm();
@@ -203,17 +239,27 @@ export default function CoursePreviewModal({
             // Deseleccionar los cursos que ya fueron generados
             const newSelectedCourses = new Set(selectedCourses);
             selectedIndices.forEach(idx => {
-              newSelectedCourses.delete(String(idx));
+              const course = courses[idx];
+              // Solo deseleccionar si no falló
+              if (!result.failedCourses?.find(fc => fc.courseCode === course.code)) {
+                newSelectedCourses.delete(String(idx));
+              }
             });
             setSelectedCourses(newSelectedCourses);
             setSelectAll(false);
             
+            // Resetear a la primera página si es necesario
+            if (currentPage > 1) {
+              setCurrentPage(1);
+            }
+            
             // Mostrar mensaje de éxito sin cerrar
+            const pendingCount = courses.length - newCreatedCourses.size;
             setProgress({
               currentStep: '✅ Cursos creados exitosamente',
               currentIndex: coursesToSave.length,
               total: coursesToSave.length,
-              itemName: `${result.coursesCreated} de ${totalCourses} cursos creados`,
+              itemName: `${result.coursesCreated} cursos creados. ${pendingCount} pendientes`,
               percentage: 100,
             });
             
@@ -235,6 +281,8 @@ export default function CoursePreviewModal({
 
   const selectedCount = selectedCourses.size;
   const totalCount = courses.length;
+  const pendingCount = pendingCourses.length;
+  const createdCount = createdCourses.size;
 
   return (
     <Modal show={show} onHide={onCancel} size="xl" backdrop={isGenerating ? 'static' : true}>
@@ -275,7 +323,7 @@ export default function CoursePreviewModal({
         )}
 
         {/* MENSAJE DE ÉXITO PARCIAL (cuando modal se mantiene abierto) */}
-        {!isGenerating && progress.percentage === 100 && selectedCount < totalCount && (
+        {!isGenerating && progress.percentage === 100 && pendingCount > 0 && (
           <Alert variant="success" dismissible onClose={() => setProgress({ ...progress, percentage: 0 })}>
             <Alert.Heading>✅ ¡Éxito Parcial!</Alert.Heading>
             <p className="mb-0">
@@ -285,33 +333,39 @@ export default function CoursePreviewModal({
         )}
 
         {/* CONTENIDO PRINCIPAL */}
-        {!isGenerating && courses.length === 0 ? (
-          <Alert variant="warning" className="mb-0">
-            📭 No hay cursos para generar. Por favor revisa tu selección.
+        {!isGenerating && pendingCourses.length === 0 ? (
+          <Alert variant="success" className="mb-0">
+            ✅ Todos los cursos han sido creados exitosamente. Total: {totalCount}
           </Alert>
         ) : !isGenerating && (
           <>
             {/* Información General */}
             <div className="mb-4 p-3 bg-light rounded">
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-2">
                     <strong>Institución:</strong> {institution}
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
+                  <div className="mb-2">
+                    <strong>Creados:</strong>{' '}
+                    <Badge bg="success">{createdCount} de {totalCount}</Badge>
+                  </div>
+                </div>
+                <div className="col-md-4">
                   <div className="mb-2">
                     <strong>Seleccionados:</strong>{' '}
                     <Badge
                       bg={
-                        selectedCount === totalCount
+                        selectedCount === pendingCount
                           ? 'success'
                           : selectedCount > 0
                             ? 'warning'
                             : 'secondary'
                       }
                     >
-                      {selectedCount} de {totalCount}
+                      {selectedCount} de {pendingCount} pendientes
                     </Badge>
                   </div>
                 </div>
@@ -344,12 +398,12 @@ export default function CoursePreviewModal({
       </Modal.Body>
 
       <Modal.Footer style={{display: 'block'}}>
-        {totalPages > 1 && !isGenerating && (
+        {totalPages > 1 && !isGenerating && pendingCount > 0 && (
         <PaginationControl
             currentPage={currentPage}
             totalPages={totalPages}
             pageSize={PAGE_SIZE}
-            totalItems={totalCount}
+            totalItems={pendingCount}
             isLoading={false}
             onPageChange={setCurrentPage}
         />
@@ -365,7 +419,7 @@ export default function CoursePreviewModal({
                 <Button
                   variant="primary"
                   onClick={handleConfirm}
-                  disabled={isGenerating || selectedCount === 0}
+                  disabled={isGenerating || selectedCount === 0 || pendingCount === 0}
                 >
                   💾 Guardar {selectedCount > 0 ? `(${selectedCount})` : ''}
                 </Button>
