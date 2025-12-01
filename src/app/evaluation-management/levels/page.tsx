@@ -11,7 +11,7 @@ import ChileConfigPreloaderModal from '../components/ChileConfigPreloaderModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { levelStore } from '@/lib/levelStore';
 import { courseStore } from '@/lib/courseStore';
-import { EducationalLevel } from '@/types/level';
+import { EducationalLevel, LevelCategory } from '@/types/level';
 
 const PAGE_SIZE = 10;
 
@@ -19,6 +19,7 @@ export default function LevelsPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [levels, setLevels] = useState<EducationalLevel[]>([]);
+  const [categories, setCategories] = useState<LevelCategory[]>([]);
   const [totalLevels, setTotalLevels] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,16 +46,27 @@ export default function LevelsPage() {
     }));
   };
 
+  // Helper function to get category name by id
+  const getCategoryName = (categoryId: string): string => {
+    const category = categories.find((cat) => cat.id === categoryId);
+    return category ? category.name : '-';
+  };
+
   // Load levels when page or search changes
   useEffect(() => {
     const loadLevelsData = async () => {
       setIsLoading(true);
       try {
-        // Load both levels and courses from Data-Connect
+        // Load categories, levels and courses from Data-Connect
+        await levelStore.loadCategories();
         await levelStore.loadLevels();
         if (user?.id && user?.firebaseUid) {
           await courseStore.loadCourses(user.id, user.firebaseUid);
         }
+        
+        // Get categories for display
+        const loadedCategories = levelStore.getAllCategories();
+        setCategories(loadedCategories);
         
         // Then get paginated results from cache
         const result = levelStore.getPaginatedLevels(currentPage, PAGE_SIZE, {
@@ -137,9 +149,15 @@ export default function LevelsPage() {
   };
 
   const handleChileDataLoaded = async () => {
-    // Recargar niveles desde Data-Connect después de cargar datos de Chile
+    // Recargar categorías y niveles desde Data-Connect después de cargar datos de Chile
     try {
+      await levelStore.loadCategories();
       await levelStore.loadLevels();
+      
+      // Get categories for display
+      const loadedCategories = levelStore.getAllCategories();
+      setCategories(loadedCategories);
+      
       const result = levelStore.getPaginatedLevels(1, PAGE_SIZE, {
         includeInactive: true,
         searchText: '',
@@ -153,6 +171,9 @@ export default function LevelsPage() {
     } catch (error) {
       console.error('Error reloading levels after Chile data load:', error);
       // Fallback: try to get whatever is cached
+      const loadedCategories = levelStore.getAllCategories();
+      setCategories(loadedCategories);
+      
       const result = levelStore.getPaginatedLevels(1, PAGE_SIZE, {
         includeInactive: true,
         searchText: '',
@@ -176,6 +197,15 @@ export default function LevelsPage() {
       key: 'name',
       label: 'Nombre',
       render: (value) => <span className="fw-bold">{String(value)}</span>,
+    },
+    {
+      key: 'categoryId',
+      label: 'Categoría',
+      render: (value, level) => (
+        <Badge bg="primary" className="text-white">
+          {getCategoryName(String(value))}
+        </Badge>
+      ),
     },
     {
       key: 'description',
