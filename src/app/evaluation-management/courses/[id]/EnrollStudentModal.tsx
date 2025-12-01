@@ -154,6 +154,11 @@ export default function EnrollStudentModal({
       setError('El RUT/ID es requerido');
       return;
     }
+    // Validate identifier length (Firebase password requirement: at least 6 characters)
+    if (newStudent.identifier.trim().length < 6) {
+      setError('El RUT/ID debe tener al menos 6 caracteres (requerimiento de Firebase Authentication)');
+      return;
+    }
     if (!newStudent.email?.trim()) {
       setError('El email es requerido');
       return;
@@ -206,12 +211,16 @@ export default function EnrollStudentModal({
       // Notify parent
       onEnrollSuccess(enrollment);
 
-      setSuccess(`Estudiante ${createdStudent.firstName} ${createdStudent.lastName} creado e inscrito exitosamente`);
+      setSuccess(
+        `✅ Estudiante ${createdStudent.firstName} ${createdStudent.lastName} creado exitosamente.\n` +
+        `📧 Cuenta de acceso creada con email: ${createdStudent.email}\n` +
+        `🔑 Contraseña inicial: ${newStudent.identifier}`
+      );
       
       // Close modal after brief delay
       setTimeout(() => {
         onHide();
-      }, 1500);
+      }, 3000); // Más tiempo para leer el mensaje
     } catch (err) {
       console.error('Error creating and enrolling student:', err);
       setError(err instanceof Error ? err.message : 'Error al crear e inscribir estudiante');
@@ -364,16 +373,22 @@ export default function EnrollStudentModal({
                   value={newStudent.identifier}
                   onChange={(e) => setNewStudent({ ...newStudent, identifier: e.target.value })}
                   required
+                  minLength={6}
                 />
                 <Form.Text className="text-muted">
-                  Debe ser único en el sistema
+                  Mínimo 6 caracteres. Se usará como contraseña inicial.
                 </Form.Text>
               </Form.Group>
 
               <Alert variant="info" className="mb-0">
-                <small>
-                  <strong>Nota:</strong> El estudiante será creado e inmediatamente inscrito en este curso.
-                </small>
+                <strong>ℹ️ Creación automática de cuenta:</strong>
+                <ul className="mb-0 mt-2">
+                  <li>Se creará automáticamente una cuenta de acceso para el estudiante</li>
+                  <li>Email: El que ingresaste arriba</li>
+                  <li>Contraseña inicial: El RUT/ID ingresado</li>
+                  <li>Rol: Estudiante</li>
+                  <li>El estudiante podrá iniciar sesión y cambiar su contraseña</li>
+                </ul>
               </Alert>
             </Tab>
           </Tabs>
