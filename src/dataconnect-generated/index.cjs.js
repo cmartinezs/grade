@@ -1543,6 +1543,18 @@ exports.getCourseStudentsDetail = function getCourseStudentsDetail(dcOrVars, var
   return executeQuery(getCourseStudentsDetailRef(dcOrVars, vars));
 };
 
+const getCourseStudentsWithDetailsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourseStudentsWithDetails', inputVars);
+}
+getCourseStudentsWithDetailsRef.operationName = 'GetCourseStudentsWithDetails';
+exports.getCourseStudentsWithDetailsRef = getCourseStudentsWithDetailsRef;
+
+exports.getCourseStudentsWithDetails = function getCourseStudentsWithDetails(dcOrVars, vars) {
+  return executeQuery(getCourseStudentsWithDetailsRef(dcOrVars, vars));
+};
+
 const getStudentEvaluationByIdRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

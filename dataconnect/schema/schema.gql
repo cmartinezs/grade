@@ -516,6 +516,9 @@ type Student @table(name: "students", key: "studentId") {
   # Identificador único del estudiante (RUT, ID, etc.)
   identifier: String! @unique
   
+  # Email del estudiante
+  email: String! @col(name: "email")
+  
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
   
@@ -542,8 +545,14 @@ type CourseStudent @table(name: "course_students", key: "courseStudentId") {
   # ID del curso
   courseId: UUID! @col(name: "course_fk")
   
+  # Referencia al curso
+  course: Course! @ref(fields: "courseId", references: "courseId")
+  
   # ID del estudiante
   studentId: UUID! @col(name: "student_fk")
+  
+  # Referencia al estudiante
+  student: Student! @ref(fields: "studentId", references: "studentId")
   
   # Fecha de matrícula
   enrolledOn: Date! @col(name: "enrolled_on")

@@ -63,6 +63,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetStudentsByLastName*](#getstudentsbylastname)
   - [*GetStudentsByCourse*](#getstudentsbycourse)
   - [*GetCourseStudentsDetail*](#getcoursestudentsdetail)
+  - [*GetCourseStudentsWithDetails*](#getcoursestudentswithdetails)
   - [*GetStudentEvaluationById*](#getstudentevaluationbyid)
   - [*GetStudentEvaluationsByStudentId*](#getstudentevaluationsbystudentid)
   - [*GetStudentEvaluationsByIdentifier*](#getstudentevaluationsbyidentifier)
@@ -5732,6 +5733,7 @@ export interface GetAllStudentsByUserData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -5854,6 +5856,7 @@ export interface GetStudentByIdData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -5978,6 +5981,7 @@ export interface GetStudentByIdentifierData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -6102,6 +6106,7 @@ export interface GetStudentsByFirstNameData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -6226,6 +6231,7 @@ export interface GetStudentsByLastNameData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -6526,6 +6532,132 @@ const ref = getCourseStudentsDetailRef({ courseId: ..., });
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
 const ref = getCourseStudentsDetailRef(dataConnect, getCourseStudentsDetailVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.courseStudents);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.courseStudents);
+});
+```
+
+## GetCourseStudentsWithDetails
+You can execute the `GetCourseStudentsWithDetails` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getCourseStudentsWithDetails(vars: GetCourseStudentsWithDetailsVariables): QueryPromise<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+
+interface GetCourseStudentsWithDetailsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseStudentsWithDetailsVariables): QueryRef<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+}
+export const getCourseStudentsWithDetailsRef: GetCourseStudentsWithDetailsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getCourseStudentsWithDetails(dc: DataConnect, vars: GetCourseStudentsWithDetailsVariables): QueryPromise<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+
+interface GetCourseStudentsWithDetailsRef {
+  ...
+  (dc: DataConnect, vars: GetCourseStudentsWithDetailsVariables): QueryRef<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+}
+export const getCourseStudentsWithDetailsRef: GetCourseStudentsWithDetailsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getCourseStudentsWithDetailsRef:
+```typescript
+const name = getCourseStudentsWithDetailsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetCourseStudentsWithDetails` query requires an argument of type `GetCourseStudentsWithDetailsVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetCourseStudentsWithDetailsVariables {
+  courseId: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that executing the `GetCourseStudentsWithDetails` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetCourseStudentsWithDetailsData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetCourseStudentsWithDetailsData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    enrolledOn: DateString;
+    student: {
+      studentId: UUIDString;
+      firstName: string;
+      lastName: string;
+      identifier: string;
+      email: string;
+      createdAt: TimestampString;
+      createdBy: UUIDString;
+      updatedAt?: TimestampString | null;
+      updatedBy?: UUIDString | null;
+    } & Student_Key;
+  } & CourseStudent_Key)[];
+}
+```
+### Using `GetCourseStudentsWithDetails`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getCourseStudentsWithDetails, GetCourseStudentsWithDetailsVariables } from '@dataconnect/generated';
+
+// The `GetCourseStudentsWithDetails` query requires an argument of type `GetCourseStudentsWithDetailsVariables`:
+const getCourseStudentsWithDetailsVars: GetCourseStudentsWithDetailsVariables = {
+  courseId: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `getCourseStudentsWithDetails()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getCourseStudentsWithDetails(getCourseStudentsWithDetailsVars);
+// Variables can be defined inline as well.
+const { data } = await getCourseStudentsWithDetails({ courseId: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getCourseStudentsWithDetails(dataConnect, getCourseStudentsWithDetailsVars);
+
+console.log(data.courseStudents);
+
+// Or, you can use the `Promise` API.
+getCourseStudentsWithDetails(getCourseStudentsWithDetailsVars).then((response) => {
+  const data = response.data;
+  console.log(data.courseStudents);
+});
+```
+
+### Using `GetCourseStudentsWithDetails`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getCourseStudentsWithDetailsRef, GetCourseStudentsWithDetailsVariables } from '@dataconnect/generated';
+
+// The `GetCourseStudentsWithDetails` query requires an argument of type `GetCourseStudentsWithDetailsVariables`:
+const getCourseStudentsWithDetailsVars: GetCourseStudentsWithDetailsVariables = {
+  courseId: ..., 
+  firebaseId: ..., 
+};
+
+// Call the `getCourseStudentsWithDetailsRef()` function to get a reference to the query.
+const ref = getCourseStudentsWithDetailsRef(getCourseStudentsWithDetailsVars);
+// Variables can be defined inline as well.
+const ref = getCourseStudentsWithDetailsRef({ courseId: ..., firebaseId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getCourseStudentsWithDetailsRef(dataConnect, getCourseStudentsWithDetailsVars);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
@@ -14886,6 +15018,7 @@ export interface CreateStudentVariables {
   firstName: string;
   lastName: string;
   identifier: string;
+  email: string;
   createdBy: UUIDString;
   firebaseId: string;
 }
@@ -14911,6 +15044,7 @@ const createStudentVars: CreateStudentVariables = {
   firstName: ..., 
   lastName: ..., 
   identifier: ..., 
+  email: ..., 
   createdBy: ..., 
   firebaseId: ..., 
 };
@@ -14919,7 +15053,7 @@ const createStudentVars: CreateStudentVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createStudent(createStudentVars);
 // Variables can be defined inline as well.
-const { data } = await createStudent({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., createdBy: ..., firebaseId: ..., });
+const { data } = await createStudent({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., email: ..., createdBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -14946,6 +15080,7 @@ const createStudentVars: CreateStudentVariables = {
   firstName: ..., 
   lastName: ..., 
   identifier: ..., 
+  email: ..., 
   createdBy: ..., 
   firebaseId: ..., 
 };
@@ -14953,7 +15088,7 @@ const createStudentVars: CreateStudentVariables = {
 // Call the `createStudentRef()` function to get a reference to the mutation.
 const ref = createStudentRef(createStudentVars);
 // Variables can be defined inline as well.
-const ref = createStudentRef({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., createdBy: ..., firebaseId: ..., });
+const ref = createStudentRef({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., email: ..., createdBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -15010,6 +15145,7 @@ export interface UpdateStudentVariables {
   firstName?: string | null;
   lastName?: string | null;
   identifier?: string | null;
+  email?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -15036,6 +15172,7 @@ const updateStudentVars: UpdateStudentVariables = {
   firstName: ..., // optional
   lastName: ..., // optional
   identifier: ..., // optional
+  email: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
   firebaseId: ..., 
@@ -15045,7 +15182,7 @@ const updateStudentVars: UpdateStudentVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateStudent(updateStudentVars);
 // Variables can be defined inline as well.
-const { data } = await updateStudent({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateStudent({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., email: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -15072,6 +15209,7 @@ const updateStudentVars: UpdateStudentVariables = {
   firstName: ..., // optional
   lastName: ..., // optional
   identifier: ..., // optional
+  email: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
   firebaseId: ..., 
@@ -15080,7 +15218,7 @@ const updateStudentVars: UpdateStudentVariables = {
 // Call the `updateStudentRef()` function to get a reference to the mutation.
 const ref = updateStudentRef(updateStudentVars);
 // Variables can be defined inline as well.
-const ref = updateStudentRef({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateStudentRef({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., email: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);

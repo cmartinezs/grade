@@ -218,6 +218,7 @@ export interface CreateStudentVariables {
   firstName: string;
   lastName: string;
   identifier: string;
+  email: string;
   createdBy: UUIDString;
   firebaseId: string;
 }
@@ -504,6 +505,7 @@ export interface GetAllStudentsByUserData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -602,6 +604,29 @@ export interface GetCourseStudentsDetailData {
 
 export interface GetCourseStudentsDetailVariables {
   courseId: UUIDString;
+}
+
+export interface GetCourseStudentsWithDetailsData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    enrolledOn: DateString;
+    student: {
+      studentId: UUIDString;
+      firstName: string;
+      lastName: string;
+      identifier: string;
+      email: string;
+      createdAt: TimestampString;
+      createdBy: UUIDString;
+      updatedAt?: TimestampString | null;
+      updatedBy?: UUIDString | null;
+    } & Student_Key;
+  } & CourseStudent_Key)[];
+}
+
+export interface GetCourseStudentsWithDetailsVariables {
+  courseId: UUIDString;
+  firebaseId: string;
 }
 
 export interface GetCourseVariables {
@@ -1116,6 +1141,7 @@ export interface GetStudentByIdData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -1135,6 +1161,7 @@ export interface GetStudentByIdentifierData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -1322,6 +1349,7 @@ export interface GetStudentsByFirstNameData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -1341,6 +1369,7 @@ export interface GetStudentsByLastNameData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -2136,6 +2165,7 @@ export interface UpdateStudentVariables {
   firstName?: string | null;
   lastName?: string | null;
   identifier?: string | null;
+  email?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -3753,6 +3783,18 @@ export const getCourseStudentsDetailRef: GetCourseStudentsDetailRef;
 
 export function getCourseStudentsDetail(vars: GetCourseStudentsDetailVariables): QueryPromise<GetCourseStudentsDetailData, GetCourseStudentsDetailVariables>;
 export function getCourseStudentsDetail(dc: DataConnect, vars: GetCourseStudentsDetailVariables): QueryPromise<GetCourseStudentsDetailData, GetCourseStudentsDetailVariables>;
+
+interface GetCourseStudentsWithDetailsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseStudentsWithDetailsVariables): QueryRef<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseStudentsWithDetailsVariables): QueryRef<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+  operationName: string;
+}
+export const getCourseStudentsWithDetailsRef: GetCourseStudentsWithDetailsRef;
+
+export function getCourseStudentsWithDetails(vars: GetCourseStudentsWithDetailsVariables): QueryPromise<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+export function getCourseStudentsWithDetails(dc: DataConnect, vars: GetCourseStudentsWithDetailsVariables): QueryPromise<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
 
 interface GetStudentEvaluationByIdRef {
   /* Allow users to create refs without passing in DataConnect */

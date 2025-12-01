@@ -1112,6 +1112,7 @@ mutation CreateStudent(
   $firstName: String!
   $lastName: String!
   $identifier: String!
+  $email: String!
   $createdBy: UUID!
   $firebaseId: String!
 ) @auth(expr: "firebaseId == auth.uid") {
@@ -1121,6 +1122,7 @@ mutation CreateStudent(
       firstName: $firstName
       lastName: $lastName
       identifier: $identifier
+      email: $email
       createdBy: $createdBy
     }
   )
@@ -1132,6 +1134,7 @@ mutation UpdateStudent(
   $firstName: String
   $lastName: String
   $identifier: String
+  $email: String
   $updatedBy: UUID!
   $updatedAt: Timestamp!
   $firebaseId: String!
@@ -1142,6 +1145,7 @@ mutation UpdateStudent(
       firstName: $firstName
       lastName: $lastName
       identifier: $identifier
+      email: $email
       updatedBy: $updatedBy
       updatedAt: $updatedAt
     }

@@ -94,7 +94,8 @@ class StudentStore {
     return this.getAllStudents().filter(student =>
       student.firstName.toLowerCase().includes(lowerQuery) ||
       student.lastName.toLowerCase().includes(lowerQuery) ||
-      student.identifier.toLowerCase().includes(lowerQuery)
+      student.identifier.toLowerCase().includes(lowerQuery) ||
+      student.email.toLowerCase().includes(lowerQuery)
     );
   }
 }

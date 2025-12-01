@@ -70,6 +70,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetStudentsByLastName*](#getstudentsbylastname)
   - [*GetStudentsByCourse*](#getstudentsbycourse)
   - [*GetCourseStudentsDetail*](#getcoursestudentsdetail)
+  - [*GetCourseStudentsWithDetails*](#getcoursestudentswithdetails)
   - [*GetStudentEvaluationById*](#getstudentevaluationbyid)
   - [*GetStudentEvaluationsByStudentId*](#getstudentevaluationsbystudentid)
   - [*GetStudentEvaluationsByIdentifier*](#getstudentevaluationsbyidentifier)
@@ -4526,6 +4527,7 @@ export interface GetAllStudentsByUserData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -4620,6 +4622,7 @@ export interface GetStudentByIdData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -4715,6 +4718,7 @@ export interface GetStudentByIdentifierData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -4810,6 +4814,7 @@ export interface GetStudentsByFirstNameData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -4905,6 +4910,7 @@ export interface GetStudentsByLastNameData {
     firstName: string;
     lastName: string;
     identifier: string;
+    email: string;
     createdAt: TimestampString;
     createdBy: UUIDString;
     updatedAt?: TimestampString | null;
@@ -5132,6 +5138,104 @@ export default function GetCourseStudentsDetailComponent() {
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
   const query = useGetCourseStudentsDetail(dataConnect, getCourseStudentsDetailVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.courseStudents);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetCourseStudentsWithDetails
+You can execute the `GetCourseStudentsWithDetails` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetCourseStudentsWithDetails(dc: DataConnect, vars: GetCourseStudentsWithDetailsVariables, options?: useDataConnectQueryOptions<GetCourseStudentsWithDetailsData>): UseDataConnectQueryResult<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetCourseStudentsWithDetails(vars: GetCourseStudentsWithDetailsVariables, options?: useDataConnectQueryOptions<GetCourseStudentsWithDetailsData>): UseDataConnectQueryResult<GetCourseStudentsWithDetailsData, GetCourseStudentsWithDetailsVariables>;
+```
+
+### Variables
+The `GetCourseStudentsWithDetails` Query requires an argument of type `GetCourseStudentsWithDetailsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetCourseStudentsWithDetailsVariables {
+  courseId: UUIDString;
+  firebaseId: string;
+}
+```
+### Return Type
+Recall that calling the `GetCourseStudentsWithDetails` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetCourseStudentsWithDetails` Query is of type `GetCourseStudentsWithDetailsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetCourseStudentsWithDetailsData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    enrolledOn: DateString;
+    student: {
+      studentId: UUIDString;
+      firstName: string;
+      lastName: string;
+      identifier: string;
+      email: string;
+      createdAt: TimestampString;
+      createdBy: UUIDString;
+      updatedAt?: TimestampString | null;
+      updatedBy?: UUIDString | null;
+    } & Student_Key;
+  } & CourseStudent_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetCourseStudentsWithDetails`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetCourseStudentsWithDetailsVariables } from '@dataconnect/generated';
+import { useGetCourseStudentsWithDetails } from '@dataconnect/generated/react'
+
+export default function GetCourseStudentsWithDetailsComponent() {
+  // The `useGetCourseStudentsWithDetails` Query hook requires an argument of type `GetCourseStudentsWithDetailsVariables`:
+  const getCourseStudentsWithDetailsVars: GetCourseStudentsWithDetailsVariables = {
+    courseId: ..., 
+    firebaseId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetCourseStudentsWithDetails(getCourseStudentsWithDetailsVars);
+  // Variables can be defined inline as well.
+  const query = useGetCourseStudentsWithDetails({ courseId: ..., firebaseId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetCourseStudentsWithDetails(dataConnect, getCourseStudentsWithDetailsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseStudentsWithDetails(getCourseStudentsWithDetailsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseStudentsWithDetails(dataConnect, getCourseStudentsWithDetailsVars, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {
@@ -12059,6 +12163,7 @@ export interface CreateStudentVariables {
   firstName: string;
   lastName: string;
   identifier: string;
+  email: string;
   createdBy: UUIDString;
   firebaseId: string;
 }
@@ -12114,12 +12219,13 @@ export default function CreateStudentComponent() {
     firstName: ..., 
     lastName: ..., 
     identifier: ..., 
+    email: ..., 
     createdBy: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(createStudentVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., createdBy: ..., firebaseId: ..., });
+  mutation.mutate({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., email: ..., createdBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -12163,6 +12269,7 @@ export interface UpdateStudentVariables {
   firstName?: string | null;
   lastName?: string | null;
   identifier?: string | null;
+  email?: string | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -12219,13 +12326,14 @@ export default function UpdateStudentComponent() {
     firstName: ..., // optional
     lastName: ..., // optional
     identifier: ..., // optional
+    email: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(updateStudentVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ studentId: ..., firstName: ..., lastName: ..., identifier: ..., email: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

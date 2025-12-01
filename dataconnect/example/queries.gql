@@ -854,6 +854,7 @@ query GetAllStudentsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: "fi
     firstName
     lastName
     identifier
+    email
     createdAt
     createdBy
     updatedAt
@@ -868,6 +869,7 @@ query GetStudentById($userId: UUID!, $studentId: UUID!, $firebaseId: String!) @a
     firstName
     lastName
     identifier
+    email
     createdAt
     createdBy
     updatedAt
@@ -882,6 +884,7 @@ query GetStudentByIdentifier($userId: UUID!, $identifier: String!, $firebaseId: 
     firstName
     lastName
     identifier
+    email
     createdAt
     createdBy
     updatedAt
@@ -896,6 +899,7 @@ query GetStudentsByFirstName($userId: UUID!, $firstName: String!, $firebaseId: S
     firstName
     lastName
     identifier
+    email
     createdAt
     createdBy
     updatedAt
@@ -910,6 +914,7 @@ query GetStudentsByLastName($userId: UUID!, $lastName: String!, $firebaseId: Str
     firstName
     lastName
     identifier
+    email
     createdAt
     createdBy
     updatedAt
@@ -940,6 +945,25 @@ query GetCourseStudentsDetail($courseId: UUID!) @auth(level: USER) {
     createdBy
     updatedAt
     updatedBy
+  }
+}
+
+# Obtener estudiantes inscritos en un curso con sus datos completos
+query GetCourseStudentsWithDetails($courseId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
+  courseStudents(where: { courseId: { eq: $courseId }, deletedAt: { eq: null } }) {
+    courseStudentId
+    enrolledOn
+    student {
+      studentId
+      firstName
+      lastName
+      identifier
+      email
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+    }
   }
 }
 

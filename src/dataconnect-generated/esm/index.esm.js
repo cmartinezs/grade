@@ -1414,6 +1414,17 @@ export function getCourseStudentsDetail(dcOrVars, vars) {
   return executeQuery(getCourseStudentsDetailRef(dcOrVars, vars));
 }
 
+export const getCourseStudentsWithDetailsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourseStudentsWithDetails', inputVars);
+}
+getCourseStudentsWithDetailsRef.operationName = 'GetCourseStudentsWithDetails';
+
+export function getCourseStudentsWithDetails(dcOrVars, vars) {
+  return executeQuery(getCourseStudentsWithDetailsRef(dcOrVars, vars));
+}
+
 export const getStudentEvaluationByIdRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

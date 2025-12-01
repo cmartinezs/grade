@@ -5,6 +5,13 @@
 
 import { generateUUID } from './uuid';
 import { Student, StudentEnrollment, CreateStudentInput } from '@/types/student';
+import { 
+  createStudent, 
+  enrollStudentInCourse, 
+  getCourseStudentsWithDetails,
+  getAllStudentsByUser,
+  unenrollStudentFromCourse 
+} from '@/dataconnect-generated';
 
 // Import Data Connect generated functions when available
 // For now, we'll use placeholder implementations
@@ -17,12 +24,21 @@ export async function fetchStudentsFromDataConnect(
   firebaseUid: string
 ): Promise<Student[]> {
   try {
-    // TODO: Replace with actual Data Connect query
-    // const result = await executeGetAllStudentsByUserQuery({ userId, firebaseUid });
+    const result = await getAllStudentsByUser({ userId, firebaseId: firebaseUid });
     
-    // Placeholder: Return empty array
-    console.log('[STUDENT DATA-CONNECT] Fetching students for user:', userId);
-    return [];
+    return result.data.students.map(s => ({
+      studentId: s.studentId,
+      firstName: s.firstName,
+      lastName: s.lastName,
+      identifier: s.identifier,
+      email: s.email,
+      createdAt: new Date(s.createdAt),
+      createdBy: s.createdBy,
+      updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(s.createdAt),
+      updatedBy: s.updatedBy || s.createdBy,
+      deletedAt: null,
+      deletedBy: null,
+    }));
   } catch (error) {
     console.error('[STUDENT DATA-CONNECT] Error fetching students:', error);
     throw new Error('Error al cargar estudiantes desde Data-Connect');
@@ -37,13 +53,23 @@ export async function fetchCourseEnrollmentsFromDataConnect(
   firebaseUid: string
 ): Promise<StudentEnrollment[]> {
   try {
-    // TODO: Replace with actual Data Connect query
-    // This should join course_students with students table
-    // const result = await executeGetStudentsByCourseQuery({ courseId, firebaseUid });
+    const result = await getCourseStudentsWithDetails({ courseId, firebaseId: firebaseUid });
     
-    // Placeholder: Return empty array
-    console.log('[STUDENT DATA-CONNECT] Fetching enrollments for course:', courseId);
-    return [];
+    return result.data.courseStudents.map(cs => ({
+      studentId: cs.student.studentId,
+      firstName: cs.student.firstName,
+      lastName: cs.student.lastName,
+      identifier: cs.student.identifier,
+      email: cs.student.email,
+      enrollmentId: cs.courseStudentId,
+      enrolledOn: new Date(cs.enrolledOn),
+      createdAt: new Date(cs.student.createdAt),
+      createdBy: cs.student.createdBy,
+      updatedAt: cs.student.updatedAt ? new Date(cs.student.updatedAt) : new Date(cs.student.createdAt),
+      updatedBy: cs.student.updatedBy || cs.student.createdBy,
+      deletedAt: null,
+      deletedBy: null,
+    }));
   } catch (error) {
     console.error('[STUDENT DATA-CONNECT] Error fetching enrollments:', error);
     throw new Error('Error al cargar inscripciones desde Data-Connect');
@@ -62,22 +88,22 @@ export async function createStudentInDataConnect(
     const studentId = generateUUID();
     const now = new Date();
 
-    // TODO: Replace with actual Data Connect mutation
-    // const result = await executeCreateStudentMutation({
-    //   studentId,
-    //   firstName: input.firstName,
-    //   lastName: input.lastName,
-    //   identifier: input.identifier,
-    //   createdBy: userId,
-    //   firebaseId: firebaseUid,
-    // });
+    await createStudent({
+      studentId,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      identifier: input.identifier,
+      email: input.email,
+      createdBy: userId,
+      firebaseId: firebaseUid,
+    });
 
-    // Placeholder: Create mock student
     const newStudent: Student = {
       studentId,
       firstName: input.firstName,
       lastName: input.lastName,
       identifier: input.identifier,
+      email: input.email,
       createdAt: now,
       createdBy: userId,
       updatedAt: now,
@@ -105,17 +131,16 @@ export async function enrollStudentInCourseInDataConnect(
 ): Promise<{ courseStudentId: string }> {
   try {
     const courseStudentId = generateUUID();
-    const enrolledOn = new Date();
+    const enrolledOn = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
-    // TODO: Replace with actual Data Connect mutation
-    // const result = await executeEnrollStudentInCourseMutation({
-    //   courseStudentId,
-    //   courseId,
-    //   studentId,
-    //   enrolledOn: enrolledOn.toISOString().split('T')[0], // Date format: YYYY-MM-DD
-    //   createdBy: userId,
-    //   firebaseId: firebaseUid,
-    // });
+    await enrollStudentInCourse({
+      courseStudentId,
+      courseId,
+      studentId,
+      enrolledOn,
+      createdBy: userId,
+      firebaseId: firebaseUid,
+    });
 
     console.log('[STUDENT DATA-CONNECT] Enrolled student in course:', {
       courseStudentId,
@@ -139,15 +164,14 @@ export async function unenrollStudentFromCourseInDataConnect(
   firebaseUid: string
 ): Promise<void> {
   try {
-    const deletedAt = new Date();
+    const deletedAt = new Date().toISOString();
 
-    // TODO: Replace with actual Data Connect mutation
-    // const result = await executeUnenrollStudentFromCourseMutation({
-    //   courseStudentId,
-    //   deletedAt,
-    //   deletedBy: userId,
-    //   firebaseId: firebaseUid,
-    // });
+    await unenrollStudentFromCourse({
+      courseStudentId,
+      deletedAt,
+      deletedBy: userId,
+      firebaseId: firebaseUid,
+    });
 
     console.log('[STUDENT DATA-CONNECT] Unenrolled student from course:', courseStudentId);
   } catch (error) {

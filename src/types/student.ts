@@ -9,6 +9,7 @@ export interface Student {
   firstName: string;
   lastName: string;
   identifier: string; // RUT, ID, etc. - Unique
+  email: string;
   createdAt: Date;
   createdBy: string;
   updatedAt: Date;
@@ -42,6 +43,7 @@ export interface CreateStudentInput {
   firstName: string;
   lastName: string;
   identifier: string;
+  email: string;
 }
 
 // Input for editing a student
@@ -49,6 +51,7 @@ export interface EditStudentInput {
   firstName: string;
   lastName: string;
   identifier: string;
+  email: string;
 }
 
 // Input for enrolling a student in a course

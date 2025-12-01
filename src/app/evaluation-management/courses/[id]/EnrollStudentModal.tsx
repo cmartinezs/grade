@@ -40,6 +40,7 @@ export default function EnrollStudentModal({
     firstName: '',
     lastName: '',
     identifier: '',
+    email: '',
   });
 
   // Load all students when modal opens
@@ -77,7 +78,7 @@ export default function EnrollStudentModal({
     setActiveTab('existing');
     setSelectedStudentId('');
     setSearchQuery('');
-    setNewStudent({ firstName: '', lastName: '', identifier: '' });
+    setNewStudent({ firstName: '', lastName: '', identifier: '', email: '' });
     setError('');
     setSuccess('');
   };
@@ -151,6 +152,16 @@ export default function EnrollStudentModal({
     }
     if (!newStudent.identifier.trim()) {
       setError('El RUT/ID es requerido');
+      return;
+    }
+    if (!newStudent.email?.trim()) {
+      setError('El email es requerido');
+      return;
+    }
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newStudent.email)) {
+      setError('El email no tiene un formato válido');
       return;
     }
 
@@ -231,7 +242,8 @@ export default function EnrollStudentModal({
     return (
       student.firstName.toLowerCase().includes(query) ||
       student.lastName.toLowerCase().includes(query) ||
-      student.identifier.toLowerCase().includes(query)
+      student.identifier.toLowerCase().includes(query) ||
+      student.email.toLowerCase().includes(query)
     );
   });
 
@@ -268,7 +280,7 @@ export default function EnrollStudentModal({
                   <InputGroup.Text>🔍</InputGroup.Text>
                   <Form.Control
                     type="text"
-                    placeholder="Buscar por nombre, apellido o RUT/ID..."
+                    placeholder="Buscar por nombre, apellido, RUT/ID o email..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -297,6 +309,7 @@ export default function EnrollStudentModal({
                           <br />
                           <small className="text-muted">
                             <code>{student.identifier}</code>
+                            {' • '}{student.email}
                           </small>
                         </div>
                         {selectedStudentId === student.studentId && (
@@ -328,6 +341,17 @@ export default function EnrollStudentModal({
                   placeholder="Ingresa el apellido"
                   value={newStudent.lastName}
                   onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Email *</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Ingresa el email"
+                  value={newStudent.email}
+                  onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
                   required
                 />
               </Form.Group>
@@ -365,7 +389,7 @@ export default function EnrollStudentModal({
             disabled={
               isSubmitting ||
               (activeTab === 'existing' && !selectedStudentId) ||
-              (activeTab === 'new' && (!newStudent.firstName || !newStudent.lastName || !newStudent.identifier))
+              (activeTab === 'new' && (!newStudent.firstName || !newStudent.lastName || !newStudent.identifier || !newStudent.email))
             }
           >
             {isSubmitting ? (

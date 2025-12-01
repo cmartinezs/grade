@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Container, Row, Col, Card, Badge, Button, Alert } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -33,6 +33,32 @@ export default function CourseDetailPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [showEnrollModal, setShowEnrollModal] = useState(false);
+
+  // Load students function with useCallback to prevent recreating on every render
+  const loadStudents = useCallback(async () => {
+    if (!courseId || !user?.firebaseUid) return;
+
+    try {
+      // Try to get from cache first
+      let enrollments = studentStore.getEnrollmentsByCourse(courseId);
+      
+      // If cache is empty, load from Data-Connect
+      if (enrollments.length === 0) {
+        enrollments = await fetchCourseEnrollmentsFromDataConnect(courseId, user.firebaseUid);
+        studentStore.setEnrollmentsByCourse(courseId, enrollments);
+      }
+
+      setStudents(enrollments);
+      setTotalStudents(enrollments.length);
+      setTotalPages(Math.ceil(enrollments.length / PAGE_SIZE));
+    } catch (err) {
+      console.error('Error loading students:', err);
+      // Don't set error state, just show empty list
+      setStudents([]);
+      setTotalStudents(0);
+      setTotalPages(0);
+    }
+  }, [courseId, user?.firebaseUid]);
 
   // Load course data
   useEffect(() => {
@@ -70,32 +96,7 @@ export default function CourseDetailPage() {
     };
 
     loadCourseData();
-  }, [courseId, user?.id, user?.firebaseUid]);
-
-  const loadStudents = async () => {
-    if (!courseId || !user?.firebaseUid) return;
-
-    try {
-      // Try to get from cache first
-      let enrollments = studentStore.getEnrollmentsByCourse(courseId);
-      
-      // If cache is empty, load from Data-Connect
-      if (enrollments.length === 0) {
-        enrollments = await fetchCourseEnrollmentsFromDataConnect(courseId, user.firebaseUid);
-        studentStore.setEnrollmentsByCourse(courseId, enrollments);
-      }
-
-      setStudents(enrollments);
-      setTotalStudents(enrollments.length);
-      setTotalPages(Math.ceil(enrollments.length / PAGE_SIZE));
-    } catch (err) {
-      console.error('Error loading students:', err);
-      // Don't set error state, just show empty list
-      setStudents([]);
-      setTotalStudents(0);
-      setTotalPages(0);
-    }
-  };
+  }, [courseId, user?.id, user?.firebaseUid, loadStudents]);
 
   const handleEnrollSuccess = (enrollment: StudentEnrollment) => {
     // Add new enrollment to the list
@@ -123,7 +124,7 @@ export default function CourseDetailPage() {
       key: 'identifier',
       label: 'RUT/ID',
       render: (value) => <code className="text-primary">{String(value)}</code>,
-      width: '150px',
+      width: '130px',
     },
     {
       key: 'firstName',
@@ -136,6 +137,11 @@ export default function CourseDetailPage() {
       render: (value) => <strong>{String(value)}</strong>,
     },
     {
+      key: 'email',
+      label: 'Email',
+      render: (value) => <span className="text-muted small">{String(value)}</span>,
+    },
+    {
       key: 'enrolledOn',
       label: 'Fecha Matrícula',
       render: (value) => {
@@ -143,7 +149,7 @@ export default function CourseDetailPage() {
         const date = new Date(value as string | Date);
         return <span className="text-muted small">{date.toLocaleDateString()}</span>;
       },
-      width: '140px',
+      width: '130px',
     },
   ];
 
