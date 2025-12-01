@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Badge } from 'react-bootstrap';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,6 +19,7 @@ import { Course } from '@/types/course';
 const PAGE_SIZE = 10;
 
 export default function CoursesPage() {
+  const router = useRouter();
   const { user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -162,6 +164,13 @@ export default function CoursesPage() {
   ];
 
   const actions: ActionButton<Course>[] = [
+    {
+      icon: '👁️',
+      label: 'Ver Detalle',
+      onClick: (course) => router.push(`/evaluation-management/courses/${course.course_id}`),
+      variant: 'outline-info',
+      title: 'Ver detalle del curso',
+    },
     {
       icon: '✏️',
       label: 'Editar',

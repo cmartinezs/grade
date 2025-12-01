@@ -108,6 +108,7 @@ export const fetchCoursesFromDataConnect = async (_userId: string, _firebaseId: 
     courseId: string;
     name: string;
     code: string;
+    section?: string;
     institutionName: string;
     levelId: string;
     userId: string;
@@ -138,6 +139,7 @@ export const fetchCoursesFromDataConnect = async (_userId: string, _firebaseId: 
         courseId: course.courseId,
         name: course.name,
         code: course.code,
+        section: course.section,
         institutionName: course.institutionName,
         levelId: course.levelId,
         userId: course.userId,
