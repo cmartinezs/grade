@@ -1,5 +1,39 @@
 extend type Course {
   """
+  ✨ List `CourseStudent` objects in a one-to-many relationship (where `CourseStudent`.`course` is this object).
+  """
+  courseStudents_on_course(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CourseStudent_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CourseStudent_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CourseStudent_Having
+  ): [CourseStudent!]! @fdc_generated(from: "CourseStudent.course", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
   _metadata: _Metadata @fdc_generated(from: "Course", purpose: METADATA_FIELD)
@@ -1554,6 +1588,40 @@ extend type QuestionType {
 }
 extend type Student {
   """
+  ✨ List `CourseStudent` objects in a one-to-many relationship (where `CourseStudent`.`student` is this object).
+  """
+  courseStudents_on_student(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CourseStudent_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CourseStudent_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CourseStudent_Having
+  ): [CourseStudent!]! @fdc_generated(from: "CourseStudent.student", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
   _metadata: _Metadata @fdc_generated(from: "Student", purpose: METADATA_FIELD)
@@ -1597,6 +1665,15 @@ extend type Student {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Student.deletedBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Student` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Student.email", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Student` table where the `firstName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """

@@ -331,6 +331,10 @@ input Course_Filter {
   ✨ Generated from Field `Course`.`userId` of type `UUID!`
   """
   userId: UUID_Filter
+  """
+  ✨ Generated from Field `Course`.`courseStudents_on_course` of type `[CourseStudent!]!`
+  """
+  courseStudents_on_course: CourseStudent_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'Course'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -881,6 +885,22 @@ input CourseStudent_Data {
   """
   courseId_expr: UUID_Expr
   """
+  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
+  """
+  studentId: UUID
+  """
+  ✨ `_expr` server value variant of `studentId` (✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`)
+  """
+  studentId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseStudent`.`course` of type `Course!`
+  """
+  course: Course_Key
+  """
+  ✨ Generated from Field `CourseStudent`.`student` of type `Student!`
+  """
+  student: Student_Key
+  """
   ✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp
@@ -945,14 +965,6 @@ input CourseStudent_Data {
   """
   enrolledOn_update: [Date_Update!]
   """
-  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
-  """
-  studentId: UUID
-  """
-  ✨ `_expr` server value variant of `studentId` (✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`)
-  """
-  studentId_expr: UUID_Expr
-  """
   ✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`
   """
   updatedAt: Timestamp
@@ -1002,6 +1014,18 @@ input CourseStudent_Filter {
   """
   courseId: UUID_Filter
   """
+  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
+  """
+  studentId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`course` of type `Course!`
+  """
+  course: Course_Filter
+  """
+  ✨ Generated from Field `CourseStudent`.`student` of type `Student!`
+  """
+  student: Student_Filter
+  """
   ✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp_Filter
@@ -1021,10 +1045,6 @@ input CourseStudent_Filter {
   ✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`
   """
   enrolledOn: Date_Filter
-  """
-  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
-  """
-  studentId: UUID_Filter
   """
   ✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`
   """
@@ -1183,6 +1203,18 @@ input CourseStudent_Order {
   """
   courseId: OrderDirection
   """
+  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
+  """
+  studentId: OrderDirection
+  """
+  ✨ Generated from Field `CourseStudent`.`course` of type `Course!`
+  """
+  course: Course_Order
+  """
+  ✨ Generated from Field `CourseStudent`.`student` of type `Student!`
+  """
+  student: Student_Order
+  """
   ✨ Generated from Field `CourseStudent`.`createdAt` of type `Timestamp!`
   """
   createdAt: OrderDirection
@@ -1202,10 +1234,6 @@ input CourseStudent_Order {
   ✨ Generated from Field `CourseStudent`.`enrolledOn` of type `Date!`
   """
   enrolledOn: OrderDirection
-  """
-  ✨ Generated from Field `CourseStudent`.`studentId` of type `UUID!`
-  """
-  studentId: OrderDirection
   """
   ✨ Generated from Field `CourseStudent`.`updatedAt` of type `Timestamp`
   """
@@ -4680,6 +4708,14 @@ input Student_Data {
   """
   deletedBy_expr: UUID_Expr
   """
+  ✨ Generated from Field `Student`.`email` of type `String!`
+  """
+  email: String
+  """
+  ✨ `_expr` server value variant of `email` (✨ Generated from Field `Student`.`email` of type `String!`)
+  """
+  email_expr: String_Expr
+  """
   ✨ Generated from Field `Student`.`firstName` of type `String!`
   """
   firstName: String
@@ -4765,6 +4801,10 @@ input Student_Filter {
   """
   deletedBy: UUID_Filter
   """
+  ✨ Generated from Field `Student`.`email` of type `String!`
+  """
+  email: String_Filter
+  """
   ✨ Generated from Field `Student`.`firstName` of type `String!`
   """
   firstName: String_Filter
@@ -4784,6 +4824,10 @@ input Student_Filter {
   ✨ Generated from Field `Student`.`updatedBy` of type `UUID`
   """
   updatedBy: UUID_Filter
+  """
+  ✨ Generated from Field `Student`.`courseStudents_on_student` of type `[CourseStudent!]!`
+  """
+  courseStudents_on_student: CourseStudent_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'Student'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -4838,6 +4882,10 @@ input Student_Having {
   ✨ Generated from Field `Student`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Student`.`email_count` of type `Int!`
+  """
+  email_count: Int_Filter
   """
   ✨ Generated from Field `Student`.`firstName_count` of type `Int!`
   """
@@ -4938,6 +4986,10 @@ input Student_Order {
   """
   deletedBy: OrderDirection
   """
+  ✨ Generated from Field `Student`.`email` of type `String!`
+  """
+  email: OrderDirection
+  """
   ✨ Generated from Field `Student`.`firstName` of type `String!`
   """
   firstName: OrderDirection
@@ -4977,6 +5029,10 @@ input Student_Order {
   ✨ Generated from Field `Student`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Student`.`email_count` of type `Int!`
+  """
+  email_count: OrderDirection
   """
   ✨ Generated from Field `Student`.`firstName_count` of type `Int!`
   """
