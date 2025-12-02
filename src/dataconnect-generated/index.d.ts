@@ -608,6 +608,39 @@ export interface GetCourseEvaluationByIdVariables {
   courseEvaluationId: UUIDString;
 }
 
+export interface GetCourseEvaluationDetailsData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    createdAt: TimestampString;
+    createdBy: UUIDString;
+  } & CourseEvaluation_Key)[];
+    courses: ({
+      courseId: UUIDString;
+      name: string;
+      code: string;
+      section?: string | null;
+      institutionName: string;
+      active: boolean;
+    } & Course_Key)[];
+      evaluations: ({
+        evaluationId: UUIDString;
+        title: string;
+        gradeScale: string;
+        state: string;
+        allowQuestionSubset: boolean;
+        questionSubsetPercent?: number | null;
+      } & Evaluation_Key)[];
+}
+
+export interface GetCourseEvaluationDetailsVariables {
+  courseId: UUIDString;
+  evaluationId: UUIDString;
+}
+
 export interface GetCourseEvaluationsByUserData {
   courseEvaluations: ({
     courseEvaluationId: UUIDString;
@@ -3996,4 +4029,16 @@ export const getCourseEvaluationByAccessCodeRef: GetCourseEvaluationByAccessCode
 
 export function getCourseEvaluationByAccessCode(vars: GetCourseEvaluationByAccessCodeVariables): QueryPromise<GetCourseEvaluationByAccessCodeData, GetCourseEvaluationByAccessCodeVariables>;
 export function getCourseEvaluationByAccessCode(dc: DataConnect, vars: GetCourseEvaluationByAccessCodeVariables): QueryPromise<GetCourseEvaluationByAccessCodeData, GetCourseEvaluationByAccessCodeVariables>;
+
+interface GetCourseEvaluationDetailsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseEvaluationDetailsVariables): QueryRef<GetCourseEvaluationDetailsData, GetCourseEvaluationDetailsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseEvaluationDetailsVariables): QueryRef<GetCourseEvaluationDetailsData, GetCourseEvaluationDetailsVariables>;
+  operationName: string;
+}
+export const getCourseEvaluationDetailsRef: GetCourseEvaluationDetailsRef;
+
+export function getCourseEvaluationDetails(vars: GetCourseEvaluationDetailsVariables): QueryPromise<GetCourseEvaluationDetailsData, GetCourseEvaluationDetailsVariables>;
+export function getCourseEvaluationDetails(dc: DataConnect, vars: GetCourseEvaluationDetailsVariables): QueryPromise<GetCourseEvaluationDetailsData, GetCourseEvaluationDetailsVariables>;
 

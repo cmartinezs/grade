@@ -34,6 +34,8 @@ export default function CoursesPage() {
   // Invalidate cache when component mounts to ensure fresh data from Data-Connect
   useEffect(() => {
     courseStore.invalidateCache();
+    // Load levels to ensure they're available for display
+    levelStore.loadLevels();
   }, []);
 
   // Load courses when page or search changes

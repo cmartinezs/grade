@@ -1590,3 +1590,14 @@ export function getCourseEvaluationByAccessCode(dcOrVars, vars) {
   return executeQuery(getCourseEvaluationByAccessCodeRef(dcOrVars, vars));
 }
 
+export const getCourseEvaluationDetailsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourseEvaluationDetails', inputVars);
+}
+getCourseEvaluationDetailsRef.operationName = 'GetCourseEvaluationDetails';
+
+export function getCourseEvaluationDetails(dcOrVars, vars) {
+  return executeQuery(getCourseEvaluationDetailsRef(dcOrVars, vars));
+}
+

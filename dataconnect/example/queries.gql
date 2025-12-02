@@ -1161,3 +1161,36 @@ query GetCourseEvaluationByAccessCode($accessCode: String!) @auth(level: USER) {
     }
   }
 }
+
+# ===================================================================
+# STUDENT QUERIES (Para la app móvil de estudiantes)
+# ===================================================================
+
+# Obtener detalles de CourseEvaluation con datos de Course y Evaluation
+query GetCourseEvaluationDetails($courseId: UUID!, $evaluationId: UUID!) @auth(level: USER) {
+  courseEvaluations(where: { courseId: { eq: $courseId }, evaluationId: { eq: $evaluationId } }) {
+    courseEvaluationId
+    courseId
+    evaluationId
+    scheduledDate
+    durationMinutes
+    createdAt
+    createdBy
+  }
+  courses(where: { courseId: { eq: $courseId } }) {
+    courseId
+    name
+    code
+    section
+    institutionName
+    active
+  }
+  evaluations(where: { evaluationId: { eq: $evaluationId } }) {
+    evaluationId
+    title
+    gradeScale
+    state
+    allowQuestionSubset
+    questionSubsetPercent
+  }
+}
