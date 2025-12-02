@@ -14,6 +14,8 @@ export interface ParsedQuestionRow {
   tema: string;
   dificultad: string;
   taxonomia: string;
+  puntajeParcial: boolean;
+  isPublica: boolean;
   opciones: Array<{ texto: string; correcta: boolean }>;
   raw: string[];
 }
@@ -58,6 +60,8 @@ export const QUESTION_EXPECTED_HEADERS = [
   'tema',
   'dificultad',
   'taxonomia',
+  'puntaje_parcial',
+  'es_publica',
   'opcion_1',
   'opcion_1_correcta',
   'opcion_2',
@@ -122,11 +126,15 @@ export const parseBoolean = (value: string): boolean | null => {
 export const parseQuestionRowToObject = (line: string): ParsedQuestionRow => {
   const values = parseCSVLine(line);
   
-  // Parsear las opciones (hasta 5)
+  // Parsear puntaje_parcial e is_publica (columnas 7 y 8)
+  const puntajeParcial = parseBoolean(values[7] || '') === true;
+  const isPublica = parseBoolean(values[8] || '') === true;
+  
+  // Parsear las opciones (hasta 5) - ahora empiezan en columna 9
   const opciones: Array<{ texto: string; correcta: boolean }> = [];
   for (let i = 0; i < 5; i++) {
-    const textoIdx = 7 + (i * 2);  // 7, 9, 11, 13, 15
-    const correctaIdx = 8 + (i * 2); // 8, 10, 12, 14, 16
+    const textoIdx = 9 + (i * 2);  // 9, 11, 13, 15, 17
+    const correctaIdx = 10 + (i * 2); // 10, 12, 14, 16, 18
     
     const texto = values[textoIdx] || '';
     const correctaRaw = values[correctaIdx] || '';
@@ -148,6 +156,8 @@ export const parseQuestionRowToObject = (line: string): ParsedQuestionRow => {
     tema: values[4] || '',
     dificultad: values[5] || '',
     taxonomia: values[6] || '',
+    puntajeParcial,
+    isPublica,
     opciones,
     raw: values
   };
@@ -168,8 +178,8 @@ export const validateQuestionHeaders = (headerLine: string): string[] => {
     errors.push(`Se esperan al menos ${QUESTION_EXPECTED_HEADERS.length} columnas, pero se encontraron ${headers.length}`);
   }
   
-  // Validar los primeros 7 headers obligatorios más estrictos
-  const requiredHeaders = QUESTION_EXPECTED_HEADERS.slice(0, 7);
+  // Validar los primeros 9 headers obligatorios más estrictos (incluyendo puntaje_parcial e is_publica)
+  const requiredHeaders = QUESTION_EXPECTED_HEADERS.slice(0, 9);
   requiredHeaders.forEach((expected, idx) => {
     if (headers[idx] !== expected) {
       errors.push(`Columna ${idx + 1}: se esperaba "${expected}" pero se encontró "${headers[idx] || '(vacío)'}"`);
@@ -178,7 +188,7 @@ export const validateQuestionHeaders = (headerLine: string): string[] => {
   
   // Validar estructura de opciones (menos estricto, solo verificar patrón)
   for (let i = 1; i <= 5; i++) {
-    const opcionIdx = 7 + ((i - 1) * 2);
+    const opcionIdx = 9 + ((i - 1) * 2);  // Ahora empiezan en 9
     const correctaIdx = opcionIdx + 1;
     
     if (headers[opcionIdx] && headers[opcionIdx] !== `opcion_${i}`) {

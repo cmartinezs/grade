@@ -51,6 +51,8 @@ export interface CreateQuestionInput {
   difficulty_fk: DifficultyLevel;
   learning_outcome_fk?: string | null;
   options: CreateQuestionOptionInput[];
+  allowPartialScore?: boolean;
+  isPublic?: boolean;
 }
 
 export interface CreateQuestionOptionInput {

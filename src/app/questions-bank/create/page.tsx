@@ -53,6 +53,8 @@ export default function CreateQuestionPage() {
     { text: '', is_correct: false, position: 1 },
     { text: '', is_correct: false, position: 2 },
   ]);
+  const [allowPartialScore, setAllowPartialScore] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
 
   // UI state
   const [validationErrors, setValidationErrors] = useState<QuestionValidationError[]>([]);
@@ -296,6 +298,8 @@ export default function CreateQuestionPage() {
         difficulty_fk: difficulty,
         options: options,
         learning_outcome_fk: selectedTaxonomy || null,
+        allowPartialScore: allowPartialScore,
+        isPublic: isPublic,
       };
 
       if (!user?.firebaseUid || !user?.email) {
@@ -469,6 +473,10 @@ export default function CreateQuestionPage() {
                     onTaxonomyChange={setSelectedTaxonomy}
                     difficulty={difficulty}
                     onDifficultyChange={setDifficulty}
+                    allowPartialScore={allowPartialScore}
+                    onAllowPartialScoreChange={setAllowPartialScore}
+                    isPublic={isPublic}
+                    onIsPublicChange={setIsPublic}
                     options={options}
                     onOptionTextChange={handleOptionTextChange}
                     onOptionCorrectChange={handleOptionCorrectChange}

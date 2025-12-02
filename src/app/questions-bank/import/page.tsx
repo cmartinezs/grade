@@ -295,6 +295,8 @@ export default function ImportQuestionsPage() {
         'tema',
         'dificultad',
         'taxonomia',
+        'puntaje_parcial',
+        'es_publica',
         'opcion_1',
         'opcion_1_correcta',
         'opcion_2',
@@ -321,6 +323,8 @@ export default function ImportQuestionsPage() {
         exampleTopic,
         exampleDifficulty,
         exampleTaxonomy,
+        'NO',
+        'NO',
         'Santiago',
         'SI',
         'Valparaíso',
@@ -413,8 +417,8 @@ export default function ImportQuestionsPage() {
           questionTypeId,
           taxonomyId,
           userId: user.id,
-          isPublic: false,
-          allowPartialScore: false,
+          isPublic: parsedRow.isPublica,
+          allowPartialScore: parsedRow.puntajeParcial,
           firebaseId: user.firebaseUid,
         });
 
@@ -737,6 +741,16 @@ export default function ImportQuestionsPage() {
                       <tr>
                         <td><code>taxonomia</code></td>
                         <td>Código de taxonomía (ver panel derecho)</td>
+                        <td><Badge bg="warning">Sí</Badge></td>
+                      </tr>
+                      <tr>
+                        <td><code>puntaje_parcial</code></td>
+                        <td>SI/NO habilita puntaje parcial para opción múltiple</td>
+                        <td><Badge bg="warning">Sí</Badge></td>
+                      </tr>
+                      <tr>
+                        <td><code>es_publica</code></td>
+                        <td>SI/NO hace la pregunta visible para otros usuarios</td>
                         <td><Badge bg="warning">Sí</Badge></td>
                       </tr>
                       <tr>

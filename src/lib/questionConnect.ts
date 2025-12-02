@@ -145,8 +145,8 @@ export async function createNewQuestion(
       questionTypeId,
       taxonomyId,
       userId,
-      isPublic: false,
-      allowPartialScore: false,
+      isPublic: input.isPublic ?? false,
+      allowPartialScore: input.allowPartialScore ?? false,
       firebaseId,
     };
     
@@ -201,8 +201,8 @@ export async function createNewQuestion(
       questionTypeId,
       taxonomyId,
       userId,
-      isPublic: false,
-      allowPartialScore: false,
+      isPublic: input.isPublic ?? false,
+      allowPartialScore: input.allowPartialScore ?? false,
       active: true,
       version: 1,
       options: createdOptions,

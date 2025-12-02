@@ -57,6 +57,12 @@ interface QuestionFormFieldsProps {
   difficulty: DifficultyLevel;
   onDifficultyChange: (value: DifficultyLevel) => void;
   
+  // Additional settings
+  allowPartialScore?: boolean;
+  onAllowPartialScoreChange?: (value: boolean) => void;
+  isPublic?: boolean;
+  onIsPublicChange?: (value: boolean) => void;
+  
   // Options
   options: CreateQuestionOptionInput[];
   onOptionTextChange: (index: number, text: string) => void;
@@ -87,6 +93,10 @@ export default function QuestionFormFields({
   onTaxonomyChange,
   difficulty,
   onDifficultyChange,
+  allowPartialScore = false,
+  onAllowPartialScoreChange,
+  isPublic = false,
+  onIsPublicChange,
   options,
   onOptionTextChange,
   onOptionCorrectChange,
@@ -324,7 +334,51 @@ export default function QuestionFormFields({
         required
       />
 
-      {/* 6. Options */}
+      {/* 6. Additional Settings */}
+      <Row className="mb-4">
+        <Col md={6}>
+          <div className="p-3 border rounded bg-light">
+            <Form.Check
+              type="switch"
+              id="allowPartialScore"
+              label={
+                <span>
+                  <strong>Puntaje Parcial</strong>
+                  <br />
+                  <small className="text-muted">
+                    Habilita puntaje parcial para preguntas de opción múltiple
+                  </small>
+                </span>
+              }
+              checked={allowPartialScore}
+              onChange={(e) => onAllowPartialScoreChange?.(e.target.checked)}
+              disabled={disabled}
+            />
+          </div>
+        </Col>
+        <Col md={6}>
+          <div className="p-3 border rounded bg-light">
+            <Form.Check
+              type="switch"
+              id="isPublic"
+              label={
+                <span>
+                  <strong>Pregunta Pública</strong>
+                  <br />
+                  <small className="text-muted">
+                    Hace visible la pregunta para otros usuarios
+                  </small>
+                </span>
+              }
+              checked={isPublic}
+              onChange={(e) => onIsPublicChange?.(e.target.checked)}
+              disabled={disabled}
+            />
+          </div>
+        </Col>
+      </Row>
+
+      {/* 7. Options */}
       <div className="mb-4">
         {!currentQuestionType && (
           <Alert variant="info" className="mb-0">
@@ -333,7 +387,7 @@ export default function QuestionFormFields({
         )}
       </div>
 
-      {/* 6.1. Options fields (if question type selected and minOptions > 0) */}
+      {/* 7.1. Options fields (if question type selected and minOptions > 0) */}
       {currentQuestionType && rules.minOptions > 0 && (
         <div className="mb-4">
           <div className="d-flex justify-content-between align-items-center mb-3">
