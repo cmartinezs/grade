@@ -8237,6 +8237,23 @@ export interface GetCourseEvaluationByAccessCodeData {
     scheduledDate: DateString;
     durationMinutes: number;
     accessCode?: string | null;
+    course: {
+      courseId: UUIDString;
+      name: string;
+      code: string;
+      section?: string | null;
+      institutionName: string;
+      levelId: UUIDString;
+    } & Course_Key;
+      evaluation: {
+        evaluationId: UUIDString;
+        title: string;
+        gradeScale: string;
+        state: string;
+        subjectId: UUIDString;
+        allowQuestionSubset: boolean;
+        questionSubsetPercent?: number | null;
+      } & Evaluation_Key;
   } & CourseEvaluation_Key)[];
 }
 ```

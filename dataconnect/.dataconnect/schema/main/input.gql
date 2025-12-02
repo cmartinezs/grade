@@ -332,6 +332,10 @@ input Course_Filter {
   """
   userId: UUID_Filter
   """
+  ✨ Generated from Field `Course`.`courseEvaluations_on_course` of type `[CourseEvaluation!]!`
+  """
+  courseEvaluations_on_course: CourseEvaluation_ListFilter
+  """
   ✨ Generated from Field `Course`.`courseStudents_on_course` of type `[CourseStudent!]!`
   """
   courseStudents_on_course: CourseStudent_ListFilter
@@ -638,14 +642,6 @@ input CourseEvaluation_Data {
   """
   courseEvaluationId_expr: UUID_Expr
   """
-  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
-  """
-  accessCode: String
-  """
-  ✨ `_expr` server value variant of `accessCode` (✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`)
-  """
-  accessCode_expr: String_Expr
-  """
   ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
   """
   courseId: UUID
@@ -653,6 +649,30 @@ input CourseEvaluation_Data {
   ✨ `_expr` server value variant of `courseId` (✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`)
   """
   courseId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID
+  """
+  ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`)
+  """
+  evaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseEvaluation`.`course` of type `Course!`
+  """
+  course: Course_Key
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluation` of type `Evaluation!`
+  """
+  evaluation: Evaluation_Key
+  """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
+  """
+  accessCode: String
+  """
+  ✨ `_expr` server value variant of `accessCode` (✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`)
+  """
+  accessCode_expr: String_Expr
   """
   ✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`
   """
@@ -689,14 +709,6 @@ input CourseEvaluation_Data {
   ✨ `_update` server value variant of `durationMinutes` (✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`)
   """
   durationMinutes_update: [Int_Update!]
-  """
-  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
-  """
-  evaluationId: UUID
-  """
-  ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`)
-  """
-  evaluationId_expr: UUID_Expr
   """
   ✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`
   """
@@ -735,13 +747,25 @@ input CourseEvaluation_Filter {
   """
   courseEvaluationId: UUID_Filter
   """
-  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
-  """
-  accessCode: String_Filter
-  """
   ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
   """
   courseId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`course` of type `Course!`
+  """
+  course: Course_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluation` of type `Evaluation!`
+  """
+  evaluation: Evaluation_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
+  """
+  accessCode: String_Filter
   """
   ✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`
   """
@@ -754,10 +778,6 @@ input CourseEvaluation_Filter {
   ✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`
   """
   durationMinutes: Int_Filter
-  """
-  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
-  """
-  evaluationId: UUID_Filter
   """
   ✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`
   """
@@ -900,13 +920,25 @@ input CourseEvaluation_Order {
   """
   courseEvaluationId: OrderDirection
   """
-  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
-  """
-  accessCode: OrderDirection
-  """
   ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
   """
   courseId: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
+  """
+  evaluationId: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`course` of type `Course!`
+  """
+  course: Course_Order
+  """
+  ✨ Generated from Field `CourseEvaluation`.`evaluation` of type `Evaluation!`
+  """
+  evaluation: Evaluation_Order
+  """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
+  """
+  accessCode: OrderDirection
   """
   ✨ Generated from Field `CourseEvaluation`.`createdAt` of type `Timestamp!`
   """
@@ -919,10 +951,6 @@ input CourseEvaluation_Order {
   ✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`
   """
   durationMinutes: OrderDirection
-  """
-  ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
-  """
-  evaluationId: OrderDirection
   """
   ✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`
   """
@@ -2398,6 +2426,10 @@ input Evaluation_Filter {
   ✨ Generated from Field `Evaluation`.`userId` of type `UUID!`
   """
   userId: UUID_Filter
+  """
+  ✨ Generated from Field `Evaluation`.`courseEvaluations_on_evaluation` of type `[CourseEvaluation!]!`
+  """
+  courseEvaluations_on_evaluation: CourseEvaluation_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'Evaluation'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.

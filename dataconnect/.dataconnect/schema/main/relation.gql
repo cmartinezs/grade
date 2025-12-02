@@ -1,5 +1,39 @@
 extend type Course {
   """
+  ✨ List `CourseEvaluation` objects in a one-to-many relationship (where `CourseEvaluation`.`course` is this object).
+  """
+  courseEvaluations_on_course(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CourseEvaluation_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CourseEvaluation_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CourseEvaluation_Having
+  ): [CourseEvaluation!]! @fdc_generated(from: "CourseEvaluation.course", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
   ✨ List `CourseStudent` objects in a one-to-many relationship (where `CourseStudent`.`course` is this object).
   """
   courseStudents_on_course(
@@ -701,6 +735,40 @@ extend type EducationalLevel {
   _id: ID! @fdc_generated(from: "EducationalLevel.levelId", purpose: GLOBAL_ID)
 }
 extend type Evaluation {
+  """
+  ✨ List `CourseEvaluation` objects in a one-to-many relationship (where `CourseEvaluation`.`evaluation` is this object).
+  """
+  courseEvaluations_on_evaluation(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CourseEvaluation_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CourseEvaluation_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CourseEvaluation_Having
+  ): [CourseEvaluation!]! @fdc_generated(from: "CourseEvaluation.evaluation", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """

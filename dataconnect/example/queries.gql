@@ -1140,5 +1140,24 @@ query GetCourseEvaluationByAccessCode($accessCode: String!) @auth(level: USER) {
     scheduledDate
     durationMinutes
     accessCode
+    # Datos del curso
+    course {
+      courseId
+      name
+      code
+      section
+      institutionName
+      levelId
+    }
+    # Datos de la evaluación
+    evaluation {
+      evaluationId
+      title
+      gradeScale
+      state
+      subjectId
+      allowQuestionSubset
+      questionSubsetPercent
+    }
   }
 }

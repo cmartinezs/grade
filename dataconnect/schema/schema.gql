@@ -494,8 +494,14 @@ type CourseEvaluation @table(name: "course_evaluations", key: "courseEvaluationI
   # ID del curso
   courseId: UUID! @col(name: "course_fk")
   
+  # Referencia al curso
+  course: Course! @ref(fields: "courseId", references: "courseId")
+  
   # ID de la evaluación
   evaluationId: UUID! @col(name: "evaluation_fk")
+  
+  # Referencia a la evaluación
+  evaluation: Evaluation! @ref(fields: "evaluationId", references: "evaluationId")
   
   # Fecha programada de la evaluación para este curso
   scheduledDate: Date! @col(name: "scheduled_date")
