@@ -206,6 +206,15 @@ extend type CourseEvaluation {
   """
   _count: Int! @fdc_generated(from: "CourseEvaluation.", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `CourseEvaluation` table where the `accessCode` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  accessCode_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CourseEvaluation.accessCode", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `CourseEvaluation` table where the `courseEvaluationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   courseEvaluationId_count(

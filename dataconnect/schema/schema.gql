@@ -503,6 +503,9 @@ type CourseEvaluation @table(name: "course_evaluations", key: "courseEvaluationI
   # Duración en minutos para este curso
   durationMinutes: Int! @col(name: "duration_minutes")
   
+  # Código de acceso corto para fallback del QR (generado automáticamente)
+  accessCode: String @col(name: "access_code")
+  
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")
   

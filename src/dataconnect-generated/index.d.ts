@@ -562,6 +562,21 @@ export interface GetCourseData {
   } & Course_Key)[];
 }
 
+export interface GetCourseEvaluationByAccessCodeData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    accessCode?: string | null;
+  } & CourseEvaluation_Key)[];
+}
+
+export interface GetCourseEvaluationByAccessCodeVariables {
+  accessCode: string;
+}
+
 export interface GetCourseEvaluationByIdData {
   courseEvaluations: ({
     courseEvaluationId: UUIDString;
@@ -727,6 +742,7 @@ export interface GetCoursesForEvaluationData {
     courseEvaluationId: UUIDString;
     courseId: UUIDString;
     evaluationId: UUIDString;
+    accessCode?: string | null;
     createdAt: TimestampString;
     createdBy: UUIDString;
   } & CourseEvaluation_Key)[];
@@ -1971,6 +1987,16 @@ export interface UpdateCourseData {
   course_update?: Course_Key | null;
 }
 
+export interface UpdateCourseEvaluationAccessCodeData {
+  courseEvaluation_update?: CourseEvaluation_Key | null;
+}
+
+export interface UpdateCourseEvaluationAccessCodeVariables {
+  courseEvaluationId: UUIDString;
+  accessCode: string;
+  firebaseId: string;
+}
+
 export interface UpdateCourseStudentData {
   courseStudent_update?: CourseStudent_Key | null;
 }
@@ -2885,6 +2911,18 @@ export const removeEvaluationFromCourseRef: RemoveEvaluationFromCourseRef;
 
 export function removeEvaluationFromCourse(vars: RemoveEvaluationFromCourseVariables): MutationPromise<RemoveEvaluationFromCourseData, RemoveEvaluationFromCourseVariables>;
 export function removeEvaluationFromCourse(dc: DataConnect, vars: RemoveEvaluationFromCourseVariables): MutationPromise<RemoveEvaluationFromCourseData, RemoveEvaluationFromCourseVariables>;
+
+interface UpdateCourseEvaluationAccessCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateCourseEvaluationAccessCodeVariables): MutationRef<UpdateCourseEvaluationAccessCodeData, UpdateCourseEvaluationAccessCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateCourseEvaluationAccessCodeVariables): MutationRef<UpdateCourseEvaluationAccessCodeData, UpdateCourseEvaluationAccessCodeVariables>;
+  operationName: string;
+}
+export const updateCourseEvaluationAccessCodeRef: UpdateCourseEvaluationAccessCodeRef;
+
+export function updateCourseEvaluationAccessCode(vars: UpdateCourseEvaluationAccessCodeVariables): MutationPromise<UpdateCourseEvaluationAccessCodeData, UpdateCourseEvaluationAccessCodeVariables>;
+export function updateCourseEvaluationAccessCode(dc: DataConnect, vars: UpdateCourseEvaluationAccessCodeVariables): MutationPromise<UpdateCourseEvaluationAccessCodeData, UpdateCourseEvaluationAccessCodeVariables>;
 
 interface CreateStudentRef {
   /* Allow users to create refs without passing in DataConnect */
@@ -3929,4 +3967,16 @@ export const getCoursesForEvaluationRef: GetCoursesForEvaluationRef;
 
 export function getCoursesForEvaluation(vars: GetCoursesForEvaluationVariables): QueryPromise<GetCoursesForEvaluationData, GetCoursesForEvaluationVariables>;
 export function getCoursesForEvaluation(dc: DataConnect, vars: GetCoursesForEvaluationVariables): QueryPromise<GetCoursesForEvaluationData, GetCoursesForEvaluationVariables>;
+
+interface GetCourseEvaluationByAccessCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetCourseEvaluationByAccessCodeVariables): QueryRef<GetCourseEvaluationByAccessCodeData, GetCourseEvaluationByAccessCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetCourseEvaluationByAccessCodeVariables): QueryRef<GetCourseEvaluationByAccessCodeData, GetCourseEvaluationByAccessCodeVariables>;
+  operationName: string;
+}
+export const getCourseEvaluationByAccessCodeRef: GetCourseEvaluationByAccessCodeRef;
+
+export function getCourseEvaluationByAccessCode(vars: GetCourseEvaluationByAccessCodeVariables): QueryPromise<GetCourseEvaluationByAccessCodeData, GetCourseEvaluationByAccessCodeVariables>;
+export function getCourseEvaluationByAccessCode(dc: DataConnect, vars: GetCourseEvaluationByAccessCodeVariables): QueryPromise<GetCourseEvaluationByAccessCodeData, GetCourseEvaluationByAccessCodeVariables>;
 

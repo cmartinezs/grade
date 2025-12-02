@@ -22,6 +22,7 @@ import ViewQuestionModal from '@/app/questions-bank/components/ViewQuestionModal
 import { QRCodeSVG } from 'qrcode.react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
+import { generateAccessCode } from '@/lib/evaluationCode';
 import {
   getEvaluationById,
   getUserByEmail,
@@ -33,6 +34,7 @@ import {
   updateEvaluationState,
   assignEvaluationToCourse,
   getCoursesForEvaluation,
+  updateCourseEvaluationAccessCode,
   listTopics,
   listUnits,
   listDifficulties,
@@ -125,6 +127,7 @@ interface CourseEvaluation {
   courseEvaluationId: string;
   courseId: string;
   evaluationId: string;
+  accessCode?: string | null;
 }
 
 interface CourseStudentCount {
@@ -167,14 +170,17 @@ export default function EvaluationDetailPage() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQrData] = useState<{ 
     courseId: string; 
-    evaluationId: string; 
+    evaluationId: string;
+    courseEvaluationId: string;
     courseName: string;
     courseCode: string;
     courseSection: string;
     institution: string;
     level: string;
     studentCount: number;
+    accessCode: string | null;
   } | null>(null);
+  const [generatingAccessCode, setGeneratingAccessCode] = useState(false);
 
   // Add question form state
   const [selectedQuestionId, setSelectedQuestionId] = useState('');
@@ -756,12 +762,14 @@ export default function EvaluationDetailPage() {
                                 setQrData({
                                   courseId: ac.courseId,
                                   evaluationId: evaluationId,
+                                  courseEvaluationId: ac.courseEvaluationId,
                                   courseName: courseInfo.name,
                                   courseCode: courseInfo.code,
                                   courseSection: courseInfo.section,
                                   institution: courseInfo.institution,
                                   level: courseInfo.level,
                                   studentCount: courseInfo.studentCount,
+                                  accessCode: ac.accessCode || null,
                                 });
                                 setShowQRModal(true);
                               }}
@@ -1110,19 +1118,93 @@ export default function EvaluationDetailPage() {
                   </Col>
                 </Row>
                 
-                {/* QR Code grande abajo */}
+                {/* QR Code y código de acceso */}
                 <hr />
-                <div className="text-center py-3">
-                  <QRCodeSVG 
-                    value={JSON.stringify({ courseId: qrData.courseId, evaluationId })}
-                    size={300}
-                    level="H"
-                    includeMargin={true}
-                  />
-                  <p className="mt-3 text-muted">
-                    📲 Escanea este código para acceder a la evaluación
-                  </p>
-                </div>
+                <Row>
+                  <Col md={7} className="text-center border-end">
+                    <h6 className="text-muted mb-3">📲 Escanear código QR</h6>
+                    <QRCodeSVG 
+                      value={JSON.stringify({ courseId: qrData.courseId, evaluationId })}
+                      size={250}
+                      level="H"
+                      includeMargin={true}
+                    />
+                  </Col>
+                  <Col md={5} className="d-flex flex-column justify-content-center">
+                    <h6 className="text-muted mb-3 text-center">⌨️ O ingresar código manual</h6>
+                    <p className="text-center text-muted small mb-3">
+                      Si no puedes escanear el QR, ingresa este código en la app:
+                    </p>
+                    {qrData.accessCode ? (
+                      <>
+                        <div 
+                          className="bg-light border rounded p-3 text-center"
+                          style={{ fontFamily: 'monospace', fontSize: '1.3rem', letterSpacing: '2px' }}
+                        >
+                          <strong>{qrData.accessCode}</strong>
+                        </div>
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => {
+                            navigator.clipboard.writeText(qrData.accessCode!);
+                          }}
+                        >
+                          📋 Copiar código
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-center">
+                          <Button
+                            variant="primary"
+                            disabled={generatingAccessCode}
+                            onClick={async () => {
+                              if (!user?.firebaseUid) return;
+                              setGeneratingAccessCode(true);
+                              try {
+                                const newCode = generateAccessCode({ 
+                                  courseId: qrData.courseId, 
+                                  evaluationId 
+                                });
+                                await updateCourseEvaluationAccessCode({
+                                  courseEvaluationId: qrData.courseEvaluationId,
+                                  accessCode: newCode,
+                                  firebaseId: user.firebaseUid,
+                                });
+                                // Actualizar el estado local
+                                setQrData(prev => prev ? { ...prev, accessCode: newCode } : null);
+                                // También actualizar assignedCourses
+                                setAssignedCourses(prev => prev.map(ac => 
+                                  ac.courseEvaluationId === qrData.courseEvaluationId 
+                                    ? { ...ac, accessCode: newCode }
+                                    : ac
+                                ));
+                              } catch (err) {
+                                console.error('Error generating access code:', err);
+                              } finally {
+                                setGeneratingAccessCode(false);
+                              }
+                            }}
+                          >
+                            {generatingAccessCode ? (
+                              <>
+                                <Spinner animation="border" size="sm" className="me-2" />
+                                Generando...
+                              </>
+                            ) : (
+                              '🔑 Generar Código'
+                            )}
+                          </Button>
+                        </div>
+                        <p className="text-center text-muted small mt-2">
+                          El código se guardará para uso futuro
+                        </p>
+                      </>
+                    )}
+                  </Col>
+                </Row>
               </>
             )}
           </Modal.Body>

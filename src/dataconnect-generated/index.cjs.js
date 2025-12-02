@@ -667,6 +667,18 @@ exports.removeEvaluationFromCourse = function removeEvaluationFromCourse(dcOrVar
   return executeMutation(removeEvaluationFromCourseRef(dcOrVars, vars));
 };
 
+const updateCourseEvaluationAccessCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateCourseEvaluationAccessCode', inputVars);
+}
+updateCourseEvaluationAccessCodeRef.operationName = 'UpdateCourseEvaluationAccessCode';
+exports.updateCourseEvaluationAccessCodeRef = updateCourseEvaluationAccessCodeRef;
+
+exports.updateCourseEvaluationAccessCode = function updateCourseEvaluationAccessCode(dcOrVars, vars) {
+  return executeMutation(updateCourseEvaluationAccessCodeRef(dcOrVars, vars));
+};
+
 const createStudentRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -1709,4 +1721,16 @@ exports.getCoursesForEvaluationRef = getCoursesForEvaluationRef;
 
 exports.getCoursesForEvaluation = function getCoursesForEvaluation(dcOrVars, vars) {
   return executeQuery(getCoursesForEvaluationRef(dcOrVars, vars));
+};
+
+const getCourseEvaluationByAccessCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetCourseEvaluationByAccessCode', inputVars);
+}
+getCourseEvaluationByAccessCodeRef.operationName = 'GetCourseEvaluationByAccessCode';
+exports.getCourseEvaluationByAccessCodeRef = getCourseEvaluationByAccessCodeRef;
+
+exports.getCourseEvaluationByAccessCode = function getCourseEvaluationByAccessCode(dcOrVars, vars) {
+  return executeQuery(getCourseEvaluationByAccessCodeRef(dcOrVars, vars));
 };

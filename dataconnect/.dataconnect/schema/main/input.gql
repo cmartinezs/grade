@@ -638,6 +638,14 @@ input CourseEvaluation_Data {
   """
   courseEvaluationId_expr: UUID_Expr
   """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
+  """
+  accessCode: String
+  """
+  ✨ `_expr` server value variant of `accessCode` (✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`)
+  """
+  accessCode_expr: String_Expr
+  """
   ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
   """
   courseId: UUID
@@ -727,6 +735,10 @@ input CourseEvaluation_Filter {
   """
   courseEvaluationId: UUID_Filter
   """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
+  """
+  accessCode: String_Filter
+  """
   ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
   """
   courseId: UUID_Filter
@@ -788,6 +800,10 @@ input CourseEvaluation_Having {
   ✨ Generated from Field `CourseEvaluation`.`_count` of type `Int!`
   """
   _count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode_count` of type `Int!`
+  """
+  accessCode_count: Int_Filter
   """
   ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId_count` of type `Int!`
   """
@@ -884,6 +900,10 @@ input CourseEvaluation_Order {
   """
   courseEvaluationId: OrderDirection
   """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode` of type `String`
+  """
+  accessCode: OrderDirection
+  """
   ✨ Generated from Field `CourseEvaluation`.`courseId` of type `UUID!`
   """
   courseId: OrderDirection
@@ -911,6 +931,10 @@ input CourseEvaluation_Order {
   ✨ Generated from Field `CourseEvaluation`.`_count` of type `Int!`
   """
   _count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`accessCode_count` of type `Int!`
+  """
+  accessCode_count: OrderDirection
   """
   ✨ Generated from Field `CourseEvaluation`.`courseEvaluationId_count` of type `Int!`
   """

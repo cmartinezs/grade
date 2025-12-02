@@ -1125,7 +1125,20 @@ query GetCoursesForEvaluation($evaluationId: UUID!) @auth(level: USER) {
     courseEvaluationId
     courseId
     evaluationId
+    accessCode
     createdAt
     createdBy
+  }
+}
+
+# Buscar evaluación de curso por código de acceso (para app móvil)
+query GetCourseEvaluationByAccessCode($accessCode: String!) @auth(level: USER) {
+  courseEvaluations(where: { accessCode: { eq: $accessCode } }) {
+    courseEvaluationId
+    courseId
+    evaluationId
+    scheduledDate
+    durationMinutes
+    accessCode
   }
 }

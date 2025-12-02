@@ -1106,6 +1106,20 @@ mutation RemoveEvaluationFromCourse(
   )
 }
 
+# Actualizar código de acceso de una evaluación de curso
+mutation UpdateCourseEvaluationAccessCode(
+  $courseEvaluationId: UUID!
+  $accessCode: String!
+  $firebaseId: String!
+) @auth(expr: "firebaseId == auth.uid") {
+  courseEvaluation_update(
+    key: { courseEvaluationId: $courseEvaluationId }
+    data: {
+      accessCode: $accessCode
+    }
+  )
+}
+
 # ===================================================================
 # ESTUDIANTES (Students)
 # ===================================================================
