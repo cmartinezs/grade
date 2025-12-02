@@ -706,7 +706,7 @@ export default function ImportQuestionsPage() {
                     <tbody>
                       <tr>
                         <td><code>tipo_pregunta</code></td>
-                        <td>Código o nombre del tipo de pregunta</td>
+                        <td>Código del tipo de pregunta (ver panel derecho)</td>
                         <td><Badge bg="warning">Sí</Badge></td>
                       </tr>
                       <tr>
@@ -726,17 +726,17 @@ export default function ImportQuestionsPage() {
                       </tr>
                       <tr>
                         <td><code>tema</code></td>
-                        <td>Código o nombre del tema</td>
+                        <td>Código del tema (ver panel derecho)</td>
                         <td><Badge bg="warning">Sí</Badge></td>
                       </tr>
                       <tr>
                         <td><code>dificultad</code></td>
-                        <td>Código o nivel de dificultad</td>
+                        <td>Código de dificultad (ver panel derecho)</td>
                         <td><Badge bg="warning">Sí</Badge></td>
                       </tr>
                       <tr>
                         <td><code>taxonomia</code></td>
-                        <td>Código o nombre de taxonomía</td>
+                        <td>Código de taxonomía (ver panel derecho)</td>
                         <td><Badge bg="warning">Sí</Badge></td>
                       </tr>
                       <tr>
@@ -778,51 +778,74 @@ export default function ImportQuestionsPage() {
                 <p><strong>{difficulties.filter(d => d.active).length}</strong> niveles de dificultad activos</p>
                 <p><strong>{topics.filter(t => t.active).length}</strong> temas activos</p>
                 <p><strong>{taxonomies.filter(t => t.active).length}</strong> taxonomías activas</p>
+                <hr />
+                <small className="text-muted">
+                  💡 Usa los <strong>códigos</strong> mostrados abajo en tu archivo CSV
+                </small>
               </Card.Body>
             </Card>
 
             <Card className="mb-4">
-              <Card.Header>🏷️ Tipos de Pregunta</Card.Header>
-              <Card.Body>
-                <div className="d-flex flex-wrap gap-1">
+              <Card.Header>🏷️ Tipos de Pregunta (tipo_pregunta)</Card.Header>
+              <Card.Body style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                <div className="d-flex flex-column gap-1">
                   {questionTypes.filter(qt => qt.active).map(qt => (
-                    <Badge key={qt.questionTypeId} bg="primary" title={qt.name}>
-                      {qt.code}
-                    </Badge>
+                    <small key={qt.questionTypeId}>
+                      <Badge bg="primary" className="me-1">{qt.code}</Badge>
+                      <span className="text-muted">{qt.name}</span>
+                    </small>
                   ))}
                 </div>
               </Card.Body>
             </Card>
 
             <Card className="mb-4">
-              <Card.Header>📈 Niveles de Dificultad</Card.Header>
+              <Card.Header>📈 Niveles de Dificultad (dificultad)</Card.Header>
               <Card.Body>
-                <div className="d-flex flex-wrap gap-1">
+                <div className="d-flex flex-column gap-1">
                   {difficulties.filter(d => d.active).map((d, idx) => (
-                    <Badge 
-                      key={d.difficultyId} 
-                      bg={idx === 0 ? 'success' : idx === 1 ? 'warning' : 'danger'}
-                    >
-                      {d.level}
-                    </Badge>
+                    <small key={d.difficultyId}>
+                      <Badge 
+                        bg={idx === 0 ? 'success' : idx === 1 ? 'warning' : 'danger'}
+                        className="me-1"
+                      >
+                        {d.code}
+                      </Badge>
+                      <span className="text-muted">{d.level}</span>
+                    </small>
+                  ))}
+                </div>
+              </Card.Body>
+            </Card>
+
+            <Card className="mb-4">
+              <Card.Header>🎯 Taxonomías (taxonomia)</Card.Header>
+              <Card.Body style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                <div className="d-flex flex-column gap-1">
+                  {taxonomies.filter(t => t.active).map(t => (
+                    <small key={t.taxonomyId}>
+                      <Badge bg="secondary" className="me-1">{t.code}</Badge>
+                      <span className="text-muted">{t.name}</span>
+                    </small>
                   ))}
                 </div>
               </Card.Body>
             </Card>
 
             <Card>
-              <Card.Header>🎯 Taxonomías</Card.Header>
-              <Card.Body>
-                <div className="d-flex flex-wrap gap-1">
-                  {taxonomies.filter(t => t.active).slice(0, 10).map(t => (
-                    <Badge key={t.taxonomyId} bg="secondary" title={t.code}>
-                      {t.name}
-                    </Badge>
+              <Card.Header>📚 Temas Disponibles (tema)</Card.Header>
+              <Card.Body style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                <div className="d-flex flex-column gap-1">
+                  {topics.filter(t => t.active).slice(0, 50).map(t => (
+                    <small key={t.topic_id}>
+                      <Badge bg="info" className="me-1">{t.code}</Badge>
+                      <span className="text-muted">{t.name}</span>
+                    </small>
                   ))}
-                  {taxonomies.filter(t => t.active).length > 10 && (
-                    <Badge bg="light" text="dark">
-                      +{taxonomies.filter(t => t.active).length - 10} más
-                    </Badge>
+                  {topics.filter(t => t.active).length > 50 && (
+                    <small className="text-muted">
+                      ... y {topics.filter(t => t.active).length - 50} temas más
+                    </small>
                   )}
                 </div>
               </Card.Body>

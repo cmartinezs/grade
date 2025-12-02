@@ -296,9 +296,11 @@ export const buildQuestionTypeMaps = (
   
   questionTypes.forEach(qt => {
     if (qt.active) {
-      questionTypeByCodeMap.set(normalizeCode(qt.code), qt.questionTypeId);
+      const normalizedCode = normalizeCode(qt.code);
+      questionTypeByCodeMap.set(normalizedCode, qt.questionTypeId);
       questionTypeByNameMap.set(normalizeName(qt.name), qt.questionTypeId);
-      questionTypeDetailsMap.set(qt.questionTypeId, {
+      // Guardamos los detalles SOLO por código normalizado (que es lo que viene en el CSV)
+      questionTypeDetailsMap.set(normalizedCode, {
         minOptions: qt.minOptions,
         maxOptions: qt.maxOptions,
         correctOptions: qt.correctOptions
@@ -434,22 +436,30 @@ export const validateQuestionRow = (
   
   // Validar opciones según el tipo de pregunta
   if (questionTypeId) {
-    const typeDetails = maps.questionTypeDetailsMap.get(questionTypeId);
+    // Buscar detalles por código normalizado (que es lo que viene en el CSV)
+    const typeDetails = maps.questionTypeDetailsMap.get(normalizeCode(row.tipoPregunta));
+    
     if (typeDetails) {
       const numOpciones = row.opciones.length;
       const numCorrectas = row.opciones.filter(o => o.correcta).length;
       
-      if (numOpciones < typeDetails.minOptions) {
-        errors.push(`Fila ${rowNumber}: se requieren al menos ${typeDetails.minOptions} opciones para este tipo de pregunta, pero hay ${numOpciones}`);
+      // Validar mínimo de opciones
+      if (typeDetails.minOptions > 0 && numOpciones < typeDetails.minOptions) {
+        errors.push(`Fila ${rowNumber}: se requieren al menos ${typeDetails.minOptions} opciones para tipo "${row.tipoPregunta}", pero hay ${numOpciones}`);
       }
       
-      if (numOpciones > typeDetails.maxOptions) {
-        errors.push(`Fila ${rowNumber}: se permiten máximo ${typeDetails.maxOptions} opciones para este tipo de pregunta, pero hay ${numOpciones}`);
+      // Validar máximo de opciones (0 = sin límite)
+      if (typeDetails.maxOptions > 0 && numOpciones > typeDetails.maxOptions) {
+        errors.push(`Fila ${rowNumber}: se permiten máximo ${typeDetails.maxOptions} opciones para tipo "${row.tipoPregunta}", pero hay ${numOpciones}`);
       }
       
-      if (numCorrectas !== typeDetails.correctOptions) {
-        errors.push(`Fila ${rowNumber}: este tipo de pregunta requiere exactamente ${typeDetails.correctOptions} opción(es) correcta(s), pero hay ${numCorrectas}`);
+      // Validar cantidad de correctas (0 = sin límite)
+      if (typeDetails.correctOptions > 0 && numCorrectas !== typeDetails.correctOptions) {
+        errors.push(`Fila ${rowNumber}: el tipo "${row.tipoPregunta}" requiere exactamente ${typeDetails.correctOptions} opción(es) correcta(s), pero hay ${numCorrectas}`);
       }
+    } else {
+      // Si encontramos el questionTypeId pero no los detalles, es un error de configuración
+      errors.push(`Fila ${rowNumber}: no se encontró la configuración de opciones para el tipo "${row.tipoPregunta}"`);
     }
   }
   
