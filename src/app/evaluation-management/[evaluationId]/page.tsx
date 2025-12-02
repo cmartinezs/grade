@@ -19,6 +19,7 @@ import {
 } from 'react-bootstrap';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import ViewQuestionModal from '@/app/questions-bank/components/ViewQuestionModal';
+import { QRCodeSVG } from 'qrcode.react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -37,6 +38,7 @@ import {
   listDifficulties,
   listQuestionTypes,
   listEducationalLevels,
+  getCourseStudentsDetail,
 } from '@/dataconnect-generated';
 import { generateUUID } from '@/lib/uuid';
 import {
@@ -115,12 +117,19 @@ interface Course {
   name: string;
   code: string;
   section?: string | null;
+  institutionName?: string | null;
+  levelId?: string | null;
 }
 
 interface CourseEvaluation {
   courseEvaluationId: string;
   courseId: string;
   evaluationId: string;
+}
+
+interface CourseStudentCount {
+  courseId: string;
+  count: number;
 }
 
 export default function EvaluationDetailPage() {
@@ -141,6 +150,7 @@ export default function EvaluationDetailPage() {
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [assignedCourses, setAssignedCourses] = useState<CourseEvaluation[]>([]);
+  const [courseStudentCounts, setCourseStudentCounts] = useState<CourseStudentCount[]>([]);
   const [userId, setUserId] = useState<string>('');
 
   // UI state
@@ -154,6 +164,17 @@ export default function EvaluationDetailPage() {
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [showQuestionDetailModal, setShowQuestionDetailModal] = useState(false);
   const [selectedQuestionForDetail, setSelectedQuestionForDetail] = useState<string | null>(null);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrData, setQrData] = useState<{ 
+    courseId: string; 
+    evaluationId: string; 
+    courseName: string;
+    courseCode: string;
+    courseSection: string;
+    institution: string;
+    level: string;
+    studentCount: number;
+  } | null>(null);
 
   // Add question form state
   const [selectedQuestionId, setSelectedQuestionId] = useState('');
@@ -229,6 +250,24 @@ export default function EvaluationDetailPage() {
       setAllQuestions(questionsResult.data?.questions || []);
       setCourses(coursesResult.data?.courses || []);
       setAssignedCourses(assignedResult.data?.courseEvaluations || []);
+
+      // Load student counts for assigned courses
+      const assignedCoursesList = assignedResult.data?.courseEvaluations || [];
+      if (assignedCoursesList.length > 0) {
+        const studentCountPromises = assignedCoursesList.map(async (ac: CourseEvaluation) => {
+          try {
+            const result = await getCourseStudentsDetail({ courseId: ac.courseId });
+            return {
+              courseId: ac.courseId,
+              count: result.data?.courseStudents?.length || 0,
+            };
+          } catch {
+            return { courseId: ac.courseId, count: 0 };
+          }
+        });
+        const counts = await Promise.all(studentCountPromises);
+        setCourseStudentCounts(counts);
+      }
     } catch (err) {
       console.error('Error loading evaluation:', err);
       setError(err instanceof Error ? err.message : 'Error al cargar la evaluación');
@@ -259,9 +298,24 @@ export default function EvaluationDetailPage() {
     return question?.text || 'Pregunta no encontrada';
   };
 
-  const getCourseName = (courseId: string) => {
+  const getCourseFullInfo = (courseId: string) => {
     const course = courses.find(c => c.courseId === courseId);
-    return course ? `${course.name} (${course.code})` : 'Curso no encontrado';
+    if (!course) return { name: 'Curso no encontrado', code: '', section: '', institution: '', level: '', studentCount: 0 };
+    
+    const level = course.levelId 
+      ? educationalLevels.find(l => l.levelId === course.levelId)
+      : null;
+    
+    const studentCount = courseStudentCounts.find(c => c.courseId === courseId)?.count || 0;
+    
+    return {
+      name: course.name,
+      code: course.code,
+      section: course.section || '',
+      institution: course.institutionName || 'Sin institución',
+      level: level?.name || 'Sin nivel',
+      studentCount,
+    };
   };
 
   const getTotalPoints = () => {
@@ -308,10 +362,19 @@ export default function EvaluationDetailPage() {
     );
   };
 
-  // Get available courses (not already assigned)
+  // Get available courses (not already assigned, filtered by evaluation's subject level)
   const getAvailableCourses = () => {
     const assignedCourseIds = new Set(assignedCourses.map(ac => ac.courseId));
-    return courses.filter(c => !assignedCourseIds.has(c.courseId));
+    
+    // Get the level of the evaluation's subject
+    const evaluationSubject = subjects.find(s => s.subjectId === evaluation?.subjectId);
+    const evaluationLevelId = evaluationSubject?.levelId;
+    
+    // Filter courses by: not already assigned AND same level as the evaluation's subject
+    return courses.filter(c => 
+      !assignedCourseIds.has(c.courseId) && 
+      c.levelId === evaluationLevelId
+    );
   };
 
   // Handle add question
@@ -646,15 +709,52 @@ export default function EvaluationDetailPage() {
                   </div>
                 ) : (
                   <ListGroup>
-                    {assignedCourses.map((ac) => (
-                      <ListGroup.Item
-                        key={ac.courseEvaluationId}
-                        className="d-flex justify-content-between align-items-center"
-                      >
-                        <span>{getCourseName(ac.courseId)}</span>
-                        <Badge bg="success">Asignado</Badge>
-                      </ListGroup.Item>
-                    ))}
+                    {assignedCourses.map((ac) => {
+                      const courseInfo = getCourseFullInfo(ac.courseId);
+                      return (
+                        <ListGroup.Item
+                          key={ac.courseEvaluationId}
+                          className="d-flex justify-content-between align-items-start"
+                        >
+                          <div>
+                            <div className="fw-bold d-flex align-items-center gap-2">
+                              {courseInfo.name}
+                              <Badge bg="info">{courseInfo.code}</Badge>
+                              {courseInfo.section && <Badge bg="secondary">{courseInfo.section}</Badge>}
+                            </div>
+                            <small className="text-muted d-block">
+                              🏛️ {courseInfo.institution} • 📚 {courseInfo.level}
+                            </small>
+                            <small className="text-muted d-block">
+                              👥 {courseInfo.studentCount} {courseInfo.studentCount === 1 ? 'alumno' : 'alumnos'}
+                            </small>
+                          </div>
+                          <div className="d-flex align-items-center gap-2">
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              onClick={() => {
+                                setQrData({
+                                  courseId: ac.courseId,
+                                  evaluationId: evaluationId,
+                                  courseName: courseInfo.name,
+                                  courseCode: courseInfo.code,
+                                  courseSection: courseInfo.section,
+                                  institution: courseInfo.institution,
+                                  level: courseInfo.level,
+                                  studentCount: courseInfo.studentCount,
+                                });
+                                setShowQRModal(true);
+                              }}
+                              title="Generar Código QR"
+                            >
+                              📱 QR
+                            </Button>
+                            <Badge bg="success">Asignado</Badge>
+                          </div>
+                        </ListGroup.Item>
+                      );
+                    })}
                   </ListGroup>
                 )}
               </Card.Body>
@@ -921,6 +1021,98 @@ export default function EvaluationDetailPage() {
           }}
           questionId={selectedQuestionForDetail}
         />
+
+        {/* QR Code Modal */}
+        <Modal show={showQRModal} onHide={() => setShowQRModal(false)} centered size="lg">
+          <Modal.Header closeButton className="bg-primary text-white">
+            <Modal.Title>📱 Código QR para Evaluación</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="py-4">
+            {qrData && evaluation && (
+              <>
+                {/* Información en 2 columnas arriba */}
+                <Row className="mb-4">
+                  <Col md={6}>
+                    <h6 className="text-primary mb-3">🏫 Información del Curso</h6>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Curso:</strong>
+                      <span className="d-flex align-items-center gap-2">
+                        {qrData.courseName}
+                        <Badge bg="info">{qrData.courseCode}</Badge>
+                        {qrData.courseSection && <Badge bg="secondary">{qrData.courseSection}</Badge>}
+                      </span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Institución:</strong>
+                      <span>{qrData.institution}</span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Nivel:</strong>
+                      <span>{qrData.level}</span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Alumnos:</strong>
+                      <span>{qrData.studentCount} {qrData.studentCount === 1 ? 'alumno' : 'alumnos'}</span>
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <h6 className="text-primary mb-3">📋 Información de la Evaluación</h6>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Título:</strong>
+                      <span>{evaluation.title}</span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Asignatura:</strong>
+                      <span>
+                        {(() => {
+                          const { name, levelName } = getSubjectWithLevel(evaluation.subjectId);
+                          return levelName ? `${name} (${levelName})` : name;
+                        })()}
+                      </span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Escala:</strong>
+                      <span>{getGradeScaleInfo(evaluation.gradeScale).name}</span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Preguntas:</strong>
+                      <span>{evaluationQuestions.length}</span>
+                    </div>
+                    <div className="mb-2 d-flex">
+                      <strong className="me-2">Puntaje:</strong>
+                      <span>{getTotalPoints()} pts</span>
+                    </div>
+                    <div className="mb-2 d-flex align-items-center">
+                      <strong className="me-2">Estado:</strong>
+                      <Badge bg={getEvaluationStateInfo(evaluation.state).variant}>
+                        {getEvaluationStateInfo(evaluation.state).label}
+                      </Badge>
+                    </div>
+                  </Col>
+                </Row>
+                
+                {/* QR Code grande abajo */}
+                <hr />
+                <div className="text-center py-3">
+                  <QRCodeSVG 
+                    value={JSON.stringify({ courseId: qrData.courseId, evaluationId })}
+                    size={300}
+                    level="H"
+                    includeMargin={true}
+                  />
+                  <p className="mt-3 text-muted">
+                    📲 Escanea este código para acceder a la evaluación
+                  </p>
+                </div>
+              </>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="outline-secondary" onClick={() => setShowQRModal(false)}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </ProtectedRoute>
   );
