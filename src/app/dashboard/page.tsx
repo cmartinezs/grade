@@ -41,6 +41,7 @@ interface DashboardData {
     byDifficulty: Record<string, number>;
     byQuestionType: Record<string, number>;
     byMonth: Record<string, number>;
+    bySubject: Record<string, number>;
   };
   taxonomy: {
     taxonomyId: string;
@@ -61,6 +62,7 @@ interface DashboardData {
   subjects: {
     total: number;
     byLevel: Record<string, number>;
+    items: { subjectId: string; name: string; code: string }[];
   };
   contentHierarchy: {
     subjects: number;
@@ -98,6 +100,7 @@ export default function DashboardPage() {
       byDifficulty: {},
       byQuestionType: {},
       byMonth: {},
+      bySubject: {},
     },
     taxonomy: [],
     difficulties: [],
@@ -105,6 +108,7 @@ export default function DashboardPage() {
     subjects: {
       total: 0,
       byLevel: {},
+      items: [],
     },
     contentHierarchy: {
       subjects: 0,
@@ -226,6 +230,19 @@ export default function DashboardPage() {
         const units = systemDataResult.data.units || [];
         const topics = systemDataResult.data.topics || [];
 
+        // Group questions by subject (Topic → Unit → Subject)
+        const bySubject: Record<string, number> = {};
+        questions.forEach((q) => {
+          const topic = topics.find((t) => t.topicId === q.topicId);
+          if (topic) {
+            const unit = units.find((u) => u.unitId === topic.unitId);
+            if (unit) {
+              const subjectId = unit.subjectId;
+              bySubject[subjectId] = (bySubject[subjectId] || 0) + 1;
+            }
+          }
+        });
+
         setDashboardData({
           levels: {
             total: levels.length,
@@ -258,6 +275,7 @@ export default function DashboardPage() {
             byDifficulty,
             byQuestionType,
             byMonth,
+            bySubject,
           },
           taxonomy: (systemDataResult.data.taxonomies || []).map((t) => ({
             taxonomyId: t.taxonomyId,
@@ -282,6 +300,11 @@ export default function DashboardPage() {
           subjects: {
             total: subjects.length,
             byLevel: subjectsByLevel,
+            items: subjects.map((s) => ({
+              subjectId: s.subjectId,
+              name: s.name,
+              code: s.code,
+            })),
           },
           contentHierarchy: {
             subjects: subjects.length,
@@ -375,13 +398,17 @@ export default function DashboardPage() {
               {Object.entries(dashboardData.courses.byLevel)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 8)
-                .map(([level, count]) => {
+                .map(([levelId, count]) => {
                   const total = dashboardData.courses.total;
                   const percentage = (count / total) * 100;
+                  const level = dashboardData.levels.items.find(
+                    (l) => l.id === levelId
+                  );
+                  const levelName = level?.name || levelId;
                   return (
-                    <div key={level} className="mb-2">
+                    <div key={levelId} className="mb-2">
                       <div className="d-flex justify-content-between mb-1 small">
-                        <span className="text-truncate">{level}</span>
+                        <span className="text-truncate">{levelName}</span>
                         <span className="text-muted fw-bold">{count}</span>
                       </div>
                       <div className="progress" style={{ height: "8px" }}>
@@ -531,6 +558,30 @@ export default function DashboardPage() {
               />
             </Col>
           </Row>
+
+          {/* Questions by Subject */}
+          {dashboardData.questions.bySubject && Object.keys(dashboardData.questions.bySubject).length > 0 && (
+            <Row className="mb-4">
+              <Col lg={12} className="mb-4">
+                <BarChartCard
+                  title="Distribución por Asignatura"
+                  icon="📚"
+                  headerColor="#E91E63"
+                  data={[
+                    ["Asignatura", "Cantidad"],
+                    ...Object.entries(dashboardData.questions.bySubject)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([subjectId, count]) => {
+                        const subject = dashboardData.subjects.items?.find(
+                          (s) => s.subjectId === subjectId
+                        );
+                        return [subject?.name || "Desconocido", count];
+                      }),
+                  ]}
+                />
+              </Col>
+            </Row>
+          )}
         </>
       )}
 
