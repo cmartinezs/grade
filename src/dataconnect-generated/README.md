@@ -79,6 +79,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetCoursesForEvaluation*](#getcoursesforevaluation)
   - [*GetCourseEvaluationByAccessCode*](#getcourseevaluationbyaccesscode)
   - [*GetCourseEvaluationDetails*](#getcourseevaluationdetails)
+  - [*ValidateStudentForEvaluation*](#validatestudentforevaluation)
 - [**Mutations**](#mutations)
   - [*CreateUser*](#createuser)
   - [*UpdateUser*](#updateuser)
@@ -8459,6 +8460,178 @@ console.log(data.evaluations);
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
+  console.log(data.courseEvaluations);
+  console.log(data.courses);
+  console.log(data.evaluations);
+});
+```
+
+## ValidateStudentForEvaluation
+You can execute the `ValidateStudentForEvaluation` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+validateStudentForEvaluation(vars: ValidateStudentForEvaluationVariables): QueryPromise<ValidateStudentForEvaluationData, ValidateStudentForEvaluationVariables>;
+
+interface ValidateStudentForEvaluationRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ValidateStudentForEvaluationVariables): QueryRef<ValidateStudentForEvaluationData, ValidateStudentForEvaluationVariables>;
+}
+export const validateStudentForEvaluationRef: ValidateStudentForEvaluationRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+validateStudentForEvaluation(dc: DataConnect, vars: ValidateStudentForEvaluationVariables): QueryPromise<ValidateStudentForEvaluationData, ValidateStudentForEvaluationVariables>;
+
+interface ValidateStudentForEvaluationRef {
+  ...
+  (dc: DataConnect, vars: ValidateStudentForEvaluationVariables): QueryRef<ValidateStudentForEvaluationData, ValidateStudentForEvaluationVariables>;
+}
+export const validateStudentForEvaluationRef: ValidateStudentForEvaluationRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the validateStudentForEvaluationRef:
+```typescript
+const name = validateStudentForEvaluationRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ValidateStudentForEvaluation` query requires an argument of type `ValidateStudentForEvaluationVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ValidateStudentForEvaluationVariables {
+  email: string;
+  courseId: UUIDString;
+  evaluationId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ValidateStudentForEvaluation` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ValidateStudentForEvaluationData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ValidateStudentForEvaluationData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    email: string;
+  } & Student_Key)[];
+    courseStudents: ({
+      courseStudentId: UUIDString;
+      courseId: UUIDString;
+      studentId: UUIDString;
+      enrolledOn: DateString;
+      student: {
+        studentId: UUIDString;
+        email: string;
+        firstName: string;
+        lastName: string;
+      } & Student_Key;
+    } & CourseStudent_Key)[];
+      courseEvaluations: ({
+        courseEvaluationId: UUIDString;
+        courseId: UUIDString;
+        evaluationId: UUIDString;
+        scheduledDate: DateString;
+        durationMinutes: number;
+      } & CourseEvaluation_Key)[];
+        courses: ({
+          courseId: UUIDString;
+          name: string;
+          code: string;
+          section?: string | null;
+          institutionName: string;
+          active: boolean;
+        } & Course_Key)[];
+          evaluations: ({
+            evaluationId: UUIDString;
+            title: string;
+            gradeScale: string;
+            state: string;
+            allowQuestionSubset: boolean;
+            questionSubsetPercent?: number | null;
+          } & Evaluation_Key)[];
+}
+```
+### Using `ValidateStudentForEvaluation`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, validateStudentForEvaluation, ValidateStudentForEvaluationVariables } from '@dataconnect/generated';
+
+// The `ValidateStudentForEvaluation` query requires an argument of type `ValidateStudentForEvaluationVariables`:
+const validateStudentForEvaluationVars: ValidateStudentForEvaluationVariables = {
+  email: ..., 
+  courseId: ..., 
+  evaluationId: ..., 
+};
+
+// Call the `validateStudentForEvaluation()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await validateStudentForEvaluation(validateStudentForEvaluationVars);
+// Variables can be defined inline as well.
+const { data } = await validateStudentForEvaluation({ email: ..., courseId: ..., evaluationId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await validateStudentForEvaluation(dataConnect, validateStudentForEvaluationVars);
+
+console.log(data.students);
+console.log(data.courseStudents);
+console.log(data.courseEvaluations);
+console.log(data.courses);
+console.log(data.evaluations);
+
+// Or, you can use the `Promise` API.
+validateStudentForEvaluation(validateStudentForEvaluationVars).then((response) => {
+  const data = response.data;
+  console.log(data.students);
+  console.log(data.courseStudents);
+  console.log(data.courseEvaluations);
+  console.log(data.courses);
+  console.log(data.evaluations);
+});
+```
+
+### Using `ValidateStudentForEvaluation`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, validateStudentForEvaluationRef, ValidateStudentForEvaluationVariables } from '@dataconnect/generated';
+
+// The `ValidateStudentForEvaluation` query requires an argument of type `ValidateStudentForEvaluationVariables`:
+const validateStudentForEvaluationVars: ValidateStudentForEvaluationVariables = {
+  email: ..., 
+  courseId: ..., 
+  evaluationId: ..., 
+};
+
+// Call the `validateStudentForEvaluationRef()` function to get a reference to the query.
+const ref = validateStudentForEvaluationRef(validateStudentForEvaluationVars);
+// Variables can be defined inline as well.
+const ref = validateStudentForEvaluationRef({ email: ..., courseId: ..., evaluationId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = validateStudentForEvaluationRef(dataConnect, validateStudentForEvaluationVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.students);
+console.log(data.courseStudents);
+console.log(data.courseEvaluations);
+console.log(data.courses);
+console.log(data.evaluations);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.students);
+  console.log(data.courseStudents);
   console.log(data.courseEvaluations);
   console.log(data.courses);
   console.log(data.evaluations);

@@ -1194,3 +1194,59 @@ query GetCourseEvaluationDetails($courseId: UUID!, $evaluationId: UUID!) @auth(l
     questionSubsetPercent
   }
 }
+
+# Validar estudiante por email y verificar pertenencia al curso
+# Retorna el estudiante, si existe courseStudent para ese curso, y datos de la evaluación
+query ValidateStudentForEvaluation($email: String!, $courseId: UUID!, $evaluationId: UUID!) @auth(level: USER) {
+  # Buscar estudiante por email
+  students(where: { email: { eq: $email } }) {
+    studentId
+    firstName
+    lastName
+    identifier
+    email
+  }
+  
+  # Buscar inscripción del estudiante en el curso (necesitamos el studentId del frontend)
+  courseStudents(where: { courseId: { eq: $courseId } }) {
+    courseStudentId
+    courseId
+    studentId
+    enrolledOn
+    student {
+      studentId
+      email
+      firstName
+      lastName
+    }
+  }
+  
+  # Datos de la evaluación del curso
+  courseEvaluations(where: { courseId: { eq: $courseId }, evaluationId: { eq: $evaluationId } }) {
+    courseEvaluationId
+    courseId
+    evaluationId
+    scheduledDate
+    durationMinutes
+  }
+  
+  # Datos del curso
+  courses(where: { courseId: { eq: $courseId } }) {
+    courseId
+    name
+    code
+    section
+    institutionName
+    active
+  }
+  
+  # Datos de la evaluación
+  evaluations(where: { evaluationId: { eq: $evaluationId } }) {
+    evaluationId
+    title
+    gradeScale
+    state
+    allowQuestionSubset
+    questionSubsetPercent
+  }
+}

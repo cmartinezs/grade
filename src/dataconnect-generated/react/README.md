@@ -86,6 +86,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetCoursesForEvaluation*](#getcoursesforevaluation)
   - [*GetCourseEvaluationByAccessCode*](#getcourseevaluationbyaccesscode)
   - [*GetCourseEvaluationDetails*](#getcourseevaluationdetails)
+  - [*ValidateStudentForEvaluation*](#validatestudentforevaluation)
 - [**Mutations**](#mutations)
   - [*CreateUser*](#createuser)
   - [*UpdateUser*](#updateuser)
@@ -6623,6 +6624,137 @@ export default function GetCourseEvaluationDetailsComponent() {
 
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
+    console.log(query.data.courseEvaluations);
+    console.log(query.data.courses);
+    console.log(query.data.evaluations);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ValidateStudentForEvaluation
+You can execute the `ValidateStudentForEvaluation` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useValidateStudentForEvaluation(dc: DataConnect, vars: ValidateStudentForEvaluationVariables, options?: useDataConnectQueryOptions<ValidateStudentForEvaluationData>): UseDataConnectQueryResult<ValidateStudentForEvaluationData, ValidateStudentForEvaluationVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useValidateStudentForEvaluation(vars: ValidateStudentForEvaluationVariables, options?: useDataConnectQueryOptions<ValidateStudentForEvaluationData>): UseDataConnectQueryResult<ValidateStudentForEvaluationData, ValidateStudentForEvaluationVariables>;
+```
+
+### Variables
+The `ValidateStudentForEvaluation` Query requires an argument of type `ValidateStudentForEvaluationVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ValidateStudentForEvaluationVariables {
+  email: string;
+  courseId: UUIDString;
+  evaluationId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `ValidateStudentForEvaluation` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ValidateStudentForEvaluation` Query is of type `ValidateStudentForEvaluationData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ValidateStudentForEvaluationData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    email: string;
+  } & Student_Key)[];
+    courseStudents: ({
+      courseStudentId: UUIDString;
+      courseId: UUIDString;
+      studentId: UUIDString;
+      enrolledOn: DateString;
+      student: {
+        studentId: UUIDString;
+        email: string;
+        firstName: string;
+        lastName: string;
+      } & Student_Key;
+    } & CourseStudent_Key)[];
+      courseEvaluations: ({
+        courseEvaluationId: UUIDString;
+        courseId: UUIDString;
+        evaluationId: UUIDString;
+        scheduledDate: DateString;
+        durationMinutes: number;
+      } & CourseEvaluation_Key)[];
+        courses: ({
+          courseId: UUIDString;
+          name: string;
+          code: string;
+          section?: string | null;
+          institutionName: string;
+          active: boolean;
+        } & Course_Key)[];
+          evaluations: ({
+            evaluationId: UUIDString;
+            title: string;
+            gradeScale: string;
+            state: string;
+            allowQuestionSubset: boolean;
+            questionSubsetPercent?: number | null;
+          } & Evaluation_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `ValidateStudentForEvaluation`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ValidateStudentForEvaluationVariables } from '@dataconnect/generated';
+import { useValidateStudentForEvaluation } from '@dataconnect/generated/react'
+
+export default function ValidateStudentForEvaluationComponent() {
+  // The `useValidateStudentForEvaluation` Query hook requires an argument of type `ValidateStudentForEvaluationVariables`:
+  const validateStudentForEvaluationVars: ValidateStudentForEvaluationVariables = {
+    email: ..., 
+    courseId: ..., 
+    evaluationId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useValidateStudentForEvaluation(validateStudentForEvaluationVars);
+  // Variables can be defined inline as well.
+  const query = useValidateStudentForEvaluation({ email: ..., courseId: ..., evaluationId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useValidateStudentForEvaluation(dataConnect, validateStudentForEvaluationVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useValidateStudentForEvaluation(validateStudentForEvaluationVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useValidateStudentForEvaluation(dataConnect, validateStudentForEvaluationVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.students);
+    console.log(query.data.courseStudents);
     console.log(query.data.courseEvaluations);
     console.log(query.data.courses);
     console.log(query.data.evaluations);
