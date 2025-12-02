@@ -9,10 +9,10 @@ import {
 import { levelStore } from '@/lib/levelStore';
 
 interface EducationalLevel {
-  level_id: string;
+  id: string;
   name: string;
   code: string;
-  category_fk: string;
+  categoryId: string;
 }
 
 export function useCurriculumHierarchyData() {
@@ -61,10 +61,10 @@ export function useCurriculumHierarchyData() {
         // Obtener los niveles educacionales cargados
         const levels = levelStore.getAllLevels();
         setEducationalLevels(levels.map(l => ({
-          level_id: l.level_id,
+          id: l.id,
           name: l.name,
           code: l.code,
-          category_fk: l.category_fk,
+          categoryId: l.categoryId,
         })));
         console.log('[useCurriculumHierarchyData] Educational levels and categories loaded');
         setLevelsLoaded(true); // Marcar que los niveles están cargados

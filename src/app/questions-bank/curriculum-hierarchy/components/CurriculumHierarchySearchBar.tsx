@@ -1,7 +1,7 @@
 import { Form, InputGroup, Button, Row, Col } from 'react-bootstrap';
 
 interface EducationalLevel {
-  level_id: string;
+  id: string;
   name: string;
   code: string;
 }
@@ -62,7 +62,7 @@ export function CurriculumHierarchySearchBar({
             >
               <option value="">Todos los niveles</option>
               {educationalLevels.map((level) => (
-                <option key={level.level_id} value={level.level_id}>
+                <option key={level.id} value={level.id}>
                   {level.name}
                 </option>
               ))}
