@@ -700,13 +700,13 @@ query GetEvaluationById($userId: UUID!, $evaluationId: UUID!, $firebaseId: Strin
   evaluations(where: { userId: { eq: $userId }, evaluationId: { eq: $evaluationId }, deletedAt: { eq: null } }) {
     evaluationId
     title
-    scheduledDate
-    durationMinutes
     gradeScale
     state
     pdfPath
     subjectId
     userId
+    allowQuestionSubset
+    questionSubsetPercent
     createdAt
     updatedAt
     updatedBy
@@ -725,30 +725,8 @@ query GetAllEvaluationsByUser($userId: UUID!, $firebaseId: String!) @auth(expr: 
   evaluations(where: { userId: { eq: $userId }, deletedAt: { eq: null } }) {
     evaluationId
     title
-    scheduledDate
-    durationMinutes
-    gradeScale
-    state
-    pdfPath
-    subjectId
-    userId
-    createdAt
-    updatedAt
-    updatedBy
-  }
-}
-
-# Obtener evaluaciones por rango de fechas
-query GetEvaluationsByDateRange($userId: UUID!, $startDate: Date!, $endDate: Date!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
-  evaluations(where: { 
-    userId: { eq: $userId }, 
-    scheduledDate: { ge: $startDate, le: $endDate },
-    deletedAt: { eq: null } 
-  }) {
-    evaluationId
-    title
-    scheduledDate
-    durationMinutes
+    allowQuestionSubset
+    questionSubsetPercent
     gradeScale
     state
     pdfPath
@@ -765,8 +743,8 @@ query GetEvaluationsByState($userId: UUID!, $state: String!, $firebaseId: String
   evaluations(where: { userId: { eq: $userId }, state: { eq: $state }, deletedAt: { eq: null } }) {
     evaluationId
     title
-    scheduledDate
-    durationMinutes
+    allowQuestionSubset
+    questionSubsetPercent
     gradeScale
     state
     pdfPath
@@ -783,8 +761,8 @@ query GetEvaluationsBySubject($userId: UUID!, $subjectId: UUID!, $firebaseId: St
   evaluations(where: { userId: { eq: $userId }, subjectId: { eq: $subjectId }, deletedAt: { eq: null } }) {
     evaluationId
     title
-    scheduledDate
-    durationMinutes
+    allowQuestionSubset
+    questionSubsetPercent
     gradeScale
     state
     pdfPath
@@ -812,8 +790,8 @@ query GetEvaluationFullDetail($userId: UUID!, $evaluationId: UUID!, $firebaseId:
   evaluations(where: { userId: { eq: $userId }, evaluationId: { eq: $evaluationId }, deletedAt: { eq: null } }) {
     evaluationId
     title
-    scheduledDate
-    durationMinutes
+    allowQuestionSubset
+    questionSubsetPercent
     gradeScale
     state
     pdfPath

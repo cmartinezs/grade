@@ -41,6 +41,8 @@ export interface AssignEvaluationToCourseVariables {
   courseEvaluationId: UUIDString;
   courseId: UUIDString;
   evaluationId: UUIDString;
+  scheduledDate: DateString;
+  durationMinutes: number;
   createdBy: UUIDString;
   firebaseId: string;
 }
@@ -115,8 +117,6 @@ export interface CreateEvaluationData {
 export interface CreateEvaluationVariables {
   evaluationId: UUIDString;
   title: string;
-  scheduledDate: DateString;
-  durationMinutes: number;
   gradeScale: string;
   subjectId: UUIDString;
   userId: UUIDString;
@@ -483,8 +483,8 @@ export interface GetAllEvaluationsByUserData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -835,13 +835,13 @@ export interface GetEvaluationByIdData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
     subjectId: UUIDString;
     userId: UUIDString;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -865,8 +865,8 @@ export interface GetEvaluationFullDetailData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -921,36 +921,12 @@ export interface GetEvaluationsByCourseVariables {
   firebaseId: string;
 }
 
-export interface GetEvaluationsByDateRangeData {
-  evaluations: ({
-    evaluationId: UUIDString;
-    title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
-    gradeScale: string;
-    state: string;
-    pdfPath?: string | null;
-    subjectId: UUIDString;
-    userId: UUIDString;
-    createdAt: TimestampString;
-    updatedAt?: TimestampString | null;
-    updatedBy?: UUIDString | null;
-  } & Evaluation_Key)[];
-}
-
-export interface GetEvaluationsByDateRangeVariables {
-  userId: UUIDString;
-  startDate: DateString;
-  endDate: DateString;
-  firebaseId: string;
-}
-
 export interface GetEvaluationsByStateData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -972,8 +948,8 @@ export interface GetEvaluationsBySubjectData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -2064,8 +2040,6 @@ export interface UpdateEvaluationStateVariables {
 export interface UpdateEvaluationVariables {
   evaluationId: UUIDString;
   title?: string | null;
-  scheduledDate?: DateString | null;
-  durationMinutes?: number | null;
   gradeScale?: string | null;
   subjectId?: UUIDString | null;
   pdfPath?: string | null;
@@ -3631,18 +3605,6 @@ export const getAllEvaluationsByUserRef: GetAllEvaluationsByUserRef;
 
 export function getAllEvaluationsByUser(vars: GetAllEvaluationsByUserVariables): QueryPromise<GetAllEvaluationsByUserData, GetAllEvaluationsByUserVariables>;
 export function getAllEvaluationsByUser(dc: DataConnect, vars: GetAllEvaluationsByUserVariables): QueryPromise<GetAllEvaluationsByUserData, GetAllEvaluationsByUserVariables>;
-
-interface GetEvaluationsByDateRangeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetEvaluationsByDateRangeVariables): QueryRef<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetEvaluationsByDateRangeVariables): QueryRef<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-  operationName: string;
-}
-export const getEvaluationsByDateRangeRef: GetEvaluationsByDateRangeRef;
-
-export function getEvaluationsByDateRange(vars: GetEvaluationsByDateRangeVariables): QueryPromise<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-export function getEvaluationsByDateRange(dc: DataConnect, vars: GetEvaluationsByDateRangeVariables): QueryPromise<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
 
 interface GetEvaluationsByStateRef {
   /* Allow users to create refs without passing in DataConnect */

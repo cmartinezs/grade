@@ -57,7 +57,6 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetCoursesByEducationalLevel*](#getcoursesbyeducationallevel)
   - [*GetEvaluationById*](#getevaluationbyid)
   - [*GetAllEvaluationsByUser*](#getallevaluationsbyuser)
-  - [*GetEvaluationsByDateRange*](#getevaluationsbydaterange)
   - [*GetEvaluationsByState*](#getevaluationsbystate)
   - [*GetEvaluationsBySubject*](#getevaluationsbysubject)
   - [*GetEvaluationsByCourse*](#getevaluationsbycourse)
@@ -3736,13 +3735,13 @@ export interface GetEvaluationByIdData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
     subjectId: UUIDString;
     userId: UUIDString;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -3842,8 +3841,8 @@ export interface GetAllEvaluationsByUserData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -3908,107 +3907,6 @@ export default function GetAllEvaluationsByUserComponent() {
 }
 ```
 
-## GetEvaluationsByDateRange
-You can execute the `GetEvaluationsByDateRange` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
-
-```javascript
-useGetEvaluationsByDateRange(dc: DataConnect, vars: GetEvaluationsByDateRangeVariables, options?: useDataConnectQueryOptions<GetEvaluationsByDateRangeData>): UseDataConnectQueryResult<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-```
-You can also pass in a `DataConnect` instance to the Query hook function.
-```javascript
-useGetEvaluationsByDateRange(vars: GetEvaluationsByDateRangeVariables, options?: useDataConnectQueryOptions<GetEvaluationsByDateRangeData>): UseDataConnectQueryResult<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-```
-
-### Variables
-The `GetEvaluationsByDateRange` Query requires an argument of type `GetEvaluationsByDateRangeVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
-
-```javascript
-export interface GetEvaluationsByDateRangeVariables {
-  userId: UUIDString;
-  startDate: DateString;
-  endDate: DateString;
-  firebaseId: string;
-}
-```
-### Return Type
-Recall that calling the `GetEvaluationsByDateRange` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
-
-To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
-
-To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetEvaluationsByDateRange` Query is of type `GetEvaluationsByDateRangeData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
-```javascript
-export interface GetEvaluationsByDateRangeData {
-  evaluations: ({
-    evaluationId: UUIDString;
-    title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
-    gradeScale: string;
-    state: string;
-    pdfPath?: string | null;
-    subjectId: UUIDString;
-    userId: UUIDString;
-    createdAt: TimestampString;
-    updatedAt?: TimestampString | null;
-    updatedBy?: UUIDString | null;
-  } & Evaluation_Key)[];
-}
-```
-
-To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
-
-### Using `GetEvaluationsByDateRange`'s Query hook function
-
-```javascript
-import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, GetEvaluationsByDateRangeVariables } from '@dataconnect/generated';
-import { useGetEvaluationsByDateRange } from '@dataconnect/generated/react'
-
-export default function GetEvaluationsByDateRangeComponent() {
-  // The `useGetEvaluationsByDateRange` Query hook requires an argument of type `GetEvaluationsByDateRangeVariables`:
-  const getEvaluationsByDateRangeVars: GetEvaluationsByDateRangeVariables = {
-    userId: ..., 
-    startDate: ..., 
-    endDate: ..., 
-    firebaseId: ..., 
-  };
-
-  // You don't have to do anything to "execute" the Query.
-  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
-  const query = useGetEvaluationsByDateRange(getEvaluationsByDateRangeVars);
-  // Variables can be defined inline as well.
-  const query = useGetEvaluationsByDateRange({ userId: ..., startDate: ..., endDate: ..., firebaseId: ..., });
-
-  // You can also pass in a `DataConnect` instance to the Query hook function.
-  const dataConnect = getDataConnect(connectorConfig);
-  const query = useGetEvaluationsByDateRange(dataConnect, getEvaluationsByDateRangeVars);
-
-  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
-  const options = { staleTime: 5 * 1000 };
-  const query = useGetEvaluationsByDateRange(getEvaluationsByDateRangeVars, options);
-
-  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
-  const dataConnect = getDataConnect(connectorConfig);
-  const options = { staleTime: 5 * 1000 };
-  const query = useGetEvaluationsByDateRange(dataConnect, getEvaluationsByDateRangeVars, options);
-
-  // Then, you can render your component dynamically based on the status of the Query.
-  if (query.isPending) {
-    return <div>Loading...</div>;
-  }
-
-  if (query.isError) {
-    return <div>Error: {query.error.message}</div>;
-  }
-
-  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
-  if (query.isSuccess) {
-    console.log(query.data.evaluations);
-  }
-  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
-}
-```
-
 ## GetEvaluationsByState
 You can execute the `GetEvaluationsByState` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
 
@@ -4041,8 +3939,8 @@ export interface GetEvaluationsByStateData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -4140,8 +4038,8 @@ export interface GetEvaluationsBySubjectData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -4331,8 +4229,8 @@ export interface GetEvaluationFullDetailData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -11151,8 +11049,6 @@ The `CreateEvaluation` Mutation requires an argument of type `CreateEvaluationVa
 export interface CreateEvaluationVariables {
   evaluationId: UUIDString;
   title: string;
-  scheduledDate: DateString;
-  durationMinutes: number;
   gradeScale: string;
   subjectId: UUIDString;
   userId: UUIDString;
@@ -11210,8 +11106,6 @@ export default function CreateEvaluationComponent() {
   const createEvaluationVars: CreateEvaluationVariables = {
     evaluationId: ..., 
     title: ..., 
-    scheduledDate: ..., 
-    durationMinutes: ..., 
     gradeScale: ..., 
     subjectId: ..., 
     userId: ..., 
@@ -11221,7 +11115,7 @@ export default function CreateEvaluationComponent() {
   };
   mutation.mutate(createEvaluationVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
+  mutation.mutate({ evaluationId: ..., title: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -11263,8 +11157,6 @@ The `UpdateEvaluation` Mutation requires an argument of type `UpdateEvaluationVa
 export interface UpdateEvaluationVariables {
   evaluationId: UUIDString;
   title?: string | null;
-  scheduledDate?: DateString | null;
-  durationMinutes?: number | null;
   gradeScale?: string | null;
   subjectId?: UUIDString | null;
   pdfPath?: string | null;
@@ -11324,8 +11216,6 @@ export default function UpdateEvaluationComponent() {
   const updateEvaluationVars: UpdateEvaluationVariables = {
     evaluationId: ..., 
     title: ..., // optional
-    scheduledDate: ..., // optional
-    durationMinutes: ..., // optional
     gradeScale: ..., // optional
     subjectId: ..., // optional
     pdfPath: ..., // optional
@@ -11337,7 +11227,7 @@ export default function UpdateEvaluationComponent() {
   };
   mutation.mutate(updateEvaluationVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ evaluationId: ..., title: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -11972,6 +11862,8 @@ export interface AssignEvaluationToCourseVariables {
   courseEvaluationId: UUIDString;
   courseId: UUIDString;
   evaluationId: UUIDString;
+  scheduledDate: DateString;
+  durationMinutes: number;
   createdBy: UUIDString;
   firebaseId: string;
 }
@@ -12026,12 +11918,14 @@ export default function AssignEvaluationToCourseComponent() {
     courseEvaluationId: ..., 
     courseId: ..., 
     evaluationId: ..., 
+    scheduledDate: ..., 
+    durationMinutes: ..., 
     createdBy: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(assignEvaluationToCourseVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ courseEvaluationId: ..., courseId: ..., evaluationId: ..., createdBy: ..., firebaseId: ..., });
+  mutation.mutate({ courseEvaluationId: ..., courseId: ..., evaluationId: ..., scheduledDate: ..., durationMinutes: ..., createdBy: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

@@ -50,7 +50,6 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetCoursesByEducationalLevel*](#getcoursesbyeducationallevel)
   - [*GetEvaluationById*](#getevaluationbyid)
   - [*GetAllEvaluationsByUser*](#getallevaluationsbyuser)
-  - [*GetEvaluationsByDateRange*](#getevaluationsbydaterange)
   - [*GetEvaluationsByState*](#getevaluationsbystate)
   - [*GetEvaluationsBySubject*](#getevaluationsbysubject)
   - [*GetEvaluationsByCourse*](#getevaluationsbycourse)
@@ -4706,13 +4705,13 @@ export interface GetEvaluationByIdData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
     subjectId: UUIDString;
     userId: UUIDString;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     createdAt: TimestampString;
     updatedAt?: TimestampString | null;
     updatedBy?: UUIDString | null;
@@ -4844,8 +4843,8 @@ export interface GetAllEvaluationsByUserData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -4922,137 +4921,6 @@ executeQuery(ref).then((response) => {
 });
 ```
 
-## GetEvaluationsByDateRange
-You can execute the `GetEvaluationsByDateRange` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
-```typescript
-getEvaluationsByDateRange(vars: GetEvaluationsByDateRangeVariables): QueryPromise<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-
-interface GetEvaluationsByDateRangeRef {
-  ...
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetEvaluationsByDateRangeVariables): QueryRef<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-}
-export const getEvaluationsByDateRangeRef: GetEvaluationsByDateRangeRef;
-```
-You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
-```typescript
-getEvaluationsByDateRange(dc: DataConnect, vars: GetEvaluationsByDateRangeVariables): QueryPromise<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-
-interface GetEvaluationsByDateRangeRef {
-  ...
-  (dc: DataConnect, vars: GetEvaluationsByDateRangeVariables): QueryRef<GetEvaluationsByDateRangeData, GetEvaluationsByDateRangeVariables>;
-}
-export const getEvaluationsByDateRangeRef: GetEvaluationsByDateRangeRef;
-```
-
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getEvaluationsByDateRangeRef:
-```typescript
-const name = getEvaluationsByDateRangeRef.operationName;
-console.log(name);
-```
-
-### Variables
-The `GetEvaluationsByDateRange` query requires an argument of type `GetEvaluationsByDateRangeVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
-
-```typescript
-export interface GetEvaluationsByDateRangeVariables {
-  userId: UUIDString;
-  startDate: DateString;
-  endDate: DateString;
-  firebaseId: string;
-}
-```
-### Return Type
-Recall that executing the `GetEvaluationsByDateRange` query returns a `QueryPromise` that resolves to an object with a `data` property.
-
-The `data` property is an object of type `GetEvaluationsByDateRangeData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
-```typescript
-export interface GetEvaluationsByDateRangeData {
-  evaluations: ({
-    evaluationId: UUIDString;
-    title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
-    gradeScale: string;
-    state: string;
-    pdfPath?: string | null;
-    subjectId: UUIDString;
-    userId: UUIDString;
-    createdAt: TimestampString;
-    updatedAt?: TimestampString | null;
-    updatedBy?: UUIDString | null;
-  } & Evaluation_Key)[];
-}
-```
-### Using `GetEvaluationsByDateRange`'s action shortcut function
-
-```typescript
-import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, getEvaluationsByDateRange, GetEvaluationsByDateRangeVariables } from '@dataconnect/generated';
-
-// The `GetEvaluationsByDateRange` query requires an argument of type `GetEvaluationsByDateRangeVariables`:
-const getEvaluationsByDateRangeVars: GetEvaluationsByDateRangeVariables = {
-  userId: ..., 
-  startDate: ..., 
-  endDate: ..., 
-  firebaseId: ..., 
-};
-
-// Call the `getEvaluationsByDateRange()` function to execute the query.
-// You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await getEvaluationsByDateRange(getEvaluationsByDateRangeVars);
-// Variables can be defined inline as well.
-const { data } = await getEvaluationsByDateRange({ userId: ..., startDate: ..., endDate: ..., firebaseId: ..., });
-
-// You can also pass in a `DataConnect` instance to the action shortcut function.
-const dataConnect = getDataConnect(connectorConfig);
-const { data } = await getEvaluationsByDateRange(dataConnect, getEvaluationsByDateRangeVars);
-
-console.log(data.evaluations);
-
-// Or, you can use the `Promise` API.
-getEvaluationsByDateRange(getEvaluationsByDateRangeVars).then((response) => {
-  const data = response.data;
-  console.log(data.evaluations);
-});
-```
-
-### Using `GetEvaluationsByDateRange`'s `QueryRef` function
-
-```typescript
-import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, getEvaluationsByDateRangeRef, GetEvaluationsByDateRangeVariables } from '@dataconnect/generated';
-
-// The `GetEvaluationsByDateRange` query requires an argument of type `GetEvaluationsByDateRangeVariables`:
-const getEvaluationsByDateRangeVars: GetEvaluationsByDateRangeVariables = {
-  userId: ..., 
-  startDate: ..., 
-  endDate: ..., 
-  firebaseId: ..., 
-};
-
-// Call the `getEvaluationsByDateRangeRef()` function to get a reference to the query.
-const ref = getEvaluationsByDateRangeRef(getEvaluationsByDateRangeVars);
-// Variables can be defined inline as well.
-const ref = getEvaluationsByDateRangeRef({ userId: ..., startDate: ..., endDate: ..., firebaseId: ..., });
-
-// You can also pass in a `DataConnect` instance to the `QueryRef` function.
-const dataConnect = getDataConnect(connectorConfig);
-const ref = getEvaluationsByDateRangeRef(dataConnect, getEvaluationsByDateRangeVars);
-
-// Call `executeQuery()` on the reference to execute the query.
-// You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await executeQuery(ref);
-
-console.log(data.evaluations);
-
-// Or, you can use the `Promise` API.
-executeQuery(ref).then((response) => {
-  const data = response.data;
-  console.log(data.evaluations);
-});
-```
-
 ## GetEvaluationsByState
 You can execute the `GetEvaluationsByState` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
 ```typescript
@@ -5101,8 +4969,8 @@ export interface GetEvaluationsByStateData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -5229,8 +5097,8 @@ export interface GetEvaluationsBySubjectData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -5478,8 +5346,8 @@ export interface GetEvaluationFullDetailData {
   evaluations: ({
     evaluationId: UUIDString;
     title: string;
-    scheduledDate: DateString;
-    durationMinutes: number;
+    allowQuestionSubset: boolean;
+    questionSubsetPercent?: number | null;
     gradeScale: string;
     state: string;
     pdfPath?: string | null;
@@ -13821,8 +13689,6 @@ The `CreateEvaluation` mutation requires an argument of type `CreateEvaluationVa
 export interface CreateEvaluationVariables {
   evaluationId: UUIDString;
   title: string;
-  scheduledDate: DateString;
-  durationMinutes: number;
   gradeScale: string;
   subjectId: UUIDString;
   userId: UUIDString;
@@ -13850,8 +13716,6 @@ import { connectorConfig, createEvaluation, CreateEvaluationVariables } from '@d
 const createEvaluationVars: CreateEvaluationVariables = {
   evaluationId: ..., 
   title: ..., 
-  scheduledDate: ..., 
-  durationMinutes: ..., 
   gradeScale: ..., 
   subjectId: ..., 
   userId: ..., 
@@ -13864,7 +13728,7 @@ const createEvaluationVars: CreateEvaluationVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createEvaluation(createEvaluationVars);
 // Variables can be defined inline as well.
-const { data } = await createEvaluation({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
+const { data } = await createEvaluation({ evaluationId: ..., title: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -13889,8 +13753,6 @@ import { connectorConfig, createEvaluationRef, CreateEvaluationVariables } from 
 const createEvaluationVars: CreateEvaluationVariables = {
   evaluationId: ..., 
   title: ..., 
-  scheduledDate: ..., 
-  durationMinutes: ..., 
   gradeScale: ..., 
   subjectId: ..., 
   userId: ..., 
@@ -13902,7 +13764,7 @@ const createEvaluationVars: CreateEvaluationVariables = {
 // Call the `createEvaluationRef()` function to get a reference to the mutation.
 const ref = createEvaluationRef(createEvaluationVars);
 // Variables can be defined inline as well.
-const ref = createEvaluationRef({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
+const ref = createEvaluationRef({ evaluationId: ..., title: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -13957,8 +13819,6 @@ The `UpdateEvaluation` mutation requires an argument of type `UpdateEvaluationVa
 export interface UpdateEvaluationVariables {
   evaluationId: UUIDString;
   title?: string | null;
-  scheduledDate?: DateString | null;
-  durationMinutes?: number | null;
   gradeScale?: string | null;
   subjectId?: UUIDString | null;
   pdfPath?: string | null;
@@ -13988,8 +13848,6 @@ import { connectorConfig, updateEvaluation, UpdateEvaluationVariables } from '@d
 const updateEvaluationVars: UpdateEvaluationVariables = {
   evaluationId: ..., 
   title: ..., // optional
-  scheduledDate: ..., // optional
-  durationMinutes: ..., // optional
   gradeScale: ..., // optional
   subjectId: ..., // optional
   pdfPath: ..., // optional
@@ -14004,7 +13862,7 @@ const updateEvaluationVars: UpdateEvaluationVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateEvaluation(updateEvaluationVars);
 // Variables can be defined inline as well.
-const { data } = await updateEvaluation({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateEvaluation({ evaluationId: ..., title: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -14029,8 +13887,6 @@ import { connectorConfig, updateEvaluationRef, UpdateEvaluationVariables } from 
 const updateEvaluationVars: UpdateEvaluationVariables = {
   evaluationId: ..., 
   title: ..., // optional
-  scheduledDate: ..., // optional
-  durationMinutes: ..., // optional
   gradeScale: ..., // optional
   subjectId: ..., // optional
   pdfPath: ..., // optional
@@ -14044,7 +13900,7 @@ const updateEvaluationVars: UpdateEvaluationVariables = {
 // Call the `updateEvaluationRef()` function to get a reference to the mutation.
 const ref = updateEvaluationRef(updateEvaluationVars);
 // Variables can be defined inline as well.
-const ref = updateEvaluationRef({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateEvaluationRef({ evaluationId: ..., title: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -14796,6 +14652,8 @@ export interface AssignEvaluationToCourseVariables {
   courseEvaluationId: UUIDString;
   courseId: UUIDString;
   evaluationId: UUIDString;
+  scheduledDate: DateString;
+  durationMinutes: number;
   createdBy: UUIDString;
   firebaseId: string;
 }
@@ -14820,6 +14678,8 @@ const assignEvaluationToCourseVars: AssignEvaluationToCourseVariables = {
   courseEvaluationId: ..., 
   courseId: ..., 
   evaluationId: ..., 
+  scheduledDate: ..., 
+  durationMinutes: ..., 
   createdBy: ..., 
   firebaseId: ..., 
 };
@@ -14828,7 +14688,7 @@ const assignEvaluationToCourseVars: AssignEvaluationToCourseVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await assignEvaluationToCourse(assignEvaluationToCourseVars);
 // Variables can be defined inline as well.
-const { data } = await assignEvaluationToCourse({ courseEvaluationId: ..., courseId: ..., evaluationId: ..., createdBy: ..., firebaseId: ..., });
+const { data } = await assignEvaluationToCourse({ courseEvaluationId: ..., courseId: ..., evaluationId: ..., scheduledDate: ..., durationMinutes: ..., createdBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -14854,6 +14714,8 @@ const assignEvaluationToCourseVars: AssignEvaluationToCourseVariables = {
   courseEvaluationId: ..., 
   courseId: ..., 
   evaluationId: ..., 
+  scheduledDate: ..., 
+  durationMinutes: ..., 
   createdBy: ..., 
   firebaseId: ..., 
 };
@@ -14861,7 +14723,7 @@ const assignEvaluationToCourseVars: AssignEvaluationToCourseVariables = {
 // Call the `assignEvaluationToCourseRef()` function to get a reference to the mutation.
 const ref = assignEvaluationToCourseRef(assignEvaluationToCourseVars);
 // Variables can be defined inline as well.
-const ref = assignEvaluationToCourseRef({ courseEvaluationId: ..., courseId: ..., evaluationId: ..., createdBy: ..., firebaseId: ..., });
+const ref = assignEvaluationToCourseRef({ courseEvaluationId: ..., courseId: ..., evaluationId: ..., scheduledDate: ..., durationMinutes: ..., createdBy: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);

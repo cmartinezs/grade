@@ -1387,18 +1387,6 @@ exports.getAllEvaluationsByUser = function getAllEvaluationsByUser(dcOrVars, var
   return executeQuery(getAllEvaluationsByUserRef(dcOrVars, vars));
 };
 
-const getEvaluationsByDateRangeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetEvaluationsByDateRange', inputVars);
-}
-getEvaluationsByDateRangeRef.operationName = 'GetEvaluationsByDateRange';
-exports.getEvaluationsByDateRangeRef = getEvaluationsByDateRangeRef;
-
-exports.getEvaluationsByDateRange = function getEvaluationsByDateRange(dcOrVars, vars) {
-  return executeQuery(getEvaluationsByDateRangeRef(dcOrVars, vars));
-};
-
 const getEvaluationsByStateRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
