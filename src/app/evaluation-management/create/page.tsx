@@ -10,23 +10,19 @@ import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
 import { createEvaluation, getUserByEmail } from '@/dataconnect-generated';
 import { generateUUID } from '@/lib/uuid';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
+import {
+  EvaluationState,
+  EVALUATION_STATE_INFO,
+  GradeScale,
+  GRADE_SCALE_INFO,
+} from '@/types/evaluation';
 
-// Escalas de calificación disponibles
-const GRADE_SCALES = [
-  { id: '1-7', name: 'Escala 1.0 - 7.0', description: 'Escala chilena tradicional' },
-  { id: '0-100', name: 'Escala 0 - 100', description: 'Escala porcentual' },
-  { id: '1-10', name: 'Escala 1 - 10', description: 'Escala decimal' },
-  { id: 'A-F', name: 'Escala A - F', description: 'Escala de letras' },
-];
-
-// Estados de evaluación
-const EVALUATION_STATES = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Publicada',
-  APPLIED: 'Aplicada',
-  GRADED: 'Calificada',
-  ARCHIVED: 'Archivada',
-};
+// Escalas de calificación disponibles para el formulario
+const GRADE_SCALES = Object.entries(GRADE_SCALE_INFO).map(([id, info]) => ({
+  id,
+  name: info.name,
+  description: info.description,
+}));
 
 interface FormErrors {
   title?: string;
@@ -248,24 +244,27 @@ export default function CreateEvaluationPage() {
                       </Form.Label>
                       <div className="d-flex flex-wrap gap-3">
                         {GRADE_SCALES.map((scale) => (
-                          <Form.Check
+                          <div 
                             key={scale.id}
-                            type="radio"
-                            id={`scale-${scale.id}`}
-                            name="gradeScale"
-                            label={
-                              <span>
-                                <strong>{scale.name}</strong>
-                                <br />
-                                <small className="text-muted">{scale.description}</small>
-                              </span>
-                            }
-                            checked={gradeScale === scale.id}
-                            onChange={() => setGradeScale(scale.id)}
-                            disabled={isSubmitting || submitSuccess}
-                            className="p-2 border rounded"
-                            style={{ minWidth: '200px' }}
-                          />
+                            className={`p-3 border rounded d-flex align-items-start ${gradeScale === scale.id ? 'border-primary bg-primary bg-opacity-10' : ''}`}
+                            style={{ minWidth: '150px', cursor: 'pointer' }}
+                            onClick={() => !isSubmitting && !submitSuccess && setGradeScale(scale.id)}
+                          >
+                            <Form.Check
+                              type="radio"
+                              id={`scale-${scale.id}`}
+                              name="gradeScale"
+                              checked={gradeScale === scale.id}
+                              onChange={() => setGradeScale(scale.id)}
+                              disabled={isSubmitting || submitSuccess}
+                              className="me-2"
+                            />
+                            <div>
+                              <strong>{scale.name}</strong>
+                              <br />
+                              <small className="text-muted">{scale.description}</small>
+                            </div>
+                          </div>
                         ))}
                       </div>
                       {errors.gradeScale && (
@@ -414,13 +413,10 @@ export default function CreateEvaluationPage() {
                 </Card.Header>
                 <Card.Body>
                   <ul className="list-unstyled mb-0">
-                    {Object.entries(EVALUATION_STATES).map(([key, value]) => (
+                    {Object.entries(EVALUATION_STATE_INFO).map(([key, info]) => (
                       <li key={key} className="mb-2">
-                        <span className={`badge ${key === 'DRAFT' ? 'bg-secondary' : 
-                          key === 'PUBLISHED' ? 'bg-primary' : 
-                          key === 'APPLIED' ? 'bg-info' : 
-                          key === 'GRADED' ? 'bg-success' : 'bg-dark'}`}>
-                          {value}
+                        <span className={`badge bg-${info.variant}`}>
+                          {info.icon} {info.label}
                         </span>
                       </li>
                     ))}

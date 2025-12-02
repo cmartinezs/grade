@@ -8,13 +8,31 @@ import {
 } from '@/lib/curriculumHierarchyStore';
 import { levelStore } from '@/lib/levelStore';
 
+interface EducationalLevel {
+  level_id: string;
+  name: string;
+  code: string;
+  category_fk: string;
+}
+
 export function useCurriculumHierarchyData() {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedLevelId, setSelectedLevelId] = useState<string>('');
+  const [educationalLevels, setEducationalLevels] = useState<EducationalLevel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [levelsLoaded, setLevelsLoaded] = useState(false);
   const loadAttemptRef = useRef(0);
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Filtrar subjects según búsqueda y nivel educacional
+  const subjects = allSubjects.filter(subject => {
+    // Filtro por nivel educacional
+    if (selectedLevelId && subject.level_fk !== selectedLevelId) {
+      return false;
+    }
+    return true;
+  });
 
   const loadAllData = useCallback(() => {
     // Cargar TODOS los datos (esto inicia cargas en background si no están en caché)
@@ -24,10 +42,10 @@ export function useCurriculumHierarchyData() {
     
     if (searchTerm.trim() === '') {
       const subjectsData = getAllSubjects();
-      setSubjects(subjectsData);
+      setAllSubjects(subjectsData);
     } else {
       const results = searchCurriculumHierarchy(searchTerm);
-      setSubjects(results.subjects);
+      setAllSubjects(results.subjects);
     }
   }, [searchTerm]);
 
@@ -40,6 +58,14 @@ export function useCurriculumHierarchyData() {
     const loadEducationalData = async () => {
       try {
         await levelStore.loadAll();
+        // Obtener los niveles educacionales cargados
+        const levels = levelStore.getAllLevels();
+        setEducationalLevels(levels.map(l => ({
+          level_id: l.level_id,
+          name: l.name,
+          code: l.code,
+          category_fk: l.category_fk,
+        })));
         console.log('[useCurriculumHierarchyData] Educational levels and categories loaded');
         setLevelsLoaded(true); // Marcar que los niveles están cargados
       } catch (error) {
@@ -56,7 +82,7 @@ export function useCurriculumHierarchyData() {
       const unitsData = getAllUnits();
       getAllTopics(); // Triggering background load
       
-      setSubjects(subjectsData);
+      setAllSubjects(subjectsData);
       
       // Considerar que tenemos datos listos cuando al menos tenemos subjects Y units
       const allDataReady = subjectsData.length > 0 && unitsData.length > 0;
@@ -105,7 +131,7 @@ export function useCurriculumHierarchyData() {
       const subjectsData = getAllSubjects();
       const unitsData = getAllUnits();
       
-      setSubjects(subjectsData);
+      setAllSubjects(subjectsData);
       
       // Keep polling until we have data (cache rebuild completed)
       const allDataReady = subjectsData.length > 0 && unitsData.length > 0;
@@ -124,12 +150,16 @@ export function useCurriculumHierarchyData() {
 
   const handleClearSearch = () => {
     setSearchTerm('');
+    setSelectedLevelId('');
   };
 
   return {
     subjects,
     searchTerm,
     setSearchTerm,
+    selectedLevelId,
+    setSelectedLevelId,
+    educationalLevels,
     handleSuccess,
     handleClearSearch,
     isLoading,

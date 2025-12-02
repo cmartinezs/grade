@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Row, Col, Card, Button, Badge, Form, Dropdown, ButtonGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Card, Button, Badge, Form, Dropdown, ButtonGroup, Alert, Spinner } from 'react-bootstrap';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CreateQuestionModal from './components/CreateQuestionModal';
 import ViewQuestionModal from './components/ViewQuestionModal';
@@ -55,7 +55,7 @@ export default function QuestionsBankPage() {
   const { questionTypes } = useQuestionTypes();
 
   // Load questions with current filters from Data Connect (with fallback to local store)
-  const { questions, refetch } = useQuestions({
+  const { questions, loading: questionsLoading, refetch } = useQuestions({
     searchText,
     type: filterType,
     difficulty_fk: filterDifficulty,
@@ -369,7 +369,15 @@ export default function QuestionsBankPage() {
 
           {/* Grid de Preguntas - Derecha */}
           <Col lg={9}>
-            {questions.length === 0 ? (
+            {questionsLoading ? (
+              <Card className="border-0 shadow-sm">
+                <Card.Body className="text-center py-5">
+                  <Spinner animation="border" variant="primary" className="mb-3" />
+                  <h5 className="text-muted">Cargando preguntas...</h5>
+                  <p className="text-muted small">Esto puede tomar unos segundos</p>
+                </Card.Body>
+              </Card>
+            ) : questions.length === 0 ? (
               <Card className="border-0 shadow-sm">
                 <Card.Body className="text-center py-5">
                   <div className="mb-4">

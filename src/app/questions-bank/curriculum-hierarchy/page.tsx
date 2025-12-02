@@ -16,8 +16,17 @@ import { useCurriculumHierarchyData, useCurriculumHierarchyModals } from './hook
 import { useHelpContent } from '@/contexts/HelpContext';
 
 export default function CurriculumHierarchyPage() {
-  const { subjects, searchTerm, setSearchTerm, handleSuccess, handleClearSearch, levelsLoaded } =
-    useCurriculumHierarchyData();
+  const { 
+    subjects, 
+    searchTerm, 
+    setSearchTerm, 
+    selectedLevelId,
+    setSelectedLevelId,
+    educationalLevels,
+    handleSuccess, 
+    handleClearSearch, 
+    levelsLoaded 
+  } = useCurriculumHierarchyData();
   const {
     showCreateModal,
     setShowCreateModal,
@@ -61,6 +70,9 @@ export default function CurriculumHierarchyPage() {
               onSearchChange={setSearchTerm}
               onClearSearch={handleClearSearch}
               resultsCount={subjects.length}
+              educationalLevels={educationalLevels}
+              selectedLevelId={selectedLevelId}
+              onLevelChange={setSelectedLevelId}
             />
           </Col>
         </Row>
