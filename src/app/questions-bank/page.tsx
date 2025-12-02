@@ -109,7 +109,7 @@ export default function QuestionsBankPage() {
     setShowRetireModal(true);
   };
 
-  const handleConfirmRetire = async (_reason?: string): Promise<void> => {
+  const handleConfirmRetire = async (): Promise<void> => {
     if (!selectedQuestionId || !user?.firebaseUid || !user?.email) {
       setError('Usuario no autenticado');
       return;
@@ -155,7 +155,7 @@ export default function QuestionsBankPage() {
     setShowReactivateModal(true);
   };
 
-  const handleConfirmReactivate = async (_reason?: string): Promise<void> => {
+  const handleConfirmReactivate = async (): Promise<void> => {
     if (!selectedQuestionId || !user?.firebaseUid || !user?.email) {
       setError('Usuario no autenticado');
       return;

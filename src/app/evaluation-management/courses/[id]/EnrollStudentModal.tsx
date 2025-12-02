@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Modal, Button, Form, Alert, Tabs, Tab, ListGroup, Badge, InputGroup } from 'react-bootstrap';
 import { useAuth } from '@/contexts/AuthContext';
 import { studentStore } from '@/lib/studentStore';
@@ -43,18 +43,7 @@ export default function EnrollStudentModal({
     email: '',
   });
 
-  // Load all students when modal opens
-  useEffect(() => {
-    if (show && user?.id && user?.firebaseUid) {
-      loadStudents();
-    }
-    // Reset form when modal closes
-    if (!show) {
-      resetForm();
-    }
-  }, [show, user?.id, user?.firebaseUid]);
-
-  const loadStudents = async () => {
+  const loadStudents = useCallback(async () => {
     if (!user?.id || !user?.firebaseUid) return;
 
     try {
@@ -72,7 +61,18 @@ export default function EnrollStudentModal({
       console.error('Error loading students:', err);
       setError('Error al cargar estudiantes');
     }
-  };
+  }, [user?.id, user?.firebaseUid]);
+
+  // Load all students when modal opens
+  useEffect(() => {
+    if (show && user?.id && user?.firebaseUid) {
+      loadStudents();
+    }
+    // Reset form when modal closes
+    if (!show) {
+      resetForm();
+    }
+  }, [show, user?.id, user?.firebaseUid, loadStudents]);
 
   const resetForm = () => {
     setActiveTab('existing');

@@ -13,19 +13,21 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+import type { FirebaseApp } from 'firebase/app';
+
 // Inicializar Firebase App principal
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // App secundaria para crear usuarios sin afectar la sesión actual
-let secondaryApp: any = null;
+let secondaryApp: FirebaseApp | null = null;
 
-export function getSecondaryApp() {
+export function getSecondaryApp(): FirebaseApp {
   if (!secondaryApp) {
     try {
       secondaryApp = initializeApp(firebaseConfig, 'Secondary');
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Si ya existe, obtenerla
-      if (error.code === 'app/duplicate-app') {
+      if (error instanceof Error && 'code' in error && error.code === 'app/duplicate-app') {
         secondaryApp = getApp('Secondary');
       } else {
         throw error;

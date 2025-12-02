@@ -196,26 +196,28 @@ export async function createStudentInDataConnect(
     };
 
     return newStudent;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[STUDENT DATA-CONNECT] Error creating student:', error);
     
+    const firebaseError = error as { code?: string; message?: string };
+    
     // Proporcionar mensajes de error específicos de Firebase
-    if (error.code === 'auth/email-already-in-use') {
+    if (firebaseError.code === 'auth/email-already-in-use') {
       throw new Error('El email ya está registrado en el sistema');
     }
-    if (error.code === 'auth/invalid-email') {
+    if (firebaseError.code === 'auth/invalid-email') {
       throw new Error('El formato del email no es válido');
     }
-    if (error.code === 'auth/weak-password') {
+    if (firebaseError.code === 'auth/weak-password') {
       throw new Error('La contraseña debe tener al menos 6 caracteres. El RUT/ID ingresado es muy corto.');
     }
     
     // Si ya es un error personalizado, lanzarlo tal cual
-    if (error.message && !error.code) {
+    if (firebaseError.message && !firebaseError.code) {
       throw error;
     }
     
-    throw new Error('Error al crear estudiante: ' + (error.message || 'Error desconocido'));
+    throw new Error('Error al crear estudiante: ' + (firebaseError.message || 'Error desconocido'));
   }
 }
 

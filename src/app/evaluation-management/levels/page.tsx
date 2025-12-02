@@ -201,7 +201,7 @@ export default function LevelsPage() {
     {
       key: 'categoryId',
       label: 'Categoría',
-      render: (value, level) => (
+      render: (value, _level) => (
         <Badge bg="primary" className="text-white">
           {getCategoryName(String(value))}
         </Badge>
