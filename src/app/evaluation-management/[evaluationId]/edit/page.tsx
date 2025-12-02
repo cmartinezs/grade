@@ -1,20 +1,23 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Container, Row, Col, Card, Button, Form, Alert, InputGroup, Badge } from 'react-bootstrap';
-import { useRouter } from 'next/navigation';
+import { Container, Row, Col, Card, Button, Form, Alert, InputGroup, Spinner } from 'react-bootstrap';
+import { useRouter, useParams } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageWrapper from '@/components/PageWrapper';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCurriculumHierarchy } from '@/hooks/useCurriculumHierarchy';
-import { createEvaluation, getUserByEmail, listQuestionsByUser } from '@/dataconnect-generated';
-import { generateUUID } from '@/lib/uuid';
+import { 
+  getEvaluationById, 
+  updateEvaluation, 
+  getUserByEmail 
+} from '@/dataconnect-generated';
 import AutocompleteSelect from '@/components/shared/AutocompleteSelect';
 import {
-  EvaluationState,
   EVALUATION_STATE_INFO,
-  GradeScale,
   GRADE_SCALE_INFO,
+  isEvaluationDraft,
+  getEvaluationStateInfo,
 } from '@/types/evaluation';
 
 // Escalas de calificación disponibles para el formulario
@@ -32,16 +35,28 @@ interface FormErrors {
   general?: string;
 }
 
-interface Question {
-  questionId: string;
-  topicId: string;
-  active: boolean;
+interface EvaluationData {
+  evaluationId: string;
+  title: string;
+  gradeScale: string;
+  state: string;
+  subjectId: string;
+  allowQuestionSubset: boolean;
+  questionSubsetPercent?: number | null;
 }
 
-export default function CreateEvaluationPage() {
+export default function EditEvaluationPage() {
   const router = useRouter();
+  const params = useParams();
   const { user } = useAuth();
-  const { subjects, units, topics, loading: loadingSubjects } = useCurriculumHierarchy();
+  const evaluationId = params.evaluationId as string;
+  const { subjects, loading: loadingSubjects } = useCurriculumHierarchy();
+
+  // Data state
+  const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
+  const [userId, setUserId] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [notDraftError, setNotDraftError] = useState(false);
 
   // Form state
   const [title, setTitle] = useState('');
@@ -50,62 +65,76 @@ export default function CreateEvaluationPage() {
   const [allowQuestionSubset, setAllowQuestionSubset] = useState(false);
   const [questionSubsetPercent, setQuestionSubsetPercent] = useState<number>(80);
 
-  // Questions state
-  const [allQuestions, setAllQuestions] = useState<Question[]>([]);
-  const [loadingQuestions, setLoadingQuestions] = useState(true);
-
   // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [createdEvaluationId, setCreatedEvaluationId] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
-
-  // Load questions
-  const loadQuestions = useCallback(async () => {
-    if (!user?.email || !user?.firebaseUid) return;
-
-    try {
-      setLoadingQuestions(true);
-      const userResult = await getUserByEmail({ email: user.email });
-      const userData = userResult.data?.users?.[0];
-      
-      if (userData?.userId) {
-        const questionsResult = await listQuestionsByUser({
-          userId: userData.userId,
-          firebaseId: user.firebaseUid,
-        });
-        setAllQuestions(questionsResult.data?.questions || []);
-      }
-    } catch (err) {
-      console.error('Error loading questions:', err);
-    } finally {
-      setLoadingQuestions(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    loadQuestions();
-  }, [loadQuestions]);
-
-  // Count questions available for a subject
-  const getQuestionCountForSubject = (subjectIdParam: string): number => {
-    // Get units for this subject
-    const subjectUnits = units.filter(u => u.subject_fk === subjectIdParam);
-    const subjectUnitIds = new Set(subjectUnits.map(u => u.unit_id));
-    
-    // Get topics for those units
-    const subjectTopics = topics.filter(t => subjectUnitIds.has(t.unit_fk));
-    const subjectTopicIds = new Set(subjectTopics.map(t => t.topic_id));
-    
-    // Count active questions for those topics
-    return allQuestions.filter(q => q.active && subjectTopicIds.has(q.topicId)).length;
-  };
-
-  // Get question count for selected subject
-  const selectedSubjectQuestionCount = subjectId ? getQuestionCountForSubject(subjectId) : 0;
 
   // Filtrar asignaturas activas
   const activeSubjects = subjects.filter(s => s.active && !s.deleted_at);
+
+  // Cargar datos de la evaluación
+  const loadEvaluation = useCallback(async () => {
+    if (!user?.email || !evaluationId) return;
+
+    try {
+      setLoading(true);
+
+      // Obtener userId
+      const userResult = await getUserByEmail({ email: user.email });
+      const userData = userResult.data?.users?.[0];
+
+      if (!userData?.userId) {
+        setErrors({ general: 'Usuario no encontrado' });
+        return;
+      }
+
+      setUserId(userData.userId);
+
+      // Obtener evaluación
+      const evaluationResult = await getEvaluationById({
+        userId: userData.userId,
+        evaluationId,
+        firebaseId: user.firebaseUid,
+      });
+
+      const evalData = evaluationResult.data?.evaluations?.[0];
+
+      if (!evalData) {
+        setErrors({ general: 'Evaluación no encontrada' });
+        return;
+      }
+
+      // Verificar si está en estado DRAFT
+      if (!isEvaluationDraft(evalData.state)) {
+        setNotDraftError(true);
+        setEvaluation(evalData);
+        // Redirigir después de 3 segundos
+        setTimeout(() => {
+          router.push('/evaluation-management');
+        }, 3000);
+        return;
+      }
+
+      // Cargar datos en el formulario
+      setEvaluation(evalData);
+      setTitle(evalData.title);
+      setGradeScale(evalData.gradeScale);
+      setSubjectId(evalData.subjectId);
+      setAllowQuestionSubset(evalData.allowQuestionSubset);
+      setQuestionSubsetPercent(evalData.questionSubsetPercent || 80);
+
+    } catch (err) {
+      console.error('Error loading evaluation:', err);
+      setErrors({ general: err instanceof Error ? err.message : 'Error al cargar la evaluación' });
+    } finally {
+      setLoading(false);
+    }
+  }, [user, evaluationId, router]);
+
+  useEffect(() => {
+    loadEvaluation();
+  }, [loadEvaluation]);
 
   // Validar formulario
   const validateForm = (): boolean => {
@@ -145,7 +174,7 @@ export default function CreateEvaluationPage() {
       return;
     }
 
-    if (!user?.email || !user?.firebaseUid) {
+    if (!user?.email || !user?.firebaseUid || !userId) {
       setErrors({ general: 'Usuario no autenticado' });
       return;
     }
@@ -154,44 +183,94 @@ export default function CreateEvaluationPage() {
     setErrors({});
 
     try {
-      // Obtener userId de Data Connect
-      const userResult = await getUserByEmail({ email: user.email });
-      const userData = userResult.data?.users?.[0];
-
-      if (!userData?.userId) {
-        throw new Error('Usuario no encontrado en Data Connect');
-      }
-
-      const evaluationId = generateUUID();
-
-      await createEvaluation({
+      await updateEvaluation({
         evaluationId,
         title: title.trim(),
         gradeScale,
         subjectId,
-        userId: userData.userId,
         allowQuestionSubset,
         questionSubsetPercent: allowQuestionSubset ? questionSubsetPercent : null,
+        updatedBy: userId,
+        updatedAt: new Date().toISOString(),
         firebaseId: user.firebaseUid,
       });
 
       setSubmitSuccess(true);
-      setCreatedEvaluationId(evaluationId);
 
       // Redirigir después de 2 segundos
       setTimeout(() => {
-        router.push('/evaluation-management');
+        router.push(`/evaluation-management/${evaluationId}`);
       }, 2000);
 
     } catch (error) {
-      console.error('Error creating evaluation:', error);
+      console.error('Error updating evaluation:', error);
       setErrors({
-        general: error instanceof Error ? error.message : 'Error al crear la evaluación',
+        general: error instanceof Error ? error.message : 'Error al actualizar la evaluación',
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Pantalla de carga
+  if (loading) {
+    return (
+      <ProtectedRoute>
+        <PageWrapper>
+          <Container className="py-5">
+            <div className="text-center">
+              <Spinner animation="border" variant="primary" />
+              <p className="mt-3 text-muted">Cargando evaluación...</p>
+            </div>
+          </Container>
+        </PageWrapper>
+      </ProtectedRoute>
+    );
+  }
+
+  // Error: La evaluación no está en estado borrador
+  if (notDraftError && evaluation) {
+    const stateInfo = getEvaluationStateInfo(evaluation.state);
+    return (
+      <ProtectedRoute>
+        <PageWrapper>
+          <Container className="py-5">
+            <Row className="justify-content-center">
+              <Col md={8} lg={6}>
+                <Alert variant="warning" className="text-center">
+                  <Alert.Heading>
+                    ⚠️ No se puede editar esta evaluación
+                  </Alert.Heading>
+                  <hr />
+                  <p>
+                    La evaluación <strong>&quot;{evaluation.title}&quot;</strong> está en estado{' '}
+                    <span className={`badge bg-${stateInfo.variant}`}>
+                      {stateInfo.icon} {stateInfo.label}
+                    </span>
+                  </p>
+                  <p className="mb-3">
+                    Solo se pueden editar evaluaciones en estado <strong>Borrador</strong>.
+                  </p>
+                  <hr />
+                  <p className="mb-0 text-muted">
+                    Redirigiendo a la lista de evaluaciones...
+                  </p>
+                  <div className="mt-3">
+                    <Button 
+                      variant="primary" 
+                      onClick={() => router.push('/evaluation-management')}
+                    >
+                      ← Ir a Evaluaciones
+                    </Button>
+                  </div>
+                </Alert>
+              </Col>
+            </Row>
+          </Container>
+        </PageWrapper>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>
@@ -202,14 +281,14 @@ export default function CreateEvaluationPage() {
             <Col>
               <div className="d-flex justify-content-between align-items-center">
                 <div>
-                  <h2 className="mb-1">📝 Crear Nueva Evaluación</h2>
+                  <h2 className="mb-1">✏️ Editar Evaluación</h2>
                   <p className="text-muted mb-0">
-                    Configure los detalles de la evaluación. Podrá agregar preguntas en el siguiente paso.
+                    Modifica los detalles de la evaluación. Solo disponible para evaluaciones en borrador.
                   </p>
                 </div>
                 <Button
                   variant="outline-secondary"
-                  onClick={() => router.push('/evaluation-management')}
+                  onClick={() => router.push(`/evaluation-management/${evaluationId}`)}
                 >
                   ← Volver
                 </Button>
@@ -222,9 +301,8 @@ export default function CreateEvaluationPage() {
             <Row className="mb-4">
               <Col>
                 <Alert variant="success">
-                  <Alert.Heading>✅ Evaluación creada exitosamente!</Alert.Heading>
-                  <p>ID de la evaluación: <strong>{createdEvaluationId}</strong></p>
-                  <p className="mb-0">Redirigiendo a la gestión de evaluaciones...</p>
+                  <Alert.Heading>✅ Evaluación actualizada exitosamente!</Alert.Heading>
+                  <p className="mb-0">Redirigiendo al detalle de la evaluación...</p>
                 </Alert>
               </Col>
             </Row>
@@ -278,34 +356,20 @@ export default function CreateEvaluationPage() {
                         label="Asignatura"
                         value={subjectId}
                         onChange={(value) => setSubjectId(String(value))}
-                        options={activeSubjects.map(s => {
-                          const questionCount = getQuestionCountForSubject(s.subject_id);
-                          return {
-                            id: s.subject_id,
-                            name: s.name,
-                            description: `${s.code} • ${questionCount} pregunta${questionCount !== 1 ? 's' : ''} disponible${questionCount !== 1 ? 's' : ''}`
-                          };
-                        })}
-                        placeholder={loadingSubjects || loadingQuestions ? "Cargando..." : "Busca una asignatura..."}
+                        options={activeSubjects.map(s => ({
+                          id: s.subject_id,
+                          name: s.name,
+                          description: s.code
+                        }))}
+                        placeholder={loadingSubjects ? "Cargando asignaturas..." : "Busca una asignatura..."}
                         disabled={isSubmitting || submitSuccess || loadingSubjects}
                         isInvalid={!!errors.subjectId}
                         errorMessage={errors.subjectId}
                         required
                       />
-                      {subjectId && !loadingQuestions && (
-                        <div className="mt-2">
-                          {selectedSubjectQuestionCount === 0 ? (
-                            <Alert variant="warning" className="py-2 mb-0">
-                              ⚠️ <strong>Sin preguntas disponibles:</strong> Esta asignatura no tiene preguntas en el banco. 
-                              Deberás crear preguntas en el <a href="/questions-bank">Banco de Preguntas</a> antes de poder agregarlas a la evaluación.
-                            </Alert>
-                          ) : (
-                            <Badge bg="success">
-                              ✓ {selectedSubjectQuestionCount} pregunta{selectedSubjectQuestionCount !== 1 ? 's' : ''} disponible{selectedSubjectQuestionCount !== 1 ? 's' : ''}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
+                      <Form.Text className="text-warning">
+                        ⚠️ Cambiar la asignatura puede afectar las preguntas ya agregadas
+                      </Form.Text>
                     </Form.Group>
 
                     {/* Escala de calificación */}
@@ -404,7 +468,7 @@ export default function CreateEvaluationPage() {
                     <div className="d-flex gap-2 justify-content-end mt-4">
                       <Button
                         variant="outline-secondary"
-                        onClick={() => router.push('/evaluation-management')}
+                        onClick={() => router.push(`/evaluation-management/${evaluationId}`)}
                         disabled={isSubmitting}
                       >
                         ❌ Cancelar
@@ -417,10 +481,10 @@ export default function CreateEvaluationPage() {
                         {isSubmitting ? (
                           <>
                             <span className="spinner-border spinner-border-sm me-2" />
-                            Creando...
+                            Guardando...
                           </>
                         ) : (
-                          '💾 Crear Evaluación'
+                          '💾 Guardar Cambios'
                         )}
                       </Button>
                     </div>
@@ -437,43 +501,41 @@ export default function CreateEvaluationPage() {
                 </Card.Header>
                 <Card.Body>
                   <p className="mb-2">
-                    <strong>Estado inicial:</strong> Borrador
+                    <strong>ID:</strong> <code className="small">{evaluationId}</code>
                   </p>
-                  <p className="text-muted mb-0">
-                    La evaluación se creará en estado <strong>Borrador</strong>. 
-                    Después podrás agregar preguntas y publicarla cuando esté lista.
+                  <p className="mb-2">
+                    <strong>Estado actual:</strong>{' '}
+                    <span className="badge bg-secondary">
+                      📝 Borrador
+                    </span>
+                  </p>
+                  <hr />
+                  <p className="text-muted mb-0 small">
+                    Solo puedes editar evaluaciones en estado <strong>Borrador</strong>. 
+                    Una vez publicada, la evaluación no podrá ser modificada.
                   </p>
                 </Card.Body>
               </Card>
 
               <Card className="border-warning">
                 <Card.Header className="bg-warning text-dark">
-                  <h6 className="mb-0">📌 Próximos Pasos</h6>
+                  <h6 className="mb-0">⚠️ Precauciones</h6>
                 </Card.Header>
                 <Card.Body>
-                  <ol className="mb-0 ps-3">
-                    <li className="mb-2">Crear la evaluación (paso actual)</li>
-                    <li className="mb-2">Agregar preguntas del banco</li>
-                    <li className="mb-2">Asignar puntajes a cada pregunta</li>
-                    <li className="mb-2">Asignar a cursos (fecha y duración)</li>
-                    <li>Publicar la evaluación</li>
-                  </ol>
-                </Card.Body>
-              </Card>
-
-              {/* Nota sobre fecha y duración */}
-              <Card className="mt-4 border-secondary">
-                <Card.Header className="bg-secondary text-white">
-                  <h6 className="mb-0">📅 Fecha y Duración</h6>
-                </Card.Header>
-                <Card.Body>
-                  <p className="text-muted mb-0">
-                    <small>
-                      La <strong>fecha programada</strong> y la <strong>duración</strong> se configuran 
-                      al asignar la evaluación a un curso. Esto permite que la misma evaluación 
-                      se aplique en diferentes fechas y con diferentes duraciones según el curso.
-                    </small>
-                  </p>
+                  <ul className="mb-0 ps-3 small">
+                    <li className="mb-2">
+                      <strong>Cambiar asignatura:</strong> Si la evaluación ya tiene preguntas, 
+                      cambiar la asignatura puede hacer que las preguntas existentes no correspondan.
+                    </li>
+                    <li className="mb-2">
+                      <strong>Escala de calificación:</strong> Asegúrate de elegir la escala correcta 
+                      antes de agregar preguntas.
+                    </li>
+                    <li>
+                      <strong>Subconjunto aleatorio:</strong> Esta opción solo tiene efecto si hay 
+                      suficientes preguntas en la evaluación.
+                    </li>
+                  </ul>
                 </Card.Body>
               </Card>
 
@@ -486,9 +548,12 @@ export default function CreateEvaluationPage() {
                   <ul className="list-unstyled mb-0">
                     {Object.entries(EVALUATION_STATE_INFO).map(([key, info]) => (
                       <li key={key} className="mb-2">
-                        <span className={`badge bg-${info.variant}`}>
+                        <span className={`badge bg-${info.variant} ${key === 'DRAFT' ? 'border border-dark' : ''}`}>
                           {info.icon} {info.label}
                         </span>
+                        {key === 'DRAFT' && (
+                          <small className="text-success ms-2">← Editable</small>
+                        )}
                       </li>
                     ))}
                   </ul>

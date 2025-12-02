@@ -619,16 +619,35 @@ export default function EvaluationDetailPage() {
                 )}
               </Card.Header>
               <Card.Body>
+                {/* Advertencia si no hay preguntas disponibles para agregar */}
+                {isDraft && availableQuestions.length === 0 && evaluationQuestions.length === 0 && (
+                  <Alert variant="warning" className="mb-3">
+                    <strong>⚠️ Sin preguntas disponibles:</strong> No hay preguntas en el banco para esta asignatura. 
+                    Debes <Alert.Link href="/questions-bank">crear preguntas</Alert.Link> antes de poder agregarlas a la evaluación.
+                  </Alert>
+                )}
+                {isDraft && availableQuestions.length === 0 && evaluationQuestions.length > 0 && (
+                  <Alert variant="info" className="mb-3">
+                    <strong>ℹ️ Todas las preguntas agregadas:</strong> Ya has agregado todas las preguntas disponibles para esta asignatura.
+                  </Alert>
+                )}
                 {evaluationQuestions.length === 0 ? (
                   <div className="text-center py-4">
                     <p className="text-muted mb-3">No hay preguntas agregadas aún</p>
-                    {isDraft && (
+                    {isDraft && availableQuestions.length > 0 && (
                       <Button
                         variant="outline-primary"
                         onClick={() => setShowAddQuestionModal(true)}
-                        disabled={availableQuestions.length === 0}
                       >
                         ➕ Agregar Primera Pregunta
+                      </Button>
+                    )}
+                    {isDraft && availableQuestions.length === 0 && (
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() => router.push('/questions-bank')}
+                      >
+                        📚 Ir al Banco de Preguntas
                       </Button>
                     )}
                   </div>
