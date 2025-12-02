@@ -1121,7 +1121,7 @@ export default function EvaluationDetailPage() {
                 {/* QR Code y código de acceso */}
                 <hr />
                 <Row>
-                  <Col md={7} className="text-center border-end">
+                  <Col md={6} className="text-center border-end">
                     <h6 className="text-muted mb-3">📲 Escanear código QR</h6>
                     <QRCodeSVG 
                       value={JSON.stringify({ courseId: qrData.courseId, evaluationId })}
@@ -1130,7 +1130,7 @@ export default function EvaluationDetailPage() {
                       includeMargin={true}
                     />
                   </Col>
-                  <Col md={5} className="d-flex flex-column justify-content-center">
+                  <Col md={6} className="d-flex flex-column justify-content-center">
                     <h6 className="text-muted mb-3 text-center">⌨️ O ingresar código manual</h6>
                     <p className="text-center text-muted small mb-3">
                       Si no puedes escanear el QR, ingresa este código en la app:
