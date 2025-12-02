@@ -11156,6 +11156,8 @@ export interface CreateEvaluationVariables {
   gradeScale: string;
   subjectId: UUIDString;
   userId: UUIDString;
+  allowQuestionSubset: boolean;
+  questionSubsetPercent?: number | null;
   firebaseId: string;
 }
 ```
@@ -11213,11 +11215,13 @@ export default function CreateEvaluationComponent() {
     gradeScale: ..., 
     subjectId: ..., 
     userId: ..., 
+    allowQuestionSubset: ..., 
+    questionSubsetPercent: ..., // optional
     firebaseId: ..., 
   };
   mutation.mutate(createEvaluationVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., firebaseId: ..., });
+  mutation.mutate({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -11264,6 +11268,8 @@ export interface UpdateEvaluationVariables {
   gradeScale?: string | null;
   subjectId?: UUIDString | null;
   pdfPath?: string | null;
+  allowQuestionSubset?: boolean | null;
+  questionSubsetPercent?: number | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -11323,13 +11329,15 @@ export default function UpdateEvaluationComponent() {
     gradeScale: ..., // optional
     subjectId: ..., // optional
     pdfPath: ..., // optional
+    allowQuestionSubset: ..., // optional
+    questionSubsetPercent: ..., // optional
     updatedBy: ..., 
     updatedAt: ..., 
     firebaseId: ..., 
   };
   mutation.mutate(updateEvaluationVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+  mutation.mutate({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {

@@ -925,21 +925,21 @@ mutation ReactivateTaxonomy(
 mutation CreateEvaluation(
   $evaluationId: UUID!
   $title: String!
-  $scheduledDate: Date!
-  $durationMinutes: Int!
   $gradeScale: String!
   $subjectId: UUID!
   $userId: UUID!
+  $allowQuestionSubset: Boolean!
+  $questionSubsetPercent: Int
   $firebaseId: String!
 ) @auth(expr: "firebaseId == auth.uid") {
   evaluation_insert(
     data: {
       evaluationId: $evaluationId
       title: $title
-      scheduledDate: $scheduledDate
-      durationMinutes: $durationMinutes
       gradeScale: $gradeScale
       state: "DRAFT"
+      allowQuestionSubset: $allowQuestionSubset
+      questionSubsetPercent: $questionSubsetPercent
       subjectId: $subjectId
       userId: $userId
     }
@@ -950,11 +950,11 @@ mutation CreateEvaluation(
 mutation UpdateEvaluation(
   $evaluationId: UUID!
   $title: String
-  $scheduledDate: Date
-  $durationMinutes: Int
   $gradeScale: String
   $subjectId: UUID
   $pdfPath: String
+  $allowQuestionSubset: Boolean
+  $questionSubsetPercent: Int
   $updatedBy: UUID!
   $updatedAt: Timestamp!
   $firebaseId: String!
@@ -963,11 +963,11 @@ mutation UpdateEvaluation(
     key: { evaluationId: $evaluationId }
     data: {
       title: $title
-      scheduledDate: $scheduledDate
-      durationMinutes: $durationMinutes
       gradeScale: $gradeScale
       subjectId: $subjectId
       pdfPath: $pdfPath
+      allowQuestionSubset: $allowQuestionSubset
+      questionSubsetPercent: $questionSubsetPercent
       updatedBy: $updatedBy
       updatedAt: $updatedAt
     }
@@ -1079,6 +1079,8 @@ mutation AssignEvaluationToCourse(
   $courseEvaluationId: UUID!
   $courseId: UUID!
   $evaluationId: UUID!
+  $scheduledDate: Date!
+  $durationMinutes: Int!
   $createdBy: UUID!
   $firebaseId: String!
 ) @auth(expr: "firebaseId == auth.uid") {
@@ -1087,6 +1089,8 @@ mutation AssignEvaluationToCourse(
       courseEvaluationId: $courseEvaluationId
       courseId: $courseId
       evaluationId: $evaluationId
+      scheduledDate: $scheduledDate
+      durationMinutes: $durationMinutes
       createdBy: $createdBy
     }
   )

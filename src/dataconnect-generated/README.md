@@ -13826,6 +13826,8 @@ export interface CreateEvaluationVariables {
   gradeScale: string;
   subjectId: UUIDString;
   userId: UUIDString;
+  allowQuestionSubset: boolean;
+  questionSubsetPercent?: number | null;
   firebaseId: string;
 }
 ```
@@ -13853,6 +13855,8 @@ const createEvaluationVars: CreateEvaluationVariables = {
   gradeScale: ..., 
   subjectId: ..., 
   userId: ..., 
+  allowQuestionSubset: ..., 
+  questionSubsetPercent: ..., // optional
   firebaseId: ..., 
 };
 
@@ -13860,7 +13864,7 @@ const createEvaluationVars: CreateEvaluationVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createEvaluation(createEvaluationVars);
 // Variables can be defined inline as well.
-const { data } = await createEvaluation({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., firebaseId: ..., });
+const { data } = await createEvaluation({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -13890,13 +13894,15 @@ const createEvaluationVars: CreateEvaluationVariables = {
   gradeScale: ..., 
   subjectId: ..., 
   userId: ..., 
+  allowQuestionSubset: ..., 
+  questionSubsetPercent: ..., // optional
   firebaseId: ..., 
 };
 
 // Call the `createEvaluationRef()` function to get a reference to the mutation.
 const ref = createEvaluationRef(createEvaluationVars);
 // Variables can be defined inline as well.
-const ref = createEvaluationRef({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., firebaseId: ..., });
+const ref = createEvaluationRef({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., userId: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -13956,6 +13962,8 @@ export interface UpdateEvaluationVariables {
   gradeScale?: string | null;
   subjectId?: UUIDString | null;
   pdfPath?: string | null;
+  allowQuestionSubset?: boolean | null;
+  questionSubsetPercent?: number | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;
@@ -13985,6 +13993,8 @@ const updateEvaluationVars: UpdateEvaluationVariables = {
   gradeScale: ..., // optional
   subjectId: ..., // optional
   pdfPath: ..., // optional
+  allowQuestionSubset: ..., // optional
+  questionSubsetPercent: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
   firebaseId: ..., 
@@ -13994,7 +14004,7 @@ const updateEvaluationVars: UpdateEvaluationVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateEvaluation(updateEvaluationVars);
 // Variables can be defined inline as well.
-const { data } = await updateEvaluation({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const { data } = await updateEvaluation({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -14024,6 +14034,8 @@ const updateEvaluationVars: UpdateEvaluationVariables = {
   gradeScale: ..., // optional
   subjectId: ..., // optional
   pdfPath: ..., // optional
+  allowQuestionSubset: ..., // optional
+  questionSubsetPercent: ..., // optional
   updatedBy: ..., 
   updatedAt: ..., 
   firebaseId: ..., 
@@ -14032,7 +14044,7 @@ const updateEvaluationVars: UpdateEvaluationVariables = {
 // Call the `updateEvaluationRef()` function to get a reference to the mutation.
 const ref = updateEvaluationRef(updateEvaluationVars);
 // Variables can be defined inline as well.
-const ref = updateEvaluationRef({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
+const ref = updateEvaluationRef({ evaluationId: ..., title: ..., scheduledDate: ..., durationMinutes: ..., gradeScale: ..., subjectId: ..., pdfPath: ..., allowQuestionSubset: ..., questionSubsetPercent: ..., updatedBy: ..., updatedAt: ..., firebaseId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);

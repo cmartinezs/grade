@@ -120,6 +120,8 @@ export interface CreateEvaluationVariables {
   gradeScale: string;
   subjectId: UUIDString;
   userId: UUIDString;
+  allowQuestionSubset: boolean;
+  questionSubsetPercent?: number | null;
   firebaseId: string;
 }
 
@@ -2067,6 +2069,8 @@ export interface UpdateEvaluationVariables {
   gradeScale?: string | null;
   subjectId?: UUIDString | null;
   pdfPath?: string | null;
+  allowQuestionSubset?: boolean | null;
+  questionSubsetPercent?: number | null;
   updatedBy: UUIDString;
   updatedAt: TimestampString;
   firebaseId: string;

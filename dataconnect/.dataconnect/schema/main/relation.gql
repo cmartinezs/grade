@@ -242,6 +242,15 @@ extend type CourseEvaluation {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "CourseEvaluation.createdBy", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `CourseEvaluation` table where the `durationMinutes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  durationMinutes_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CourseEvaluation.durationMinutes", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `CourseEvaluation` table where the `evaluationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   evaluationId_count(
@@ -251,13 +260,56 @@ extend type CourseEvaluation {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "CourseEvaluation.evaluationId", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `CourseEvaluation` table where the `scheduledDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  scheduledDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "CourseEvaluation.scheduledDate", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `durationMinutes` field in the `CourseEvaluation` table.
+  """
+  durationMinutes_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "CourseEvaluation.durationMinutes", purpose: QUERY_SUM)
+  """
+  ✨ Average the `durationMinutes` field in the `CourseEvaluation` table.
+  """
+  durationMinutes_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "CourseEvaluation.durationMinutes", purpose: QUERY_AVG)
+  """
   ✨ Minimum of the `createdAt` field in the `CourseEvaluation` table.
   """
   createdAt_min: Timestamp @fdc_generated(from: "CourseEvaluation.createdAt", purpose: QUERY_MIN)
   """
+  ✨ Minimum of the `durationMinutes` field in the `CourseEvaluation` table.
+  """
+  durationMinutes_min: Int @fdc_generated(from: "CourseEvaluation.durationMinutes", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `scheduledDate` field in the `CourseEvaluation` table.
+  """
+  scheduledDate_min: Date @fdc_generated(from: "CourseEvaluation.scheduledDate", purpose: QUERY_MIN)
+  """
   ✨ Maximum of the `createdAt` field in the `CourseEvaluation` table.
   """
   createdAt_max: Timestamp @fdc_generated(from: "CourseEvaluation.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `durationMinutes` field in the `CourseEvaluation` table.
+  """
+  durationMinutes_max: Int @fdc_generated(from: "CourseEvaluation.durationMinutes", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `scheduledDate` field in the `CourseEvaluation` table.
+  """
+  scheduledDate_max: Date @fdc_generated(from: "CourseEvaluation.scheduledDate", purpose: QUERY_MAX)
   """
   A generated field that is used for caching results in SDKs.
   """
@@ -649,6 +701,15 @@ extend type Evaluation {
   """
   _count: Int! @fdc_generated(from: "Evaluation.", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Evaluation` table where the `allowQuestionSubset` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  allowQuestionSubset_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Evaluation.allowQuestionSubset", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Evaluation` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   createdAt_count(
@@ -675,15 +736,6 @@ extend type Evaluation {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Evaluation.deletedBy", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Evaluation` table where the `durationMinutes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  durationMinutes_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Evaluation.durationMinutes", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Evaluation` table where the `evaluationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
@@ -712,14 +764,14 @@ extend type Evaluation {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Evaluation.pdfPath", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Evaluation` table where the `scheduledDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `Evaluation` table where the `questionSubsetPercent` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
-  scheduledDate_count(
+  questionSubsetPercent_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Evaluation.scheduledDate", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "Evaluation.questionSubsetPercent", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Evaluation` table where the `state` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
@@ -775,23 +827,23 @@ extend type Evaluation {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Evaluation.userId", purpose: QUERY_COUNT)
   """
-  ✨ Sum the `durationMinutes` field in the `Evaluation` table.
+  ✨ Sum the `questionSubsetPercent` field in the `Evaluation` table.
   """
-  durationMinutes_sum(
+  questionSubsetPercent_sum(
     """
     Set to true to sum the distinct values.
     """
     distinct: Boolean = false
-  ): Int @fdc_generated(from: "Evaluation.durationMinutes", purpose: QUERY_SUM)
+  ): Int @fdc_generated(from: "Evaluation.questionSubsetPercent", purpose: QUERY_SUM)
   """
-  ✨ Average the `durationMinutes` field in the `Evaluation` table.
+  ✨ Average the `questionSubsetPercent` field in the `Evaluation` table.
   """
-  durationMinutes_avg(
+  questionSubsetPercent_avg(
     """
     Set to true to average the distinct values.
     """
     distinct: Boolean = false
-  ): Float @fdc_generated(from: "Evaluation.durationMinutes", purpose: QUERY_AVG)
+  ): Float @fdc_generated(from: "Evaluation.questionSubsetPercent", purpose: QUERY_AVG)
   """
   ✨ Minimum of the `createdAt` field in the `Evaluation` table.
   """
@@ -801,13 +853,9 @@ extend type Evaluation {
   """
   deletedAt_min: Timestamp @fdc_generated(from: "Evaluation.deletedAt", purpose: QUERY_MIN)
   """
-  ✨ Minimum of the `durationMinutes` field in the `Evaluation` table.
+  ✨ Minimum of the `questionSubsetPercent` field in the `Evaluation` table.
   """
-  durationMinutes_min: Int @fdc_generated(from: "Evaluation.durationMinutes", purpose: QUERY_MIN)
-  """
-  ✨ Minimum of the `scheduledDate` field in the `Evaluation` table.
-  """
-  scheduledDate_min: Date @fdc_generated(from: "Evaluation.scheduledDate", purpose: QUERY_MIN)
+  questionSubsetPercent_min: Int @fdc_generated(from: "Evaluation.questionSubsetPercent", purpose: QUERY_MIN)
   """
   ✨ Minimum of the `updatedAt` field in the `Evaluation` table.
   """
@@ -821,13 +869,9 @@ extend type Evaluation {
   """
   deletedAt_max: Timestamp @fdc_generated(from: "Evaluation.deletedAt", purpose: QUERY_MAX)
   """
-  ✨ Maximum of the `durationMinutes` field in the `Evaluation` table.
+  ✨ Maximum of the `questionSubsetPercent` field in the `Evaluation` table.
   """
-  durationMinutes_max: Int @fdc_generated(from: "Evaluation.durationMinutes", purpose: QUERY_MAX)
-  """
-  ✨ Maximum of the `scheduledDate` field in the `Evaluation` table.
-  """
-  scheduledDate_max: Date @fdc_generated(from: "Evaluation.scheduledDate", purpose: QUERY_MAX)
+  questionSubsetPercent_max: Int @fdc_generated(from: "Evaluation.questionSubsetPercent", purpose: QUERY_MAX)
   """
   ✨ Maximum of the `updatedAt` field in the `Evaluation` table.
   """

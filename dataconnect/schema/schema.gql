@@ -433,17 +433,17 @@ type Evaluation @table(name: "evaluations", key: "evaluationId") {
   # Título de la evaluación
   title: String!
   
-  # Fecha programada de la evaluación
-  scheduledDate: Date! @col(name: "scheduled_date")
-  
-  # Duración en minutos
-  durationMinutes: Int! @col(name: "duration_minutes")
-  
   # Escala de calificación (ej. "0-100_to_1-7")
   gradeScale: String! @col(name: "grade_scale")
   
   # Estado de la evaluación (Draft/Published/Applied/Graded/Archived)
   state: String!
+  
+  # Permite asignar un subconjunto aleatorio de preguntas a cada estudiante
+  allowQuestionSubset: Boolean! @col(name: "allow_question_subset") @default(value: false)
+  
+  # Porcentaje de preguntas a asignar cuando allowQuestionSubset está habilitado (1-100)
+  questionSubsetPercent: Int @col(name: "question_subset_percent")
   
   # Ruta del archivo PDF
   pdfPath: String @col(name: "pdf_path")
@@ -490,11 +490,18 @@ type EvaluationQuestion @table(name: "evaluation_questions", key: "evaluationQue
 type CourseEvaluation @table(name: "course_evaluations", key: "courseEvaluationId") {
   # Identificador único de la evaluación del curso
   courseEvaluationId: UUID! @col(name: "course_evaluation_id")
+  
   # ID del curso
   courseId: UUID! @col(name: "course_fk")
   
   # ID de la evaluación
   evaluationId: UUID! @col(name: "evaluation_fk")
+  
+  # Fecha programada de la evaluación para este curso
+  scheduledDate: Date! @col(name: "scheduled_date")
+  
+  # Duración en minutos para este curso
+  durationMinutes: Int! @col(name: "duration_minutes")
   
   # Fecha de creación
   createdAt: Timestamp! @col(name: "created_at") @default(expr: "request.time")

@@ -670,6 +670,18 @@ input CourseEvaluation_Data {
   """
   createdBy_expr: UUID_Expr
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`
+  """
+  durationMinutes: Int
+  """
+  ✨ `_expr` server value variant of `durationMinutes` (✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`)
+  """
+  durationMinutes_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `durationMinutes` (✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`)
+  """
+  durationMinutes_update: [Int_Update!]
+  """
   ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
   """
   evaluationId: UUID
@@ -677,6 +689,22 @@ input CourseEvaluation_Data {
   ✨ `_expr` server value variant of `evaluationId` (✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`)
   """
   evaluationId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`
+  """
+  scheduledDate: Date
+  """
+  ✨ `_date` server value variant of `scheduledDate` (✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`)
+  """
+  scheduledDate_date: Date_Relative
+  """
+  ✨ `_expr` server value variant of `scheduledDate` (✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`)
+  """
+  scheduledDate_expr: Date_Expr
+  """
+  ✨ `_update` server value variant of `scheduledDate` (✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`)
+  """
+  scheduledDate_update: [Date_Update!]
 }
 """
 ✨ Generated filter input type for table 'CourseEvaluation'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -711,9 +739,17 @@ input CourseEvaluation_Filter {
   """
   createdBy: UUID_Filter
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`
+  """
+  durationMinutes: Int_Filter
+  """
   ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
   """
   evaluationId: UUID_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`
+  """
+  scheduledDate: Date_Filter
 }
 """
 ✨ Generated first-row input type for table 'CourseEvaluation'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -769,17 +805,49 @@ input CourseEvaluation_Having {
   """
   createdBy_count: Int_Filter
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_count` of type `Int!`
+  """
+  durationMinutes_count: Int_Filter
+  """
   ✨ Generated from Field `CourseEvaluation`.`evaluationId_count` of type `Int!`
   """
   evaluationId_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate_count` of type `Int!`
+  """
+  scheduledDate_count: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_sum` of type `Int`
+  """
+  durationMinutes_sum: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_avg` of type `Float`
+  """
+  durationMinutes_avg: Float_Filter
   """
   ✨ Generated from Field `CourseEvaluation`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: Timestamp_Filter
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_min` of type `Int`
+  """
+  durationMinutes_min: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate_min` of type `Date`
+  """
+  scheduledDate_min: Date_Filter
+  """
   ✨ Generated from Field `CourseEvaluation`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_max` of type `Int`
+  """
+  durationMinutes_max: Int_Filter
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate_max` of type `Date`
+  """
+  scheduledDate_max: Date_Filter
 }
 """
 ✨ Generated key input type for table 'CourseEvaluation'. It represents the primary key fields used to uniquely identify a row in the table.
@@ -828,9 +896,17 @@ input CourseEvaluation_Order {
   """
   createdBy: OrderDirection
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes` of type `Int!`
+  """
+  durationMinutes: OrderDirection
+  """
   ✨ Generated from Field `CourseEvaluation`.`evaluationId` of type `UUID!`
   """
   evaluationId: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate` of type `Date!`
+  """
+  scheduledDate: OrderDirection
   """
   ✨ Generated from Field `CourseEvaluation`.`_count` of type `Int!`
   """
@@ -852,17 +928,49 @@ input CourseEvaluation_Order {
   """
   createdBy_count: OrderDirection
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_count` of type `Int!`
+  """
+  durationMinutes_count: OrderDirection
+  """
   ✨ Generated from Field `CourseEvaluation`.`evaluationId_count` of type `Int!`
   """
   evaluationId_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate_count` of type `Int!`
+  """
+  scheduledDate_count: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_sum` of type `Int`
+  """
+  durationMinutes_sum: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_avg` of type `Float`
+  """
+  durationMinutes_avg: OrderDirection
   """
   ✨ Generated from Field `CourseEvaluation`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: OrderDirection
   """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_min` of type `Int`
+  """
+  durationMinutes_min: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate_min` of type `Date`
+  """
+  scheduledDate_min: OrderDirection
+  """
   ✨ Generated from Field `CourseEvaluation`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`durationMinutes_max` of type `Int`
+  """
+  durationMinutes_max: OrderDirection
+  """
+  ✨ Generated from Field `CourseEvaluation`.`scheduledDate_max` of type `Date`
+  """
+  scheduledDate_max: OrderDirection
 }
 """
 ✨ Generated data input type for table 'CourseStudent'. It includes all necessary fields for creating or upserting rows into table.
@@ -2062,6 +2170,14 @@ input Evaluation_Data {
   """
   evaluationId_expr: UUID_Expr
   """
+  ✨ Generated from Field `Evaluation`.`allowQuestionSubset` of type `Boolean!`
+  """
+  allowQuestionSubset: Boolean
+  """
+  ✨ `_expr` server value variant of `allowQuestionSubset` (✨ Generated from Field `Evaluation`.`allowQuestionSubset` of type `Boolean!`)
+  """
+  allowQuestionSubset_expr: Boolean_Expr
+  """
   ✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp
@@ -2102,18 +2218,6 @@ input Evaluation_Data {
   """
   deletedBy_expr: UUID_Expr
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`
-  """
-  durationMinutes: Int
-  """
-  ✨ `_expr` server value variant of `durationMinutes` (✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`)
-  """
-  durationMinutes_expr: Int_Expr
-  """
-  ✨ `_update` server value variant of `durationMinutes` (✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`)
-  """
-  durationMinutes_update: [Int_Update!]
-  """
   ✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`
   """
   gradeScale: String
@@ -2130,21 +2234,17 @@ input Evaluation_Data {
   """
   pdfPath_expr: String_Expr
   """
-  ✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent` of type `Int`
   """
-  scheduledDate: Date
+  questionSubsetPercent: Int
   """
-  ✨ `_date` server value variant of `scheduledDate` (✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`)
+  ✨ `_expr` server value variant of `questionSubsetPercent` (✨ Generated from Field `Evaluation`.`questionSubsetPercent` of type `Int`)
   """
-  scheduledDate_date: Date_Relative
+  questionSubsetPercent_expr: Int_Expr
   """
-  ✨ `_expr` server value variant of `scheduledDate` (✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`)
+  ✨ `_update` server value variant of `questionSubsetPercent` (✨ Generated from Field `Evaluation`.`questionSubsetPercent` of type `Int`)
   """
-  scheduledDate_expr: Date_Expr
-  """
-  ✨ `_update` server value variant of `scheduledDate` (✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`)
-  """
-  scheduledDate_update: [Date_Update!]
+  questionSubsetPercent_update: [Int_Update!]
   """
   ✨ Generated from Field `Evaluation`.`state` of type `String!`
   """
@@ -2223,6 +2323,10 @@ input Evaluation_Filter {
   """
   evaluationId: UUID_Filter
   """
+  ✨ Generated from Field `Evaluation`.`allowQuestionSubset` of type `Boolean!`
+  """
+  allowQuestionSubset: Boolean_Filter
+  """
   ✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp_Filter
@@ -2235,10 +2339,6 @@ input Evaluation_Filter {
   """
   deletedBy: UUID_Filter
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`
-  """
-  durationMinutes: Int_Filter
-  """
   ✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`
   """
   gradeScale: String_Filter
@@ -2247,9 +2347,9 @@ input Evaluation_Filter {
   """
   pdfPath: String_Filter
   """
-  ✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent` of type `Int`
   """
-  scheduledDate: Date_Filter
+  questionSubsetPercent: Int_Filter
   """
   ✨ Generated from Field `Evaluation`.`state` of type `String!`
   """
@@ -2313,6 +2413,10 @@ input Evaluation_Having {
   """
   _count: Int_Filter
   """
+  ✨ Generated from Field `Evaluation`.`allowQuestionSubset_count` of type `Int!`
+  """
+  allowQuestionSubset_count: Int_Filter
+  """
   ✨ Generated from Field `Evaluation`.`createdAt_count` of type `Int!`
   """
   createdAt_count: Int_Filter
@@ -2324,10 +2428,6 @@ input Evaluation_Having {
   ✨ Generated from Field `Evaluation`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: Int_Filter
-  """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_count` of type `Int!`
-  """
-  durationMinutes_count: Int_Filter
   """
   ✨ Generated from Field `Evaluation`.`evaluationId_count` of type `Int!`
   """
@@ -2341,9 +2441,9 @@ input Evaluation_Having {
   """
   pdfPath_count: Int_Filter
   """
-  ✨ Generated from Field `Evaluation`.`scheduledDate_count` of type `Int!`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_count` of type `Int!`
   """
-  scheduledDate_count: Int_Filter
+  questionSubsetPercent_count: Int_Filter
   """
   ✨ Generated from Field `Evaluation`.`state_count` of type `Int!`
   """
@@ -2369,13 +2469,13 @@ input Evaluation_Having {
   """
   userId_count: Int_Filter
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_sum` of type `Int`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_sum` of type `Int`
   """
-  durationMinutes_sum: Int_Filter
+  questionSubsetPercent_sum: Int_Filter
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_avg` of type `Float`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_avg` of type `Float`
   """
-  durationMinutes_avg: Float_Filter
+  questionSubsetPercent_avg: Float_Filter
   """
   ✨ Generated from Field `Evaluation`.`createdAt_min` of type `Timestamp`
   """
@@ -2385,13 +2485,9 @@ input Evaluation_Having {
   """
   deletedAt_min: Timestamp_Filter
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_min` of type `Int`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_min` of type `Int`
   """
-  durationMinutes_min: Int_Filter
-  """
-  ✨ Generated from Field `Evaluation`.`scheduledDate_min` of type `Date`
-  """
-  scheduledDate_min: Date_Filter
+  questionSubsetPercent_min: Int_Filter
   """
   ✨ Generated from Field `Evaluation`.`updatedAt_min` of type `Timestamp`
   """
@@ -2405,13 +2501,9 @@ input Evaluation_Having {
   """
   deletedAt_max: Timestamp_Filter
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_max` of type `Int`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_max` of type `Int`
   """
-  durationMinutes_max: Int_Filter
-  """
-  ✨ Generated from Field `Evaluation`.`scheduledDate_max` of type `Date`
-  """
-  scheduledDate_max: Date_Filter
+  questionSubsetPercent_max: Int_Filter
   """
   ✨ Generated from Field `Evaluation`.`updatedAt_max` of type `Timestamp`
   """
@@ -2452,6 +2544,10 @@ input Evaluation_Order {
   """
   evaluationId: OrderDirection
   """
+  ✨ Generated from Field `Evaluation`.`allowQuestionSubset` of type `Boolean!`
+  """
+  allowQuestionSubset: OrderDirection
+  """
   ✨ Generated from Field `Evaluation`.`createdAt` of type `Timestamp!`
   """
   createdAt: OrderDirection
@@ -2464,10 +2560,6 @@ input Evaluation_Order {
   """
   deletedBy: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes` of type `Int!`
-  """
-  durationMinutes: OrderDirection
-  """
   ✨ Generated from Field `Evaluation`.`gradeScale` of type `String!`
   """
   gradeScale: OrderDirection
@@ -2476,9 +2568,9 @@ input Evaluation_Order {
   """
   pdfPath: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`scheduledDate` of type `Date!`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent` of type `Int`
   """
-  scheduledDate: OrderDirection
+  questionSubsetPercent: OrderDirection
   """
   ✨ Generated from Field `Evaluation`.`state` of type `String!`
   """
@@ -2508,6 +2600,10 @@ input Evaluation_Order {
   """
   _count: OrderDirection
   """
+  ✨ Generated from Field `Evaluation`.`allowQuestionSubset_count` of type `Int!`
+  """
+  allowQuestionSubset_count: OrderDirection
+  """
   ✨ Generated from Field `Evaluation`.`createdAt_count` of type `Int!`
   """
   createdAt_count: OrderDirection
@@ -2519,10 +2615,6 @@ input Evaluation_Order {
   ✨ Generated from Field `Evaluation`.`deletedBy_count` of type `Int!`
   """
   deletedBy_count: OrderDirection
-  """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_count` of type `Int!`
-  """
-  durationMinutes_count: OrderDirection
   """
   ✨ Generated from Field `Evaluation`.`evaluationId_count` of type `Int!`
   """
@@ -2536,9 +2628,9 @@ input Evaluation_Order {
   """
   pdfPath_count: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`scheduledDate_count` of type `Int!`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_count` of type `Int!`
   """
-  scheduledDate_count: OrderDirection
+  questionSubsetPercent_count: OrderDirection
   """
   ✨ Generated from Field `Evaluation`.`state_count` of type `Int!`
   """
@@ -2564,13 +2656,13 @@ input Evaluation_Order {
   """
   userId_count: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_sum` of type `Int`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_sum` of type `Int`
   """
-  durationMinutes_sum: OrderDirection
+  questionSubsetPercent_sum: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_avg` of type `Float`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_avg` of type `Float`
   """
-  durationMinutes_avg: OrderDirection
+  questionSubsetPercent_avg: OrderDirection
   """
   ✨ Generated from Field `Evaluation`.`createdAt_min` of type `Timestamp`
   """
@@ -2580,13 +2672,9 @@ input Evaluation_Order {
   """
   deletedAt_min: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_min` of type `Int`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_min` of type `Int`
   """
-  durationMinutes_min: OrderDirection
-  """
-  ✨ Generated from Field `Evaluation`.`scheduledDate_min` of type `Date`
-  """
-  scheduledDate_min: OrderDirection
+  questionSubsetPercent_min: OrderDirection
   """
   ✨ Generated from Field `Evaluation`.`updatedAt_min` of type `Timestamp`
   """
@@ -2600,13 +2688,9 @@ input Evaluation_Order {
   """
   deletedAt_max: OrderDirection
   """
-  ✨ Generated from Field `Evaluation`.`durationMinutes_max` of type `Int`
+  ✨ Generated from Field `Evaluation`.`questionSubsetPercent_max` of type `Int`
   """
-  durationMinutes_max: OrderDirection
-  """
-  ✨ Generated from Field `Evaluation`.`scheduledDate_max` of type `Date`
-  """
-  scheduledDate_max: OrderDirection
+  questionSubsetPercent_max: OrderDirection
   """
   ✨ Generated from Field `Evaluation`.`updatedAt_max` of type `Timestamp`
   """
