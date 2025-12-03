@@ -67,6 +67,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetStudentByIdentifier*](#getstudentbyidentifier)
   - [*GetStudentsByFirstName*](#getstudentsbyfirstname)
   - [*GetStudentsByLastName*](#getstudentsbylastname)
+  - [*GetStudentByEmail*](#getstudentbyemail)
   - [*GetStudentsByCourse*](#getstudentsbycourse)
   - [*GetCourseStudentsDetail*](#getcoursestudentsdetail)
   - [*GetCourseStudentsWithDetails*](#getcoursestudentswithdetails)
@@ -87,6 +88,22 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetCourseEvaluationByAccessCode*](#getcourseevaluationbyaccesscode)
   - [*GetCourseEvaluationDetails*](#getcourseevaluationdetails)
   - [*ValidateStudentForEvaluation*](#validatestudentforevaluation)
+  - [*GetStudentCourseEvaluationByCourseEvaluation*](#getstudentcourseevaluationbycourseevaluation)
+  - [*GetStudentCourseEvaluation*](#getstudentcourseevaluation)
+  - [*GetStudentEvaluationQuestionsForEvaluation*](#getstudentevaluationquestionsforevaluation)
+  - [*GetStudentEvaluationQuestionsWithDetails*](#getstudentevaluationquestionswithdetails)
+  - [*GetEvaluationQuestionDetails*](#getevaluationquestiondetails)
+  - [*GetQuestionsDetails*](#getquestionsdetails)
+  - [*GetQuestionTypes*](#getquestiontypes)
+  - [*GetQuestionOptionsForQuestions*](#getquestionoptionsforquestions)
+  - [*GetStudentAnswersForQuestions*](#getstudentanswersforquestions)
+  - [*GetCourseStudentsByStudentId*](#getcoursestudentsbystudentid)
+  - [*GetStudentCourseEvaluationsByCourseStudentIds*](#getstudentcourseevaluationsbycoursestudentids)
+  - [*GetCourseEvaluationsByIds*](#getcourseevaluationsbyids)
+  - [*GetSubjectsByIds*](#getsubjectsbyids)
+  - [*CountStudentEvaluationQuestions*](#countstudentevaluationquestions)
+  - [*GetCourseEvaluationFullDetails*](#getcourseevaluationfulldetails)
+  - [*GetStudentEnrollmentByEmailAndCourse*](#getstudentenrollmentbyemailandcourse)
 - [**Mutations**](#mutations)
   - [*CreateUser*](#createuser)
   - [*UpdateUser*](#updateuser)
@@ -4874,6 +4891,94 @@ export default function GetStudentsByLastNameComponent() {
 }
 ```
 
+## GetStudentByEmail
+You can execute the `GetStudentByEmail` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentByEmail(dc: DataConnect, vars: GetStudentByEmailVariables, options?: useDataConnectQueryOptions<GetStudentByEmailData>): UseDataConnectQueryResult<GetStudentByEmailData, GetStudentByEmailVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentByEmail(vars: GetStudentByEmailVariables, options?: useDataConnectQueryOptions<GetStudentByEmailData>): UseDataConnectQueryResult<GetStudentByEmailData, GetStudentByEmailVariables>;
+```
+
+### Variables
+The `GetStudentByEmail` Query requires an argument of type `GetStudentByEmailVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentByEmailVariables {
+  email: string;
+}
+```
+### Return Type
+Recall that calling the `GetStudentByEmail` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentByEmail` Query is of type `GetStudentByEmailData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentByEmailData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    email: string;
+  } & Student_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentByEmail`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentByEmailVariables } from '@dataconnect/generated';
+import { useGetStudentByEmail } from '@dataconnect/generated/react'
+
+export default function GetStudentByEmailComponent() {
+  // The `useGetStudentByEmail` Query hook requires an argument of type `GetStudentByEmailVariables`:
+  const getStudentByEmailVars: GetStudentByEmailVariables = {
+    email: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentByEmail(getStudentByEmailVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentByEmail({ email: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentByEmail(dataConnect, getStudentByEmailVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentByEmail(getStudentByEmailVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentByEmail(dataConnect, getStudentByEmailVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.students);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
 ## GetStudentsByCourse
 You can execute the `GetStudentsByCourse` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
 
@@ -6758,6 +6863,1479 @@ export default function ValidateStudentForEvaluationComponent() {
     console.log(query.data.courseEvaluations);
     console.log(query.data.courses);
     console.log(query.data.evaluations);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentCourseEvaluationByCourseEvaluation
+You can execute the `GetStudentCourseEvaluationByCourseEvaluation` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentCourseEvaluationByCourseEvaluation(dc: DataConnect, vars: GetStudentCourseEvaluationByCourseEvaluationVariables, options?: useDataConnectQueryOptions<GetStudentCourseEvaluationByCourseEvaluationData>): UseDataConnectQueryResult<GetStudentCourseEvaluationByCourseEvaluationData, GetStudentCourseEvaluationByCourseEvaluationVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentCourseEvaluationByCourseEvaluation(vars: GetStudentCourseEvaluationByCourseEvaluationVariables, options?: useDataConnectQueryOptions<GetStudentCourseEvaluationByCourseEvaluationData>): UseDataConnectQueryResult<GetStudentCourseEvaluationByCourseEvaluationData, GetStudentCourseEvaluationByCourseEvaluationVariables>;
+```
+
+### Variables
+The `GetStudentCourseEvaluationByCourseEvaluation` Query requires an argument of type `GetStudentCourseEvaluationByCourseEvaluationVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentCourseEvaluationByCourseEvaluationVariables {
+  courseEvaluationId: UUIDString;
+  email: string;
+}
+```
+### Return Type
+Recall that calling the `GetStudentCourseEvaluationByCourseEvaluation` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentCourseEvaluationByCourseEvaluation` Query is of type `GetStudentCourseEvaluationByCourseEvaluationData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentCourseEvaluationByCourseEvaluationData {
+  students: ({
+    studentId: UUIDString;
+  } & Student_Key)[];
+    courseEvaluations: ({
+      courseEvaluationId: UUIDString;
+      courseId: UUIDString;
+      evaluationId: UUIDString;
+      durationMinutes: number;
+      evaluation: {
+        title: string;
+      };
+    } & CourseEvaluation_Key)[];
+      studentCourseEvaluations: ({
+        studentCourseEvaluationId: UUIDString;
+        courseEvaluationId: UUIDString;
+        courseStudentId: UUIDString;
+        totalScore: number;
+        grade?: number | null;
+        takenOn?: TimestampString | null;
+        attemptNo?: number | null;
+        state: string;
+      } & StudentCourseEvaluation_Key)[];
+        courseStudents: ({
+          courseStudentId: UUIDString;
+          courseId: UUIDString;
+          studentId: UUIDString;
+        } & CourseStudent_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentCourseEvaluationByCourseEvaluation`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentCourseEvaluationByCourseEvaluationVariables } from '@dataconnect/generated';
+import { useGetStudentCourseEvaluationByCourseEvaluation } from '@dataconnect/generated/react'
+
+export default function GetStudentCourseEvaluationByCourseEvaluationComponent() {
+  // The `useGetStudentCourseEvaluationByCourseEvaluation` Query hook requires an argument of type `GetStudentCourseEvaluationByCourseEvaluationVariables`:
+  const getStudentCourseEvaluationByCourseEvaluationVars: GetStudentCourseEvaluationByCourseEvaluationVariables = {
+    courseEvaluationId: ..., 
+    email: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentCourseEvaluationByCourseEvaluation(getStudentCourseEvaluationByCourseEvaluationVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentCourseEvaluationByCourseEvaluation({ courseEvaluationId: ..., email: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentCourseEvaluationByCourseEvaluation(dataConnect, getStudentCourseEvaluationByCourseEvaluationVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentCourseEvaluationByCourseEvaluation(getStudentCourseEvaluationByCourseEvaluationVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentCourseEvaluationByCourseEvaluation(dataConnect, getStudentCourseEvaluationByCourseEvaluationVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.students);
+    console.log(query.data.courseEvaluations);
+    console.log(query.data.studentCourseEvaluations);
+    console.log(query.data.courseStudents);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentCourseEvaluation
+You can execute the `GetStudentCourseEvaluation` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentCourseEvaluation(dc: DataConnect, vars: GetStudentCourseEvaluationVariables, options?: useDataConnectQueryOptions<GetStudentCourseEvaluationData>): UseDataConnectQueryResult<GetStudentCourseEvaluationData, GetStudentCourseEvaluationVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentCourseEvaluation(vars: GetStudentCourseEvaluationVariables, options?: useDataConnectQueryOptions<GetStudentCourseEvaluationData>): UseDataConnectQueryResult<GetStudentCourseEvaluationData, GetStudentCourseEvaluationVariables>;
+```
+
+### Variables
+The `GetStudentCourseEvaluation` Query requires an argument of type `GetStudentCourseEvaluationVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentCourseEvaluationVariables {
+  courseEvaluationId: UUIDString;
+  courseStudentId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetStudentCourseEvaluation` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentCourseEvaluation` Query is of type `GetStudentCourseEvaluationData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentCourseEvaluationData {
+  studentCourseEvaluations: ({
+    studentCourseEvaluationId: UUIDString;
+    courseEvaluationId: UUIDString;
+    courseStudentId: UUIDString;
+    totalScore: number;
+    grade?: number | null;
+    takenOn?: TimestampString | null;
+    attemptNo?: number | null;
+    state: string;
+  } & StudentCourseEvaluation_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentCourseEvaluation`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentCourseEvaluationVariables } from '@dataconnect/generated';
+import { useGetStudentCourseEvaluation } from '@dataconnect/generated/react'
+
+export default function GetStudentCourseEvaluationComponent() {
+  // The `useGetStudentCourseEvaluation` Query hook requires an argument of type `GetStudentCourseEvaluationVariables`:
+  const getStudentCourseEvaluationVars: GetStudentCourseEvaluationVariables = {
+    courseEvaluationId: ..., 
+    courseStudentId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentCourseEvaluation(getStudentCourseEvaluationVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentCourseEvaluation({ courseEvaluationId: ..., courseStudentId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentCourseEvaluation(dataConnect, getStudentCourseEvaluationVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentCourseEvaluation(getStudentCourseEvaluationVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentCourseEvaluation(dataConnect, getStudentCourseEvaluationVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.studentCourseEvaluations);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentEvaluationQuestionsForEvaluation
+You can execute the `GetStudentEvaluationQuestionsForEvaluation` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentEvaluationQuestionsForEvaluation(dc: DataConnect, vars: GetStudentEvaluationQuestionsForEvaluationVariables, options?: useDataConnectQueryOptions<GetStudentEvaluationQuestionsForEvaluationData>): UseDataConnectQueryResult<GetStudentEvaluationQuestionsForEvaluationData, GetStudentEvaluationQuestionsForEvaluationVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentEvaluationQuestionsForEvaluation(vars: GetStudentEvaluationQuestionsForEvaluationVariables, options?: useDataConnectQueryOptions<GetStudentEvaluationQuestionsForEvaluationData>): UseDataConnectQueryResult<GetStudentEvaluationQuestionsForEvaluationData, GetStudentEvaluationQuestionsForEvaluationVariables>;
+```
+
+### Variables
+The `GetStudentEvaluationQuestionsForEvaluation` Query requires an argument of type `GetStudentEvaluationQuestionsForEvaluationVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentEvaluationQuestionsForEvaluationVariables {
+  studentEvaluationId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetStudentEvaluationQuestionsForEvaluation` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentEvaluationQuestionsForEvaluation` Query is of type `GetStudentEvaluationQuestionsForEvaluationData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentEvaluationQuestionsForEvaluationData {
+  studentEvaluationQuestions: ({
+    studentEvaluationQuestionId: UUIDString;
+    studentEvaluationId: UUIDString;
+    evaluationQuestionId: UUIDString;
+    position: number;
+    scoreObtained?: number | null;
+    isCorrect?: boolean | null;
+  } & StudentEvaluationQuestion_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentEvaluationQuestionsForEvaluation`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentEvaluationQuestionsForEvaluationVariables } from '@dataconnect/generated';
+import { useGetStudentEvaluationQuestionsForEvaluation } from '@dataconnect/generated/react'
+
+export default function GetStudentEvaluationQuestionsForEvaluationComponent() {
+  // The `useGetStudentEvaluationQuestionsForEvaluation` Query hook requires an argument of type `GetStudentEvaluationQuestionsForEvaluationVariables`:
+  const getStudentEvaluationQuestionsForEvaluationVars: GetStudentEvaluationQuestionsForEvaluationVariables = {
+    studentEvaluationId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentEvaluationQuestionsForEvaluation(getStudentEvaluationQuestionsForEvaluationVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentEvaluationQuestionsForEvaluation({ studentEvaluationId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentEvaluationQuestionsForEvaluation(dataConnect, getStudentEvaluationQuestionsForEvaluationVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentEvaluationQuestionsForEvaluation(getStudentEvaluationQuestionsForEvaluationVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentEvaluationQuestionsForEvaluation(dataConnect, getStudentEvaluationQuestionsForEvaluationVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.studentEvaluationQuestions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentEvaluationQuestionsWithDetails
+You can execute the `GetStudentEvaluationQuestionsWithDetails` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentEvaluationQuestionsWithDetails(dc: DataConnect, vars: GetStudentEvaluationQuestionsWithDetailsVariables, options?: useDataConnectQueryOptions<GetStudentEvaluationQuestionsWithDetailsData>): UseDataConnectQueryResult<GetStudentEvaluationQuestionsWithDetailsData, GetStudentEvaluationQuestionsWithDetailsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentEvaluationQuestionsWithDetails(vars: GetStudentEvaluationQuestionsWithDetailsVariables, options?: useDataConnectQueryOptions<GetStudentEvaluationQuestionsWithDetailsData>): UseDataConnectQueryResult<GetStudentEvaluationQuestionsWithDetailsData, GetStudentEvaluationQuestionsWithDetailsVariables>;
+```
+
+### Variables
+The `GetStudentEvaluationQuestionsWithDetails` Query requires an argument of type `GetStudentEvaluationQuestionsWithDetailsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentEvaluationQuestionsWithDetailsVariables {
+  studentEvaluationId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetStudentEvaluationQuestionsWithDetails` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentEvaluationQuestionsWithDetails` Query is of type `GetStudentEvaluationQuestionsWithDetailsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentEvaluationQuestionsWithDetailsData {
+  studentEvaluationQuestions: ({
+    studentEvaluationQuestionId: UUIDString;
+    studentEvaluationId: UUIDString;
+    evaluationQuestionId: UUIDString;
+    position: number;
+    scoreObtained?: number | null;
+    isCorrect?: boolean | null;
+  } & StudentEvaluationQuestion_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentEvaluationQuestionsWithDetails`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentEvaluationQuestionsWithDetailsVariables } from '@dataconnect/generated';
+import { useGetStudentEvaluationQuestionsWithDetails } from '@dataconnect/generated/react'
+
+export default function GetStudentEvaluationQuestionsWithDetailsComponent() {
+  // The `useGetStudentEvaluationQuestionsWithDetails` Query hook requires an argument of type `GetStudentEvaluationQuestionsWithDetailsVariables`:
+  const getStudentEvaluationQuestionsWithDetailsVars: GetStudentEvaluationQuestionsWithDetailsVariables = {
+    studentEvaluationId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentEvaluationQuestionsWithDetails(getStudentEvaluationQuestionsWithDetailsVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentEvaluationQuestionsWithDetails({ studentEvaluationId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentEvaluationQuestionsWithDetails(dataConnect, getStudentEvaluationQuestionsWithDetailsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentEvaluationQuestionsWithDetails(getStudentEvaluationQuestionsWithDetailsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentEvaluationQuestionsWithDetails(dataConnect, getStudentEvaluationQuestionsWithDetailsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.studentEvaluationQuestions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetEvaluationQuestionDetails
+You can execute the `GetEvaluationQuestionDetails` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetEvaluationQuestionDetails(dc: DataConnect, vars: GetEvaluationQuestionDetailsVariables, options?: useDataConnectQueryOptions<GetEvaluationQuestionDetailsData>): UseDataConnectQueryResult<GetEvaluationQuestionDetailsData, GetEvaluationQuestionDetailsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetEvaluationQuestionDetails(vars: GetEvaluationQuestionDetailsVariables, options?: useDataConnectQueryOptions<GetEvaluationQuestionDetailsData>): UseDataConnectQueryResult<GetEvaluationQuestionDetailsData, GetEvaluationQuestionDetailsVariables>;
+```
+
+### Variables
+The `GetEvaluationQuestionDetails` Query requires an argument of type `GetEvaluationQuestionDetailsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetEvaluationQuestionDetailsVariables {
+  evaluationQuestionIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetEvaluationQuestionDetails` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetEvaluationQuestionDetails` Query is of type `GetEvaluationQuestionDetailsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetEvaluationQuestionDetailsData {
+  evaluationQuestions: ({
+    evaluationQuestionId: UUIDString;
+    evaluationId: UUIDString;
+    questionId: UUIDString;
+    points: number;
+    position: number;
+  } & EvaluationQuestion_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetEvaluationQuestionDetails`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetEvaluationQuestionDetailsVariables } from '@dataconnect/generated';
+import { useGetEvaluationQuestionDetails } from '@dataconnect/generated/react'
+
+export default function GetEvaluationQuestionDetailsComponent() {
+  // The `useGetEvaluationQuestionDetails` Query hook requires an argument of type `GetEvaluationQuestionDetailsVariables`:
+  const getEvaluationQuestionDetailsVars: GetEvaluationQuestionDetailsVariables = {
+    evaluationQuestionIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetEvaluationQuestionDetails(getEvaluationQuestionDetailsVars);
+  // Variables can be defined inline as well.
+  const query = useGetEvaluationQuestionDetails({ evaluationQuestionIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetEvaluationQuestionDetails(dataConnect, getEvaluationQuestionDetailsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetEvaluationQuestionDetails(getEvaluationQuestionDetailsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetEvaluationQuestionDetails(dataConnect, getEvaluationQuestionDetailsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.evaluationQuestions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetQuestionsDetails
+You can execute the `GetQuestionsDetails` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetQuestionsDetails(dc: DataConnect, vars: GetQuestionsDetailsVariables, options?: useDataConnectQueryOptions<GetQuestionsDetailsData>): UseDataConnectQueryResult<GetQuestionsDetailsData, GetQuestionsDetailsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetQuestionsDetails(vars: GetQuestionsDetailsVariables, options?: useDataConnectQueryOptions<GetQuestionsDetailsData>): UseDataConnectQueryResult<GetQuestionsDetailsData, GetQuestionsDetailsVariables>;
+```
+
+### Variables
+The `GetQuestionsDetails` Query requires an argument of type `GetQuestionsDetailsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetQuestionsDetailsVariables {
+  questionIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetQuestionsDetails` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetQuestionsDetails` Query is of type `GetQuestionsDetailsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetQuestionsDetailsData {
+  questions: ({
+    questionId: UUIDString;
+    text: string;
+    questionTypeId: UUIDString;
+    difficultyId: UUIDString;
+    allowPartialScore: boolean;
+  } & Question_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetQuestionsDetails`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetQuestionsDetailsVariables } from '@dataconnect/generated';
+import { useGetQuestionsDetails } from '@dataconnect/generated/react'
+
+export default function GetQuestionsDetailsComponent() {
+  // The `useGetQuestionsDetails` Query hook requires an argument of type `GetQuestionsDetailsVariables`:
+  const getQuestionsDetailsVars: GetQuestionsDetailsVariables = {
+    questionIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetQuestionsDetails(getQuestionsDetailsVars);
+  // Variables can be defined inline as well.
+  const query = useGetQuestionsDetails({ questionIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetQuestionsDetails(dataConnect, getQuestionsDetailsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuestionsDetails(getQuestionsDetailsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuestionsDetails(dataConnect, getQuestionsDetailsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.questions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetQuestionTypes
+You can execute the `GetQuestionTypes` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetQuestionTypes(dc: DataConnect, vars: GetQuestionTypesVariables, options?: useDataConnectQueryOptions<GetQuestionTypesData>): UseDataConnectQueryResult<GetQuestionTypesData, GetQuestionTypesVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetQuestionTypes(vars: GetQuestionTypesVariables, options?: useDataConnectQueryOptions<GetQuestionTypesData>): UseDataConnectQueryResult<GetQuestionTypesData, GetQuestionTypesVariables>;
+```
+
+### Variables
+The `GetQuestionTypes` Query requires an argument of type `GetQuestionTypesVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetQuestionTypesVariables {
+  questionTypeIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetQuestionTypes` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetQuestionTypes` Query is of type `GetQuestionTypesData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetQuestionTypesData {
+  questionTypes: ({
+    questionTypeId: UUIDString;
+    code: string;
+    name: string;
+    minOptions: number;
+    maxOptions: number;
+    correctOptions: number;
+  } & QuestionType_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetQuestionTypes`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetQuestionTypesVariables } from '@dataconnect/generated';
+import { useGetQuestionTypes } from '@dataconnect/generated/react'
+
+export default function GetQuestionTypesComponent() {
+  // The `useGetQuestionTypes` Query hook requires an argument of type `GetQuestionTypesVariables`:
+  const getQuestionTypesVars: GetQuestionTypesVariables = {
+    questionTypeIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetQuestionTypes(getQuestionTypesVars);
+  // Variables can be defined inline as well.
+  const query = useGetQuestionTypes({ questionTypeIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetQuestionTypes(dataConnect, getQuestionTypesVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuestionTypes(getQuestionTypesVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuestionTypes(dataConnect, getQuestionTypesVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.questionTypes);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetQuestionOptionsForQuestions
+You can execute the `GetQuestionOptionsForQuestions` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetQuestionOptionsForQuestions(dc: DataConnect, vars: GetQuestionOptionsForQuestionsVariables, options?: useDataConnectQueryOptions<GetQuestionOptionsForQuestionsData>): UseDataConnectQueryResult<GetQuestionOptionsForQuestionsData, GetQuestionOptionsForQuestionsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetQuestionOptionsForQuestions(vars: GetQuestionOptionsForQuestionsVariables, options?: useDataConnectQueryOptions<GetQuestionOptionsForQuestionsData>): UseDataConnectQueryResult<GetQuestionOptionsForQuestionsData, GetQuestionOptionsForQuestionsVariables>;
+```
+
+### Variables
+The `GetQuestionOptionsForQuestions` Query requires an argument of type `GetQuestionOptionsForQuestionsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetQuestionOptionsForQuestionsVariables {
+  questionIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetQuestionOptionsForQuestions` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetQuestionOptionsForQuestions` Query is of type `GetQuestionOptionsForQuestionsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetQuestionOptionsForQuestionsData {
+  questionOptions: ({
+    questionOptionId: UUIDString;
+    questionId: UUIDString;
+    text: string;
+    position: number;
+  } & QuestionOption_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetQuestionOptionsForQuestions`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetQuestionOptionsForQuestionsVariables } from '@dataconnect/generated';
+import { useGetQuestionOptionsForQuestions } from '@dataconnect/generated/react'
+
+export default function GetQuestionOptionsForQuestionsComponent() {
+  // The `useGetQuestionOptionsForQuestions` Query hook requires an argument of type `GetQuestionOptionsForQuestionsVariables`:
+  const getQuestionOptionsForQuestionsVars: GetQuestionOptionsForQuestionsVariables = {
+    questionIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetQuestionOptionsForQuestions(getQuestionOptionsForQuestionsVars);
+  // Variables can be defined inline as well.
+  const query = useGetQuestionOptionsForQuestions({ questionIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetQuestionOptionsForQuestions(dataConnect, getQuestionOptionsForQuestionsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuestionOptionsForQuestions(getQuestionOptionsForQuestionsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuestionOptionsForQuestions(dataConnect, getQuestionOptionsForQuestionsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.questionOptions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentAnswersForQuestions
+You can execute the `GetStudentAnswersForQuestions` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentAnswersForQuestions(dc: DataConnect, vars: GetStudentAnswersForQuestionsVariables, options?: useDataConnectQueryOptions<GetStudentAnswersForQuestionsData>): UseDataConnectQueryResult<GetStudentAnswersForQuestionsData, GetStudentAnswersForQuestionsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentAnswersForQuestions(vars: GetStudentAnswersForQuestionsVariables, options?: useDataConnectQueryOptions<GetStudentAnswersForQuestionsData>): UseDataConnectQueryResult<GetStudentAnswersForQuestionsData, GetStudentAnswersForQuestionsVariables>;
+```
+
+### Variables
+The `GetStudentAnswersForQuestions` Query requires an argument of type `GetStudentAnswersForQuestionsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentAnswersForQuestionsVariables {
+  studentEvaluationQuestionIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetStudentAnswersForQuestions` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentAnswersForQuestions` Query is of type `GetStudentAnswersForQuestionsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentAnswersForQuestionsData {
+  studentAnswerOptions: ({
+    studentAnswerOptionId: UUIDString;
+    studentEvaluationQuestionId: UUIDString;
+    questionOptionId: UUIDString;
+  } & StudentAnswerOption_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentAnswersForQuestions`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentAnswersForQuestionsVariables } from '@dataconnect/generated';
+import { useGetStudentAnswersForQuestions } from '@dataconnect/generated/react'
+
+export default function GetStudentAnswersForQuestionsComponent() {
+  // The `useGetStudentAnswersForQuestions` Query hook requires an argument of type `GetStudentAnswersForQuestionsVariables`:
+  const getStudentAnswersForQuestionsVars: GetStudentAnswersForQuestionsVariables = {
+    studentEvaluationQuestionIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentAnswersForQuestions(getStudentAnswersForQuestionsVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentAnswersForQuestions({ studentEvaluationQuestionIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentAnswersForQuestions(dataConnect, getStudentAnswersForQuestionsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentAnswersForQuestions(getStudentAnswersForQuestionsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentAnswersForQuestions(dataConnect, getStudentAnswersForQuestionsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.studentAnswerOptions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetCourseStudentsByStudentId
+You can execute the `GetCourseStudentsByStudentId` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetCourseStudentsByStudentId(dc: DataConnect, vars: GetCourseStudentsByStudentIdVariables, options?: useDataConnectQueryOptions<GetCourseStudentsByStudentIdData>): UseDataConnectQueryResult<GetCourseStudentsByStudentIdData, GetCourseStudentsByStudentIdVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetCourseStudentsByStudentId(vars: GetCourseStudentsByStudentIdVariables, options?: useDataConnectQueryOptions<GetCourseStudentsByStudentIdData>): UseDataConnectQueryResult<GetCourseStudentsByStudentIdData, GetCourseStudentsByStudentIdVariables>;
+```
+
+### Variables
+The `GetCourseStudentsByStudentId` Query requires an argument of type `GetCourseStudentsByStudentIdVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetCourseStudentsByStudentIdVariables {
+  studentId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetCourseStudentsByStudentId` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetCourseStudentsByStudentId` Query is of type `GetCourseStudentsByStudentIdData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetCourseStudentsByStudentIdData {
+  courseStudents: ({
+    courseStudentId: UUIDString;
+    courseId: UUIDString;
+    course: {
+      name: string;
+      code: string;
+    };
+  } & CourseStudent_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetCourseStudentsByStudentId`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetCourseStudentsByStudentIdVariables } from '@dataconnect/generated';
+import { useGetCourseStudentsByStudentId } from '@dataconnect/generated/react'
+
+export default function GetCourseStudentsByStudentIdComponent() {
+  // The `useGetCourseStudentsByStudentId` Query hook requires an argument of type `GetCourseStudentsByStudentIdVariables`:
+  const getCourseStudentsByStudentIdVars: GetCourseStudentsByStudentIdVariables = {
+    studentId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetCourseStudentsByStudentId(getCourseStudentsByStudentIdVars);
+  // Variables can be defined inline as well.
+  const query = useGetCourseStudentsByStudentId({ studentId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetCourseStudentsByStudentId(dataConnect, getCourseStudentsByStudentIdVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseStudentsByStudentId(getCourseStudentsByStudentIdVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseStudentsByStudentId(dataConnect, getCourseStudentsByStudentIdVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.courseStudents);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentCourseEvaluationsByCourseStudentIds
+You can execute the `GetStudentCourseEvaluationsByCourseStudentIds` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentCourseEvaluationsByCourseStudentIds(dc: DataConnect, vars: GetStudentCourseEvaluationsByCourseStudentIdsVariables, options?: useDataConnectQueryOptions<GetStudentCourseEvaluationsByCourseStudentIdsData>): UseDataConnectQueryResult<GetStudentCourseEvaluationsByCourseStudentIdsData, GetStudentCourseEvaluationsByCourseStudentIdsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentCourseEvaluationsByCourseStudentIds(vars: GetStudentCourseEvaluationsByCourseStudentIdsVariables, options?: useDataConnectQueryOptions<GetStudentCourseEvaluationsByCourseStudentIdsData>): UseDataConnectQueryResult<GetStudentCourseEvaluationsByCourseStudentIdsData, GetStudentCourseEvaluationsByCourseStudentIdsVariables>;
+```
+
+### Variables
+The `GetStudentCourseEvaluationsByCourseStudentIds` Query requires an argument of type `GetStudentCourseEvaluationsByCourseStudentIdsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentCourseEvaluationsByCourseStudentIdsVariables {
+  courseStudentIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetStudentCourseEvaluationsByCourseStudentIds` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentCourseEvaluationsByCourseStudentIds` Query is of type `GetStudentCourseEvaluationsByCourseStudentIdsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentCourseEvaluationsByCourseStudentIdsData {
+  studentCourseEvaluations: ({
+    studentCourseEvaluationId: UUIDString;
+    courseEvaluationId: UUIDString;
+    courseStudentId: UUIDString;
+    totalScore: number;
+    grade?: number | null;
+    takenOn?: TimestampString | null;
+    attemptNo?: number | null;
+    state: string;
+  } & StudentCourseEvaluation_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentCourseEvaluationsByCourseStudentIds`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentCourseEvaluationsByCourseStudentIdsVariables } from '@dataconnect/generated';
+import { useGetStudentCourseEvaluationsByCourseStudentIds } from '@dataconnect/generated/react'
+
+export default function GetStudentCourseEvaluationsByCourseStudentIdsComponent() {
+  // The `useGetStudentCourseEvaluationsByCourseStudentIds` Query hook requires an argument of type `GetStudentCourseEvaluationsByCourseStudentIdsVariables`:
+  const getStudentCourseEvaluationsByCourseStudentIdsVars: GetStudentCourseEvaluationsByCourseStudentIdsVariables = {
+    courseStudentIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentCourseEvaluationsByCourseStudentIds(getStudentCourseEvaluationsByCourseStudentIdsVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentCourseEvaluationsByCourseStudentIds({ courseStudentIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentCourseEvaluationsByCourseStudentIds(dataConnect, getStudentCourseEvaluationsByCourseStudentIdsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentCourseEvaluationsByCourseStudentIds(getStudentCourseEvaluationsByCourseStudentIdsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentCourseEvaluationsByCourseStudentIds(dataConnect, getStudentCourseEvaluationsByCourseStudentIdsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.studentCourseEvaluations);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetCourseEvaluationsByIds
+You can execute the `GetCourseEvaluationsByIds` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetCourseEvaluationsByIds(dc: DataConnect, vars: GetCourseEvaluationsByIdsVariables, options?: useDataConnectQueryOptions<GetCourseEvaluationsByIdsData>): UseDataConnectQueryResult<GetCourseEvaluationsByIdsData, GetCourseEvaluationsByIdsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetCourseEvaluationsByIds(vars: GetCourseEvaluationsByIdsVariables, options?: useDataConnectQueryOptions<GetCourseEvaluationsByIdsData>): UseDataConnectQueryResult<GetCourseEvaluationsByIdsData, GetCourseEvaluationsByIdsVariables>;
+```
+
+### Variables
+The `GetCourseEvaluationsByIds` Query requires an argument of type `GetCourseEvaluationsByIdsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetCourseEvaluationsByIdsVariables {
+  courseEvaluationIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetCourseEvaluationsByIds` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetCourseEvaluationsByIds` Query is of type `GetCourseEvaluationsByIdsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetCourseEvaluationsByIdsData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    course: {
+      name: string;
+      code: string;
+    };
+      evaluation: {
+        title: string;
+        state: string;
+        subjectId: UUIDString;
+      };
+  } & CourseEvaluation_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetCourseEvaluationsByIds`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetCourseEvaluationsByIdsVariables } from '@dataconnect/generated';
+import { useGetCourseEvaluationsByIds } from '@dataconnect/generated/react'
+
+export default function GetCourseEvaluationsByIdsComponent() {
+  // The `useGetCourseEvaluationsByIds` Query hook requires an argument of type `GetCourseEvaluationsByIdsVariables`:
+  const getCourseEvaluationsByIdsVars: GetCourseEvaluationsByIdsVariables = {
+    courseEvaluationIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetCourseEvaluationsByIds(getCourseEvaluationsByIdsVars);
+  // Variables can be defined inline as well.
+  const query = useGetCourseEvaluationsByIds({ courseEvaluationIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetCourseEvaluationsByIds(dataConnect, getCourseEvaluationsByIdsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseEvaluationsByIds(getCourseEvaluationsByIdsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseEvaluationsByIds(dataConnect, getCourseEvaluationsByIdsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.courseEvaluations);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetSubjectsByIds
+You can execute the `GetSubjectsByIds` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetSubjectsByIds(dc: DataConnect, vars: GetSubjectsByIdsVariables, options?: useDataConnectQueryOptions<GetSubjectsByIdsData>): UseDataConnectQueryResult<GetSubjectsByIdsData, GetSubjectsByIdsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetSubjectsByIds(vars: GetSubjectsByIdsVariables, options?: useDataConnectQueryOptions<GetSubjectsByIdsData>): UseDataConnectQueryResult<GetSubjectsByIdsData, GetSubjectsByIdsVariables>;
+```
+
+### Variables
+The `GetSubjectsByIds` Query requires an argument of type `GetSubjectsByIdsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetSubjectsByIdsVariables {
+  subjectIds: UUIDString[];
+}
+```
+### Return Type
+Recall that calling the `GetSubjectsByIds` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetSubjectsByIds` Query is of type `GetSubjectsByIdsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetSubjectsByIdsData {
+  subjects: ({
+    subjectId: UUIDString;
+    name: string;
+    code: string;
+  } & Subject_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetSubjectsByIds`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetSubjectsByIdsVariables } from '@dataconnect/generated';
+import { useGetSubjectsByIds } from '@dataconnect/generated/react'
+
+export default function GetSubjectsByIdsComponent() {
+  // The `useGetSubjectsByIds` Query hook requires an argument of type `GetSubjectsByIdsVariables`:
+  const getSubjectsByIdsVars: GetSubjectsByIdsVariables = {
+    subjectIds: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetSubjectsByIds(getSubjectsByIdsVars);
+  // Variables can be defined inline as well.
+  const query = useGetSubjectsByIds({ subjectIds: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetSubjectsByIds(dataConnect, getSubjectsByIdsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetSubjectsByIds(getSubjectsByIdsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetSubjectsByIds(dataConnect, getSubjectsByIdsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.subjects);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CountStudentEvaluationQuestions
+You can execute the `CountStudentEvaluationQuestions` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useCountStudentEvaluationQuestions(dc: DataConnect, vars: CountStudentEvaluationQuestionsVariables, options?: useDataConnectQueryOptions<CountStudentEvaluationQuestionsData>): UseDataConnectQueryResult<CountStudentEvaluationQuestionsData, CountStudentEvaluationQuestionsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useCountStudentEvaluationQuestions(vars: CountStudentEvaluationQuestionsVariables, options?: useDataConnectQueryOptions<CountStudentEvaluationQuestionsData>): UseDataConnectQueryResult<CountStudentEvaluationQuestionsData, CountStudentEvaluationQuestionsVariables>;
+```
+
+### Variables
+The `CountStudentEvaluationQuestions` Query requires an argument of type `CountStudentEvaluationQuestionsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CountStudentEvaluationQuestionsVariables {
+  studentEvaluationId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `CountStudentEvaluationQuestions` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `CountStudentEvaluationQuestions` Query is of type `CountStudentEvaluationQuestionsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CountStudentEvaluationQuestionsData {
+  studentEvaluationQuestions: ({
+    studentEvaluationQuestionId: UUIDString;
+  } & StudentEvaluationQuestion_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `CountStudentEvaluationQuestions`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CountStudentEvaluationQuestionsVariables } from '@dataconnect/generated';
+import { useCountStudentEvaluationQuestions } from '@dataconnect/generated/react'
+
+export default function CountStudentEvaluationQuestionsComponent() {
+  // The `useCountStudentEvaluationQuestions` Query hook requires an argument of type `CountStudentEvaluationQuestionsVariables`:
+  const countStudentEvaluationQuestionsVars: CountStudentEvaluationQuestionsVariables = {
+    studentEvaluationId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useCountStudentEvaluationQuestions(countStudentEvaluationQuestionsVars);
+  // Variables can be defined inline as well.
+  const query = useCountStudentEvaluationQuestions({ studentEvaluationId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useCountStudentEvaluationQuestions(dataConnect, countStudentEvaluationQuestionsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useCountStudentEvaluationQuestions(countStudentEvaluationQuestionsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useCountStudentEvaluationQuestions(dataConnect, countStudentEvaluationQuestionsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.studentEvaluationQuestions);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetCourseEvaluationFullDetails
+You can execute the `GetCourseEvaluationFullDetails` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetCourseEvaluationFullDetails(dc: DataConnect, vars: GetCourseEvaluationFullDetailsVariables, options?: useDataConnectQueryOptions<GetCourseEvaluationFullDetailsData>): UseDataConnectQueryResult<GetCourseEvaluationFullDetailsData, GetCourseEvaluationFullDetailsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetCourseEvaluationFullDetails(vars: GetCourseEvaluationFullDetailsVariables, options?: useDataConnectQueryOptions<GetCourseEvaluationFullDetailsData>): UseDataConnectQueryResult<GetCourseEvaluationFullDetailsData, GetCourseEvaluationFullDetailsVariables>;
+```
+
+### Variables
+The `GetCourseEvaluationFullDetails` Query requires an argument of type `GetCourseEvaluationFullDetailsVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetCourseEvaluationFullDetailsVariables {
+  courseEvaluationId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetCourseEvaluationFullDetails` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetCourseEvaluationFullDetails` Query is of type `GetCourseEvaluationFullDetailsData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetCourseEvaluationFullDetailsData {
+  courseEvaluations: ({
+    courseEvaluationId: UUIDString;
+    courseId: UUIDString;
+    evaluationId: UUIDString;
+    scheduledDate: DateString;
+    durationMinutes: number;
+    course: {
+      courseId: UUIDString;
+      name: string;
+      code: string;
+      section?: string | null;
+      institutionName: string;
+      active: boolean;
+    } & Course_Key;
+      evaluation: {
+        evaluationId: UUIDString;
+        title: string;
+        gradeScale: string;
+        state: string;
+        allowQuestionSubset: boolean;
+        questionSubsetPercent?: number | null;
+        subjectId: UUIDString;
+      } & Evaluation_Key;
+  } & CourseEvaluation_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetCourseEvaluationFullDetails`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetCourseEvaluationFullDetailsVariables } from '@dataconnect/generated';
+import { useGetCourseEvaluationFullDetails } from '@dataconnect/generated/react'
+
+export default function GetCourseEvaluationFullDetailsComponent() {
+  // The `useGetCourseEvaluationFullDetails` Query hook requires an argument of type `GetCourseEvaluationFullDetailsVariables`:
+  const getCourseEvaluationFullDetailsVars: GetCourseEvaluationFullDetailsVariables = {
+    courseEvaluationId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetCourseEvaluationFullDetails(getCourseEvaluationFullDetailsVars);
+  // Variables can be defined inline as well.
+  const query = useGetCourseEvaluationFullDetails({ courseEvaluationId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetCourseEvaluationFullDetails(dataConnect, getCourseEvaluationFullDetailsVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseEvaluationFullDetails(getCourseEvaluationFullDetailsVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetCourseEvaluationFullDetails(dataConnect, getCourseEvaluationFullDetailsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.courseEvaluations);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetStudentEnrollmentByEmailAndCourse
+You can execute the `GetStudentEnrollmentByEmailAndCourse` Query using the following Query hook function, which is defined in [dataconnect-generated/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetStudentEnrollmentByEmailAndCourse(dc: DataConnect, vars: GetStudentEnrollmentByEmailAndCourseVariables, options?: useDataConnectQueryOptions<GetStudentEnrollmentByEmailAndCourseData>): UseDataConnectQueryResult<GetStudentEnrollmentByEmailAndCourseData, GetStudentEnrollmentByEmailAndCourseVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetStudentEnrollmentByEmailAndCourse(vars: GetStudentEnrollmentByEmailAndCourseVariables, options?: useDataConnectQueryOptions<GetStudentEnrollmentByEmailAndCourseData>): UseDataConnectQueryResult<GetStudentEnrollmentByEmailAndCourseData, GetStudentEnrollmentByEmailAndCourseVariables>;
+```
+
+### Variables
+The `GetStudentEnrollmentByEmailAndCourse` Query requires an argument of type `GetStudentEnrollmentByEmailAndCourseVariables`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetStudentEnrollmentByEmailAndCourseVariables {
+  email: string;
+  courseId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetStudentEnrollmentByEmailAndCourse` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetStudentEnrollmentByEmailAndCourse` Query is of type `GetStudentEnrollmentByEmailAndCourseData`, which is defined in [dataconnect-generated/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetStudentEnrollmentByEmailAndCourseData {
+  students: ({
+    studentId: UUIDString;
+    firstName: string;
+    lastName: string;
+    identifier: string;
+    email: string;
+  } & Student_Key)[];
+    courseStudents: ({
+      courseStudentId: UUIDString;
+      courseId: UUIDString;
+      studentId: UUIDString;
+      student: {
+        email: string;
+      };
+    } & CourseStudent_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetStudentEnrollmentByEmailAndCourse`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetStudentEnrollmentByEmailAndCourseVariables } from '@dataconnect/generated';
+import { useGetStudentEnrollmentByEmailAndCourse } from '@dataconnect/generated/react'
+
+export default function GetStudentEnrollmentByEmailAndCourseComponent() {
+  // The `useGetStudentEnrollmentByEmailAndCourse` Query hook requires an argument of type `GetStudentEnrollmentByEmailAndCourseVariables`:
+  const getStudentEnrollmentByEmailAndCourseVars: GetStudentEnrollmentByEmailAndCourseVariables = {
+    email: ..., 
+    courseId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetStudentEnrollmentByEmailAndCourse(getStudentEnrollmentByEmailAndCourseVars);
+  // Variables can be defined inline as well.
+  const query = useGetStudentEnrollmentByEmailAndCourse({ email: ..., courseId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetStudentEnrollmentByEmailAndCourse(dataConnect, getStudentEnrollmentByEmailAndCourseVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentEnrollmentByEmailAndCourse(getStudentEnrollmentByEmailAndCourseVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetStudentEnrollmentByEmailAndCourse(dataConnect, getStudentEnrollmentByEmailAndCourseVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.students);
+    console.log(query.data.courseStudents);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }

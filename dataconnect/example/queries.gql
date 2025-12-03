@@ -900,6 +900,17 @@ query GetStudentsByLastName($userId: UUID!, $lastName: String!, $firebaseId: Str
   }
 }
 
+# Obtener estudiante por email
+query GetStudentByEmail($email: String!) @auth(level: USER) {
+  students(where: { email: { eq: $email }, deletedAt: { eq: null } }) {
+    studentId
+    firstName
+    lastName
+    identifier
+    email
+  }
+}
+
 # Obtener estudiantes inscritos en un curso específico
 query GetStudentsByCourse($userId: UUID!, $courseId: UUID!, $firebaseId: String!) @auth(expr: "firebaseId == auth.uid") {
   courseStudents(where: { courseId: { eq: $courseId }, deletedAt: { eq: null } }) {
@@ -1248,5 +1259,253 @@ query ValidateStudentForEvaluation($email: String!, $courseId: UUID!, $evaluatio
     state
     allowQuestionSubset
     questionSubsetPercent
+  }
+}
+
+# Obtener StudentCourseEvaluation por courseEvaluationId y email del estudiante
+# Útil para cargar evaluación desde URL sin state
+query GetStudentCourseEvaluationByCourseEvaluation($courseEvaluationId: UUID!, $email: String!) @auth(level: USER) {
+  # Primero obtener el estudiante por email
+  students(where: { email: { eq: $email }, deletedAt: { eq: null } }) {
+    studentId
+  }
+  # Obtener el courseEvaluation para saber el courseId
+  courseEvaluations(where: { courseEvaluationId: { eq: $courseEvaluationId } }) {
+    courseEvaluationId
+    courseId
+    evaluationId
+    durationMinutes
+    evaluation {
+      title
+    }
+  }
+  # Obtener todos los StudentCourseEvaluation para este courseEvaluationId
+  studentCourseEvaluations(where: { courseEvaluationId: { eq: $courseEvaluationId } }) {
+    studentCourseEvaluationId
+    courseEvaluationId
+    courseStudentId
+    totalScore
+    grade
+    takenOn
+    attemptNo
+    state
+  }
+  # Obtener CourseStudents para poder filtrar por studentId
+  courseStudents(where: { deletedAt: { eq: null } }) {
+    courseStudentId
+    courseId
+    studentId
+  }
+}
+
+# Obtener o verificar StudentCourseEvaluation existente
+query GetStudentCourseEvaluation($courseEvaluationId: UUID!, $courseStudentId: UUID!) @auth(level: USER) {
+  studentCourseEvaluations(where: { 
+    courseEvaluationId: { eq: $courseEvaluationId }, 
+    courseStudentId: { eq: $courseStudentId } 
+  }) {
+    studentCourseEvaluationId
+    courseEvaluationId
+    courseStudentId
+    totalScore
+    grade
+    takenOn
+    attemptNo
+    state
+  }
+}
+
+# Obtener las preguntas asignadas a un estudiante para una evaluación
+query GetStudentEvaluationQuestionsForEvaluation($studentEvaluationId: UUID!) @auth(level: USER) {
+  studentEvaluationQuestions(where: { studentEvaluationId: { eq: $studentEvaluationId } }, orderBy: [{ position: ASC }]) {
+    studentEvaluationQuestionId
+    studentEvaluationId
+    evaluationQuestionId
+    position
+    scoreObtained
+    isCorrect
+  }
+}
+
+# Obtener las preguntas completas del estudiante con opciones y tipo de pregunta
+# Esta query trae toda la información necesaria para mostrar las preguntas al estudiante
+query GetStudentEvaluationQuestionsWithDetails($studentEvaluationId: UUID!) @auth(level: USER) {
+  # Preguntas asignadas al estudiante
+  studentEvaluationQuestions(where: { studentEvaluationId: { eq: $studentEvaluationId } }, orderBy: [{ position: ASC }]) {
+    studentEvaluationQuestionId
+    studentEvaluationId
+    evaluationQuestionId
+    position
+    scoreObtained
+    isCorrect
+  }
+}
+
+# Obtener detalles de una EvaluationQuestion específica (puntos y questionId)
+query GetEvaluationQuestionDetails($evaluationQuestionIds: [UUID!]!) @auth(level: USER) {
+  evaluationQuestions(where: { evaluationQuestionId: { in: $evaluationQuestionIds } }) {
+    evaluationQuestionId
+    evaluationId
+    questionId
+    points
+    position
+  }
+}
+
+# Obtener detalles completos de preguntas (texto, tipo, dificultad)
+query GetQuestionsDetails($questionIds: [UUID!]!) @auth(level: USER) {
+  questions(where: { questionId: { in: $questionIds } }) {
+    questionId
+    text
+    questionTypeId
+    difficultyId
+    allowPartialScore
+  }
+}
+
+# Obtener tipos de pregunta
+query GetQuestionTypes($questionTypeIds: [UUID!]!) @auth(level: USER) {
+  questionTypes(where: { questionTypeId: { in: $questionTypeIds } }) {
+    questionTypeId
+    code
+    name
+    minOptions
+    maxOptions
+    correctOptions
+  }
+}
+
+# Obtener opciones de preguntas
+query GetQuestionOptionsForQuestions($questionIds: [UUID!]!) @auth(level: USER) {
+  questionOptions(where: { questionId: { in: $questionIds } }, orderBy: [{ position: ASC }]) {
+    questionOptionId
+    questionId
+    text
+    position
+    # NO incluir isCorrect para no revelar la respuesta al estudiante
+  }
+}
+
+# Obtener respuestas del estudiante para las preguntas
+query GetStudentAnswersForQuestions($studentEvaluationQuestionIds: [UUID!]!) @auth(level: USER) {
+  studentAnswerOptions(where: { studentEvaluationQuestionId: { in: $studentEvaluationQuestionIds } }) {
+    studentAnswerOptionId
+    studentEvaluationQuestionId
+    questionOptionId
+  }
+}
+
+# ===================================================================
+# EVALUACIONES DEL ESTUDIANTE (Student Evaluations List)
+# ===================================================================
+
+# Obtener CourseStudents por studentId (para luego buscar sus evaluaciones)
+query GetCourseStudentsByStudentId($studentId: UUID!) @auth(level: USER) {
+  courseStudents(where: { studentId: { eq: $studentId }, deletedAt: { eq: null } }) {
+    courseStudentId
+    courseId
+    course {
+      name
+      code
+    }
+  }
+}
+
+# Obtener StudentCourseEvaluations por courseStudentIds
+query GetStudentCourseEvaluationsByCourseStudentIds($courseStudentIds: [UUID!]!) @auth(level: USER) {
+  studentCourseEvaluations(where: { courseStudentId: { in: $courseStudentIds } }) {
+    studentCourseEvaluationId
+    courseEvaluationId
+    courseStudentId
+    totalScore
+    grade
+    takenOn
+    attemptNo
+    state
+  }
+}
+
+# Obtener CourseEvaluations por sus IDs
+query GetCourseEvaluationsByIds($courseEvaluationIds: [UUID!]!) @auth(level: USER) {
+  courseEvaluations(where: { courseEvaluationId: { in: $courseEvaluationIds } }) {
+    courseEvaluationId
+    courseId
+    evaluationId
+    scheduledDate
+    durationMinutes
+    course {
+      name
+      code
+    }
+    evaluation {
+      title
+      state
+      subjectId
+    }
+  }
+}
+
+# Obtener asignaturas por IDs
+query GetSubjectsByIds($subjectIds: [UUID!]!) @auth(level: USER) {
+  subjects(where: { subjectId: { in: $subjectIds } }) {
+    subjectId
+    name
+    code
+  }
+}
+
+# Contar preguntas asignadas al estudiante en una evaluación
+query CountStudentEvaluationQuestions($studentEvaluationId: UUID!) @auth(level: USER) {
+  studentEvaluationQuestions(
+    where: { studentEvaluationId: { eq: $studentEvaluationId } }
+  ) {
+    studentEvaluationQuestionId
+  }
+}
+
+# Obtener detalles completos de CourseEvaluation por su ID
+query GetCourseEvaluationFullDetails($courseEvaluationId: UUID!) @auth(level: USER) {
+  courseEvaluations(where: { courseEvaluationId: { eq: $courseEvaluationId } }) {
+    courseEvaluationId
+    courseId
+    evaluationId
+    scheduledDate
+    durationMinutes
+    course {
+      courseId
+      name
+      code
+      section
+      institutionName
+      active
+    }
+    evaluation {
+      evaluationId
+      title
+      gradeScale
+      state
+      allowQuestionSubset
+      questionSubsetPercent
+      subjectId
+    }
+  }
+}
+
+# Validar estudiante por email y obtener su courseStudentId para un curso
+query GetStudentEnrollmentByEmailAndCourse($email: String!, $courseId: UUID!) @auth(level: USER) {
+  students(where: { email: { eq: $email }, deletedAt: { eq: null } }) {
+    studentId
+    firstName
+    lastName
+    identifier
+    email
+  }
+  courseStudents(where: { courseId: { eq: $courseId }, deletedAt: { eq: null } }) {
+    courseStudentId
+    courseId
+    studentId
+    student {
+      email
+    }
   }
 }
