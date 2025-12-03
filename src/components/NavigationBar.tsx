@@ -60,7 +60,7 @@ export default function NavigationBar() {
                   📚 Banco de Preguntas
                 </Nav.Link>
                 <Nav.Link as={Link} href="/evaluation-management" className={`nav-link-item ${isLinkActive('/evaluation-management') ? 'active' : ''}`}>
-                  📝 Evaluaciones
+                  📝 Gestión Académica
                 </Nav.Link>
               </>
             )}

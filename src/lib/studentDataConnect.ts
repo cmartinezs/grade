@@ -11,7 +11,8 @@ import {
   enrollStudentInCourse, 
   getCourseStudentsWithDetails,
   getAllStudentsByUser,
-  unenrollStudentFromCourse 
+  unenrollStudentFromCourse,
+  getStudentByIdentifier 
 } from '@/dataconnect-generated';
 import { getSecondaryAuth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -149,12 +150,22 @@ export async function createStudentInDataConnect(
       });
 
       console.log('[STUDENT DATA-CONNECT] Created student:', studentId);
-    } catch (studentError) {
+    } catch (studentError: unknown) {
       // Si falla la creación del estudiante, eliminar el usuario de Auth
       console.error('[STUDENT DATA-CONNECT] Error creating student, rolling back Auth user:', studentError);
       // No podemos usar userCredential.user.delete() porque ya hicimos signOut
       // El usuario quedará en Auth pero sin datos en Data Connect
       console.warn('[STUDENT DATA-CONNECT] User created in Auth but student creation failed. Manual cleanup may be needed.');
+      
+      // Detectar error de constraint único (estudiante con mismo identifier ya existe)
+      const errorMessage = studentError instanceof Error ? studentError.message : String(studentError);
+      if (errorMessage.includes('students_identifier_uidx') || errorMessage.includes('ALREADY_EXISTS')) {
+        throw new Error(
+          `Ya existe un estudiante con el RUT/ID "${input.identifier}". ` +
+          'Búscalo en la pestaña "Estudiante Existente" para inscribirlo en este curso.'
+        );
+      }
+      
       throw new Error('Error al crear estudiante en Data-Connect');
     }
 
@@ -278,5 +289,46 @@ export async function unenrollStudentFromCourseInDataConnect(
   } catch (error) {
     console.error('[STUDENT DATA-CONNECT] Error unenrolling student:', error);
     throw new Error('Error al desinscribir estudiante en Data-Connect');
+  }
+}
+
+/**
+ * Find a student by their identifier (RUT/ID)
+ * Returns null if not found
+ */
+export async function findStudentByIdentifier(
+  identifier: string,
+  userId: string,
+  firebaseUid: string
+): Promise<Student | null> {
+  try {
+    const result = await getStudentByIdentifier({
+      userId,
+      identifier,
+      firebaseId: firebaseUid,
+    });
+
+    const students = result.data.students;
+    if (!students || students.length === 0) {
+      return null;
+    }
+
+    const s = students[0];
+    return {
+      studentId: s.studentId,
+      firstName: s.firstName,
+      lastName: s.lastName,
+      identifier: s.identifier,
+      email: s.email,
+      createdAt: new Date(s.createdAt),
+      createdBy: s.createdBy,
+      updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(s.createdAt),
+      updatedBy: s.updatedBy || s.createdBy,
+      deletedAt: null,
+      deletedBy: null,
+    };
+  } catch (error) {
+    console.error('[STUDENT DATA-CONNECT] Error finding student by identifier:', error);
+    return null;
   }
 }
